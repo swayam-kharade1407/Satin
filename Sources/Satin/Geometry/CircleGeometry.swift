@@ -9,7 +9,7 @@
 import simd
 import SatinCore
 
-open class CircleGeometry: Geometry {
+public final class CircleGeometry: Geometry {
     override public init() {
         super.init()
         setupData(radius: 1, res: (60, 1))

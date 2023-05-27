@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class FloatParameter: GenericParameterWithMinMax<Float> {
+public final class FloatParameter: GenericParameterWithMinMax<Float> {
     override public var type: ParameterType { .float }
     override public var string: String { "float" }
     override public var count: Int { 1 }

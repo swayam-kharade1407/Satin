@@ -8,7 +8,7 @@
 import Foundation
 import simd
 
-public class Float4x4Parameter: GenericParameter<simd_float4x4> {
+public final class Float4x4Parameter: GenericParameter<simd_float4x4> {
     override public var type: ParameterType { .float4x4 }
     override public var string: String { "float4x4" }
     override public var count: Int { 4 }

@@ -10,7 +10,7 @@ import Foundation
 import Metal
 import simd
 
-open class UniformBuffer {
+public final class UniformBuffer {
     public private(set) var parameters: ParameterGroup
     public private(set) var buffer: MTLBuffer!
     public private(set) var index: Int = -1

@@ -7,7 +7,7 @@
 
 import SatinCore
 
-open class PointGeometry: Geometry {
+public final class PointGeometry: Geometry {
     override public init() {
         super.init()
         setupData()

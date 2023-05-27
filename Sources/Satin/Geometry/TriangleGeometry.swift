@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class TriangleGeometry: Geometry {
+public final class TriangleGeometry: Geometry {
     public init(size: Float = 1) {
         super.init()
         setupData(size: size)

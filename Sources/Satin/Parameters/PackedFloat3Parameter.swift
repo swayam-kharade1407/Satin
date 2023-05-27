@@ -8,7 +8,7 @@
 import Foundation
 import simd
 
-public class PackedFloat3Parameter: GenericParameterWithMinMax<simd_float3> {
+public final class PackedFloat3Parameter: GenericParameterWithMinMax<simd_float3> {
     override public var type: ParameterType { .packedfloat3 }
     override public var string: String { "packed_float3" }
     override public var count: Int { 3 }

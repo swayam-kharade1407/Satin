@@ -10,7 +10,7 @@ import Foundation
 import Metal
 import MetalPerformanceShaders
 
-public class CubemapGenerator {
+public final class CubemapGenerator {
     class CubemapComputeSystem: LiveTextureComputeSystem {
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?

@@ -8,7 +8,7 @@
 
 import Metal
 
-open class NormalColorMaterial: Material {
+public final class NormalColorMaterial: Material {
     public init(_ absolute: Bool = false) {
         super.init()
         set("Absolute", absolute)

@@ -7,7 +7,7 @@
 
 import Metal
 
-open class BasicTextureMaterial: BasicColorMaterial {
+public class BasicTextureMaterial: BasicColorMaterial {
     public var texture: MTLTexture?
     public var sampler: MTLSamplerState?
     public var flipped = false {
@@ -46,12 +46,12 @@ open class BasicTextureMaterial: BasicColorMaterial {
         set("Flipped", flipped)
     }
 
-    override open func setup() {
+    override public func setup() {
         super.setup()
         setupSampler()
     }
 
-    open func setupSampler() {
+    public func setupSampler() {
         guard sampler == nil else { return }
         let desc = MTLSamplerDescriptor()
         desc.label = label.titleCase
@@ -60,19 +60,19 @@ open class BasicTextureMaterial: BasicColorMaterial {
         sampler = context?.device.makeSamplerState(descriptor: desc)
     }
 
-    open func bindTexture(_ renderEncoder: MTLRenderCommandEncoder) {
+    public func bindTexture(_ renderEncoder: MTLRenderCommandEncoder) {
         if let texture = texture {
             renderEncoder.setFragmentTexture(texture, index: FragmentTextureIndex.Custom0.rawValue)
         }
     }
 
-    open func bindSampler(_ renderEncoder: MTLRenderCommandEncoder) {
+    public func bindSampler(_ renderEncoder: MTLRenderCommandEncoder) {
         if let sampler = sampler {
             renderEncoder.setFragmentSamplerState(sampler, index: FragmentSamplerIndex.Custom0.rawValue)
         }
     }
 
-    override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
+    override public func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
         bindTexture(renderEncoder)
         bindSampler(renderEncoder)
         super.bind(renderEncoder, shadow: shadow)

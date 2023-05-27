@@ -2,29 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "Forge",
-        "repositoryURL": "https://github.com/Hi-Rez/Forge",
-        "state": {
-          "branch": "master",
-          "revision": "700e72f59a807577582194c93e0dcb5aa7d53e5d",
-          "version": null
-        }
-      },
-      {
         "package": "Spectra",
         "repositoryURL": "https://github.com/Hi-Rez/Spectra",
         "state": {
           "branch": "master",
           "revision": "43a24736252863edfbde73e1d3754d7ecdcf46fe",
-          "version": null
-        }
-      },
-      {
-        "package": "Youi",
-        "repositoryURL": "https://github.com/Hi-Rez/Youi",
-        "state": {
-          "branch": "master",
-          "revision": "d1efe3424d2b8399101ce656828835f05ef43427",
           "version": null
         }
       }

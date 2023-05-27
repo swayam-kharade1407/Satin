@@ -9,7 +9,7 @@
 import Foundation
 import Metal
 
-public class BrdfGenerator {
+public final class BrdfGenerator {
     class BrdfComputeSystem: LiveTextureComputeSystem {
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(

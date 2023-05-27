@@ -7,7 +7,7 @@
 
 import SatinCore
 
-open class SquircleGeometry: Geometry {
+public final class SquircleGeometry: Geometry {
     public init(size: Float = 2.0, p: Float = 4.0, res: (angular: Int, radial: Int) = (90, 20)) {
         super.init()
         setupData(size: size, p: p, res: res)

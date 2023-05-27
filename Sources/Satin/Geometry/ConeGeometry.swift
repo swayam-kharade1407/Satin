@@ -9,7 +9,7 @@
 import simd
 import SatinCore
 
-open class ConeGeometry: Geometry {
+public final class ConeGeometry: Geometry {
     override public init() {
         super.init()
         setupData(size: (1, 2), res: (60, 1, 1))

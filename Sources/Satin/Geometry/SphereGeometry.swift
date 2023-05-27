@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class SphereGeometry: Geometry {
+public final class SphereGeometry: Geometry {
     override public init() {
         super.init()
         setupData(radius: 1, res: (angular: 60, vertical: 60))

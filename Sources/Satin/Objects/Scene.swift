@@ -11,7 +11,7 @@ import Metal
 import ModelIO
 import simd
 
-open class Scene: Object, Environment {
+public final class Scene: Object, Environment {
     public var environmentIntensity: Float = 1.0
 
     public internal(set) var environment: MTLTexture?

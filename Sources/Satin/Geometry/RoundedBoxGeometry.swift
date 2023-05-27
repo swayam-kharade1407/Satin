@@ -7,7 +7,7 @@
 
 import SatinCore
 
-open class RoundedBoxGeometry: Geometry {
+public final class RoundedBoxGeometry: Geometry {
     override public init() {
         super.init()
         setupData(width: 2, height: 2, depth: 2, radius: 0.25, res: 1)

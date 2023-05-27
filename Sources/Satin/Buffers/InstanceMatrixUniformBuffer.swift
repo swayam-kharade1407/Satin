@@ -8,7 +8,7 @@
 import Metal
 import simd
 
-open class InstanceMatrixUniformBuffer {
+public final class InstanceMatrixUniformBuffer {
     public private(set) var buffer: MTLBuffer!
     public private(set) var offset = 0
     public private(set) var index = 0

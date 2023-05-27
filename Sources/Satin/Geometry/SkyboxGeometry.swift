@@ -6,7 +6,7 @@
 
 import SatinCore
 
-open class SkyboxGeometry: Geometry {
+public final class SkyboxGeometry: Geometry {
     public init(size: Float = 2) {
         super.init()
         setupData(size: size)

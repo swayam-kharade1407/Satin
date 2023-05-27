@@ -8,7 +8,7 @@
 
 import simd
 
-open class ShadowMaterial: Material {
+public final class ShadowMaterial: Material {
     public override var receiveShadow: Bool {
         didSet {
             if receiveShadow != true {

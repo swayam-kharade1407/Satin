@@ -7,7 +7,7 @@
 
 import SatinCore
 
-open class OctaSphereGeometry: Geometry {
+public final class OctaSphereGeometry: Geometry {
     override public init() {
         super.init()
         setupData(radius: 1, res: 1)

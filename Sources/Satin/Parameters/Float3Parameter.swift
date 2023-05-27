@@ -9,7 +9,7 @@
 import Foundation
 import simd
 
-public class Float3Parameter: GenericParameterWithMinMax<simd_float3> {
+public final class Float3Parameter: GenericParameterWithMinMax<simd_float3> {
     override public var type: ParameterType { .float3 }
     override public var string: String { "float3" }
     override public var count: Int { 3 }

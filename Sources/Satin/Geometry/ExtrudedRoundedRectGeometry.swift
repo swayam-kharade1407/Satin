@@ -8,7 +8,7 @@
 import Foundation
 import SatinCore
 
-open class ExtrudedRoundedRectGeometry: Geometry {
+public final class ExtrudedRoundedRectGeometry: Geometry {
     public init(size: (width: Float, height: Float, depth: Float), radius: Float = 0.5, res: (angular: Int, radial: Int, depth: Int) = (32, 32, 1)) {
         super.init()
         let edgeX = Int(Float(res.angular) * size.width / radius) / 6

@@ -8,7 +8,7 @@
 import Metal
 import simd
 
-open class BasicPointMaterial: Material {
+public final class BasicPointMaterial: Material {
     public init(_ color: simd_float4 = simd_float4(repeating: 1.0), _ size: Float = 2.0, _ blending: Blending = .alpha) {
         super.init()
         self.blending = blending

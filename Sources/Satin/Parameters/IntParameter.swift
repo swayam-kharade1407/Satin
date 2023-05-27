@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IntParameter: GenericParameterWithMinMax<Int> {
+public final class IntParameter: GenericParameterWithMinMax<Int> {
     override public var type: ParameterType { .int }
     override public var string: String { "int" }
     override public var count: Int { 1 }

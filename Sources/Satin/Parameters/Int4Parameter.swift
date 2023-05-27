@@ -9,7 +9,7 @@
 import Foundation
 import simd
 
-public class Int4Parameter: GenericParameterWithMinMax<simd_int4> {
+public final class Int4Parameter: GenericParameterWithMinMax<simd_int4> {
     override public var type: ParameterType { .int4 }
     override public var string: String { "int4" }
     override public var count: Int { 4 }

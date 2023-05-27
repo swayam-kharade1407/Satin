@@ -8,7 +8,7 @@
 import Metal
 import simd
 
-open class SkyboxMaterial: BasicTextureMaterial {
+public final class SkyboxMaterial: BasicTextureMaterial {
     override public var texture: MTLTexture? {
         willSet {
             if let newTexture = newValue, newTexture.textureType != .typeCube {
@@ -94,13 +94,13 @@ open class SkyboxMaterial: BasicTextureMaterial {
         initalizeParameters()
     }
 
-    override open func updateShaderProperties(_ shader: Shader) {
+    override public func updateShaderProperties(_ shader: Shader) {
         super.updateShaderProperties(shader)
         guard let skyboxShader = shader as? SkyboxShader else { return }
         skyboxShader.tonemapping = tonemapping
     }
 
-    override open func createShader() -> Shader {
+    override public func createShader() -> Shader {
         return SkyboxShader(label, getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 }

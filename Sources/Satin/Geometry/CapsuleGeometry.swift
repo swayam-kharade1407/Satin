@@ -9,7 +9,7 @@
 import simd
 import SatinCore
 
-open class CapsuleGeometry: Geometry {
+public final class CapsuleGeometry: Geometry {
     public enum Axis: Int32 {
         case x = 0
         case y = 1

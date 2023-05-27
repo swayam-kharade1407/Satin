@@ -7,7 +7,7 @@
 
 import SatinCore
 
-open class TubeGeometry: Geometry {
+public final class TubeGeometry: Geometry {
     override public init() {
         super.init()
         setupData(size: (1, 2), angles: (0.0, Float.pi * 2.0), res: (60, 1))

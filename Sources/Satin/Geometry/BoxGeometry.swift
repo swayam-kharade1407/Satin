@@ -9,7 +9,7 @@
 import simd
 import SatinCore
 
-open class BoxGeometry: Geometry {
+public final class BoxGeometry: Geometry {
     override public init() {
         super.init()
         setupData(width: 2, height: 2, depth: 2, resWidth: 1, resHeight: 1, resDepth: 1)

@@ -10,7 +10,7 @@ import CoreText
 import simd
 import SatinCore
 
-open class ExtrudedTextGeometry: TextGeometry {
+public final class ExtrudedTextGeometry: TextGeometry {
     public var distance: Float {
         didSet {
             if oldValue != distance {
@@ -33,7 +33,7 @@ open class ExtrudedTextGeometry: TextGeometry {
         try super.init(from: decoder)
     }
 
-    override open func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(distance, forKey: .distance)

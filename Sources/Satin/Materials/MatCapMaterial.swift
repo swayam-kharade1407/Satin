@@ -8,4 +8,4 @@
 
 import Metal
 
-open class MatCapMaterial: BasicTextureMaterial {}
+public final class MatCapMaterial: BasicTextureMaterial {}

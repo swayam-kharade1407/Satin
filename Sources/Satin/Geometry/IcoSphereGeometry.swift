@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class IcoSphereGeometry: Geometry {
+public final class IcoSphereGeometry: Geometry {
     override public init() {
         super.init()
         setupData(radius: 1, res: 1)

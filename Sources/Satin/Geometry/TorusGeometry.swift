@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class TorusGeometry: Geometry {
+public final class TorusGeometry: Geometry {
     override public init() {
         super.init()
         setupData(radius: (1, 2), res: (60, 60))

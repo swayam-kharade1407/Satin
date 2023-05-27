@@ -12,7 +12,7 @@ public protocol FileWatcherDelegate: AnyObject {
     func updated(watcher: FileWatcher, filePath: String)
 }
 
-open class FileWatcher {
+public final class FileWatcher {
     public var timeInterval: TimeInterval = 1.0 {
         didSet {
             watch()
@@ -72,7 +72,7 @@ open class FileWatcher {
         })
     }
 
-    open func unwatch() {
+    public func unwatch() {
         if let timer = timer {
             timer.invalidate()
         }

@@ -11,7 +11,7 @@ import Metal
 import simd
 import SatinCore
 
-open class SpotLight: Object, Light {
+public final class SpotLight: Object, Light {
     public var type: LightType { .spot }
 
     public var data: LightData {
@@ -96,7 +96,7 @@ open class SpotLight: Object, Light {
         try super.init(from: decoder)
     }
 
-    override open func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(color, forKey: .color)
@@ -105,7 +105,7 @@ open class SpotLight: Object, Light {
         try container.encode(angleOuter, forKey: .angleOuter)
     }
 
-    override open func setup() {
+    override public func setup() {
         super.setup()
         transformSubscriber = transformPublisher.sink { [weak self] _ in
             guard let self = self else { return }

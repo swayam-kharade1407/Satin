@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class PlaneGeometry: Geometry {
+public final class PlaneGeometry: Geometry {
     public enum PlaneOrientation: Int32 {
         case xy = 0 // points in +z direction
         case yx = 1 // points in -z direction

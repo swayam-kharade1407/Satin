@@ -11,7 +11,7 @@ import Foundation
 import Metal
 import simd
 
-public class DirectionalLightShadow: Shadow {
+public final class DirectionalLightShadow: Shadow {
     public var label: String
 
     public var data: ShadowData {

@@ -9,7 +9,7 @@
 import Foundation
 import Metal
 
-public class DiffuseIBLGenerator {
+public final class DiffuseIBLGenerator {
     class DiffuseIBLComputeSystem: LiveTextureComputeSystem {
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?

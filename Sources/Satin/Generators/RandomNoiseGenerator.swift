@@ -9,7 +9,7 @@
 import Foundation
 import Metal
 
-public class RandomNoiseGenerator {
+public final class RandomNoiseGenerator {
     class RandomNoiseComputeSystem: LiveTextureComputeSystem {
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(

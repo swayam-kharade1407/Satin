@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public class YCbCrToRGBConverter {
+public final class YCbCrToRGBConverter {
     class YCbCrToRGBComputeSystem: LiveTextureComputeSystem {
         var yTexture: MTLTexture?
         var cbcrTexture: MTLTexture?

@@ -8,7 +8,7 @@
 
 import SatinCore
 
-open class QuadGeometry: Geometry {
+public final class QuadGeometry: Geometry {
     public init(size: Float = 2) {
         super.init()
         setupData(size: size)

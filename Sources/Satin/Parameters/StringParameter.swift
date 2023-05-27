@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class StringParameter: GenericParameter<String> {
+public final class StringParameter: GenericParameter<String> {
     override public var type: ParameterType { .string }
     override public var string: String { "string" }
     override public var count: Int { value.count }

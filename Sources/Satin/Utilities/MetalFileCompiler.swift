@@ -21,7 +21,7 @@ extension MetalFileCompilerError: LocalizedError {
     }
 }
 
-public class MetalFileCompiler {
+public final class MetalFileCompiler {
     public var watch: Bool {
         didSet {
             if watch != oldValue {

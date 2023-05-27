@@ -7,7 +7,7 @@
 
 import Metal
 
-open class DepthMaterial: Material {
+public final class DepthMaterial: Material {
     public init(color: Bool = true, invert: Bool = false, camera: Camera? = nil) {
         super.init()
         set("Color", color)

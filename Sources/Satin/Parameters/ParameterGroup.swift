@@ -19,7 +19,7 @@ public protocol ParameterGroupDelegate: AnyObject {
     func cleared(group: ParameterGroup)
 }
 
-open class ParameterGroup: Codable, CustomStringConvertible, ParameterDelegate, ObservableObject {
+public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDelegate, ObservableObject {
     public let id: String = UUID().uuidString
 
     public var description: String {

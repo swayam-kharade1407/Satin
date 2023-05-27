@@ -9,7 +9,7 @@
 import Foundation
 import Metal
 
-public class SpecularIBLGenerator {
+public final class SpecularIBLGenerator {
     class SpecularIBLComputeSystem: LiveTextureComputeSystem {
         var roughness: Float = 0.0
         var face: UInt32 = 0
