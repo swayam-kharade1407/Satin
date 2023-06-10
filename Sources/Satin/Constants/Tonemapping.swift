@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Tonemapping: Codable {
+public enum Tonemapping: String, Codable, CaseIterable {
     case none
     case aces
     case filmic

@@ -9,13 +9,13 @@ import Foundation
 import Metal
 import simd
 
-open class LiveTextureComputeSystem: TextureComputeSystem {
+open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
     public var compiler = MetalFileCompiler()
     public var source: String?
     public var pipelineURL: URL
 
     public var uniforms: UniformBuffer?
-    public var parameters: ParameterGroup?
+    public private(set) lazy var parameters: ParameterGroup = ParameterGroup(prefixLabel.titleCase)
 
     override public var textureDescriptors: [MTLTextureDescriptor] {
         didSet {
@@ -119,14 +119,9 @@ open class LiveTextureComputeSystem: TextureComputeSystem {
                 source += shaderSource
 
                 if let params = parseParameters(source: source, key: "\(prefixLabel.titleCase.replacingOccurrences(of: " ", with: ""))Uniforms") {
-                    params.label = prefixLabel.titleCase
-                    if let parameters = parameters {
-                        parameters.setFrom(params)
-                    } else {
-                        parameters = params
-                    }
-
-                    uniforms = UniformBuffer(device: device, parameters: parameters!)
+                    parameters.setFrom(params)
+                    uniforms = UniformBuffer(device: device, parameters: parameters)
+                    objectWillChange.send()
                 }
 
                 self.source = source
@@ -176,7 +171,7 @@ open class LiveTextureComputeSystem: TextureComputeSystem {
     }
 
     func updateSize() {
-        guard let parameters = parameters, let txDsx = textureDescriptors.first else { return }
+        guard let txDsx = textureDescriptors.first else { return }
         if txDsx.depth > 1 {
             parameters.set("Size", [txDsx.width, txDsx.height, txDsx.depth])
         } else if txDsx.height > 1 {
@@ -228,67 +223,102 @@ open class LiveTextureComputeSystem: TextureComputeSystem {
     }
 
     public func set(_ name: String, _ value: Float) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? FloatParameter {
+            param.value = value
+        } else {
+            parameters.append(FloatParameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float2) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float2Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float3) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float3Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float4) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float4Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: Int) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? IntParameter {
+            param.value = value
+        } else {
+            parameters.append(IntParameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int2) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int2Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int3) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int3Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int4) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int4Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: Bool) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? BoolParameter {
+            param.value = value
+        } else {
+            parameters.append(BoolParameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float2x2) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float2x2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float2x2Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float3x3) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float3x3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float3x3Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float4x4) {
-        guard let parameters = parameters else { return }
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float4x4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float4x4Parameter(name, value))
+        }
     }
 
     public func get(_ name: String) -> Parameter? {
-        guard let parameters = parameters else { return nil }
         return parameters.get(name)
     }
 }

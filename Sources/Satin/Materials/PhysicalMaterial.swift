@@ -73,9 +73,9 @@ open class PhysicalMaterial: StandardMaterial {
         }
     }
 
-    public var ior: Float = 1.5 {
+    public var indexOfRefraction: Float = 1.5 {
         didSet {
-            set("Ior", ior)
+            set("Index of Refraction", indexOfRefraction)
         }
     }
 
@@ -111,7 +111,7 @@ open class PhysicalMaterial: StandardMaterial {
         self.sheenTint = sheenTint
         self.transmission = transmission
         self.thickness = thickness
-        self.ior = ior
+        self.indexOfRefraction = ior
 
         lighting = true
         blending = .disabled
@@ -141,7 +141,7 @@ open class PhysicalMaterial: StandardMaterial {
         set("Sheen Tint", sheenTint)
         set("Transmission", transmission)
         set("Thickness", thickness)
-        set("Ior", ior)
+        set("indexOfRefraction", indexOfRefraction)
     }
 
     override open func createShader() -> Shader {
@@ -189,7 +189,7 @@ open class PhysicalMaterial: StandardMaterial {
             case .alpha:
                 baseColor.w = 1.0
             case .ior:
-                ior = 1.0
+                indexOfRefraction = 1.0
             case .transmission:
                 transmission = 1.0
             case .ambientOcclusion:
@@ -471,7 +471,7 @@ public extension PhysicalMaterial {
                 ]
                 loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ior)
             } else if property.type == .float {
-                ior = property.floatValue
+                indexOfRefraction = property.floatValue
             } else {
                 print("Unsupported MDLMaterial Property: \(property.name)")
             }
