@@ -40,13 +40,11 @@
 		E172B49429720A6A00341985 /* OcclusionRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E172B49329720A6A00341985 /* OcclusionRendererView.swift */; };
 		E175243629F86F8D00AD1A8F /* ARPBRRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243529F86F8D00AD1A8F /* ARPBRRenderer.swift */; };
 		E175243829F8734D00AD1A8F /* ARPBRRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243729F8734D00AD1A8F /* ARPBRRendererView.swift */; };
-		E175243B29F8A9D900AD1A8F /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E175243A29F8A9D900AD1A8F /* Youi */; };
 		E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */; };
 		E1772A962981D2A9005FE7B2 /* ProjectedShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1772A952981D2A9005FE7B2 /* ProjectedShadowRenderer.swift */; };
 		E1772A982981D320005FE7B2 /* MeshShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1772A972981D320005FE7B2 /* MeshShadowRenderer.swift */; };
 		E1772A9A2981D35F005FE7B2 /* ProjectedShadowRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1772A992981D35F005FE7B2 /* ProjectedShadowRendererView.swift */; };
 		E17A55A828A6C11E008F1DDB /* Renderer2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17B986E2451488100216411 /* Renderer2D.swift */; };
-		E17A55AA28A6C13F008F1DDB /* Forge in Frameworks */ = {isa = PBXBuildFile; productRef = E17A55A928A6C13F008F1DDB /* Forge */; };
 		E17A55AC28A6C159008F1DDB /* Satin in Frameworks */ = {isa = PBXBuildFile; productRef = E17A55AB28A6C159008F1DDB /* Satin */; };
 		E17A55AF28A6C201008F1DDB /* Renderer3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F1B32724BAA93300563923 /* Renderer3D.swift */; };
 		E17A55B128A6C2B2008F1DDB /* TextRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F1B32324BAA91F00563923 /* TextRenderer.swift */; };
@@ -126,7 +124,6 @@
 		E1E7681128A73661005D75AB /* AudioInputRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E7681028A73661005D75AB /* AudioInputRendererView.swift */; };
 		E1E7681228A73683005D75AB /* AudioInputRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B058F26BB704100D91376 /* AudioInputRenderer.swift */; };
 		E1E7681328A736BB005D75AB /* AudioInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17D2C1126BBB7DF005A136A /* AudioInput.swift */; };
-		E1E7681528A736D0005D75AB /* Spectra in Frameworks */ = {isa = PBXBuildFile; productRef = E1E7681428A736D0005D75AB /* Spectra */; };
 		E1E7685128ADAF6F005D75AB /* FlockingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E7685028ADAF6F005D75AB /* FlockingRenderer.swift */; };
 		E1E7685328ADB23B005D75AB /* FlockingRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E7685228ADB23B005D75AB /* FlockingRendererView.swift */; };
 		E1EB6DE829690C5B0029E4FC /* PBREnhancedRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EB6DE729690C5B0029E4FC /* PBREnhancedRenderer.swift */; };
@@ -139,6 +136,9 @@
 		E1F4315729C39B0F00200E72 /* ARPostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F4315629C39B0F00200E72 /* ARPostProcessor.swift */; };
 		E1F4315A29C3ABCA00200E72 /* ARPerspectiveCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F4315929C3ABCA00200E72 /* ARPerspectiveCamera.swift */; };
 		E1FC980D29D501D600A70BB5 /* PBRStandardMaterialRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FC980C29D501D600A70BB5 /* PBRStandardMaterialRenderer.swift */; };
+		E1FDCA112A36929E00A1870D /* Forge in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA102A36929E00A1870D /* Forge */; };
+		E1FDCA142A3692B500A1870D /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA132A3692B500A1870D /* Youi */; };
+		E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA162A3692ED00A1870D /* Spectra */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -174,8 +174,6 @@
 		E152372729CBDF4E00D96D46 /* ObjectShadowRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectShadowRenderer.swift; sourceTree = "<group>"; };
 		E152372929CC21FF00D96D46 /* ContactShadowRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactShadowRenderer.swift; sourceTree = "<group>"; };
 		E152372B29CC223600D96D46 /* ContactShadowRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactShadowRendererView.swift; sourceTree = "<group>"; };
-		E15CFE942A200AB00091B84E /* Youi */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Youi; path = ../../Youi; sourceTree = "<group>"; };
-		E15CFE952A200ABD0091B84E /* Forge */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Forge; path = ../../Forge; sourceTree = "<group>"; };
 		E1624947280DC45B00DAE5F7 /* VertexAttributesRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VertexAttributesRenderer.swift; sourceTree = "<group>"; };
 		E1653F152684F4D50012C97F /* ARSatinSceneKitRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSatinSceneKitRenderer.swift; sourceTree = "<group>"; };
 		E168FC76248ECCA2004B8407 /* PBRRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBRRenderer.swift; sourceTree = "<group>"; };
@@ -287,10 +285,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1E7681528A736D0005D75AB /* Spectra in Frameworks */,
+				E1FDCA112A36929E00A1870D /* Forge in Frameworks */,
+				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
+				E1FDCA142A3692B500A1870D /* Youi in Frameworks */,
 				E17A55AC28A6C159008F1DDB /* Satin in Frameworks */,
-				E175243B29F8A9D900AD1A8F /* Youi in Frameworks */,
-				E17A55AA28A6C13F008F1DDB /* Forge in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,8 +337,6 @@
 			isa = PBXGroup;
 			children = (
 				E10CC20327F128ED00E04B2B /* Satin */,
-				E15CFE942A200AB00091B84E /* Youi */,
-				E15CFE952A200ABD0091B84E /* Forge */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -730,10 +726,10 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				E17A55A928A6C13F008F1DDB /* Forge */,
 				E17A55AB28A6C159008F1DDB /* Satin */,
-				E1E7681428A736D0005D75AB /* Spectra */,
-				E175243A29F8A9D900AD1A8F /* Youi */,
+				E1FDCA102A36929E00A1870D /* Forge */,
+				E1FDCA132A3692B500A1870D /* Youi */,
+				E1FDCA162A3692ED00A1870D /* Spectra */,
 			);
 			productName = Example;
 			productReference = E1D714D128A6BAD900B517B6 /* Example.app */;
@@ -764,9 +760,9 @@
 			);
 			mainGroup = 66E67880243EC73A0070B294;
 			packageReferences = (
-				E10CC11527F105DE00E04B2B /* XCRemoteSwiftPackageReference "Forge" */,
-				E1385EE127F219C5005EB579 /* XCRemoteSwiftPackageReference "Spectra" */,
-				E175243929F8A9D900AD1A8F /* XCRemoteSwiftPackageReference "Youi" */,
+				E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */,
+				E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */,
+				E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */,
 			);
 			productRefGroup = 66E6788A243EC73A0070B294 /* Products */;
 			projectDirPath = "";
@@ -1159,25 +1155,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E10CC11527F105DE00E04B2B /* XCRemoteSwiftPackageReference "Forge" */ = {
+		E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Hi-Rez/Forge";
+			repositoryURL = "git@github.com:Hi-Rez/ForgePro.git";
 			requirement = {
-				branch = master;
+				branch = main;
 				kind = branch;
 			};
 		};
-		E1385EE127F219C5005EB579 /* XCRemoteSwiftPackageReference "Spectra" */ = {
+		E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Hi-Rez/Spectra";
+			repositoryURL = "git@github.com:Hi-Rez/YouiPro.git";
 			requirement = {
-				branch = master;
+				branch = main;
 				kind = branch;
 			};
 		};
-		E175243929F8A9D900AD1A8F /* XCRemoteSwiftPackageReference "Youi" */ = {
+		E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Hi-Rez/Youi";
+			repositoryURL = "git@github.com:Hi-Rez/Spectra.git";
 			requirement = {
 				branch = master;
 				kind = branch;
@@ -1186,23 +1182,23 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E175243A29F8A9D900AD1A8F /* Youi */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E175243929F8A9D900AD1A8F /* XCRemoteSwiftPackageReference "Youi" */;
-			productName = Youi;
-		};
-		E17A55A928A6C13F008F1DDB /* Forge */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E10CC11527F105DE00E04B2B /* XCRemoteSwiftPackageReference "Forge" */;
-			productName = Forge;
-		};
 		E17A55AB28A6C159008F1DDB /* Satin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Satin;
 		};
-		E1E7681428A736D0005D75AB /* Spectra */ = {
+		E1FDCA102A36929E00A1870D /* Forge */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1385EE127F219C5005EB579 /* XCRemoteSwiftPackageReference "Spectra" */;
+			package = E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */;
+			productName = Forge;
+		};
+		E1FDCA132A3692B500A1870D /* Youi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */;
+			productName = Youi;
+		};
+		E1FDCA162A3692ED00A1870D /* Spectra */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */;
 			productName = Spectra;
 		};
 /* End XCSwiftPackageProductDependency section */
