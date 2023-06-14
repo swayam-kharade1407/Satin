@@ -131,7 +131,6 @@ open class SourceShader: Shader {
         didSet {
             compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] _ in
                 guard let self = self else { return }
-                print("shader: \(label) updated!")
                 self.shaderSource = nil
                 self.sourceNeedsUpdate = true
             }
