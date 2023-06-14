@@ -96,7 +96,6 @@ public final class MetalFileCompiler {
             }
 
             let watcher = FileWatcher(filePath: fileURLResolved.path, timeInterval: 0.25, active: watch) { [weak self] in
-                print("updated: \(fileURLResolved)")
                 ShaderSourceCache.removeSource(url: fileURL)
                 self?.onUpdatePublisher.send()
             }

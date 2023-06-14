@@ -11,6 +11,7 @@ import Combine
 import Metal
 
 open class SourceShader: Shader {
+
     public var pipelineURL: URL? {
         didSet {
             if pipelineURL != nil, oldValue != pipelineURL {
@@ -260,6 +261,10 @@ open class SourceShader: Shader {
         error = nil
 
         sourceNeedsUpdate = false
+    }
+
+    open override func makePipeline(_ context: Context, descriptor: MTLRenderPipelineDescriptor) throws -> MTLRenderPipelineState? {
+        try context.device.makeRenderPipelineState(descriptor: descriptor)
     }
 
     override public func clone() -> Shader {

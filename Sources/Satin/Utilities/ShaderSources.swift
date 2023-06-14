@@ -17,11 +17,9 @@ public class ShaderSourceCache {
 
     public class func getSource(url: URL) throws -> String? {
         guard ShaderSourceCache.sourceCache[url] == nil else {
-            print("returning cached: \(url.deletingLastPathComponent().lastPathComponent)")
-            return sourceCache[url]!
+            return sourceCache[url]
         }
 
-        print("parsing source: \(url.deletingLastPathComponent().lastPathComponent)")
         let source = try getCompiler(url: url).parse(url)
         sourceCache[url] = source
         return source

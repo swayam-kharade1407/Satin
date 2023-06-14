@@ -308,11 +308,12 @@ open class Shader {
             colorAttachment.alphaBlendOperation = alphaBlendOperation
         }
 
+        return try makePipeline(context, descriptor: pipelineStateDescriptor)
+    }
 
-
-
-        return try context.device.makeRenderPipelineState(
-            descriptor: pipelineStateDescriptor,
+    open func makePipeline(_ context: Context, descriptor: MTLRenderPipelineDescriptor) throws -> MTLRenderPipelineState? {
+        try context.device.makeRenderPipelineState(
+            descriptor: descriptor,
             options: pipelineOptions,
             reflection: &pipelineReflection
         )
