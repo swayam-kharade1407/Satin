@@ -30,7 +30,7 @@ public func injectPBRConstants(source: inout String) {
 
 // MARK: - Constants
 
-func injectConstants(source: inout String, constants: [String]) {
+public func injectConstants(source: inout String, constants: [String]) {
     var injection = ""
     for constant in constants { injection += constant + "\n" }
     source = source.replacingOccurrences(of: "// inject constants\n", with: injection.isEmpty ? "\n" : injection + "\n")
@@ -38,7 +38,7 @@ func injectConstants(source: inout String, constants: [String]) {
 
 // MARK: - Defines
 
-func injectDefines(source: inout String, defines: [String: NSObject]) {
+public func injectDefines(source: inout String, defines: [String: NSObject]) {
     var injection = ""
     for define in defines { injection += "#define \(define.key) \(define.value)\n" }
     source = source.replacingOccurrences(of: "// inject defines\n", with: injection.isEmpty ? "\n" : injection + "\n")
@@ -46,7 +46,7 @@ func injectDefines(source: inout String, defines: [String: NSObject]) {
 
 // MARK: - Vertex, VertexData, VertexUniforms, Vertex Shader
 
-func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescriptor) {
+public func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescriptor) {
     var vertexSource: String?
     if vertexDescriptor == SatinVertexDescriptor() {
         vertexSource = VertexSource.get()
@@ -189,15 +189,15 @@ func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescriptor) {
     source = source.replacingOccurrences(of: "// inject vertex\n", with: (vertexSource ?? "\n") + "\n")
 }
 
-func injectVertexData(source: inout String) {
+public func injectVertexData(source: inout String) {
     source = source.replacingOccurrences(of: "// inject vertex data\n", with: (VertexDataSource.get() ?? "\n") + "\n")
 }
 
-func injectVertexUniforms(source: inout String) {
+public func injectVertexUniforms(source: inout String) {
     source = source.replacingOccurrences(of: "// inject vertex uniforms\n", with: (VertexUniformsSource.get() ?? "\n") + "\n")
 }
 
-func injectPassThroughVertex(label: String, source: inout String) {
+public func injectPassThroughVertex(label: String, source: inout String) {
     let vertexFunctionName = label.camelCase + "Vertex"
     if !source.contains(vertexFunctionName),
        let passThroughVertexSource = PassThroughVertexPipelineSource.get()
@@ -211,11 +211,11 @@ func injectPassThroughVertex(label: String, source: inout String) {
 
 // MARK: - Instancing
 
-func injectInstanceMatrixUniforms(source: inout String, instancing: Bool) {
-    source = source.replacingOccurrences(of: "// inject instance matrix uniforms\n", with: instancing ? (InstanceMatrixUniformsSource.get() ?? "\n") : "\n")
+public func injectInstanceMatrixUniforms(source: inout String) {
+    source = source.replacingOccurrences(of: "// inject instance matrix uniforms\n", with: (InstanceMatrixUniformsSource.get() ?? "\n"))
 }
 
-func injectInstancingArgs(source: inout String, instancing: Bool) {
+public func injectInstancingArgs(source: inout String, instancing: Bool) {
     let injection =
         """
         \tuint instanceID [[instance_id]],
@@ -226,18 +226,18 @@ func injectInstancingArgs(source: inout String, instancing: Bool) {
 
 // MARK: - Lights
 
-func injectLighting(source: inout String, lighting: Bool) {
+public func injectLighting(source: inout String, lighting: Bool) {
     source = source.replacingOccurrences(of: "// inject lighting\n", with: lighting ? (LightingSource.get() ?? "\n") : "\n")
 }
 
-func injectLightingArgs(source: inout String, lighting: Bool) {
+public func injectLightingArgs(source: inout String, lighting: Bool) {
     let injection = "\tconstant LightData *lights [[buffer(FragmentBufferLighting)]],\n"
     source = source.replacingOccurrences(of: "// inject lighting args\n", with: lighting ? injection : "")
 }
 
 // MARK: - Shadows
 
-func injectShadowData(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowData(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow, shadowCount > 0, let shadowDataSource = ShadowDataSource.get() {
         injection = shadowDataSource
@@ -245,7 +245,7 @@ func injectShadowData(source: inout String, receiveShadow: Bool, shadowCount: In
     source = source.replacingOccurrences(of: "// inject shadow data\n", with: injection)
 }
 
-func injectShadowBuffer(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowBuffer(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow, shadowCount > 0 {
         injection += "struct Shadows {\n"
@@ -256,7 +256,7 @@ func injectShadowBuffer(source: inout String, receiveShadow: Bool, shadowCount: 
     source = source.replacingOccurrences(of: "// inject shadow buffer\n", with: injection)
 }
 
-func injectShadowFunction(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowFunction(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow, shadowCount > 0, let shadowFunctionSource = ShadowFunctionSource.get() {
         injection = shadowFunctionSource
@@ -264,7 +264,7 @@ func injectShadowFunction(source: inout String, receiveShadow: Bool, shadowCount
     source = source.replacingOccurrences(of: "// inject shadow function\n", with: injection)
 }
 
-func injectPassThroughShadowVertex(label: String, source: inout String) {
+public func injectPassThroughShadowVertex(label: String, source: inout String) {
     let shadowFunctionName = label.camelCase + "ShadowVertex"
     if !source.contains(shadowFunctionName),
        let passThroughShadowSource = PassThroughShadowPipelineSource.get()
@@ -276,7 +276,7 @@ func injectPassThroughShadowVertex(label: String, source: inout String) {
     }
 }
 
-func injectShadowCoords(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowCoords(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow {
         for i in 0 ..< shadowCount {
@@ -289,12 +289,12 @@ func injectShadowCoords(source: inout String, receiveShadow: Bool, shadowCount: 
     source = source.replacingOccurrences(of: "// inject shadow coords\n", with: injection)
 }
 
-func injectShadowVertexArgs(source: inout String, receiveShadow: Bool) {
+public func injectShadowVertexArgs(source: inout String, receiveShadow: Bool) {
     let injection = "constant float4x4 *shadowMatrices [[buffer(VertexBufferShadowMatrices)]],\n"
     source = source.replacingOccurrences(of: "// inject shadow vertex args\n", with: receiveShadow ? injection : "")
 }
 
-func injectShadowFragmentArgs(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowFragmentArgs(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow, shadowCount > 0 {
         injection += "constant Shadows &shadows [[buffer(FragmentBufferShadows)]],\n"
@@ -303,7 +303,7 @@ func injectShadowFragmentArgs(source: inout String, receiveShadow: Bool, shadowC
     source = source.replacingOccurrences(of: "// inject shadow fragment args\n", with: injection)
 }
 
-func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
     if receiveShadow {
         for i in 0 ..< shadowCount {
@@ -316,7 +316,7 @@ func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, shadowCou
     source = source.replacingOccurrences(of: "// inject shadow vertex calc\n", with: injection)
 }
 
-func injectShadowFragmentCalc(source: inout String, receiveShadow: Bool, shadowCount: Int) {
+public func injectShadowFragmentCalc(source: inout String, receiveShadow: Bool, shadowCount: Int) {
     var injection = ""
 
     if receiveShadow, shadowCount > 0 {

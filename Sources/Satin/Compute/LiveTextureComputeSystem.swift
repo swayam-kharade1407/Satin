@@ -7,10 +7,12 @@
 
 import Foundation
 import Metal
+import Combine
 import simd
 
 open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
     public var compiler = MetalFileCompiler()
+    private var compilerSubscription: AnyCancellable?
     public var source: String?
     public var pipelineURL: URL
 
@@ -32,9 +34,7 @@ open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
     }
 
     open var constants: [String] {
-        [
-            "// inject compute constants"
-        ]
+        []
     }
 
     public init(device: MTLDevice,
@@ -75,8 +75,10 @@ open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
     }
 
     open func setupCompiler() {
-        compiler.onUpdate = { [weak self] in
+        compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] in
             guard let self = self else { return }
+            
+
             self.source = nil
             self.source = self.compileSource()
             self.setupPipelines()
@@ -110,10 +112,8 @@ open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
             return source
         } else {
             do {
-                guard let satinURL = getPipelinesSatinURL() else { return nil }
-                let includesURL = satinURL.appendingPathComponent("Includes.metal")
+                guard var source = ComputeIncludeSource.get() else { return nil }
 
-                var source = try compiler.parse(includesURL)
                 let shaderSource = try compiler.parse(pipelineURL)
                 inject(source: &source)
                 source += shaderSource

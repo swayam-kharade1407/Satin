@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 public enum MetalFileCompilerError: Error {
     case invalidFile(_ fileURL: URL)
@@ -36,7 +37,7 @@ public final class MetalFileCompiler {
         }
     }
 
-    public var onUpdate: (() -> Void)?
+    public let onUpdatePublisher = PassthroughSubject<Void, Never>()
 
     private var files: [URL] = []
     private var watchers: [FileWatcher] = []
@@ -46,7 +47,7 @@ public final class MetalFileCompiler {
     }
 
     public func touch() {
-        onUpdate?()
+        onUpdatePublisher.send()
     }
 
     public func parse(_ fileURL: URL) throws -> String {
@@ -95,8 +96,11 @@ public final class MetalFileCompiler {
             }
 
             let watcher = FileWatcher(filePath: fileURLResolved.path, timeInterval: 0.25, active: watch) { [weak self] in
-                self?.onUpdate?()
+                print("updated: \(fileURLResolved)")
+                ShaderSourceCache.removeSource(url: fileURL)
+                self?.onUpdatePublisher.send()
             }
+
             watchers.append(watcher)
             files.append(fileURLResolved)
 
@@ -129,7 +133,6 @@ public final class MetalFileCompiler {
     }
 
     deinit {
-        onUpdate = nil
         files = []
         watchers = []
     }

@@ -15,9 +15,9 @@ import Satin
 class LiveCodeRenderer: BaseRenderer {
     // Material names must not be the target name, i.e. LiveCodeMaterial won't work
 
-    class CustomMaterial: LiveMaterial {
-        override init(pipelinesURL: URL) {
-            super.init(pipelinesURL: pipelinesURL)
+    class CustomMaterial: SourceMaterial {
+        override init(pipelinesURL: URL, live: Bool = true) {
+            super.init(pipelinesURL: pipelinesURL, live: true)
             self.blending = .alpha
         }
 

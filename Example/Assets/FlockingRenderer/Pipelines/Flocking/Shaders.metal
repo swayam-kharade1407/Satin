@@ -1,4 +1,3 @@
-#include "Satin/Includes.metal"
 #include "../Types.metal"
 #include "../Physics/Flocking.metal"
 #include "../Physics/Boundary.metal"

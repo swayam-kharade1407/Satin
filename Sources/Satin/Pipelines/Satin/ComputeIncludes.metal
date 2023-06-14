@@ -1,7 +1,5 @@
-#include <metal_stdlib>
-#include <simd/simd.h>
-
-using namespace metal;
+#include "MetalIncludes.metal"
+#include "ComputeConstants.metal"
 
 // inject defines
 // inject constants

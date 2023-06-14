@@ -8,6 +8,8 @@
 
 import Foundation
 import Metal
+import Combine
+
 import Satin
 
 class TessellationComputeSystem<T>: Tessellator {
@@ -58,6 +60,7 @@ class TessellationComputeSystem<T>: Tessellator {
 
     private var uniforms: UniformBuffer?
     private let compiler: MetalFileCompiler
+    private var compilerSubscription: AnyCancellable?
 
     public var threadPerGrid: MTLSize {
         MTLSize(width: geometry!.patchCount, height: 1, depth: 1)
@@ -90,8 +93,9 @@ class TessellationComputeSystem<T>: Tessellator {
         self.pipelineURL = pipelineURL
         self.live = live
 
-        self.compiler = MetalFileCompiler(watch: live)
-        compiler.onUpdate = { [weak self] in
+        self.compiler = ShaderSourceCache.getCompiler(url: pipelineURL)
+        compiler.watch = true
+        compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] in
             guard let self = self else { return }
             self.setupSource()
             self.setupPipeline()
@@ -134,10 +138,8 @@ class TessellationComputeSystem<T>: Tessellator {
             return source
         } else {
             do {
-                guard let satinURL = getPipelinesSatinURL() else { return nil }
-                let includesURL = satinURL.appendingPathComponent("Includes.metal")
-
-                var source = try compiler.parse(includesURL)
+                guard var source = ComputeIncludeSource.get() else { return nil }
+                
                 let shaderSource = try compiler.parse(pipelineURL)
                 inject(source: &source)
                 source += shaderSource

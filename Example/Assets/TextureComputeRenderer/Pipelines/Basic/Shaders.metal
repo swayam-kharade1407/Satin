@@ -1,5 +1,3 @@
-#include "Satin/Includes.metal"
-
 typedef struct {
     float time;
 } BasicUniforms;

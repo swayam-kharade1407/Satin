@@ -34,7 +34,7 @@ public final class FileWatcher {
                 let result = try FileManager.default.attributesOfItem(atPath: self.filePath)
                 lastModifiedDate = result[.modificationDate] as? Date
             } catch {
-                print("FileWatcher Error: \(error)")
+                print("FileWatcher Error: \(error.localizedDescription)")
             }
             if active {
                 watch()

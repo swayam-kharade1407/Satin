@@ -271,7 +271,19 @@ open class Shader {
     }
 
     open func createPipeline(_ context: Context, _ library: MTLLibrary) throws -> MTLRenderPipelineState? {
-        guard let vertexFunction = library.makeFunction(name: vertexFunctionName),
+
+//        var constantValues = MTLFunctionConstantValues()
+
+//        VertexFunctionConstantInstancing
+//        VertexFunctionConstantLighting
+//        VertexFunctionConstantLights
+//        VertexFunctionConstantShadows
+
+//        constantValues.setConstantValue(false, type: .bool, index: 1) // instancing
+//        constantValues.setConstantValue(false, type: .bool, index: 2) // lighting
+
+
+        guard let vertexFunction = library.makeFunction(name: vertexFunctionName) ?? library.makeFunction(name: "satinVertex"),
               let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return nil }
 
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
@@ -295,6 +307,9 @@ open class Shader {
             colorAttachment.rgbBlendOperation = rgbBlendOperation
             colorAttachment.alphaBlendOperation = alphaBlendOperation
         }
+
+
+
 
         return try context.device.makeRenderPipelineState(
             descriptor: pipelineStateDescriptor,

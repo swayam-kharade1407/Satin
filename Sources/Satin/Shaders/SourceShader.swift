@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import Metal
 
 open class SourceShader: Shader {
@@ -76,10 +77,7 @@ open class SourceShader: Shader {
     }
 
     open var constants: [String] {
-        [
-            "// inject vertex constants",
-            "// inject fragment constants"
-        ]
+        []
     }
 
     open var defines: [String: NSObject] {
@@ -127,15 +125,17 @@ open class SourceShader: Shader {
         }
     }
 
-    private lazy var compiler: MetalFileCompiler = {
-        let compiler = MetalFileCompiler(watch: live)
-        compiler.onUpdate = { [weak self] in
-            guard let self = self else { return }
-            self.shaderSource = nil
-            self.sourceNeedsUpdate = true
+    var compilerSubscription: AnyCancellable?
+    private lazy var compiler: MetalFileCompiler = MetalFileCompiler(watch: live) {
+        didSet {
+            compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] _ in
+                guard let self = self else { return }
+                print("shader: \(label) updated!")
+                self.shaderSource = nil
+                self.sourceNeedsUpdate = true
+            }
         }
-        return compiler
-    }()
+    }
 
     public required init(_ label: String, _ pipelineURL: URL, _ vertexFunctionName: String? = nil, _ fragmentFunctionName: String? = nil) {
         self.pipelineURL = pipelineURL
@@ -198,7 +198,9 @@ open class SourceShader: Shader {
 
         if let pipelineURL = pipelineURL {
             do {
-                result = try compiler.parse(pipelineURL)
+                result = try ShaderSourceCache.getSource(url: pipelineURL)
+                compiler = ShaderSourceCache.getCompiler(url: pipelineURL)
+                compiler.watch = live
                 error = nil
             } catch {
                 self.error = error
@@ -216,64 +218,46 @@ open class SourceShader: Shader {
         return result
     }
 
-    open func modifyShaderSource(source _: inout String) {}
+    open func modifyShaderSource(source: inout String) {}
 
     open func setupSource() {
-        guard let includesURL = getPipelinesSatinURL("Includes.metal"),
-              let compiledShaderSource = shaderSource ?? setupShaderSource()
-        else { return }
+        guard var source = RenderIncludeSource.get(),
+              let compiledShaderSource = shaderSource ?? setupShaderSource() else { return }
 
-        do {
-            var source = try MetalFileCompiler(watch: false).parse(includesURL)
+        injectDefines(source: &source, defines: defines) // don't inject defines, use the metal way of doing it
+        injectConstants(source: &source, constants: constants)
 
-            injectDefines(source: &source, defines: defines)
-            injectConstants(source: &source, constants: constants)
+        injectShadowData(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        injectShadowBuffer(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        injectShadowFunction(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
 
-            injectVertexConstants(source: &source)
-            injectFragmentConstants(source: &source)
+        injectVertex(source: &source, vertexDescriptor: vertexDescriptor)
 
-            injectShadowData(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
-            injectShadowBuffer(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
-            injectShadowFunction(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        source += compiledShaderSource
 
-            injectVertex(source: &source, vertexDescriptor: vertexDescriptor)
-            injectVertexData(source: &source)
-            injectVertexUniforms(source: &source)
+        injectPassThroughVertex(label: label, source: &source)
 
-            injectLighting(source: &source, lighting: lighting)
-            injectInstanceMatrixUniforms(source: &source, instancing: instancing)
+        if castShadow { injectPassThroughShadowVertex(label: label, source: &source) }
 
-            source += compiledShaderSource
+        injectInstancingArgs(source: &source, instancing: instancing)
 
-            injectPassThroughVertex(label: label, source: &source)
+        injectShadowCoords(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        injectShadowVertexArgs(source: &source, receiveShadow: receiveShadow)
+        injectShadowVertexCalc(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
 
-            if castShadow {
-                injectPassThroughShadowVertex(label: label, source: &source)
-            }
+        injectShadowFragmentArgs(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        injectShadowFragmentCalc(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
 
-            injectInstancingArgs(source: &source, instancing: instancing)
+        injectLightingArgs(source: &source, lighting: lighting)
 
-            injectShadowCoords(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
-            injectShadowVertexArgs(source: &source, receiveShadow: receiveShadow)
-            injectShadowVertexCalc(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        // user hook to modify shader if needed
+        modifyShaderSource(source: &source)
 
-            injectShadowFragmentArgs(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
-            injectShadowFragmentCalc(source: &source, receiveShadow: receiveShadow, shadowCount: shadowCount)
+        shaderSource = compiledShaderSource
 
-            injectLightingArgs(source: &source, lighting: lighting)
+        self.source = source
 
-            // user hook to modify shader if needed
-            modifyShaderSource(source: &source)
-
-            shaderSource = compiledShaderSource
-
-            self.source = source
-            
-            error = nil
-        } catch {
-            self.error = error
-            print("\(label) Shader: \(error.localizedDescription)")
-        }
+        error = nil
 
         sourceNeedsUpdate = false
     }

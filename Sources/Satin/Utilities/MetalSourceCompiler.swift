@@ -11,7 +11,7 @@ enum MetalSourceCompilerError: Error {
     case includeCompileError(_ fileURL: URL)
 }
 
-func compileMetalSource(_ source: String) throws -> String {
+public func compileMetalSource(_ source: String) throws -> String {
     var result = source
 
     let pattern = #"^#include\s+\"(.*)\"\n"#

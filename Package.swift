@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 
 import PackageDescription
 
@@ -13,6 +13,14 @@ let package = Package(
         .library(
             name: "Satin",
             targets: ["Satin"]
+        ),
+        .executable(
+            name: "RenderPipelineBuilder",
+            targets: ["RenderPipelineBuilder"]
+        ),
+        .plugin(
+            name: "CompilePipelines",
+            targets: ["CompilePipelines"]
         )
     ],
     dependencies: [],
@@ -37,6 +45,15 @@ let package = Package(
         .testTarget(
             name: "SatinTests",
             dependencies: ["Satin"]
+        ),
+        .executableTarget(
+            name: "RenderPipelineBuilder",
+            dependencies: ["Satin"]
+        ),
+        .plugin(
+            name: "CompilePipelines",
+            capability: .buildTool(),
+            dependencies: ["RenderPipelineBuilder"]
         )
     ],
     swiftLanguageVersions: [.v5]

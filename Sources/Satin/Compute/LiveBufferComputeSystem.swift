@@ -5,11 +5,15 @@
 //  Created by Reza Ali on 10/26/21.
 //
 
+import Foundation
 import Metal
+import Combine
 import simd
 
 open class LiveBufferComputeSystem: BufferComputeSystem {
     public var compiler = MetalFileCompiler()
+    private var compilerSubscription: AnyCancellable?
+
     public var source: String?
     public var pipelineURL: URL
 
@@ -33,11 +37,8 @@ open class LiveBufferComputeSystem: BufferComputeSystem {
     }
 
     open var constants: [String] {
-        [
-            "// inject compute constants"
-        ]
+        []
     }
-
 
     var prefixLabel: String {
         var prefix = String(describing: type(of: self)).replacingOccurrences(of: "BufferComputeSystem", with: "")
@@ -82,7 +83,7 @@ open class LiveBufferComputeSystem: BufferComputeSystem {
     }
 
     open func setupCompiler() {
-        compiler.onUpdate = { [weak self] in
+        compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] in
             guard let self = self else { return }
             self.source = nil
             self.source = self.compileSource()
@@ -105,7 +106,6 @@ open class LiveBufferComputeSystem: BufferComputeSystem {
     open func inject(source: inout String) {
         injectDefines(source: &source, defines: defines)
         injectConstants(source: &source, constants: constants)
-        injectComputeConstants(source: &source)
     }
 
     func compileSource() -> String? {
@@ -113,12 +113,12 @@ open class LiveBufferComputeSystem: BufferComputeSystem {
             return source
         } else {
             do {
-                guard let satinURL = getPipelinesSatinURL() else { return nil }
-                let includesURL = satinURL.appendingPathComponent("Includes.metal")
+                guard var source = ComputeIncludeSource.get() else { return nil }
 
-                var source = try compiler.parse(includesURL)
                 let shaderSource = try compiler.parse(pipelineURL)
+
                 inject(source: &source)
+                
                 source += shaderSource
 
                 if let buffer = parseStruct(source: source, key: "\(prefixLabel.titleCase)") {
