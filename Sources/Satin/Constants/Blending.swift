@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Metal
 
 public enum Blending: Codable {
     case disabled

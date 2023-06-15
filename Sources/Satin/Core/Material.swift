@@ -58,7 +58,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
             }
         }
     }
-
+    
     public var sourceRGBBlendFactor: MTLBlendFactor = .sourceAlpha {
         didSet {
             if oldValue != sourceRGBBlendFactor {
@@ -133,7 +133,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public var context: Context? {
         didSet {
-            if context != nil, context !== oldValue {
+            if context != nil, context != oldValue {
                 setup()
             }
         }
@@ -179,9 +179,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    public var maxLights = 0 {
+    public var lightCount = 0 {
         didSet {
-            if oldValue != maxLights {
+            if oldValue != lightCount {
                 shaderDefinesNeedsUpdate = true
             }
         }
@@ -345,7 +345,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func createShader() -> Shader {
-        return SourceShader(label, getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
+        return SourceShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
     open func cloneShader(_ shader: Shader) -> Shader {
@@ -365,6 +365,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
             updateShader(shader)
             shader.context = context
         }
+
         shaderNeedsUpdate = false
     }
 
@@ -412,15 +413,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func updateDepth() {
-        if depthNeedsUpdate {
-            setupDepthStencilState()
-        }
+        if depthNeedsUpdate { setupDepthStencilState() }
     }
 
     open func updateUniforms() {
-        if uniformsNeedsUpdate {
-            setupUniforms()
-        }
+        if uniformsNeedsUpdate { setupUniforms() }
         uniforms?.update()
     }
 
@@ -439,16 +436,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func bindDepthStencilState(_ renderEncoder: MTLRenderCommandEncoder) {
-        if let depthStencilState = depthStencilState {
-            renderEncoder.setDepthStencilState(depthStencilState)
-        }
-
-        if let depthBias = depthBias {
-            renderEncoder.setDepthBias(depthBias.bias, slopeScale: depthBias.slope, clamp: depthBias.clamp)
-        }
-        else {
-            renderEncoder.setDepthBias(0.0, slopeScale: 0.0, clamp: 0.0)
-        }
+        if let depthStencilState = depthStencilState { renderEncoder.setDepthStencilState(depthStencilState) }
+        if let depthBias = depthBias { renderEncoder.setDepthBias(depthBias.bias, slopeScale: depthBias.slope, clamp: depthBias.clamp) }
+        else { renderEncoder.setDepthBias(0.0, slopeScale: 0.0, clamp: 0.0) }
     }
 
     open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
@@ -505,7 +495,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     open func updateShaderProperties(_ shader: Shader) {
         shader.instancing = instancing
         shader.lighting = lighting
-        shader.maxLights = maxLights
+        shader.lightCount = lightCount
         shader.shadowCount = shadowCount
         shader.receiveShadow = receiveShadow
         shader.castShadow = castShadow
@@ -655,7 +645,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         clone.vertexDescriptor = vertexDescriptor
         clone.instancing = instancing
         clone.lighting = lighting
-        clone.maxLights = maxLights
+        clone.lightCount = lightCount
 
         clone.delegate = delegate
         clone.parameters = parameters.clone()

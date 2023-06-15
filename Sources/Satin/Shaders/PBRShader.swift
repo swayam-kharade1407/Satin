@@ -13,7 +13,7 @@ open class PBRShader: SourceShader {
     open var maps: [PBRTextureIndex: MTLTexture?] = [:] {
         didSet {
             if oldValue.keys != maps.keys {
-                sourceNeedsUpdate = true
+                definesNeedsUpdate = true
             }
         }
     }
@@ -21,7 +21,7 @@ open class PBRShader: SourceShader {
     open var samplers: [PBRTextureIndex: MTLSamplerDescriptor?] = [:] {
         didSet {
             if oldValue.keys != samplers.keys {
-                sourceNeedsUpdate = true
+                constantsNeedsUpdate = true
             }
         }
     }
@@ -29,31 +29,24 @@ open class PBRShader: SourceShader {
     open var tonemapping: Tonemapping = .aces {
         didSet {
             if oldValue != tonemapping {
-                sourceNeedsUpdate = true
+                definesNeedsUpdate = true
             }
         }
     }
 
-    override open var defines: [String: NSObject] {
-        var results = super.defines
+    open override func getConstants() -> [String] {
+        var results = super.getConstants()
+        for (index, sampler) in samplers where sampler != nil {
+            results.append(sampler!.shaderInjection(index: index))
+        }
+        return results
+    }
+
+    open override func getDefines() -> [String : NSObject] {
+        var results = super.getDefines()
         if !maps.isEmpty { results["HAS_MAPS"] = NSString(string: "true") }
         for map in maps { results[map.key.shaderDefine] = NSString(string: "true") }
         results[tonemapping.shaderDefine] = NSString(string: "true")
         return results
-    }
-
-    override open var constants: [String] {
-        var results = super.constants
-        for (index, sampler) in samplers where sampler != nil {
-            results.append(sampler!.shaderInjection(index: index))
-        }
-        if !samplers.isEmpty { results.append("") }
-        results.append("// inject pbr constants")
-        return results
-    }
-
-    override open func modifyShaderSource(source: inout String) {
-        super.modifyShaderSource(source: &source)
-        injectPBRConstants(source: &source)
     }
 }

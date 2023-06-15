@@ -333,7 +333,7 @@ open class Renderer {
     }
 
     private func updateScene(commandBuffer: MTLCommandBuffer, camera: Camera) {
-        let maxLights = lightList.count
+        let lightCount = lightList.count
         let shadowCount = shadowList.count
 
         var environmentIntensity: Float = 1.0
@@ -362,7 +362,7 @@ open class Renderer {
                 for material in renderable.materials {
 
                     if material.lighting {
-                        material.maxLights = maxLights
+                        material.lightCount = lightCount
                     }
 
                     if renderable.receiveShadow {

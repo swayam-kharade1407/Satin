@@ -208,16 +208,12 @@ public class RenderIncludeSource {
     static let shared = RenderIncludeSource()
     private static var sharedSource: String?
 
-    public class func get() -> String? {
+    public class func get() throws -> String? {
         guard RenderIncludeSource.sharedSource == nil else {
             return sharedSource
         }
         if let url = getPipelinesSatinURL("RenderIncludes.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+            sharedSource = try MetalFileCompiler(watch: false).parse(url)
         }
         return sharedSource
     }

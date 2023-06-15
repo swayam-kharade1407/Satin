@@ -101,6 +101,6 @@ public final class SkyboxMaterial: BasicTextureMaterial {
     }
 
     override public func createShader() -> Shader {
-        return SkyboxShader(label, getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
+        return SkyboxShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 }

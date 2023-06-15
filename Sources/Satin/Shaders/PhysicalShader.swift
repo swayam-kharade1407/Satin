@@ -9,8 +9,8 @@
 import Foundation
 
 open class PhysicalShader: PBRShader {
-    override open var defines: [String: NSObject] {
-        var results = super.defines
+    override open func getDefines() -> [String: NSObject] {
+        var results = super.getDefines()
         results["HAS_CLEARCOAT"] = NSString(string: "true")
         results["HAS_SUBSURFACE"] = NSString(string: "true")
         results["HAS_SPECULAR_TINT"] = NSString(string: "true")

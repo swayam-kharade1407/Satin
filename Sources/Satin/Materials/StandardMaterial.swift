@@ -204,7 +204,7 @@ open class StandardMaterial: Material {
     }
 
     override open func createShader() -> Shader {
-        return StandardShader(label, getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
+        return StandardShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
     override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {

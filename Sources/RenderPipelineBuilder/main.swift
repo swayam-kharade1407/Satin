@@ -22,7 +22,7 @@ do {
     let instancing = compiledShaderSource.contains("// inject instancing args")
     let lighting = compiledShaderSource.contains("// inject lighting args")
 
-    if var source = RenderIncludeSource.get() {
+    if var source = try RenderIncludeSource.get() {
         //    injectDefines(source: &source, defines: defines)
         //    injectConstants(source: &source, constants: constants)
 

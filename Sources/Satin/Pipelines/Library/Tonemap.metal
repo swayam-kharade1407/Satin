@@ -27,4 +27,5 @@ float3 tonemap(float3 color) {
 #elif defined(TONEMAPPING_UNREAL)
     return unreal(color);
 #endif
+    return color;
 }
