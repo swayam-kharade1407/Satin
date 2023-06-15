@@ -40,7 +40,7 @@ final class ShaderCache {
     class func getPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
         if let pipeline = pipelineCache[configuration] { return pipeline }
 
-        print("Creating Shader Pipeline: \(configuration.label)")
+        print("Creating Shader Pipeline: \(configuration.description)")
 
         guard let context = configuration.context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration())
@@ -50,10 +50,10 @@ final class ShaderCache {
               let fragmentFunction = library.makeFunction(name: configuration.fragmentFunctionName)
         else { return nil }
 
-        let descriptor = MTLRenderPipelineDescriptor()
+        var descriptor = MTLRenderPipelineDescriptor()
         descriptor.label = configuration.label
 
-        descriptor.vertexDescriptor = configuration.vertexDescriptor
+        descriptor.vertexDescriptor = configuration.rendering.vertexDescriptor
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = fragmentFunction
 
@@ -62,15 +62,7 @@ final class ShaderCache {
         descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
         descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 
-        if configuration.blending.type != .disabled, let colorAttachment = descriptor.colorAttachments[0] {
-            colorAttachment.isBlendingEnabled = true
-            colorAttachment.sourceRGBBlendFactor = configuration.blending.sourceRGBBlendFactor
-            colorAttachment.sourceAlphaBlendFactor = configuration.blending.sourceAlphaBlendFactor
-            colorAttachment.destinationRGBBlendFactor = configuration.blending.destinationRGBBlendFactor
-            colorAttachment.destinationAlphaBlendFactor = configuration.blending.destinationAlphaBlendFactor
-            colorAttachment.rgbBlendOperation = configuration.blending.rgbBlendOperation
-            colorAttachment.alphaBlendOperation = configuration.blending.alphaBlendOperation
-        }
+        setupPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
         if configuration.libraryURL != nil {
             var pipelineReflection: MTLRenderPipelineReflection?
@@ -96,7 +88,7 @@ final class ShaderCache {
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.label = configuration.label + " Shadow"
 
-        pipelineStateDescriptor.vertexDescriptor = configuration.vertexDescriptor
+        pipelineStateDescriptor.vertexDescriptor = configuration.rendering.vertexDescriptor
         pipelineStateDescriptor.vertexFunction = vertexFunction
         pipelineStateDescriptor.fragmentFunction = nil
 
@@ -134,5 +126,44 @@ final class ShaderCache {
         }
 
         return nil
+    }
+
+    class func setupPipelineDescriptorBlending(blending: ShaderBlending, descriptor: inout MTLRenderPipelineDescriptor) {
+        guard blending.type != .disabled, let colorAttachment = descriptor.colorAttachments[0] else { return }
+
+        colorAttachment.isBlendingEnabled = true
+
+        switch blending.type {
+            case .alpha:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .sourceAlpha
+                colorAttachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.rgbBlendOperation = .add
+                colorAttachment.alphaBlendOperation = .add
+            case .additive:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .one
+                colorAttachment.destinationRGBBlendFactor = .one
+                colorAttachment.destinationAlphaBlendFactor = .one
+                colorAttachment.rgbBlendOperation = .add
+                colorAttachment.alphaBlendOperation = .add
+            case .subtract:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .sourceAlpha
+                colorAttachment.destinationRGBBlendFactor = .oneMinusBlendColor
+                colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.rgbBlendOperation = .reverseSubtract
+                colorAttachment.alphaBlendOperation = .add
+            case .custom:
+                colorAttachment.sourceRGBBlendFactor = blending.sourceRGBBlendFactor
+                colorAttachment.sourceAlphaBlendFactor = blending.sourceAlphaBlendFactor
+                colorAttachment.destinationRGBBlendFactor = blending.destinationRGBBlendFactor
+                colorAttachment.destinationAlphaBlendFactor = blending.destinationAlphaBlendFactor
+                colorAttachment.rgbBlendOperation = blending.rgbBlendOperation
+                colorAttachment.alphaBlendOperation = blending.alphaBlendOperation
+            case .disabled:
+                break
+        }
     }
 }

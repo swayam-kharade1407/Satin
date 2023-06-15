@@ -8,20 +8,7 @@
 import Foundation
 import Metal
 
-public struct ShaderConfiguration: Equatable, Hashable {
-    var context: Context?
-
-    // Information
-    var label: String
-
-    var vertexFunctionName: String
-    var fragmentFunctionName: String
-    var shadowFunctionName: String
-
-    // URLs
-    var libraryURL: URL? // this is where we get the MTLLibrary from file and build from there
-    var pipelineURL: URL? // this is where we get the pipeline source from file and build from there
-
+public struct RenderingConfiguration: Equatable, Hashable {
     // Blending
     var blending = ShaderBlending()
 
@@ -43,31 +30,7 @@ public struct ShaderConfiguration: Equatable, Hashable {
     var defines: [String: NSObject] = [:]
     var constants: [String] = []
 
-    public init(label: String = "",
-                vertexFunctionName: String = "",
-                fragmentFunctionName: String = "",
-                shadowFunctionName: String = "",
-                libraryURL: URL? = nil,
-                pipelineURL: URL? = nil)
-    {
-        self.label = label
-        self.vertexFunctionName = vertexFunctionName
-        self.fragmentFunctionName = fragmentFunctionName
-        self.shadowFunctionName = shadowFunctionName
-        self.libraryURL = libraryURL
-        self.pipelineURL = pipelineURL
-    }
-
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(label)
-
-        hasher.combine(vertexFunctionName)
-        hasher.combine(fragmentFunctionName)
-        hasher.combine(shadowFunctionName)
-
-        hasher.combine(libraryURL)
-        hasher.combine(pipelineURL)
-
         hasher.combine(blending)
         hasher.combine(vertexDescriptor)
 
@@ -111,6 +74,51 @@ public struct ShaderConfiguration: Equatable, Hashable {
     func getConstants() -> [String] {
         return constants
     }
+}
+
+public struct ShaderConfiguration: Equatable, Hashable {
+    var context: Context?
+
+    // Information
+    var label: String
+
+    var vertexFunctionName: String
+    var fragmentFunctionName: String
+    var shadowFunctionName: String
+
+    // URLs
+    var libraryURL: URL? // this is where we get the MTLLibrary from file and build from there
+    var pipelineURL: URL? // this is where we get the pipeline source from file and build from there
+
+    var rendering = RenderingConfiguration()
+
+    public init(label: String = "",
+                vertexFunctionName: String = "",
+                fragmentFunctionName: String = "",
+                shadowFunctionName: String = "",
+                libraryURL: URL? = nil,
+                pipelineURL: URL? = nil)
+    {
+        self.label = label
+        self.vertexFunctionName = vertexFunctionName
+        self.fragmentFunctionName = fragmentFunctionName
+        self.shadowFunctionName = shadowFunctionName
+        self.libraryURL = libraryURL
+        self.pipelineURL = pipelineURL
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(label)
+
+        hasher.combine(vertexFunctionName)
+        hasher.combine(fragmentFunctionName)
+        hasher.combine(shadowFunctionName)
+
+        hasher.combine(libraryURL)
+        hasher.combine(pipelineURL)
+
+        hasher.combine(rendering)
+    }
 
     func getLibraryConfiguration() -> ShaderLibraryConfiguration {
         return ShaderLibraryConfiguration(
@@ -118,21 +126,21 @@ public struct ShaderConfiguration: Equatable, Hashable {
             label: label,
             libraryURL: libraryURL,
             pipelineURL: pipelineURL,
-            vertexDescriptor: vertexDescriptor,
-            instancing: instancing,
-            lighting: lighting,
-            castShadow: castShadow,
-            receiveShadow: receiveShadow,
-            shadowCount: shadowCount,
-            defines: getDefines(),
-            constants: getConstants()
+            vertexDescriptor: rendering.vertexDescriptor,
+            instancing: rendering.instancing,
+            lighting: rendering.lighting,
+            castShadow: rendering.castShadow,
+            receiveShadow: rendering.receiveShadow,
+            shadowCount: rendering.shadowCount,
+            defines: rendering.getDefines(),
+            constants: rendering.getConstants()
         )
     }
 }
 
 extension ShaderConfiguration: CustomStringConvertible {
     public var description: String {
-        var output = "ShaderConfiguration: \n"
+        var output = "\n"
         output += "\t Label: \(label)\n"
         output += "\t VertexName: \(vertexFunctionName)\n"
         output += "\t FragmentName: \(fragmentFunctionName)\n"
@@ -141,17 +149,17 @@ extension ShaderConfiguration: CustomStringConvertible {
         output += "\t libraryURL: \(libraryURL?.description ?? "nil")\n"
         output += "\t pipelineURL: \(pipelineURL?.description ?? "nil")\n"
 
-        output += "\t blending: \(blending.type)\n"
-        output += "\t vertexDescriptor: \(vertexDescriptor.description)\n"
+        output += "\t blending: \(rendering.blending.type)\n"
+        output += "\t vertexDescriptor: \(rendering.vertexDescriptor.description)\n"
 
-        output += "\t instancing: \(instancing)\n"
-        output += "\t lighting: \(lighting)\n"
-        output += "\t lightCount: \(lightCount)\n"
-        output += "\t castShadow: \(castShadow)\n"
-        output += "\t receiveShadow: \(receiveShadow)\n"
-        output += "\t shadowCount: \(shadowCount)\n"
-        output += "\t defines: \(defines)\n"
-        output += "\t constants: \(constants)\n"
+        output += "\t instancing: \(rendering.instancing)\n"
+        output += "\t lighting: \(rendering.lighting)\n"
+        output += "\t lightCount: \(rendering.lightCount)\n"
+        output += "\t castShadow: \(rendering.castShadow)\n"
+        output += "\t receiveShadow: \(rendering.receiveShadow)\n"
+        output += "\t shadowCount: \(rendering.shadowCount)\n"
+        output += "\t defines: \(rendering.getDefines())\n"
+        output += "\t constants: \(rendering.getConstants())\n"
 
         output += "\n"
 

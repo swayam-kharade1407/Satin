@@ -34,7 +34,7 @@ class PBRRenderer: BaseRenderer {
         }
 
         override func createShader() -> Shader {
-            return CustomShader(label, pipelineURL)
+            return CustomShader(label: label, pipelineURL: pipelineURL)
         }
     }
 

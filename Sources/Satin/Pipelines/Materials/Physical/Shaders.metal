@@ -1,4 +1,4 @@
-#include "Satin/PBRConstants.metal"
+#include "Satin/PbrConstants.metal"
 
 #include "Library/Pbr/Pbr.metal"
 

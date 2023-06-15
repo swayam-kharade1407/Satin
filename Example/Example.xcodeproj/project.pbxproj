@@ -11,7 +11,6 @@
 		E1077F4F2A096B0900C2FB89 /* ARPointCloudRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1077F4E2A096B0900C2FB89 /* ARPointCloudRendererView.swift */; };
 		E10DC32229DCC4C100FF2A98 /* PBRCustomizationRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DC32129DCC4C100FF2A98 /* PBRCustomizationRenderer.swift */; };
 		E10DC32429DCC5DE00FF2A98 /* PBRCustomizationRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DC32329DCC5DE00FF2A98 /* PBRCustomizationRendererView.swift */; };
-		E10E2FD629C508EC00C4EAFF /* MeshShaderRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */; };
 		E10E2FD829C5092700C4EAFF /* MeshShaderRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E2FD729C5092700C4EAFF /* MeshShaderRendererView.swift */; };
 		E11325C928ADC4520049CACC /* CustomInstancingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11325C828ADC4520049CACC /* CustomInstancingRenderer.swift */; };
 		E11325CB28ADC5730049CACC /* InstancingRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11325CA28ADC5730049CACC /* InstancingRendererView.swift */; };
@@ -67,12 +66,9 @@
 		E1BBE46329E4D17D00A21F3A /* ARLidarMeshRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46229E4D17D00A21F3A /* ARLidarMeshRenderer.swift */; };
 		E1BBE46529E4D1AB00A21F3A /* ARLidarMeshRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46429E4D1AB00A21F3A /* ARLidarMeshRendererView.swift */; };
 		E1BBE46729E4D5B000A21F3A /* ARLidarMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46629E4D5B000A21F3A /* ARLidarMesh.swift */; };
-		E1BCF33E29DA3C030076C163 /* TessellationRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF33D29DA3C030076C163 /* TessellationRenderer.swift */; };
 		E1BCF34029DA3C210076C163 /* TessellationRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF33F29DA3C210076C163 /* TessellationRendererView.swift */; };
 		E1BCF34829DA3EB60076C163 /* Tessellator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34229DA3EB60076C163 /* Tessellator.swift */; };
-		E1BCF34929DA3EB60076C163 /* TessellatedMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34329DA3EB60076C163 /* TessellatedMaterial.swift */; };
 		E1BCF34A29DA3EB60076C163 /* TessellatedMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34429DA3EB60076C163 /* TessellatedMesh.swift */; };
-		E1BCF34B29DA3EB60076C163 /* TessellatedShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34529DA3EB60076C163 /* TessellatedShader.swift */; };
 		E1BCF34C29DA3EB60076C163 /* TessellationComputeSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */; };
 		E1BCF34D29DA3EB60076C163 /* TessellatedGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34729DA3EB60076C163 /* TessellatedGeometry.swift */; };
 		E1CB1F2029E656A6006FBDE8 /* ARBackgroundDepthRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CB1F1F29E656A6006FBDE8 /* ARBackgroundDepthRenderer.swift */; };
@@ -202,6 +198,7 @@
 		E192F01F2485B16C00C7EE74 /* MatcapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatcapRenderer.swift; sourceTree = "<group>"; };
 		E192F05C24874CE700C7EE74 /* TorusKnotGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TorusKnotGenerator.h; sourceTree = "<group>"; };
 		E192F05D24874CE700C7EE74 /* TorusKnotGenerator.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TorusKnotGenerator.c; sourceTree = "<group>"; };
+		E19A2ED02A3BB36200E25A86 /* YouiPro */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = YouiPro; path = ../../YouiPro; sourceTree = "<group>"; };
 		E19B058F26BB704100D91376 /* AudioInputRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioInputRenderer.swift; sourceTree = "<group>"; };
 		E19D4C3329F9C00500DF993D /* ARBloomRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBloomRenderer.swift; sourceTree = "<group>"; };
 		E19D4C3529F9C02A00DF993D /* ARBloomRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBloomRendererView.swift; sourceTree = "<group>"; };
@@ -337,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				E10CC20327F128ED00E04B2B /* Satin */,
+				E19A2ED02A3BB36200E25A86 /* YouiPro */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -825,7 +823,6 @@
 				E1077F4F2A096B0900C2FB89 /* ARPointCloudRendererView.swift in Sources */,
 				E1EB6DEA29690DD90029E4FC /* PBREnhancedRendererView.swift in Sources */,
 				E17A55AF28A6C201008F1DDB /* Renderer3D.swift in Sources */,
-				E1BCF34929DA3EB60076C163 /* TessellatedMaterial.swift in Sources */,
 				E17A55BC28A6C9C3008F1DDB /* CustomGeometryRenderer.swift in Sources */,
 				E152371F29CBA22B00D96D46 /* BaseRenderer.swift in Sources */,
 				E1E767E228A6E84A005D75AB /* TorusKnotGenerator.c in Sources */,
@@ -837,7 +834,6 @@
 				E175243629F86F8D00AD1A8F /* ARPBRRenderer.swift in Sources */,
 				E1E7680328A72E50005D75AB /* PBRRendererView.swift in Sources */,
 				E1FC980D29D501D600A70BB5 /* PBRStandardMaterialRenderer.swift in Sources */,
-				E1BCF33E29DA3C030076C163 /* TessellationRenderer.swift in Sources */,
 				E17A55A828A6C11E008F1DDB /* Renderer2D.swift in Sources */,
 				E18A1EDB291EFB1D00A71453 /* PBRStandardMaterialRendererView.swift in Sources */,
 				E19D4C3429F9C00500DF993D /* ARBloomRenderer.swift in Sources */,
@@ -852,7 +848,6 @@
 				E1E7680D28A73258005D75AB /* ARSatinSceneKitRenderer.swift in Sources */,
 				E1E767FE28A6FCBC005D75AB /* FXAARendererView.swift in Sources */,
 				E1772A962981D2A9005FE7B2 /* ProjectedShadowRenderer.swift in Sources */,
-				E10E2FD629C508EC00C4EAFF /* MeshShaderRenderer.swift in Sources */,
 				E19D4C4B29F9CF3100DF993D /* ARPlaneMesh.swift in Sources */,
 				E10DC32229DCC4C100FF2A98 /* PBRCustomizationRenderer.swift in Sources */,
 				E1E767CC28A6D41B005D75AB /* CustomGeometryRendererView.swift in Sources */,
@@ -860,7 +855,6 @@
 				E1E767F728A6FA4C005D75AB /* LiveCodeRendererView.swift in Sources */,
 				E1E7681128A73661005D75AB /* AudioInputRendererView.swift in Sources */,
 				E1E767F028A6F2E5005D75AB /* PostProcessingRenderer.swift in Sources */,
-				E1BCF34B29DA3EB60076C163 /* TessellatedShader.swift in Sources */,
 				E1E7680728A7302F005D75AB /* VertexAttributesRenderer.swift in Sources */,
 				E17A55BA28A6C891008F1DDB /* CameraControllerRenderer.swift in Sources */,
 				E18FD5962A12B00F001376D8 /* ARDepthMaskGenerator.swift in Sources */,

@@ -1,3 +1,4 @@
+#include "Satin/PbrConstants.metal"
 #include "Library/Pbr/Pbr.metal"
 
 typedef struct {

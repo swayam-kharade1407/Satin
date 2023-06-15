@@ -17,7 +17,8 @@ final class ShaderLibrarySourceCache {
     class func getLibrarySource(configuration: ShaderLibraryConfiguration) throws -> String? {
         if let source = ShaderLibrarySourceCache.cache[configuration] { return source }
 
-        guard var source = try RenderIncludeSource.get(), let pipelineURL = configuration.pipelineURL,
+        guard let pipelineURL = configuration.pipelineURL,
+              var source = try RenderIncludeSource.get(),
               let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL)
         else { return nil }
 

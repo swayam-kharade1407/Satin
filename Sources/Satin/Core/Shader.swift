@@ -44,98 +44,98 @@ open class Shader {
 
     open var constants: [String] {
         get {
-            configuration.constants
+            configuration.rendering.constants
         }
         set {
-            configuration.constants = newValue
+            configuration.rendering.constants = newValue
         }
     }
 
     open var defines: [String: NSObject] {
         get {
-            configuration.defines
+            configuration.rendering.defines
         }
         set {
-            configuration.defines = newValue
+            configuration.rendering.defines = newValue
         }
     }
 
     // MARK: - Blending
 
     public var blending: Blending {
-        get { configuration.blending.type }
-        set { configuration.blending.type = newValue }
+        get { configuration.rendering.blending.type }
+        set { configuration.rendering.blending.type = newValue }
     }
 
     public var sourceRGBBlendFactor: MTLBlendFactor {
-        get { configuration.blending.sourceRGBBlendFactor }
-        set { configuration.blending.sourceRGBBlendFactor = newValue }
+        get { configuration.rendering.blending.sourceRGBBlendFactor }
+        set { configuration.rendering.blending.sourceRGBBlendFactor = newValue }
     }
 
     public var sourceAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.blending.sourceAlphaBlendFactor }
-        set { configuration.blending.sourceAlphaBlendFactor = newValue }
+        get { configuration.rendering.blending.sourceAlphaBlendFactor }
+        set { configuration.rendering.blending.sourceAlphaBlendFactor = newValue }
     }
 
     public var destinationRGBBlendFactor: MTLBlendFactor {
-        get { configuration.blending.destinationRGBBlendFactor }
-        set { configuration.blending.destinationRGBBlendFactor = newValue }
+        get { configuration.rendering.blending.destinationRGBBlendFactor }
+        set { configuration.rendering.blending.destinationRGBBlendFactor = newValue }
     }
 
     public var destinationAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.blending.destinationRGBBlendFactor }
-        set { configuration.blending.destinationRGBBlendFactor = newValue }
+        get { configuration.rendering.blending.destinationRGBBlendFactor }
+        set { configuration.rendering.blending.destinationRGBBlendFactor = newValue }
     }
 
     public var rgbBlendOperation: MTLBlendOperation {
-        get { configuration.blending.rgbBlendOperation }
-        set { configuration.blending.rgbBlendOperation = newValue }
+        get { configuration.rendering.blending.rgbBlendOperation }
+        set { configuration.rendering.blending.rgbBlendOperation = newValue }
     }
 
     public var alphaBlendOperation: MTLBlendOperation {
-        get { configuration.blending.alphaBlendOperation }
-        set { configuration.blending.alphaBlendOperation = newValue }
+        get { configuration.rendering.blending.alphaBlendOperation }
+        set { configuration.rendering.blending.alphaBlendOperation = newValue }
     }
 
     // MARK: - Instancing
 
     public var instancing: Bool {
-        get { configuration.instancing }
-        set { configuration.instancing = newValue }
+        get { configuration.rendering.instancing }
+        set { configuration.rendering.instancing = newValue }
     }
 
     // MARK: - Lighting
 
     public var lighting: Bool {
-        get { configuration.lighting }
-        set { configuration.lighting = newValue }
+        get { configuration.rendering.lighting }
+        set { configuration.rendering.lighting = newValue }
     }
 
     public var lightCount: Int {
-        get { configuration.lightCount }
-        set { configuration.lightCount = newValue }
+        get { configuration.rendering.lightCount }
+        set { configuration.rendering.lightCount = newValue }
     }
 
     // MARK: - Shadows
 
     public var castShadow: Bool {
-        get { configuration.castShadow }
-        set { configuration.castShadow = newValue }
+        get { configuration.rendering.castShadow }
+        set { configuration.rendering.castShadow = newValue }
     }
 
     public var receiveShadow: Bool {
-        get { configuration.receiveShadow }
-        set { configuration.receiveShadow = newValue }
+        get { configuration.rendering.receiveShadow }
+        set { configuration.rendering.receiveShadow = newValue }
     }
 
     public var shadowCount: Int {
-        get { configuration.shadowCount }
-        set { configuration.shadowCount = newValue }
+        get { configuration.rendering.shadowCount }
+        set { configuration.rendering.shadowCount = newValue }
     }
 
     public var vertexDescriptor: MTLVertexDescriptor {
-        get { configuration.vertexDescriptor }
-        set { configuration.vertexDescriptor = newValue }
+        get { configuration.rendering.vertexDescriptor }
+        set { configuration.rendering.vertexDescriptor = newValue }
     }
 
     public var vertexFunctionName: String {
@@ -155,7 +155,7 @@ open class Shader {
 
     public var context: Context? {
         didSet {
-            if oldValue != context { setup() }
+            if context != nil, oldValue != context { setup() }
         }
     }
 
@@ -276,8 +276,8 @@ open class Shader {
             pipeline = try ShaderCache.getPipeline(configuration: configuration)
             error = nil
         } catch {
-            self.error = error
             print("\(label) Shader Pipeline: \(error.localizedDescription)")
+            self.error = error
             pipeline = nil
         }
         pipelineNeedsUpdate = false
@@ -290,8 +290,8 @@ open class Shader {
             shadowPipeline = try ShaderCache.getShadowPipeline(configuration: configuration)
             shadowError = nil
         } catch {
-            shadowError = error
             print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
+            shadowError = error
             shadowPipeline = nil
         }
 

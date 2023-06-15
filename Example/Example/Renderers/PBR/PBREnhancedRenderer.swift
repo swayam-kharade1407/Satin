@@ -17,20 +17,9 @@ import Satin
 class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
     // MARK: - 3D Scene
 
-    class CustomShader: PBRShader {
-        override open var defines: [String: NSObject] {
-            var results = super.defines
-            results["HAS_CLEARCOAT"] = NSString(string: "true")
-            results["HAS_SUBSURFACE"] = NSString(string: "true")
-            results["HAS_SPECULAR_TINT"] = NSString(string: "true")
-            results["HAS_SHEEN"] = NSString(string: "true")
-            results["HAS_TRANSMISSION"] = NSString(string: "true")
-            results["HAS_ANISOTROPIC"] = NSString(string: "true")
-            return results
-        }
-    }
+    class CustomShader: PhysicalShader {}
 
-    class CustomMaterial: StandardMaterial {
+    class CustomMaterial: PhysicalMaterial {
         var pipelineURL: URL
         required init(pipelinesURL: URL) {
             pipelineURL = pipelinesURL.appendingPathComponent("Custom").appendingPathComponent("Shaders.metal")
@@ -46,8 +35,8 @@ class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
         }
 
         override func createShader() -> Shader {
-            let shader = CustomShader(label, pipelineURL)
-            shader.live = true
+            let shader = CustomShader(label: label, pipelineURL: pipelineURL)
+//            shader.live = true
             return shader
         }
     }

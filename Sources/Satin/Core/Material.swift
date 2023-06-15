@@ -38,71 +38,84 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public lazy var label: String = prefix
 
-    public var vertexDescriptor: MTLVertexDescriptor = SatinVertexDescriptor() {
+    public var vertexDescriptor: MTLVertexDescriptor {
+        get {
+            configuration.vertexDescriptor
+        }
+        set {
+            configuration.vertexDescriptor = newValue
+        }
+    }
+
+    private var parametersSubscription: AnyCancellable?
+
+    public private(set) var shader: Shader? {
         didSet {
-            if oldValue != vertexDescriptor {
-                shaderVertexDescriptorNeedsUpdate = true
+            if shader != oldValue, let shader = shader {
+                setupShaderConfiguration(shader)
+                setupShaderParametersSubscription(shader)
             }
         }
     }
 
-    private var parametersSubscriber: AnyCancellable?
-
-    public var shader: Shader? {
-        didSet {
-            if shader != nil {
-                setupParametersSubscriber()
-                if !isClone {
-                    shaderNeedsUpdate = true
-                }
-            }
+    public var sourceRGBBlendFactor: MTLBlendFactor {
+        get {
+            configuration.blending.sourceRGBBlendFactor
         }
-    }
-    
-    public var sourceRGBBlendFactor: MTLBlendFactor = .sourceAlpha {
-        didSet {
-            if oldValue != sourceRGBBlendFactor {
-                shaderBlendingNeedsUpdate = true
-            }
+        set {
+            configuration.blending.sourceRGBBlendFactor = newValue
         }
     }
 
-    public var sourceAlphaBlendFactor: MTLBlendFactor = .sourceAlpha {
-        didSet {
-            if oldValue != sourceAlphaBlendFactor {
-                shaderBlendingNeedsUpdate = true
-            }
+    public var sourceAlphaBlendFactor: MTLBlendFactor {
+        get {
+            configuration.blending.sourceAlphaBlendFactor
+        }
+        set {
+            configuration.blending.sourceAlphaBlendFactor = newValue
         }
     }
 
-    public var destinationRGBBlendFactor: MTLBlendFactor = .oneMinusSourceAlpha {
-        didSet {
-            if oldValue != destinationRGBBlendFactor {
-                shaderBlendingNeedsUpdate = true
-            }
+    public var destinationRGBBlendFactor: MTLBlendFactor {
+        get {
+            configuration.blending.destinationRGBBlendFactor
+        }
+        set {
+            configuration.blending.destinationRGBBlendFactor = newValue
         }
     }
 
-    public var destinationAlphaBlendFactor: MTLBlendFactor = .oneMinusSourceAlpha {
-        didSet {
-            if oldValue != destinationAlphaBlendFactor {
-                shaderBlendingNeedsUpdate = true
-            }
+    public var destinationAlphaBlendFactor: MTLBlendFactor {
+        get {
+            configuration.blending.destinationAlphaBlendFactor
+        }
+        set {
+            configuration.blending.destinationAlphaBlendFactor = newValue
         }
     }
 
-    public var rgbBlendOperation: MTLBlendOperation = .add {
-        didSet {
-            if oldValue != rgbBlendOperation {
-                shaderBlendingNeedsUpdate = true
-            }
+    public var rgbBlendOperation: MTLBlendOperation {
+        get {
+            configuration.blending.rgbBlendOperation
+        }
+        set {
+            configuration.blending.rgbBlendOperation = newValue
         }
     }
 
-    public var alphaBlendOperation: MTLBlendOperation = .add {
+    public var alphaBlendOperation: MTLBlendOperation {
+        get {
+            configuration.blending.alphaBlendOperation
+        }
+        set {
+            configuration.blending.alphaBlendOperation = newValue
+        }
+    }
+
+    private var configuration = RenderingConfiguration() {
         didSet {
-            if oldValue != alphaBlendOperation {
-                shaderBlendingNeedsUpdate = true
+            if configuration != oldValue, let shader = shader {
+                setupShaderConfiguration(shader)
             }
         }
     }
@@ -120,7 +133,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    open var isClone = false
+    public internal(set) var isClone = false
     public weak var delegate: MaterialDelegate?
 
     public var pipeline: MTLRenderPipelineState? {
@@ -139,59 +152,66 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    public var instancing = false {
-        didSet {
-            if oldValue != instancing {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var instancing: Bool {
+        get {
+            configuration.instancing
+        }
+        set {
+            configuration.instancing = newValue
         }
     }
 
-    public var castShadow = false {
-        didSet {
-            if oldValue != castShadow {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var castShadow: Bool {
+        get {
+            configuration.castShadow
+        }
+        set {
+            configuration.castShadow = newValue
         }
     }
 
-    public var receiveShadow = false {
-        didSet {
-            if oldValue != receiveShadow {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var receiveShadow: Bool {
+        get {
+            configuration.receiveShadow
+        }
+        set {
+            configuration.receiveShadow = newValue
         }
     }
 
-    public var lighting = false {
-        didSet {
-            if oldValue != lighting {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var lighting: Bool {
+        get {
+            configuration.lighting
+        }
+        set {
+            configuration.lighting = newValue
         }
     }
 
-    public var shadowCount = 0 {
-        didSet {
-            if oldValue != shadowCount {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var shadowCount: Int {
+        get {
+            configuration.shadowCount
+        }
+        set {
+            configuration.shadowCount = newValue
         }
     }
 
-    public var lightCount = 0 {
-        didSet {
-            if oldValue != lightCount {
-                shaderDefinesNeedsUpdate = true
-            }
+    public var lightCount: Int {
+        get {
+            configuration.lightCount
+        }
+        set {
+            configuration.lightCount = newValue
         }
     }
 
-    public var blending: Blending = .disabled {
-        didSet {
-            if oldValue != blending {
-                setupBlending()
-            }
+    public var blending: Blending {
+        get {
+            configuration.blending.type
+        }
+        set {
+            configuration.blending.type = newValue
         }
     }
 
@@ -213,32 +233,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     private var uniformsNeedsUpdate = false
-    private var shaderNeedsUpdate = false
-
-    internal var shaderDefinesNeedsUpdate = true {
-        didSet {
-            if shaderDefinesNeedsUpdate {
-                shaderNeedsUpdate = true
-            }
-        }
-    }
-
-    internal var shaderBlendingNeedsUpdate = true {
-        didSet {
-            if shaderBlendingNeedsUpdate {
-                shaderNeedsUpdate = true
-            }
-        }
-    }
-
-    internal var shaderVertexDescriptorNeedsUpdate = true {
-        didSet {
-            if shaderVertexDescriptorNeedsUpdate {
-                shaderNeedsUpdate = true
-            }
-        }
-    }
-
     private var depthNeedsUpdate = false
 
     public var depthBias: DepthBias?
@@ -248,22 +242,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public required init() {}
 
     public init(shader: Shader) {
-        instancing = shader.instancing
-        lighting = shader.lighting
-        vertexDescriptor = shader.vertexDescriptor
-        blending = shader.blending
-
-        sourceRGBBlendFactor = shader.sourceRGBBlendFactor
-        sourceAlphaBlendFactor = shader.sourceAlphaBlendFactor
-        destinationRGBBlendFactor = shader.destinationRGBBlendFactor
-        destinationAlphaBlendFactor = shader.destinationAlphaBlendFactor
-        rgbBlendOperation = shader.rgbBlendOperation
-        alphaBlendOperation = shader.alphaBlendOperation
-
-        label = shader.label
         self.shader = shader
+        self.label = shader.label
 
-        setupParametersSubscriber()
+        configuration = shader.configuration.rendering
+        parametersSubscription = shader.parametersPublisher.sink(receiveValue: updateParameters)
     }
 
     // MARK: - CodingKeys
@@ -323,12 +306,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         try container.encode(parameters, forKey: .parameters)
     }
 
-    private func setupParametersSubscriber() {
-        guard let shader = shader else { return }
-        parametersSubscriber?.cancel()
-        parametersSubscriber = shader.parametersPublisher.sink(receiveValue: updateParameters)
-    }
-
     open func setup() {
         setupDepthStencilState()
         setupShader()
@@ -344,29 +321,31 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         depthNeedsUpdate = false
     }
 
+    // MARK: - Shader
+
     open func createShader() -> Shader {
         return SourceShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
-    open func cloneShader(_ shader: Shader) -> Shader {
-        return shader.clone()
-    }
 
     open func setupShader() {
         if shader == nil {
             shader = createShader()
             isClone = false
-        } else if let shader = shader, isClone, shaderBlendingNeedsUpdate || shaderVertexDescriptorNeedsUpdate || shaderDefinesNeedsUpdate {
-            self.shader = cloneShader(shader)
+        } else if let shader = shader, isClone, shader.configuration.rendering != configuration {
+            self.shader = shader.clone()
             isClone = false
         }
-        
-        if let shader = shader {
-            updateShader(shader)
-            shader.context = context
-        }
 
-        shaderNeedsUpdate = false
+        shader?.context = context
+    }
+
+    open func setupShaderConfiguration(_ shader: Shader) {
+        shader.configuration.rendering = configuration
+    }
+
+    open func setupShaderParametersSubscription(_ shader: Shader) {
+        parametersSubscription = shader.parametersPublisher.sink(receiveValue: updateParameters)
     }
 
     open func setupUniforms() {
@@ -385,31 +364,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func updateShader() {
-        if shaderNeedsUpdate {
-            setupShader()
-        }
-
-        if let shader = shader {
-            updateShader(shader)
-            shader.update()
-        }
-    }
-
-    func updateShader(_ shader: Shader) {
-        if shaderBlendingNeedsUpdate {
-            updateShaderBlending(shader)
-            shaderBlendingNeedsUpdate = false
-        }
-
-        if shaderVertexDescriptorNeedsUpdate {
-            updateShaderVertexDescriptor(shader)
-            shaderVertexDescriptorNeedsUpdate = false
-        }
-
-        if shaderDefinesNeedsUpdate {
-            updateShaderProperties(shader)
-            shaderDefinesNeedsUpdate = false
-        }
+        if shader == nil { setupShader() }
+        shader?.update()
     }
 
     open func updateDepth() {
@@ -446,59 +402,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         bindUniforms(renderEncoder, shadow: shadow)
         bindDepthStencilState(renderEncoder)
         onBind?(renderEncoder)
-    }
-
-    open func setupBlending() {
-        switch blending {
-        case .alpha:
-            sourceRGBBlendFactor = .sourceAlpha
-            sourceAlphaBlendFactor = .sourceAlpha
-            destinationRGBBlendFactor = .oneMinusSourceAlpha
-            destinationAlphaBlendFactor = .oneMinusSourceAlpha
-            rgbBlendOperation = .add
-            alphaBlendOperation = .add
-        case .additive:
-            sourceRGBBlendFactor = .sourceAlpha
-            sourceAlphaBlendFactor = .one
-            destinationRGBBlendFactor = .one
-            destinationAlphaBlendFactor = .one
-            rgbBlendOperation = .add
-            alphaBlendOperation = .add
-        case .subtract:
-            sourceRGBBlendFactor = .sourceAlpha
-            sourceAlphaBlendFactor = .sourceAlpha
-            destinationRGBBlendFactor = .oneMinusBlendColor
-            destinationAlphaBlendFactor = .oneMinusSourceAlpha
-            rgbBlendOperation = .reverseSubtract
-            alphaBlendOperation = .add
-        case .disabled:
-            break
-        case .custom:
-            break
-        }
-    }
-
-    private func updateShaderBlending(_ shader: Shader) {
-        shader.blending = blending
-        shader.sourceRGBBlendFactor = sourceRGBBlendFactor
-        shader.sourceAlphaBlendFactor = sourceAlphaBlendFactor
-        shader.destinationRGBBlendFactor = destinationRGBBlendFactor
-        shader.destinationAlphaBlendFactor = destinationAlphaBlendFactor
-        shader.rgbBlendOperation = rgbBlendOperation
-        shader.alphaBlendOperation = alphaBlendOperation
-    }
-
-    private func updateShaderVertexDescriptor(_ shader: Shader) {
-        shader.vertexDescriptor = vertexDescriptor
-    }
-
-    open func updateShaderProperties(_ shader: Shader) {
-        shader.instancing = instancing
-        shader.lighting = lighting
-        shader.lightCount = lightCount
-        shader.shadowCount = shadowCount
-        shader.receiveShadow = receiveShadow
-        shader.castShadow = castShadow
     }
 
     public func set(_ name: String, _ value: [Float]) {
@@ -661,15 +564,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         clone.rgbBlendOperation = rgbBlendOperation
         clone.alphaBlendOperation = alphaBlendOperation
 
-        clone.shaderDefinesNeedsUpdate = false
-        clone.shaderVertexDescriptorNeedsUpdate = false
-        clone.shaderBlendingNeedsUpdate = false
-
         clone.depthStencilState = depthStencilState
         clone.depthCompareFunction = depthCompareFunction
         clone.depthWriteEnabled = depthWriteEnabled
-
-        clone.shader = shader
     }
 }
 

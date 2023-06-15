@@ -33,6 +33,7 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         didSet {
             if oldValue != tonemapping, let shader = shader as? SkyboxShader {
                 shader.tonemapping = tonemapping
+                
             }
         }
     }
@@ -94,8 +95,8 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         initalizeParameters()
     }
 
-    override public func updateShaderProperties(_ shader: Shader) {
-        super.updateShaderProperties(shader)
+    public override func setupShaderConfiguration(_ shader: Shader) {
+        super.setupShaderConfiguration(shader)
         guard let skyboxShader = shader as? SkyboxShader else { return }
         skyboxShader.tonemapping = tonemapping
     }

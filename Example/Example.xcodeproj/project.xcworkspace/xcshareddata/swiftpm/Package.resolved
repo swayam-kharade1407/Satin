@@ -18,15 +18,6 @@
           "revision": "43a24736252863edfbde73e1d3754d7ecdcf46fe",
           "version": null
         }
-      },
-      {
-        "package": "Youi",
-        "repositoryURL": "git@github.com:Hi-Rez/YouiPro.git",
-        "state": {
-          "branch": "main",
-          "revision": "593d4e7f1d401a2869b1a8124f00f446ff812740",
-          "version": null
-        }
       }
     ]
   },

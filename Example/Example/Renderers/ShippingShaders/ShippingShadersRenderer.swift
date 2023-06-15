@@ -13,7 +13,8 @@ import Forge
 import Satin
 
 class ShippingShadersRenderer: BaseRenderer {
-    var shippingMaterial: Material = .init(shader: Shader("Test", "normalColorVertex", "normalColorFragment"))
+    var shader = Shader(label: "NormalColor", vertexFunctionName: "normalColorVertex", fragmentFunctionName: "normalColorFragment")
+    lazy var shippingMaterial: Material = Material(shader: shader)
 
     lazy var mesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, res: 0), material: shippingMaterial)

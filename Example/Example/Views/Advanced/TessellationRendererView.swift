@@ -11,9 +11,10 @@ import SwiftUI
 
 struct TessellationRendererView: View {
     var body: some View {
-        ForgeView(renderer: TessellationRenderer())
-            .ignoresSafeArea()
-            .navigationTitle("Tessellation")
+//        ForgeView(renderer: TessellationRenderer())
+//            .ignoresSafeArea()
+//            .navigationTitle("Tessellation")
+        Text("FIX ME")
     }
 }
 

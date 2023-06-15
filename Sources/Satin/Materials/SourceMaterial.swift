@@ -23,10 +23,8 @@ open class SourceMaterial: Material {
     }
 
     public var source: String? {
-        if let shader = shader as? SourceShader {
-            return shader.source
-        }
-        return nil
+        guard let shader = shader as? SourceShader else { return nil }
+        return shader.source
     }
 
     public init(pipelineURL: URL, live: Bool = false) {
@@ -40,9 +38,7 @@ open class SourceMaterial: Material {
         self.live = live
         super.init()
         if pipelinesURL.pathExtension != "metal" {
-            pipelineURL = pipelinesURL
-                .appendingPathComponent(label)
-                .appendingPathComponent("Shaders.metal")
+            pipelineURL = pipelinesURL.appendingPathComponent(label).appendingPathComponent("Shaders.metal")
         }
     }
 

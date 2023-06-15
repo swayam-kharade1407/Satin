@@ -1,5 +1,8 @@
+#include "Satin/MeshConstants.metal"
+
 #include "Library/Rotate.metal"
 #include "Library/Noise4D.metal"
+
 
 // Lets draw a box
 #define kVertexCount 8
