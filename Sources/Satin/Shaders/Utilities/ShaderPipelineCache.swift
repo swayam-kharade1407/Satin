@@ -1,5 +1,5 @@
 //
-//  ShaderCache.swift
+//  ShaderPipelineCache.swift
 //
 //
 //  Created by Reza Ali on 6/14/23.
@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public final class ShaderCache {
+public final class ShaderPipelineCache {
     static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]

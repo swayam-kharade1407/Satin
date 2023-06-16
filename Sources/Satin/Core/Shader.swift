@@ -272,7 +272,7 @@ open class Shader {
     }
 
     open func makePipeline() throws -> MTLRenderPipelineState? {
-        try ShaderCache.getPipeline(configuration: configuration)
+        try ShaderPipelineCache.getPipeline(configuration: configuration)
     }
 
     func setupPipeline() {
@@ -291,7 +291,7 @@ open class Shader {
         guard castShadow else { return }
 
         do {
-            shadowPipeline = try ShaderCache.getShadowPipeline(configuration: configuration)
+            shadowPipeline = try ShaderPipelineCache.getShadowPipeline(configuration: configuration)
             shadowError = nil
         } catch {
             print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
@@ -304,7 +304,7 @@ open class Shader {
 
     func setupParameters() {
         do {
-            if let pipelineParameters = try ShaderCache.getPipelineParameters(configuration: configuration) {
+            if let pipelineParameters = try ShaderPipelineCache.getPipelineParameters(configuration: configuration) {
                 parameters = pipelineParameters
             }
         } catch {

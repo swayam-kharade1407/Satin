@@ -40,19 +40,19 @@ open class SourceShader: Shader {
     private lazy var compiler: MetalFileCompiler = .init(watch: live) {
         didSet {
             compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] _ in
-                guard let self = self, let pipelineURL = configuration.pipelineURL else { return }
+                guard let self = self else { return }
 
-                ShaderSourceCache.removeSource(url: pipelineURL)
+                ShaderSourceCache.removeSource(url: self.pipelineURL)
 
                 ShaderLibrarySourceCache.invalidateLibrarySource(
-                    configuration: configuration.getLibraryConfiguration()
+                    configuration: self.configuration.getLibraryConfiguration()
                 )
 
                 ShaderLibraryCache.invalidateLibrary(
-                    configuration: configuration.getLibraryConfiguration()
+                    configuration: self.configuration.getLibraryConfiguration()
                 )
 
-                ShaderCache.invalidate(configuration: configuration)
+                ShaderPipelineCache.invalidate(configuration: self.configuration)
 
                 // invalidate caches to recompile shader
 
@@ -60,7 +60,7 @@ open class SourceShader: Shader {
                 self.pipelineNeedsUpdate = true
                 self.parametersNeedsUpdate = true
 
-                print("Updating Shader: \(self.label) at: \(pipelineURL.path)")
+                print("Updating Shader: \(self.label) at: \(self.pipelineURL.path)")
             }
         }
     }
