@@ -19,8 +19,6 @@ class TessellatedGeometry: Geometry {
     var controlPointIndexBuffer: MTLBuffer? { indexBuffer }
     var controlPointIndexType: MTLTessellationControlPointIndexType { indexData.isEmpty ? .none : .uint32 }
 
-
-
     public init(baseGeometry: Geometry) {
         super.init(primitiveType: baseGeometry.primitiveType, windingOrder: baseGeometry.windingOrder, indexType: baseGeometry.indexType)
         self.vertexDescriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepRate = 1

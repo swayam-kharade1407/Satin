@@ -9,9 +9,7 @@ import Foundation
 import Metal
 
 // these are things that change the library source code
-struct ShaderLibraryConfiguration {
-    var device: MTLDevice?
-
+public struct ShaderLibraryConfiguration {
     var label: String
 
     var libraryURL: URL?
@@ -30,13 +28,23 @@ struct ShaderLibraryConfiguration {
     var receiveShadow: Bool
     var shadowCount: Int
 
-    var defines: [String: NSObject]
+    var defines: [ShaderDefine]
     var constants: [String]
 }
 
 extension ShaderLibraryConfiguration: Equatable {
-    static func == (lhs: ShaderLibraryConfiguration, rhs: ShaderLibraryConfiguration) -> Bool {
-        lhs.label == rhs.label && lhs.libraryURL == rhs.libraryURL && lhs.pipelineURL == rhs.pipelineURL && lhs.vertexDescriptor == rhs.vertexDescriptor && lhs.instancing == rhs.instancing && lhs.lighting == rhs.lighting && lhs.castShadow == rhs.castShadow && lhs.receiveShadow == rhs.receiveShadow && lhs.shadowCount == rhs.shadowCount && lhs.defines == rhs.defines && lhs.constants == rhs.constants
+    public static func == (lhs: ShaderLibraryConfiguration, rhs: ShaderLibraryConfiguration) -> Bool {
+        lhs.label == rhs.label &&
+        lhs.libraryURL == rhs.libraryURL &&
+        lhs.pipelineURL == rhs.pipelineURL &&
+        lhs.vertexDescriptor == rhs.vertexDescriptor &&
+        lhs.instancing == rhs.instancing &&
+        lhs.lighting == rhs.lighting &&
+        lhs.castShadow == rhs.castShadow &&
+        lhs.receiveShadow == rhs.receiveShadow &&
+        lhs.shadowCount == rhs.shadowCount &&
+        lhs.defines == rhs.defines &&
+        lhs.constants == rhs.constants
     }
 }
 
@@ -44,11 +52,10 @@ extension ShaderLibraryConfiguration: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(label)
 
-        hasher.combine(libraryURL)
-        hasher.combine(pipelineURL)
+        if let libraryURL = libraryURL { hasher.combine(libraryURL) }
+        if let pipelineURL = pipelineURL { hasher.combine(pipelineURL) }
 
         hasher.combine(vertexDescriptor)
-
         hasher.combine(instancing)
         hasher.combine(lighting)
 
@@ -56,8 +63,8 @@ extension ShaderLibraryConfiguration: Hashable {
         hasher.combine(receiveShadow)
         hasher.combine(shadowCount)
 
-        hasher.combine(defines)
-        hasher.combine(constants)
+        if !defines.isEmpty { hasher.combine(defines) }
+        if !constants.isEmpty { hasher.combine(constants) }
     }
 }
 

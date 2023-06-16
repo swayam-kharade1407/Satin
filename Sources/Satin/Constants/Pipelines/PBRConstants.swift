@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum PBRTextureIndex: Int {
+public enum PBRTextureIndex: Int, CaseIterable {
     case baseColor = 0
     case subsurface = 1
     case metallic = 2

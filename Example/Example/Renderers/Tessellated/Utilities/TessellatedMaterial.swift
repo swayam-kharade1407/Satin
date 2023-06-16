@@ -7,7 +7,45 @@
 //
 
 import Foundation
+import Metal
 import Satin
+
+class TessellatedShader: SourceShader {
+    unowned var geometry: TessellatedGeometry
+
+    public init(_ label: String, _ pipelineURL: URL, _ geometry: TessellatedGeometry) {
+        self.geometry = geometry
+        super.init(label: label, pipelineURL: pipelineURL)
+    }
+
+    required init(configuration: ShaderConfiguration) {
+        fatalError("init(configuration:) has not been implemented")
+    }
+
+    override open func makePipeline() throws -> MTLRenderPipelineState? {
+        guard let context = context,
+              let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
+              let vertexFunction = library.makeFunction(name: vertexFunctionName),
+              let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return nil }
+
+        var descriptor = MTLRenderPipelineDescriptor()
+        descriptor.label = label
+
+        descriptor.vertexDescriptor = vertexDescriptor
+        descriptor.vertexFunction = vertexFunction
+        descriptor.fragmentFunction = fragmentFunction
+
+        descriptor.tessellationPartitionMode = geometry.partitionMode
+        descriptor.tessellationFactorStepFunction = geometry.stepFunction
+        descriptor.tessellationOutputWindingOrder = geometry.windingOrder
+        descriptor.tessellationControlPointIndexType = geometry.controlPointIndexType
+
+        setupPipelineDescriptorContext(context: context, descriptor: &descriptor)
+        setupPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
+
+        return try context.device.makeRenderPipelineState(descriptor: descriptor)
+    }
+}
 
 class TessellatedMaterial: SourceMaterial {
     unowned var geometry: TessellatedGeometry

@@ -6,8 +6,8 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 public enum MetalFileCompilerError: Error {
     case invalidFile(_ fileURL: URL)
@@ -132,6 +132,9 @@ public final class MetalFileCompiler {
     }
 
     deinit {
+        for watcher in watchers {
+            watcher.unwatch()
+        }
         files = []
         watchers = []
     }

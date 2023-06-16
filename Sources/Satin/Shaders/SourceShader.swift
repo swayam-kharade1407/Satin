@@ -59,11 +59,13 @@ open class SourceShader: Shader {
                 self.shadowPipelineNeedsUpdate = true
                 self.pipelineNeedsUpdate = true
                 self.parametersNeedsUpdate = true
+
+                print("Updating Shader: \(self.label) at: \(pipelineURL.path)")
             }
         }
     }
 
-    public init(label: String, pipelineURL: URL) {
+    public init(label: String, pipelineURL: URL, pipelineDescriptor: MTLRenderPipelineDescriptor? = nil) {
         super.init(label: label, pipelineURL: pipelineURL)
         setupShaderCompiler()
     }

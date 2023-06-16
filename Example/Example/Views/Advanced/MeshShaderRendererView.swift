@@ -11,10 +11,9 @@ import SwiftUI
 
 struct MeshShaderRendererView: View {
     var body: some View {
-//        ForgeView(renderer: MeshShaderRenderer())
-//            .ignoresSafeArea()
-//            .navigationTitle("Mesh Shader")
-        Text("FIX ME")
+        ForgeView(renderer: MeshShaderRenderer())
+            .ignoresSafeArea()
+            .navigationTitle("Mesh Shader")
     }
 }
 

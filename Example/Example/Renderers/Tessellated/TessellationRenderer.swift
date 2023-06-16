@@ -40,17 +40,17 @@ class TessellationRenderer: BaseRenderer {
 
     override func setup() {
         camera.lookAt(target: .zero)
-        renderer.compile(scene: scene, camera: camera)
-
-        tessellator.setup(tessGeometry)
 
         tessMaterial.depthBias = DepthBias(bias: -1, slope: -1, clamp: -1)
         tessWireMesh.triangleFillMode = .lines
 
         tessWireMaterial.blending = .additive
         tessWireMaterial.depthBias = DepthBias(bias: 1, slope: 1, clamp: 1)
-
         tessWireMaterial.set("Color", [1.0, 1.0, 1.0, 0.33])
+
+        renderer.compile(scene: scene, camera: camera)
+
+        tessellator.setup(tessGeometry)
     }
 
     deinit {

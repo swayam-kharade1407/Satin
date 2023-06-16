@@ -28,11 +28,11 @@ open class LiveBufferComputeSystem: BufferComputeSystem {
         }
     }
 
-    open var defines: [String: NSObject] {
-        var results = [String: NSObject]()
-        #if os(iOS)
-        results["MOBILE"] = NSString(string: "true")
-        #endif
+    open var defines: [ShaderDefine] {
+        var results = [ShaderDefine]()
+#if os(iOS)
+        results.append(ShaderDefine(key: "MOBILE", value: NSString(string: "true")))
+#endif
         return results
     }
 

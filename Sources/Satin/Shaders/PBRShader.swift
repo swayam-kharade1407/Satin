@@ -36,17 +36,26 @@ open class PBRShader: SourceShader {
 
     open override func getConstants() -> [String] {
         var results = super.getConstants()
-        for (index, sampler) in samplers where sampler != nil {
-            results.append(sampler!.shaderInjection(index: index))
+        for pbrTexIndex in PBRTextureIndex.allCases {
+
+            if let sampler = samplers[pbrTexIndex], let descriptor = sampler {
+                results.append(descriptor.shaderInjection(index: pbrTexIndex))
+            }
+
         }
         return results
     }
 
-    open override func getDefines() -> [String : NSObject] {
+    open override func getDefines() -> [ShaderDefine] {
         var results = super.getDefines()
-        if !maps.isEmpty { results["HAS_MAPS"] = NSString(string: "true") }
-        for map in maps { results[map.key.shaderDefine] = NSString(string: "true") }
-        results[tonemapping.shaderDefine] = NSString(string: "true")
+
+        if !maps.isEmpty { results.append(ShaderDefine(key: "HAS_MAPS", value: NSString(string: "true"))) }
+
+        for pbrTexIndex in PBRTextureIndex.allCases where maps[pbrTexIndex] != nil {
+            results.append(ShaderDefine(key: pbrTexIndex.shaderDefine, value: NSString(string: "true")))
+        }
+
+        results.append(ShaderDefine(key: tonemapping.shaderDefine, value: NSString(string: "true")))
         return results
     }
 }

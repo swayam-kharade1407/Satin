@@ -9,14 +9,14 @@
 import Foundation
 
 open class PhysicalShader: PBRShader {
-    override open func getDefines() -> [String: NSObject] {
+    override open func getDefines() -> [ShaderDefine] {
         var results = super.getDefines()
-        results["HAS_CLEARCOAT"] = NSString(string: "true")
-        results["HAS_SUBSURFACE"] = NSString(string: "true")
-        results["HAS_SPECULAR_TINT"] = NSString(string: "true")
-        results["HAS_SHEEN"] = NSString(string: "true")
-        results["HAS_TRANSMISSION"] = NSString(string: "true")
-        results["HAS_ANISOTROPIC"] = NSString(string: "true")
+        results.append(ShaderDefine(key: "HAS_CLEARCOAT", value: NSString(string: "true")))
+        results.append(ShaderDefine(key: "HAS_SUBSURFACE", value: NSString(string: "true")))
+        results.append(ShaderDefine(key: "HAS_SPECULAR_TINT", value: NSString(string: "true")))
+        results.append(ShaderDefine(key: "HAS_SHEEN", value: NSString(string: "true")))
+        results.append(ShaderDefine(key: "HAS_TRANSMISSION", value: NSString(string: "true")))
+        results.append(ShaderDefine(key: "HAS_ANISOTROPIC", value: NSString(string: "true")))
         return results
     }
 }

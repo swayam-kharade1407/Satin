@@ -12,12 +12,14 @@ open class SkyboxShader: SourceShader {
     open var tonemapping: Tonemapping = .aces {
         didSet {
             if oldValue != tonemapping {
-                setupDefines()
+                definesNeedsUpdate = true
             }
         }
     }
 
-    override open func setupDefines() {
-        defines[tonemapping.shaderDefine] = NSString(string: "true")
+    open override func getDefines() -> [ShaderDefine] {
+        var results = super.getDefines()
+        results.append(ShaderDefine(key: tonemapping.shaderDefine, value: NSString(string: "true")))
+        return results
     }
 }

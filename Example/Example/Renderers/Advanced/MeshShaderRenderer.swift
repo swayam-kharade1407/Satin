@@ -15,7 +15,7 @@ import Satin
 class MeshShaderRenderer: BaseRenderer {
     var geometry = IcoSphereGeometry(radius: 1.0, res: 4)
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
-    lazy fileprivate var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
+    fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object("Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
@@ -80,52 +80,76 @@ private class CustomShader: SourceShader {
         self.meshFunctionName = meshFunctionName ?? label.camelCase + "Mesh"
     }
 
-    required init() {
-        fatalError("init() has not been implemented")
+    required init(configuration: ShaderConfiguration) {
+        super.init(configuration: configuration)
     }
 
-    required init(label _: String, source _: String, vertexFunctionName _: String? = nil, fragmentFunctionName _: String? = nil) {
-        fatalError("init(label:source:vertexFunctionName:fragmentFunctionName:) has not been implemented")
-    }
+    override open func makePipeline() throws -> MTLRenderPipelineState? {
+        if #available(macOS 13.0, iOS 16.0, *),
+           let context = context,
+           let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
+           let objectFunction = library.makeFunction(name: objectFunctionName),
+           let meshFunction = library.makeFunction(name: meshFunctionName),
+           let fragmentFunction = library.makeFunction(name: fragmentFunctionName)
+        {
+            var descriptor = MTLMeshRenderPipelineDescriptor()
+            descriptor.label = label + " Mesh"
 
-    required init(_ label: String, _ pipelineURL: URL, _ vertexFunctionName: String? = nil, _ fragmentFunctionName: String? = nil) {
-        super.init(label, pipelineURL, vertexFunctionName, fragmentFunctionName)
-        objectFunctionName = label.camelCase + "Object"
-        meshFunctionName = label.camelCase + "Mesh"
-    }
+            descriptor.objectFunction = objectFunction
+            descriptor.meshFunction = meshFunction
+            descriptor.fragmentFunction = fragmentFunction
 
-    override func createPipeline(_ context: Context, _ library: MTLLibrary) throws -> MTLRenderPipelineState? {
-        guard let objectFunction = library.makeFunction(name: objectFunctionName),
-              let meshFunction = library.makeFunction(name: meshFunctionName),
-              let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return nil }
+            descriptor.rasterSampleCount = context.sampleCount
+            descriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
+            descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
+            descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 
-        if #available(macOS 13.0, iOS 16.0, *) {
-            let pipelineStateDescriptor = MTLMeshRenderPipelineDescriptor()
-            pipelineStateDescriptor.label = label + " Mesh"
+            setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
 
-            pipelineStateDescriptor.objectFunction = objectFunction
-            pipelineStateDescriptor.meshFunction = meshFunction
-            pipelineStateDescriptor.fragmentFunction = fragmentFunction
-
-            pipelineStateDescriptor.rasterSampleCount = context.sampleCount
-            pipelineStateDescriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
-            pipelineStateDescriptor.depthAttachmentPixelFormat = context.depthPixelFormat
-            pipelineStateDescriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
-
-            if blending != .disabled, let colorAttachment = pipelineStateDescriptor.colorAttachments[0] {
-                colorAttachment.isBlendingEnabled = true
-                colorAttachment.sourceRGBBlendFactor = sourceRGBBlendFactor
-                colorAttachment.sourceAlphaBlendFactor = sourceAlphaBlendFactor
-                colorAttachment.destinationRGBBlendFactor = destinationRGBBlendFactor
-                colorAttachment.destinationAlphaBlendFactor = destinationAlphaBlendFactor
-                colorAttachment.rgbBlendOperation = rgbBlendOperation
-                colorAttachment.alphaBlendOperation = alphaBlendOperation
-            }
-
-            return try context.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor, options: []).0
+            return try context.device.makeRenderPipelineState(descriptor: descriptor, options: []).0
 
         } else {
             fatalError("Mesh Shader's are not supported")
+        }
+    }
+
+    @available(macOS 13.0, iOS 16.0, *)
+    public func setupMeshPipelineDescriptorBlending(blending: ShaderBlending, descriptor: inout MTLMeshRenderPipelineDescriptor) {
+        guard blending.type != .disabled, let colorAttachment = descriptor.colorAttachments[0] else { return }
+
+        colorAttachment.isBlendingEnabled = true
+
+        switch blending.type {
+            case .alpha:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .sourceAlpha
+                colorAttachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.rgbBlendOperation = .add
+                colorAttachment.alphaBlendOperation = .add
+            case .additive:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .one
+                colorAttachment.destinationRGBBlendFactor = .one
+                colorAttachment.destinationAlphaBlendFactor = .one
+                colorAttachment.rgbBlendOperation = .add
+                colorAttachment.alphaBlendOperation = .add
+            case .subtract:
+                colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+                colorAttachment.sourceAlphaBlendFactor = .sourceAlpha
+                colorAttachment.destinationRGBBlendFactor = .oneMinusBlendColor
+                colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+                colorAttachment.rgbBlendOperation = .reverseSubtract
+                colorAttachment.alphaBlendOperation = .add
+            case .custom:
+                colorAttachment.sourceRGBBlendFactor = blending.sourceRGBBlendFactor
+                colorAttachment.sourceAlphaBlendFactor = blending.sourceAlphaBlendFactor
+                colorAttachment.destinationRGBBlendFactor = blending.destinationRGBBlendFactor
+                colorAttachment.destinationAlphaBlendFactor = blending.destinationAlphaBlendFactor
+                colorAttachment.rgbBlendOperation = blending.rgbBlendOperation
+                colorAttachment.alphaBlendOperation = blending.alphaBlendOperation
+            case .disabled:
+                break
         }
     }
 }

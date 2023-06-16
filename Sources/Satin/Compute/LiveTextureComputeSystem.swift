@@ -25,10 +25,10 @@ open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
         }
     }
 
-    open var defines: [String: NSObject] {
-        var results = [String: NSObject]()
+    open var defines: [ShaderDefine] {
+        var results = [ShaderDefine]()
         #if os(iOS)
-        results["MOBILE"] = NSString(string: "true")
+        results.append(ShaderDefine(key: "MOBILE", value: NSString(string: "true")))
         #endif
         return results
     }

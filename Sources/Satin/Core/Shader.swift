@@ -51,7 +51,7 @@ open class Shader {
         }
     }
 
-    open var defines: [String: NSObject] {
+    open var defines: [ShaderDefine] {
         get {
             configuration.rendering.defines
         }
@@ -223,8 +223,8 @@ open class Shader {
         updateParameters()
     }
 
-    open func getDefines() -> [String: NSObject] {
-        [:]
+    open func getDefines() -> [ShaderDefine] {
+        return []
     }
 
     func setupDefines() {
@@ -271,9 +271,13 @@ open class Shader {
         shadowError = nil
     }
 
+    open func makePipeline() throws -> MTLRenderPipelineState? {
+        try ShaderCache.getPipeline(configuration: configuration)
+    }
+
     func setupPipeline() {
         do {
-            pipeline = try ShaderCache.getPipeline(configuration: configuration)
+            pipeline = try makePipeline()
             error = nil
         } catch {
             print("\(label) Shader Pipeline: \(error.localizedDescription)")

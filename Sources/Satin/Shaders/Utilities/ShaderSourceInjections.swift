@@ -38,9 +38,9 @@ public func injectConstants(source: inout String, constants: [String]) {
 
 // MARK: - Defines
 
-public func injectDefines(source: inout String, defines: [String: NSObject]) {
+public func injectDefines(source: inout String, defines: [ShaderDefine]) {
     var injection = ""
-    for define in defines { injection += "#define \(define.key) \(define.value)\n" }
+    for define in defines { injection += define.description }
     source = source.replacingOccurrences(of: "// inject defines\n", with: injection.isEmpty ? "\n" : injection + "\n")
 }
 

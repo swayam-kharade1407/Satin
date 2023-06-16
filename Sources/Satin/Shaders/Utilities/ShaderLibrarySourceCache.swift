@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ShaderLibrarySourceCache {
+public final class ShaderLibrarySourceCache {
     static var cache: [ShaderLibraryConfiguration: String] = [:]
 
     class func invalidateLibrarySource(configuration: ShaderLibraryConfiguration) {
@@ -17,12 +17,12 @@ final class ShaderLibrarySourceCache {
     class func getLibrarySource(configuration: ShaderLibraryConfiguration) throws -> String? {
         if let source = ShaderLibrarySourceCache.cache[configuration] { return source }
 
+//        print("Creating Shader Library Source: \(configuration.label)")
+
         guard let pipelineURL = configuration.pipelineURL,
               var source = try RenderIncludeSource.get(),
               let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL)
         else { return nil }
-
-        print("Creating Shader Library Source: \(configuration.label)")
 
         injectDefines(
             source: &source,

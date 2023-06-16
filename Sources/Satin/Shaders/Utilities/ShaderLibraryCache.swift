@@ -1,6 +1,6 @@
 //
 //  ShaderLibraryCache.swift
-//  
+//
 //
 //  Created by Reza Ali on 6/14/23.
 //
@@ -8,27 +8,25 @@
 import Foundation
 import Metal
 
-final class ShaderLibraryCache {
+public final class ShaderLibraryCache {
     static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
     static var defaultLibrary: MTLLibrary?
 
-    class func invalidateLibrary(configuration: ShaderLibraryConfiguration) {
+    public class func invalidateLibrary(configuration: ShaderLibraryConfiguration) {
         cache.removeValue(forKey: configuration)
     }
 
-    class func getDefaultLibrary(device: MTLDevice) -> MTLLibrary? {
+    public class func getDefaultLibrary(device: MTLDevice) -> MTLLibrary? {
         guard defaultLibrary == nil else { return defaultLibrary! }
         defaultLibrary = device.makeDefaultLibrary()
         return defaultLibrary
     }
 
-    class func getLibrary(configuration: ShaderLibraryConfiguration) throws -> MTLLibrary? {
+    public class func getLibrary(configuration: ShaderLibraryConfiguration, device: MTLDevice) throws -> MTLLibrary? {
         if let library = ShaderLibraryCache.cache[configuration] { return library }
 
-        guard let device = configuration.device else { return nil }
+//        print("Creating Shader Library: \(configuration.label)")
 
-        print("Creating Shader Library: \(configuration.label)")
-        
         if let source = try ShaderLibrarySourceCache.getLibrarySource(configuration: configuration) {
             let library = try device.makeLibrary(source: source, options: nil)
             ShaderLibraryCache.cache[configuration] = library
