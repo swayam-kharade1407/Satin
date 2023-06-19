@@ -179,6 +179,7 @@ private class CustomMesh: Object, Renderable {
         material?.blending == .disabled
     }
 
+    var doubleSided: Bool = false
     var cullMode: MTLCullMode = .back
     var windingOrder: MTLWinding = .counterClockwise
     var triangleFillMode: MTLTriangleFillMode = .fill
