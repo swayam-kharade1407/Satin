@@ -18,6 +18,9 @@ public protocol Renderable {
 
     var drawable: Bool { get }
     var cullMode: MTLCullMode { get set }
+
+    var doubleSided: Bool { get } // determines whether an object's geometry is rendered twice (back first, then front faces for better transparency)
+
     var opaque: Bool { get }
     
     var material: Material? { get set }

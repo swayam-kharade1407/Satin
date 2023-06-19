@@ -16,6 +16,8 @@ open class Mesh: Object, Renderable {
         material!.blending == .disabled
     }
 
+    public var doubleSided: Bool = false
+
     public var renderOrder = 0
 
     public var receiveShadow = false {
@@ -96,11 +98,11 @@ open class Mesh: Object, Renderable {
 
     public internal(set) var submeshes: [Submesh] = []
 
-    public init(geometry: Geometry, material: Material?) {
+    public init(label: String = "Mesh", geometry: Geometry, material: Material?) {
         self.geometry = geometry
         self.material = material
         material?.vertexDescriptor = geometry.vertexDescriptor
-        super.init()
+        super.init(label)
     }
 
     // MARK: - CodingKeys

@@ -463,7 +463,7 @@ open class Renderer {
 
         renderable.update(camera: camera, viewport: _viewport)
 
-        if renderable.cullMode == .none, renderable.opaque == false {
+        if renderable.doubleSided, renderable.cullMode == .none, renderable.opaque == false {
 
             renderable.cullMode = .front
             renderable.draw(renderEncoder: renderEncoder, shadow: false)

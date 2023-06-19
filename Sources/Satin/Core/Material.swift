@@ -27,6 +27,8 @@ public struct DepthBias: Codable {
 }
 
 open class Material: Codable, ObservableObject, ParameterGroupDelegate {
+    @Published open var id: String = UUID().uuidString
+    
     var prefix: String {
         var result = String(describing: type(of: self)).replacingOccurrences(of: "Material", with: "")
         if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != result {
