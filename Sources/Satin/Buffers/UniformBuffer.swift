@@ -11,7 +11,7 @@ import Metal
 import simd
 
 public final class UniformBuffer {
-    public private(set) var parameters: ParameterGroup
+    public private(set) unowned var parameters: ParameterGroup
     public private(set) var buffer: MTLBuffer!
     public private(set) var index: Int = -1
     public private(set) var offset = 0

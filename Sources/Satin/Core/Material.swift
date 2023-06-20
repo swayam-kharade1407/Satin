@@ -248,7 +248,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         self.label = shader.label
 
         configuration = shader.configuration.rendering
-        parametersSubscription = shader.parametersPublisher.sink(receiveValue: updateParameters)
+        parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
+            self?.updateParameters(parameters)
+        }
     }
 
     // MARK: - CodingKeys
@@ -347,7 +349,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func setupShaderParametersSubscription(_ shader: Shader) {
-        parametersSubscription = shader.parametersPublisher.sink(receiveValue: updateParameters)
+        parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
+            self?.updateParameters(parameters)
+        }
     }
 
     open func setupUniforms() {

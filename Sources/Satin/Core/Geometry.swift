@@ -315,13 +315,15 @@ open class Geometry: Codable {
     deinit {
         indexData = []
         vertexData = []
+
+        vertexBuffers.removeAll()
         vertexBuffer = nil
         indexBuffer = nil
+
         if let bvh = _bvh {
             freeBVH(bvh)
             self._bvh = nil
         }
-        vertexBuffers.removeAll()
     }
 }
 
