@@ -7,8 +7,8 @@
 
 import CoreGraphics
 import CoreText
-import simd
 import SatinCore
+import simd
 
 public final class ExtrudedTextGeometry: TextGeometry {
     public var distance: Float {
@@ -57,8 +57,10 @@ public final class ExtrudedTextGeometry: TextGeometry {
         // side faces character data
         var sData = GeometryData(vertexCount: 0, vertexData: nil, indexCount: 0, indexData: nil)
 
-        if let cacheData = geometryCache[char], let cacheReverseData = geometryReverseCache[char],
-           let cacheExtrudeData = geometryExtrudeCache[char], let charPaths = characterPathsCache[char]
+        if let cacheData = geometryCache[char],
+           let cacheReverseData = geometryReverseCache[char],
+           let cacheExtrudeData = geometryExtrudeCache[char],
+           let charPaths = characterPathsCache[char]
         {
             cData = cacheData
             bData = cacheReverseData
@@ -66,6 +68,8 @@ public final class ExtrudedTextGeometry: TextGeometry {
             characterPaths[char] = charPaths
         } else if let glyphPath = CTFontCreatePathForGlyph(ctFont, glyph, nil) {
             let glyphPaths = getPolylines(glyphPath, angleLimit, fontSize / 10.0)
+
+
 
             var _paths: [UnsafeMutablePointer<simd_float2>?] = []
             var _lengths: [Int32] = []
@@ -75,19 +79,26 @@ public final class ExtrudedTextGeometry: TextGeometry {
                 _lengths.append(path.count)
             }
 
-            if triangulate(&_paths, &_lengths, Int32(glyphPaths.count), &cData) != 0 {
-                print("Triangulation for \(char) FAILED!")
+            var triData = createTriangleData()
+            if triangulate(&_paths, &_lengths, Int32(_lengths.count), &triData) == 0 {
+                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
+                copyTriangleDataToGeometryData(&triData, &cData)
+                freeTriangleData(&triData)
+            }
+            else {
+                print("TRIANGULATION FOR \(char) FAILED!")
             }
 
             copyGeometryData(&bData, &cData)
             reverseFacesOfGeometryData(&bData)
             geometryReverseCache[char] = bData
 
-            if extrudePaths(&_paths, &_lengths, Int32(glyphPaths.count), &sData) != 0 {
-                print("Path Extrusion for \(char) FAILED!")
+            if extrudePaths(&_paths, &_lengths, Int32(glyphPaths.count), &sData) == 0 {
+                computeNormalsOfGeometryData(&sData)
             }
-
-            computeNormalsOfGeometryData(&sData)
+            else {
+                print("PATH EXTRUSION FOR \(char) FAILED!")
+            }
 
             geometryCache[char] = cData
             geometryExtrudeCache[char] = sData

@@ -389,7 +389,7 @@ open class TextGeometry: Geometry {
         let char = text[charIndex]
         characterPaths[char] = []
 
-        var cData = GeometryData(vertexCount: 0, vertexData: nil, indexCount: 0, indexData: nil)
+        var cData = createGeometryData()
 
         if let cacheData = geometryCache[char], let charPaths = characterPathsCache[char] {
             cData = cacheData
@@ -405,7 +405,13 @@ open class TextGeometry: Geometry {
                 _lengths.append(path.count)
             }
 
-            if triangulate(&_paths, &_lengths, Int32(_lengths.count), &cData) != 0 {
+            var triData = createTriangleData()
+            if triangulate(&_paths, &_lengths, Int32(_lengths.count), &triData) == 0 {
+                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
+                copyTriangleDataToGeometryData(&triData, &cData)
+                freeTriangleData(&triData)
+            }
+            else {
                 print("Triangulation for \(char) FAILED!")
             }
 

@@ -21,10 +21,25 @@ void freeTriangleFaceMap(TriangleFaceMap *map)
     }
 }
 
+TriangleData createTriangleData(void)
+{
+    return (TriangleData) {
+        .count = 0,
+        .indices = NULL
+    };
+}
+
+void freeTriangleData(TriangleData *data)
+{
+    if (data->count > 0 && data->indices != NULL) {
+        free(data->indices);
+        data->count = 0;
+    }
+}
+
 GeometryData createGeometryData()
 {
-    return (
-        GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL };
+    return (GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL };
 }
 
 void freeGeometryData(GeometryData *data)
@@ -40,15 +55,31 @@ void freeGeometryData(GeometryData *data)
     }
 }
 
+void combineVertexGeometryData(GeometryData *dest, GeometryData *src)
+{
+    if (src->vertexCount > 0) {
+        if (dest->vertexCount > 0) {
+            int totalCount = src->vertexCount + dest->vertexCount;
+            dest->vertexData = (Vertex *)realloc(dest->vertexData, totalCount * sizeof(Vertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
+                   src->vertexCount * sizeof(Vertex));
+            dest->vertexCount += src->vertexCount;
+        }
+        else {
+            dest->vertexData = (Vertex *)malloc(src->vertexCount * sizeof(Vertex));
+            memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(Vertex));
+            dest->vertexCount = src->vertexCount;
+        }
+    }
+}
+
 void combineIndexGeometryData(GeometryData *dest, GeometryData *src, int destPreCombineVertexCount)
 {
     if (src->indexCount > 0) {
         if (dest->indexCount > 0) {
             int totalCount = src->indexCount + dest->indexCount;
-            dest->indexData =
-                (TriangleIndices *)realloc(dest->indexData, totalCount * sizeof(TriangleIndices));
-            memcpy(dest->indexData + dest->indexCount, src->indexData,
-                   src->indexCount * sizeof(TriangleIndices));
+            dest->indexData = (TriangleIndices *)realloc(dest->indexData, totalCount * sizeof(TriangleIndices));
+            memcpy(dest->indexData + dest->indexCount, src->indexData, src->indexCount * sizeof(TriangleIndices));
             if (destPreCombineVertexCount > 0) {
                 for (int i = dest->indexCount; i < totalCount; i++) {
                     dest->indexData[i].i0 += destPreCombineVertexCount;
@@ -62,6 +93,49 @@ void combineIndexGeometryData(GeometryData *dest, GeometryData *src, int destPre
             dest->indexData = (TriangleIndices *)malloc(sizeof(TriangleIndices) * src->indexCount);
             memcpy(dest->indexData, src->indexData, sizeof(TriangleIndices) * src->indexCount);
             dest->indexCount = src->indexCount;
+        }
+    }
+}
+
+void copyVertexDataToGeometryData(Vertex *vertices, int count, GeometryData *destData)
+{
+    GeometryData srcData = createGeometryData();
+    srcData.vertexData = vertices;
+    srcData.vertexCount = count;
+
+    combineVertexGeometryData(destData, &srcData);
+}
+
+void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destData)
+{
+    GeometryData srcData = createGeometryData();
+    srcData.indexData = triData->indices;
+    srcData.indexCount = triData->count;
+
+    combineIndexGeometryData(destData, &srcData, destData->vertexCount);
+}
+
+void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *geoData)
+{
+    int vertexCount = 0;
+    for(int i = 0; i < count; i++) {
+        vertexCount += lengths[i];
+    }
+
+    geoData->vertexCount = vertexCount;
+    geoData->vertexData = (Vertex *)malloc(sizeof(Vertex) * geoData->vertexCount);
+
+    int index = 0;
+    for(int i = 0; i < count; i++) {
+        int pathLength = lengths[i];
+        simd_float2 *subpath = paths[i];
+        for(int j = 0; j < pathLength; j++) {
+            simd_float2 pt = subpath[j];
+            geoData->vertexData[index++] = (Vertex) {
+                .position = simd_make_float4(pt.x, pt.y, 0.0, 1.0),
+                .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
+            };
         }
     }
 }
@@ -88,22 +162,7 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
 void combineGeometryData(GeometryData *dest, GeometryData *src)
 {
     int destPreCombineVertexCount = dest->vertexCount;
-
-    if (src->vertexCount > 0) {
-        if (dest->vertexCount > 0) {
-            int totalCount = src->vertexCount + dest->vertexCount;
-            dest->vertexData = (Vertex *)realloc(dest->vertexData, totalCount * sizeof(Vertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(Vertex));
-            dest->vertexCount += src->vertexCount;
-        }
-        else {
-            dest->vertexData = (Vertex *)malloc(src->vertexCount * sizeof(Vertex));
-            memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(Vertex));
-            dest->vertexCount = src->vertexCount;
-        }
-    }
-
+    combineVertexGeometryData(dest, src);
     combineIndexGeometryData(dest, src, destPreCombineVertexCount);
 }
 
@@ -268,7 +327,6 @@ void copyGeometryIndexData(GeometryData *dest, GeometryData *src, int start, int
 
 void copyGeometryData(GeometryData *dest, GeometryData *src)
 {
-
     copyGeometryVertexData(dest, src, 0, src->vertexCount);
     copyGeometryIndexData(dest, src, 0, src->indexCount);
 }

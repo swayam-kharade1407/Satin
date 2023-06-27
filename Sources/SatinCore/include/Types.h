@@ -58,6 +58,11 @@ typedef struct TriangleFaceMap {
     uint32_t *data;
 } TriangleFaceMap;
 
+typedef struct TriangleData {
+    int count;
+    TriangleIndices *indices;
+} TriangleData;
+
 typedef struct GeometryData {
     int vertexCount;
     Vertex *vertexData;
@@ -85,8 +90,16 @@ typedef struct BVH {
 TriangleFaceMap createTriangleFaceMap(void);
 void freeTriangleFaceMap(TriangleFaceMap *map);
 
+TriangleData createTriangleData(void);
+void freeTriangleData(TriangleData *data);
+
 GeometryData createGeometryData(void);
 void freeGeometryData(GeometryData *data);
+
+void copyVertexDataToGeometryData(Vertex *vertices, int count, GeometryData *destData);
+void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destData);
+
+void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *tData);
 
 void copyGeometryVertexData(GeometryData *dest, GeometryData *src, int start, int end);
 void copyGeometryIndexData(GeometryData *dest, GeometryData *src, int start, int end);
@@ -97,10 +110,8 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
 void combineGeometryData(GeometryData *dest, GeometryData *src);
 void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 offset);
 void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale);
-void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale,
-                                          simd_float3 offset);
-void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src,
-                                     simd_float4x4 transform);
+void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale, simd_float3 offset);
+void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src, simd_float4x4 transform);
 
 void computeNormalsOfGeometryData(GeometryData *data);
 void reverseFacesOfGeometryData(GeometryData *data);
@@ -111,8 +122,7 @@ void transformGeometryData(GeometryData *data, simd_float4x4 transform);
 void deindexGeometryData(GeometryData *dest, GeometryData *src);
 void unrollGeometryData(GeometryData *dest, GeometryData *src);
 
-void combineGeometryDataAndTriangleFaceMap(GeometryData *destGeo, GeometryData *srcGeo,
-                                           TriangleFaceMap *destMap, TriangleFaceMap *srcMap);
+void combineGeometryDataAndTriangleFaceMap(GeometryData *destGeo, GeometryData *srcGeo, TriangleFaceMap *destMap, TriangleFaceMap *srcMap);
 
 #if defined(__cplusplus)
 }

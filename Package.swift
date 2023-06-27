@@ -56,5 +56,6 @@ let package = Package(
             dependencies: ["RenderPipelineBuilder"]
         )
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageVersions: [.v5],
+    cxxLanguageStandard: .cxx14
 )

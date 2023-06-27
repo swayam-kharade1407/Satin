@@ -14,12 +14,9 @@
 extern "C" {
 #endif
 
+int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *gData);
+
 int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gData);
-
-int triangulate(simd_float2 **paths, int *lengths, int count, GeometryData *gData);
-
-int triangulateMesh(Vertex *vertices, int vertexCount, const uint32_t **faces, int *faceLengths,
-                    int faceCount, GeometryData *gData, TriangleFaceMap *triangleFaceMap);
 
 #if defined(__cplusplus)
 }

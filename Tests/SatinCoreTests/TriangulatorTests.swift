@@ -34,18 +34,24 @@ class TriangulatorTests: XCTestCase {
     func testTriangulate() {
         var (_lengths, _paths) = buildPaths()
 
-        var cData = GeometryData(vertexCount: 0, vertexData: nil, indexCount: 0, indexData: nil)
-        triangulate(&_paths, &_lengths, 3, &cData)
+        var geoData = createGeometryData()
+        var triData = createTriangleData()
 
-        XCTAssertEqual(cData.vertexCount, 161)
-        XCTAssertEqual(cData.indexCount, 163)
+        triangulate(&_paths, &_lengths, 3, &triData)
+
+        copyTriangleDataToGeometryData(&triData, &geoData)
+        createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
+        freeTriangleData(&triData)
+
+        XCTAssertEqual(geoData.vertexCount, 161)
+        XCTAssertEqual(geoData.indexCount, 163)
 
         // Hash only positions because Vertex contains a float3 which has an extra four uninitized bytes for alignment.
-        let positions = UnsafeMutableBufferPointer(start: cData.vertexData, count: Int(cData.vertexCount)).map { $0.position }
+        let positions = UnsafeMutableBufferPointer(start: geoData.vertexData, count: Int(geoData.vertexCount)).map { $0.position }
         XCTAssertEqual(MD5(array: positions), "06415fc00db61e530d6756ffc63b7953")
-        XCTAssertEqual(MD5(ptr: cData.indexData, count: Int(cData.indexCount)), "ca5d4028863569f75629928ba570c9fd")
+        XCTAssertEqual(MD5(ptr: geoData.indexData, count: Int(geoData.indexCount)), "ca5d4028863569f75629928ba570c9fd")
 
-        freeGeometryData(&cData)
+        freeGeometryData(&geoData)
 
         for path in _paths {
             path?.deallocate()
@@ -57,9 +63,16 @@ class TriangulatorTests: XCTestCase {
 
         measure {
             for _ in 0..<100 {
-                var cData = GeometryData(vertexCount: 0, vertexData: nil, indexCount: 0, indexData: nil)
-                triangulate(&_paths, &_lengths, 3, &cData)
-                freeGeometryData(&cData)
+                var geoData = createGeometryData()
+                var triData = createTriangleData()
+
+                triangulate(&_paths, &_lengths, 3, &triData)
+
+                copyTriangleDataToGeometryData(&triData, &geoData)
+                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
+
+                freeTriangleData(&triData)
+                freeGeometryData(&geoData)
             }
         }
 
