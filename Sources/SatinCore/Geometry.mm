@@ -51,6 +51,22 @@ bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c)
            isZero((bax * cay) - (bay * cax));
 }
 
+bool isConvex(simd_float2 *path, int length) {
+    int end = (length + 1);
+
+    int areaSign = 0;
+    for(int i = 0; i <= end; i++) {
+        simd_float2 a = path[i%length];
+        simd_float2 b = path[(i+1)%length];
+        simd_float2 c = path[(i+2)%length];
+        int newSign = simd_sign(area2(a, b, c));
+        if(i > 0 && areaSign != newSign) { return false; }
+        areaSign = newSign;
+    }
+
+    return true;
+}
+
 bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c)
 {
     if (!isColinear2(a, b, c)) { return false; }
