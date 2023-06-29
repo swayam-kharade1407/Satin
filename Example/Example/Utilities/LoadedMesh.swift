@@ -78,6 +78,8 @@ class LoadedMesh: Object, Renderable {
 
     var doubleSided: Bool = false
     public var renderOrder = 0
+    public var renderPass = 0
+    
     public var receiveShadow: Bool = false
     public var castShadow: Bool = false
 

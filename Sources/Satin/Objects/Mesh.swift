@@ -19,6 +19,7 @@ open class Mesh: Object, Renderable {
     public var doubleSided: Bool = false
 
     public var renderOrder = 0
+    public var renderPass = 0
 
     public var receiveShadow = false {
         didSet {

@@ -12,6 +12,7 @@ import simd
 public protocol Renderable {
     var label: String { get }
     var renderOrder: Int { get }
+    var renderPass: Int { get }
 
     var receiveShadow: Bool { get }
     var castShadow: Bool { get }

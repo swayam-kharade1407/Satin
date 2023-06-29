@@ -37,6 +37,8 @@ class ARLidarMesh: Object, Renderable {
 
     var doubleSided: Bool = false
     var renderOrder = 0
+    var renderPass = 0
+
     var drawable: Bool {
         if material?.pipeline != nil, uniforms != nil, vertexBuffer != nil, indexBuffer != nil {
             return true

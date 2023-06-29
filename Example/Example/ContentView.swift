@@ -231,6 +231,8 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Satin Examples")
+
+            Renderer3DView()
         }
     }
 }

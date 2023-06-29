@@ -185,6 +185,8 @@ private class CustomMesh: Object, Renderable {
     var triangleFillMode: MTLTriangleFillMode = .fill
 
     var renderOrder = 0
+    var renderPass = 0
+
     var receiveShadow = false
     var castShadow = false
 

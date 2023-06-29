@@ -10,12 +10,35 @@ import Combine
 import Metal
 import simd
 
+class RenderList {
+    public var isEmpty: Bool {
+        renderables.isEmpty
+    }
+
+    private var renderables: [Renderable]
+    private var sortedRenderables: [Renderable] { renderables.sorted { $0.renderOrder < $1.renderOrder } }
+
+    public init(_ renderable: Renderable) {
+        self.renderables = [renderable]
+    }
+
+    public func append(_ renderable: Renderable) {
+        renderables.append(renderable)
+    }
+
+    public func removeAll(keepingCapacity: Bool = true) {
+        renderables.removeAll(keepingCapacity: keepingCapacity)
+    }
+
+    public func getRenderables(sorted: Bool) -> [Renderable] {
+        sorted ? sortedRenderables : renderables
+    }
+}
+
 open class Renderer {
     public var label = "Satin Renderer"
 
     public var onUpdate: (() -> Void)?
-    public var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
-    public var postDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
 
     public var sortObjects = false
 
@@ -65,7 +88,7 @@ open class Renderer {
     public private(set) var depthMultisampleTexture: MTLTexture?
 
     public var depthLoadAction: MTLLoadAction = .clear
-    public var depthStoreAction: MTLStoreAction = .dontCare
+    public var depthStoreAction: MTLStoreAction = .store
 
     public var updateStencilTexture = true
     public var stencilTexture: MTLTexture?
@@ -95,7 +118,7 @@ open class Renderer {
     private var _viewport: simd_float4 = .zero
 
     private var objectList = [Object]()
-    private var renderList = [Renderable]()
+    private var renderLists = [Int: RenderList]()
 
     private var lightList = [Light]()
     private var _updateLightDataBuffer = false
@@ -120,7 +143,8 @@ open class Renderer {
 
     // MARK: - Init
 
-    public init(context: Context) {
+    public init(label: String = "Satin Renderer", context: Context) {
+        self.label = label
         self.context = context
     }
 
@@ -275,11 +299,51 @@ open class Renderer {
         renderPassDescriptor.stencilAttachment.storeAction = stencilStoreAction
         renderPassDescriptor.stencilAttachment.clearStencil = clearStencil
 
-        if let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
-            renderEncoder.label = label + " Encoder"
-            renderEncoder.setViewport(viewport)
-            encode(renderEncoder: renderEncoder, scene: scene, camera: camera)
-            renderEncoder.endEncoding()
+        renderPassDescriptor.renderTargetWidth = Int(size.width)
+        renderPassDescriptor.renderTargetHeight = Int(size.height)
+
+        if renderLists.isEmpty {
+            if colorLoadAction == .clear, let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
+#if DEBUG
+                renderEncoder.pushDebugGroup(label + " Empty Pass")
+#endif
+                renderEncoder.setViewport(viewport)
+#if DEBUG
+                renderEncoder.popDebugGroup()
+#endif
+                renderEncoder.endEncoding()
+            }
+        } else {
+            let renderPassLists = renderLists.sorted { $0.key < $1.key }
+
+            for (pass, renderPassList) in renderPassLists.enumerated() {
+                let renderList = renderPassList.value
+                let renderables = renderList.getRenderables(sorted: sortObjects)
+
+                if !renderables.isEmpty, let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
+#if DEBUG
+                    renderEncoder.label = label + " Pass \(pass)"
+                    renderEncoder.pushDebugGroup("Pass \(pass)")
+#endif
+                    renderEncoder.setViewport(viewport)
+
+                    encode(
+                        renderEncoder: renderEncoder,
+                        pass: pass,
+                        renderables: renderables,
+                        camera: camera
+                    )
+
+#if DEBUG
+                    renderEncoder.popDebugGroup()
+#endif
+                    renderEncoder.endEncoding()
+
+                    renderPassDescriptor.colorAttachments[0].loadAction = .load
+                    renderPassDescriptor.depthAttachment.loadAction = .load
+                    renderPassDescriptor.stencilAttachment.loadAction = .load
+                }
+            }
         }
     }
 
@@ -289,7 +353,7 @@ open class Renderer {
         onUpdate?()
 
         objectList.removeAll(keepingCapacity: true)
-        renderList.removeAll(keepingCapacity: true)
+        renderLists.removeAll(keepingCapacity: true)
         lightList.removeAll(keepingCapacity: true)
 
         shadowList.removeAll(keepingCapacity: true)
@@ -317,7 +381,12 @@ open class Renderer {
                 }
             }
             if let renderable = object as? Renderable {
-                renderList.append(renderable)
+                if let renderPassList = renderLists[renderable.renderPass] {
+                    renderPassList.append(renderable)
+                } else {
+                    renderLists[renderable.renderPass] = RenderList(renderable)
+                }
+
                 if renderable.receiveShadow {
                     shadowReceivers.append(renderable)
                 }
@@ -337,10 +406,10 @@ open class Renderer {
         let shadowCount = shadowList.count
 
         var environmentIntensity: Float = 1.0
-        var cubemapTexture: MTLTexture? = nil
-        var reflectionTexture: MTLTexture? = nil
-        var irradianceTexture: MTLTexture? = nil
-        var brdfTexture: MTLTexture? = nil
+        var cubemapTexture: MTLTexture?
+        var reflectionTexture: MTLTexture?
+        var irradianceTexture: MTLTexture?
+        var brdfTexture: MTLTexture?
         var reflectionTexcoordTransform = matrix_identity_float3x3
         var irradianceTexcoordTransform = matrix_identity_float3x3
 
@@ -354,13 +423,12 @@ open class Renderer {
 
                 irradianceTexture = environment.irradianceTexture
                 irradianceTexcoordTransform = environment.irradianceTexcoordTransform
-                
+
                 brdfTexture = environment.brdfTexture
             }
 
             if let renderable = object as? Renderable {
                 for material in renderable.materials {
-
                     if material.lighting {
                         material.lightCount = lightCount
                     }
@@ -385,7 +453,8 @@ open class Renderer {
                     }
 
                     if let cubemapTexture = cubemapTexture,
-                        let skyboxMaterial = material as? SkyboxMaterial {
+                       let skyboxMaterial = material as? SkyboxMaterial
+                    {
                         skyboxMaterial.texture = cubemapTexture
                         skyboxMaterial.texcoordTransform = reflectionTexcoordTransform
                         skyboxMaterial.environmentIntensity = environmentIntensity
@@ -402,34 +471,26 @@ open class Renderer {
 
     // MARK: - Internal Encoding
 
-    private func encode(renderEncoder: MTLRenderCommandEncoder, scene: Object, camera: Camera) {
-        renderEncoder.pushDebugGroup(label + " Pass")
-        preDraw?(renderEncoder)
-
-        let renderables = sortObjects ? renderList.sorted { $0.renderOrder < $1.renderOrder } : renderList
-
-        if !renderables.isEmpty {
-            for shadow in shadowList {
-                if let shadowTexture = shadow.texture {
-                    renderEncoder.useResource(shadowTexture, usage: .read, stages: .fragment)
-                }
-            }
-
-            if let shadowDataBuffer = shadowDataBuffer {
-                renderEncoder.useResource(shadowDataBuffer.buffer, usage: .read, stages: .fragment)
-            }
-
-            for var renderable in renderables where renderable.drawable {
-                _encode(renderEncoder: renderEncoder, renderable: &renderable, camera: camera)
+    private func encode(renderEncoder: MTLRenderCommandEncoder, pass: Int, renderables: [Renderable], camera: Camera) {
+        for shadow in shadowList {
+            if let shadowTexture = shadow.texture {
+                renderEncoder.useResource(shadowTexture, usage: .read, stages: .fragment)
             }
         }
 
-        postDraw?(renderEncoder)
-        renderEncoder.popDebugGroup()
+        if let shadowDataBuffer = shadowDataBuffer {
+            renderEncoder.useResource(shadowDataBuffer.buffer, usage: .read, stages: .fragment)
+        }
+
+        for var renderable in renderables where renderable.drawable {
+            _encode(renderEncoder: renderEncoder, renderable: &renderable, camera: camera)
+        }
     }
 
     private func _encode(renderEncoder: MTLRenderCommandEncoder, renderable: inout Renderable, camera: Camera) {
+#if DEBUG
         renderEncoder.pushDebugGroup(renderable.label)
+#endif
 
         let materials = renderable.materials
         let lighting = materials.filter { $0.lighting }
@@ -464,7 +525,6 @@ open class Renderer {
         renderable.update(camera: camera, viewport: _viewport)
 
         if renderable.doubleSided, renderable.cullMode == .none, renderable.opaque == false {
-
             renderable.cullMode = .front
             renderable.draw(renderEncoder: renderEncoder, shadow: false)
 
@@ -472,12 +532,13 @@ open class Renderer {
             renderable.draw(renderEncoder: renderEncoder, shadow: false)
 
             renderable.cullMode = .none
-        }
-        else {
+        } else {
             renderable.draw(renderEncoder: renderEncoder, shadow: false)
         }
 
+#if DEBUG
         renderEncoder.popDebugGroup()
+#endif
     }
 
     // MARK: - Resizing
