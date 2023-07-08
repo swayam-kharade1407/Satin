@@ -133,7 +133,7 @@ func parseStruct(source: String) -> ParameterGroup? {
 func addParameter(group: ParameterGroup, type: String, name: String, control: ControlType = .none) {
     switch type {
     case "float":
-        group.append(FloatParameter(name, 0.0, control))
+            group.append(FloatParameter(name, .zero, control))
     case "float2":
         group.append(Float2Parameter(name, .zero, control))
     case "float3":
@@ -239,15 +239,15 @@ func parseParameters(source: String) -> ParameterGroup? {
                             if let fMin = Float(min), let fMax = Float(max), let fValue = Float(value) {
                                 var parameter: Parameter?
                                 if vType == "float" {
-                                    parameter = FloatParameter(label, fValue, fMin, fMax, .slider)
+                                    parameter = FloatParameter(label.titleCase, fValue, fMin, fMax, .slider)
                                 } else if vType == "float2" {
-                                    parameter = Float2Parameter(label, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
+                                    parameter = Float2Parameter(label.titleCase, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
                                 } else if vType == "float3" {
-                                    parameter = Float3Parameter(label, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
+                                    parameter = Float3Parameter(label.titleCase, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
                                 } else if vType == "float4" {
-                                    parameter = Float4Parameter(label, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
+                                    parameter = Float4Parameter(label.titleCase, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), .multislider)
                                 } else if vType == "int" {
-                                    parameter = IntParameter(label, Int(fValue), Int(fMin), Int(fMax), .slider)
+                                    parameter = IntParameter(label.titleCase, Int(fValue), Int(fMin), Int(fMax), .slider)
                                 }
 
                                 if let parameter = parameter {
@@ -363,24 +363,24 @@ func parseParameters(source: String) -> ParameterGroup? {
                                 var parameter: Parameter?
 
                                 if vType == "float" {
-                                    parameter = FloatParameter(label, fValue, .inputfield)
+                                    parameter = FloatParameter(label.titleCase, fValue, .inputfield)
                                 } else if vType == "float2" {
-                                    parameter = Float2Parameter(label, simd_make_float2(fValue, fValue), .inputfield)
+                                    parameter = Float2Parameter(label.titleCase, simd_make_float2(fValue, fValue), .inputfield)
                                 } else if vType == "float3" {
-                                    parameter = Float3Parameter(label, simd_make_float3(fValue, fValue, fValue), .inputfield)
+                                    parameter = Float3Parameter(label.titleCase, simd_make_float3(fValue, fValue, fValue), .inputfield)
                                 } else if vType == "float4" {
-                                    parameter = Float4Parameter(label, simd_make_float4(fValue, fValue, fValue, fValue), .inputfield)
+                                    parameter = Float4Parameter(label.titleCase, simd_make_float4(fValue, fValue, fValue, fValue), .inputfield)
                                 } else if vType == "int" {
-                                    parameter = IntParameter(label, Int(fValue), .inputfield)
+                                    parameter = IntParameter(label.titleCase, Int(fValue), .inputfield)
                                 } else if vType == "int2" {
                                     let iValue = Int32(fValue)
-                                    parameter = Int2Parameter(label, simd_make_int2(iValue, iValue), .inputfield)
+                                    parameter = Int2Parameter(label.titleCase, simd_make_int2(iValue, iValue), .inputfield)
                                 } else if vType == "int3" {
                                     let iValue = Int32(fValue)
-                                    parameter = Int3Parameter(label, simd_make_int3(iValue, iValue, iValue), .inputfield)
+                                    parameter = Int3Parameter(label.titleCase, simd_make_int3(iValue, iValue, iValue), .inputfield)
                                 } else if vType == "int4" {
                                     let iValue = Int32(fValue)
-                                    parameter = Int4Parameter(label, simd_make_int4(iValue, iValue, iValue, iValue), .inputfield)
+                                    parameter = Int4Parameter(label.titleCase, simd_make_int4(iValue, iValue, iValue, iValue), .inputfield)
                                 }
 
                                 if let parameter = parameter {
@@ -500,7 +500,7 @@ func parseParameters(source: String) -> ParameterGroup? {
                         }
 
                         if let value = value, let label = label {
-                            params.append(BoolParameter(label, value == "true" ? true : false, .toggle))
+                            params.append(BoolParameter(label.titleCase, value == "true" ? true : false, .toggle))
                             success = true
                         }
                     }
@@ -560,7 +560,7 @@ func parseParameters(source: String) -> ParameterGroup? {
 
                         if let red = red, let green = green, let blue = blue, let alpha = alpha, let label = label {
                             if let fRed = Float(red), let fGreen = Float(green), let fBlue = Float(blue), let fAlpha = Float(alpha) {
-                                params.append(Float4Parameter(label, simd_make_float4(fRed, fGreen, fBlue, fAlpha), .colorpicker))
+                                params.append(Float4Parameter(label.titleCase, simd_make_float4(fRed, fGreen, fBlue, fAlpha), .colorpicker))
                                 success = true
                             }
                         }

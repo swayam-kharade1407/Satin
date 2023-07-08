@@ -532,6 +532,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
+    public func setParameters(from incomingParams: ParameterGroup) {
+        self.parameters = incomingParams.clone()
+    }
+
+    public func setParameters(from material: Material) {
+        self.parameters = material.parameters.clone()
+    }
+
     public func get(_ name: String) -> Parameter? {
         return parameters.get(name)
     }
@@ -577,24 +585,24 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 }
 
 public extension Material {
-    func added(parameter _: Parameter, from _: ParameterGroup) {
+    func added(parameter: Parameter, from: ParameterGroup) {
         uniformsNeedsUpdate = true
         objectWillChange.send()
     }
 
-    func removed(parameter _: Parameter, from _: ParameterGroup) {
+    func removed(parameter: Parameter, from: ParameterGroup) {
         uniformsNeedsUpdate = true
         objectWillChange.send()
     }
 
-    func loaded(group _: ParameterGroup) {
+    func loaded(group: ParameterGroup) {
         uniformsNeedsUpdate = true
         objectWillChange.send()
     }
 
-    func saved(group _: ParameterGroup) {}
+    func saved(group: ParameterGroup) {}
 
-    func cleared(group _: ParameterGroup) {
+    func cleared(group: ParameterGroup) {
         uniformsNeedsUpdate = true
         objectWillChange.send()
     }

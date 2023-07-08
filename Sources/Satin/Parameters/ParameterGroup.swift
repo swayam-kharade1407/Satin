@@ -90,14 +90,16 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
     public func clear() {
         for param in params {
-            param.delegate = nil
+            if param.delegate === self {
+                param.delegate = nil
+            }
         }
         params = []
         paramsMap = [:]
         delegate?.cleared(group: self)
     }
 
-    public func copy(_ incomingParams: ParameterGroup, setValues _: Bool = true, setOptions _: Bool = true) {
+    public func copy(_ incomingParams: ParameterGroup) {
         clear()
         label = incomingParams.label
         for param in incomingParams.params {
@@ -336,6 +338,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             } else if let p = param as? BoolParameter, let mbp = mp as? BoolParameter {
                 if setValue {
                     mbp.value = p.value
+                }
+                if setOptions {
                     mbp.controlType = p.controlType
                 }
             } else if let p = param as? StringParameter, let mbp = mp as? StringParameter {
@@ -358,11 +362,15 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             } else if let p = param as? Float3x3Parameter, let mbp = mp as? Float3x3Parameter {
                 if setValue {
                     mbp.value = p.value
+                }
+                if setOptions {
                     mbp.controlType = p.controlType
                 }
             } else if let p = param as? Float4x4Parameter, let mbp = mp as? Float4x4Parameter {
                 if setValue {
                     mbp.value = p.value
+                }
+                if setOptions {
                     mbp.controlType = p.controlType
                 }
             }
