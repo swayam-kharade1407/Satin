@@ -13,23 +13,27 @@ public func SatinVertexDescriptor() -> MTLVertexDescriptor {
     // position
     let vertexDescriptor = MTLVertexDescriptor()
 
-    vertexDescriptor.attributes[VertexAttribute.Position.rawValue].format = MTLVertexFormat.float4
-    vertexDescriptor.attributes[VertexAttribute.Position.rawValue].offset = 0
-    vertexDescriptor.attributes[VertexAttribute.Position.rawValue].bufferIndex = 0
+    let positionIndex = VertexAttributeIndex.Position.rawValue
+    vertexDescriptor.attributes[positionIndex].format = MTLVertexFormat.float4
+    vertexDescriptor.attributes[positionIndex].offset = 0
+    vertexDescriptor.attributes[positionIndex].bufferIndex = 0
 
     // normal
-    vertexDescriptor.attributes[VertexAttribute.Normal.rawValue].format = MTLVertexFormat.float3
-    vertexDescriptor.attributes[VertexAttribute.Normal.rawValue].offset = MemoryLayout<Float>.size * 4
-    vertexDescriptor.attributes[VertexAttribute.Normal.rawValue].bufferIndex = 0
+    let normalIndex = VertexAttributeIndex.Normal.rawValue
+    vertexDescriptor.attributes[normalIndex].format = MTLVertexFormat.float3
+    vertexDescriptor.attributes[normalIndex].offset = MemoryLayout<Float>.size * 4
+    vertexDescriptor.attributes[normalIndex].bufferIndex = 0
 
     // uv
-    vertexDescriptor.attributes[VertexAttribute.Texcoord.rawValue].format = MTLVertexFormat.float2
-    vertexDescriptor.attributes[VertexAttribute.Texcoord.rawValue].offset = MemoryLayout<Float>.size * 8
-    vertexDescriptor.attributes[VertexAttribute.Texcoord.rawValue].bufferIndex = 0
+    let uvIndex = VertexAttributeIndex.Texcoord.rawValue
+    vertexDescriptor.attributes[uvIndex].format = MTLVertexFormat.float2
+    vertexDescriptor.attributes[uvIndex].offset = MemoryLayout<Float>.size * 8
+    vertexDescriptor.attributes[uvIndex].bufferIndex = 0
 
-    vertexDescriptor.layouts[VertexBufferIndex.Vertices.rawValue].stride = MemoryLayout<Vertex>.stride
-    vertexDescriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepRate = 1
-    vertexDescriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepFunction = .perVertex
+    let verticesIndex = VertexBufferIndex.Vertices.rawValue
+    vertexDescriptor.layouts[verticesIndex].stride = MemoryLayout<Vertex>.stride
+    vertexDescriptor.layouts[verticesIndex].stepRate = 1
+    vertexDescriptor.layouts[verticesIndex].stepFunction = .perVertex
 
     return vertexDescriptor
 }
@@ -38,7 +42,7 @@ public func SatinModelIOVertexDescriptor() -> MDLVertexDescriptor {
     let descriptor = MDLVertexDescriptor()
 
     var offset = 0
-    descriptor.attributes[VertexAttribute.Position.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Position.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributePosition,
         format: .float4,
         offset: offset,
@@ -46,7 +50,7 @@ public func SatinModelIOVertexDescriptor() -> MDLVertexDescriptor {
     )
     offset += MemoryLayout<Float>.size * 4
 
-    descriptor.attributes[VertexAttribute.Normal.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Normal.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeNormal,
         format: .float3,
         offset: offset,
@@ -54,7 +58,7 @@ public func SatinModelIOVertexDescriptor() -> MDLVertexDescriptor {
     )
     offset += MemoryLayout<Float>.size * 4
 
-    descriptor.attributes[VertexAttribute.Texcoord.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Texcoord.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeTextureCoordinate,
         format: .float2,
         offset: offset,

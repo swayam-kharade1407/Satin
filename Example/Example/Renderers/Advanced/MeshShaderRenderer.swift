@@ -164,12 +164,26 @@ private class CustomMaterial: SourceMaterial {
     override func bindUniforms(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
         guard let uniforms = uniforms else { return }
         if #available(macOS 13.0, iOS 16.0, *) {
-            renderEncoder.setObjectBuffer(uniforms.buffer, offset: uniforms.offset, index: ObjectBufferIndex.MaterialUniforms.rawValue)
-            renderEncoder.setMeshBuffer(uniforms.buffer, offset: uniforms.offset, index: MeshBufferIndex.MaterialUniforms.rawValue)
+            
+            renderEncoder.setObjectBuffer(
+                uniforms.buffer,
+                offset: uniforms.offset,
+                index: ObjectBufferIndex.MaterialUniforms.rawValue
+            )
+
+            renderEncoder.setMeshBuffer(
+                uniforms.buffer,
+                offset: uniforms.offset,
+                index: MeshBufferIndex.MaterialUniforms.rawValue
+            )
         }
 
         if !shadow {
-            renderEncoder.setFragmentBuffer(uniforms.buffer, offset: uniforms.offset, index: FragmentBufferIndex.MaterialUniforms.rawValue)
+            renderEncoder.setFragmentBuffer(
+                uniforms.buffer,
+                offset: uniforms.offset,
+                index: FragmentBufferIndex.MaterialUniforms.rawValue
+            )
         }
     }
 }

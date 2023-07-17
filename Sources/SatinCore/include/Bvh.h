@@ -14,7 +14,10 @@
 extern "C" {
 #endif
 
-BVH createBVH(GeometryData geometry, bool useSAH);
+BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const uint32_t *indexData, int indexCount, bool useSAH);
+
+BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH);
+
 void freeBVH(BVH bvh);
 
 #if defined(__cplusplus)

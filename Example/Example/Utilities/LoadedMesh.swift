@@ -23,7 +23,7 @@ func CustomModelIOVertexDescriptor() -> MDLVertexDescriptor {
     let descriptor = MDLVertexDescriptor()
 
     var offset = 0
-    descriptor.attributes[VertexAttribute.Position.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Position.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributePosition,
         format: .float4,
         offset: offset,
@@ -31,7 +31,7 @@ func CustomModelIOVertexDescriptor() -> MDLVertexDescriptor {
     )
     offset += MemoryLayout<Float>.size * 4
 
-    descriptor.attributes[VertexAttribute.Normal.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Normal.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeNormal,
         format: .float3,
         offset: offset,
@@ -39,7 +39,7 @@ func CustomModelIOVertexDescriptor() -> MDLVertexDescriptor {
     )
     offset += MemoryLayout<Float>.size * 4
 
-    descriptor.attributes[VertexAttribute.Texcoord.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Texcoord.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeTextureCoordinate,
         format: .float2,
         offset: offset,
@@ -50,23 +50,21 @@ func CustomModelIOVertexDescriptor() -> MDLVertexDescriptor {
 
     offset = 0
 
-    descriptor.attributes[VertexAttribute.Tangent.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Tangent.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeTangent,
         format: .float3,
-        offset: offset,
-        bufferIndex: VertexBufferIndex.Generics.rawValue
+        offset: 0,
+        bufferIndex: VertexBufferIndex.Custom0.rawValue
     )
 
-    offset += MemoryLayout<Float>.size * 4
-
-    descriptor.attributes[VertexAttribute.Bitangent.rawValue] = MDLVertexAttribute(
+    descriptor.attributes[VertexAttributeIndex.Bitangent.rawValue] = MDLVertexAttribute(
         name: MDLVertexAttributeBitangent,
         format: .float3,
-        offset: offset,
-        bufferIndex: VertexBufferIndex.Generics.rawValue
+        offset: MemoryLayout<Float>.size * 4,
+        bufferIndex: VertexBufferIndex.Custom0.rawValue
     )
 
-    descriptor.layouts[VertexBufferIndex.Generics.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<VertexGenerics>.stride)
+    descriptor.layouts[VertexBufferIndex.Custom0.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 8)
 
     return descriptor
 }
@@ -144,13 +142,13 @@ class LoadedMesh: Object, Renderable {
                 bitangentAttributeNamed: MDLVertexAttributeBitangent
             )
 
-            if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
+            if let firstBuffer = objMesh.vertexBuffers[VertexBufferIndex.Vertices.rawValue] as? MTKMeshBuffer {
                 vertexBuffer = firstBuffer.buffer
                 vertexBuffer?.label = "Vertices"
                 vertexCount = objMesh.vertexCount
             }
 
-            if let secondBuffer = objMesh.vertexBuffers[1] as? MTKMeshBuffer {
+            if let secondBuffer = objMesh.vertexBuffers[VertexBufferIndex.Custom0.rawValue] as? MTKMeshBuffer {
                 genericsBuffer = secondBuffer.buffer
                 genericsBuffer?.label = "Generics"
             }
@@ -205,7 +203,7 @@ class LoadedMesh: Object, Renderable {
         renderEncoder.setCullMode(cullMode)
         renderEncoder.setTriangleFillMode(triangleFillMode)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: VertexBufferIndex.Vertices.rawValue)
-        renderEncoder.setVertexBuffer(genericsBuffer, offset: 0, index: VertexBufferIndex.Generics.rawValue)
+        renderEncoder.setVertexBuffer(genericsBuffer, offset: 0, index: VertexBufferIndex.Custom0.rawValue)
 
         if let uniforms = uniforms {
             renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.VertexUniforms.rawValue)

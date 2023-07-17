@@ -16,9 +16,9 @@ extern "C" {
 
 Bounds createBounds(void);
 
+Bounds computeBoundsFromFloatData(const void *data, int stride, int count);
 Bounds computeBoundsFromVertices(const Vertex *vertices, int count);
-Bounds computeBoundsFromVerticesAndTransform(const Vertex *vertices, int count,
-                                             simd_float4x4 transform);
+Bounds computeBoundsFromVerticesAndTransform(const Vertex *vertices, int count, simd_float4x4 transform);
 
 Bounds expandBounds(Bounds bounds, simd_float3 pt);
 Bounds mergeBounds(Bounds a, Bounds b);

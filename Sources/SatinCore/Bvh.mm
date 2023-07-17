@@ -177,73 +177,65 @@ void subdivideBVHNode(BVH *bvh, uint32_t nodeIndex)
     subdivideBVHNode(bvh, rightNodeIndex);
 }
 
-BVH createBVH(GeometryData geometry, bool useSAH)
-{
-    const bool hasTriangles = geometry.indexCount > 0;
-    const uint32_t N = hasTriangles ? geometry.indexCount : (geometry.vertexCount / 3);
+BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH) {
+    return createBVHFromFloatData(geometry.vertexData, sizeof(Vertex)/sizeof(float), geometry.vertexCount, (uint32_t*) geometry.indexData, geometry.indexCount * 3, useSAH);
+}
 
-    BVHNode *nodes = (BVHNode *)malloc(sizeof(BVHNode) * N * 2 - 1);
-    simd_float3 *centroids = (simd_float3 *)malloc(sizeof(simd_float3) * N);
-    simd_float3 *positions = (simd_float3 *)malloc(sizeof(simd_float3) * geometry.vertexCount);
-    uint32_t *triIDs = (uint32_t *)malloc(sizeof(uint32_t) * N);
-    TriangleIndices *triangles = (TriangleIndices *)malloc(sizeof(TriangleIndices) * N);
+BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const uint32_t *indexData, int indexCount, bool useSAH) {
+    const bool hasTriangles = indexCount > 0;
+    const uint32_t triCount = hasTriangles ? (indexCount / 3) : (vertexCount / 3);
+
+    BVHNode *nodes = (BVHNode *)malloc(sizeof(BVHNode) * triCount * 2 - 1);
+    simd_float3 *centroids = (simd_float3 *)malloc(sizeof(simd_float3) * triCount);
+    simd_float3 *positions = (simd_float3 *)malloc(sizeof(simd_float3) * vertexCount);
+    uint32_t *triIDs = (uint32_t *)malloc(sizeof(uint32_t) * triCount);
+    TriangleIndices *triangles = (TriangleIndices *)malloc(sizeof(TriangleIndices) * triCount);
     Bounds aabb = createBounds();
 
-    if (hasTriangles) {
-        for (uint32_t i = 0; i < N; i++) {
-            triIDs[i] = i;
-            const TriangleIndices tri = geometry.indexData[i];
-            triangles[i] = tri;
+    for (uint32_t i = 0; i < triCount; i++) {
+        triIDs[i] = i;
 
-            positions[tri.i0] = geometry.vertexData[tri.i0].position.xyz;
-            positions[tri.i1] = geometry.vertexData[tri.i1].position.xyz;
-            positions[tri.i2] = geometry.vertexData[tri.i2].position.xyz;
+        const uint32_t offset = i * 3;
+        const TriangleIndices tri = hasTriangles ? (TriangleIndices) { indexData[offset], indexData[offset + 1], indexData[offset + 2] } : (TriangleIndices) { offset, offset + 1, offset + 2 };
 
-            expandBoundsInPlace(&aabb, &positions[tri.i0]);
-            expandBoundsInPlace(&aabb, &positions[tri.i1]);
-            expandBoundsInPlace(&aabb, &positions[tri.i2]);
+        triangles[i] = tri;
 
-            centroids[i] = (positions[tri.i0] + positions[tri.i1] + positions[tri.i2]) / 3.0;
-        }
+        const float *v0 = (float *)vertexData + (tri.i0 * vertexStride);
+        const float *v1 = (float *)vertexData + (tri.i1 * vertexStride);
+        const float *v2 = (float *)vertexData + (tri.i2 * vertexStride);
+
+        positions[tri.i0] = simd_make_float3(*v0, *(v0+1), *(v0+2));
+        positions[tri.i1] = simd_make_float3(*v1, *(v1+1), *(v1+2));
+        positions[tri.i2] = simd_make_float3(*v2, *(v2+1), *(v2+2));
+
+        expandBoundsInPlace(&aabb, &positions[tri.i0]);
+        expandBoundsInPlace(&aabb, &positions[tri.i1]);
+        expandBoundsInPlace(&aabb, &positions[tri.i2]);
+
+        centroids[i] = (positions[tri.i0] + positions[tri.i1] + positions[tri.i2]) / 3.0;
     }
-    else {
-        for (uint32_t i = 0; i < N; i++) {
-            triIDs[i] = i;
-            const TriangleIndices tri = (TriangleIndices) { i * 3, i * 3 + 1, i * 3 + 2 };
-            triangles[i] = tri;
+    
+    BVH bvh = (BVH) { 
+            .nodes = nodes,
+            .centroids = centroids,
+            .positions = positions,
+            .triangles = triangles,
+            .triIDs = triIDs,
+            .nodesUsed = 0,
+        .useSAH = useSAH };
 
-            positions[tri.i0] = geometry.vertexData[tri.i0].position.xyz;
-            positions[tri.i1] = geometry.vertexData[tri.i1].position.xyz;
-            positions[tri.i2] = geometry.vertexData[tri.i2].position.xyz;
-
-            expandBoundsInPlace(&aabb, &positions[tri.i0]);
-            expandBoundsInPlace(&aabb, &positions[tri.i1]);
-            expandBoundsInPlace(&aabb, &positions[tri.i2]);
-
-            centroids[i] = (positions[tri.i0] + positions[tri.i1] + positions[tri.i2]) / 3.0;
-        }
-    }
-
-    BVH bvh = (BVH) { .geometry = geometry,
-                      .nodes = nodes,
-                      .centroids = centroids,
-                      .positions = positions,
-                      .triangles = triangles,
-                      .triIDs = triIDs,
-                      .nodesUsed = 0,
-                      .useSAH = useSAH };
-
-    if (N > 0) {
+    if (triCount > 0) {
         bvh.nodesUsed++;
         BVHNode *root = &nodes[0];
         root->leftFirst = 0;
-        root->triCount = N;
+        root->triCount = triCount;
         root->aabb = aabb;
         subdivideBVHNode(&bvh, 0);
     }
 
     return bvh;
 }
+
 
 void freeBVH(BVH bvh)
 {

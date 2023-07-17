@@ -141,13 +141,13 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
             geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
 
             if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
-                geo.setBuffer(firstBuffer.buffer, type: .Vertices)
+                geo.setBuffer(firstBuffer.buffer, at: VertexBufferIndex.Vertices)
                 firstBuffer.buffer.label = "Vertices"
             }
 
-            if let secondBuffer = objMesh.vertexBuffers[1] as? MTKMeshBuffer {
-                geo.setBuffer(secondBuffer.buffer, type: .Generics)
-                secondBuffer.buffer.label = "Generics"
+            if let secondBuffer = objMesh.vertexBuffers[VertexBufferIndex.Custom0.rawValue] as? MTKMeshBuffer {
+                geo.setBuffer(secondBuffer.buffer, at: VertexBufferIndex.Custom0)
+                secondBuffer.buffer.label = "Custom0"
             }
 
             guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
@@ -232,7 +232,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         let descriptor = MDLVertexDescriptor()
 
         var offset = 0
-        descriptor.attributes[VertexAttribute.Position.rawValue] = MDLVertexAttribute(
+        descriptor.attributes[VertexAttributeIndex.Position.rawValue] = MDLVertexAttribute(
             name: MDLVertexAttributePosition,
             format: .float4,
             offset: offset,
@@ -240,7 +240,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         )
         offset += MemoryLayout<Float>.size * 4
 
-        descriptor.attributes[VertexAttribute.Normal.rawValue] = MDLVertexAttribute(
+        descriptor.attributes[VertexAttributeIndex.Normal.rawValue] = MDLVertexAttribute(
             name: MDLVertexAttributeNormal,
             format: .float3,
             offset: offset,
@@ -248,7 +248,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         )
         offset += MemoryLayout<Float>.size * 4
 
-        descriptor.attributes[VertexAttribute.Texcoord.rawValue] = MDLVertexAttribute(
+        descriptor.attributes[VertexAttributeIndex.Texcoord.rawValue] = MDLVertexAttribute(
             name: MDLVertexAttributeTextureCoordinate,
             format: .float2,
             offset: offset,
@@ -257,25 +257,21 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
 
         descriptor.layouts[VertexBufferIndex.Vertices.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Vertex>.stride)
 
-        offset = 0
-
-        descriptor.attributes[VertexAttribute.Tangent.rawValue] = MDLVertexAttribute(
+        descriptor.attributes[VertexAttributeIndex.Tangent.rawValue] = MDLVertexAttribute(
             name: MDLVertexAttributeTangent,
             format: .float3,
-            offset: offset,
-            bufferIndex: VertexBufferIndex.Generics.rawValue
+            offset: 0,
+            bufferIndex: VertexBufferIndex.Custom0.rawValue
         )
 
-        offset += MemoryLayout<Float>.size * 4
-
-        descriptor.attributes[VertexAttribute.Bitangent.rawValue] = MDLVertexAttribute(
+        descriptor.attributes[VertexAttributeIndex.Bitangent.rawValue] = MDLVertexAttribute(
             name: MDLVertexAttributeBitangent,
             format: .float3,
-            offset: offset,
-            bufferIndex: VertexBufferIndex.Generics.rawValue
+            offset: MemoryLayout<Float>.size * 4,
+            bufferIndex: VertexBufferIndex.Custom0.rawValue
         )
 
-        descriptor.layouts[VertexBufferIndex.Generics.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<VertexGenerics>.stride)
+        descriptor.layouts[VertexBufferIndex.Custom0.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 8)
 
         return descriptor
     }

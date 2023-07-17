@@ -74,10 +74,6 @@ struct ContentView: View {
                         NavigationLink(destination: CameraControllerRendererView()) {
                             Label("Camera Controller", systemImage: "camera.aperture")
                         }
-
-                        NavigationLink(destination: OcclusionRendererView()) {
-                            Label("Occlusion", systemImage: "moonphase.first.quarter.inverse")
-                        }
                     }
 
                     Section(header: Text("Materials")) {
@@ -91,6 +87,10 @@ struct ContentView: View {
 
                         NavigationLink(destination: DepthMaterialRendererView()) {
                             Label("Depth Material", systemImage: "rectangle.stack")
+                        }
+
+                        NavigationLink(destination: OcclusionRendererView()) {
+                            Label("Occlusion Material", systemImage: "moonphase.first.quarter.inverse")
                         }
 
                         NavigationLink(destination: LiveCodeRendererView()) {
@@ -180,6 +180,10 @@ struct ContentView: View {
                             }
                         }
 
+                        NavigationLink(destination: BufferGeometryRendererView()) {
+                            Label("Buffer Geometry", systemImage: "camera.metering.multispot")
+                        }
+
                         NavigationLink(destination: RayMarchingRendererView()) {
                             Label("Ray Marching", systemImage: "camera.metering.multispot")
                         }
@@ -232,7 +236,7 @@ struct ContentView: View {
             }
             .navigationTitle("Satin Examples")
 
-            Renderer3DView()
+            BufferGeometryRendererView()
         }
     }
 }

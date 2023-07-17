@@ -77,7 +77,6 @@ typedef struct BVHNode {
 } BVHNode;
 
 typedef struct BVH {
-    GeometryData geometry;
     BVHNode *nodes;
     simd_float3 *centroids;
     simd_float3 *positions;

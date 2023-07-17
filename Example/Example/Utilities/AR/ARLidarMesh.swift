@@ -16,9 +16,9 @@ func ARLidarMeshVertexDescriptor() -> MTLVertexDescriptor {
     // position
     let vertexDescriptor = MTLVertexDescriptor()
 
-    vertexDescriptor.attributes[0].format = MTLVertexFormat.float3
-    vertexDescriptor.attributes[0].offset = 0
-    vertexDescriptor.attributes[0].bufferIndex = 0
+    vertexDescriptor.vertexAttributes[0].format = MTLVertexFormat.float3
+    vertexDescriptor.vertexAttributes[0].offset = 0
+    vertexDescriptor.vertexAttributes[0].bufferIndex = 0
 
     vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 3
     vertexDescriptor.layouts[0].stepRate = 1

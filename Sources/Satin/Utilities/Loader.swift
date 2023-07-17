@@ -60,10 +60,8 @@ func loadAssetChildren(device: MTLDevice, parent: Object, children: [MDLObject],
 
             let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
             geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
+            geometry.setBuffer((mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer, at: VertexBufferIndex.Vertices)
 
-            for i in 0 ..< mdlMesh.vertexBuffers.count {
-                geometry.setBuffer((mdlMesh.vertexBuffers[i] as! MTKMeshBuffer).buffer, type: .init(rawValue: i)!)
-            }
 
             if let mdlSubMeshes = mdlMesh.submeshes {
                 let mdlSubMeshesCount = mdlSubMeshes.count

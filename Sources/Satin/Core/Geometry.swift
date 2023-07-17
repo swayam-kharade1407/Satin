@@ -1,9 +1,8 @@
 //
-//  Geometry.swift
-//  Satin
+//  SatinGeometry.swift
 //
-//  Created by Reza Ali on 7/23/19.
-//  Copyright © 2019 Reza Ali. All rights reserved.
+//
+//  Created by Reza Ali on 7/12/23.
 //
 
 import Combine
@@ -13,30 +12,12 @@ import QuartzCore
 import SatinCore
 import simd
 
-
-protocol Geo {
-    var id: String { get }
-    var context: Context? { get set }
-    var vertexDescriptor: MTLVertexDescriptor { get }
-    var primitiveType: MTLPrimitiveType { get }
-    var indexType: MTLIndexType? { get }
-    var publisher: PassthroughSubject<Geo, Never> { get }
-    var vertexData: [Any] { get set }
-    var inddexData: [Any] { get set }
-
-    func setup()
-    func update(_ commandBuffer: MTLCommandBuffer)
-
-    func intersects(ray: Ray) -> Bool
-    func intersect(ray: Ray, intersections: inout [IntersectionResult])
-    func computeBounds() -> Bounds
-}
-
 open class Geometry: Codable {
     public var id: String = UUID().uuidString
 
     open var vertexDescriptor: MTLVertexDescriptor = SatinVertexDescriptor()
 
+    public var windingOrder: MTLWinding = .counterClockwise
     public var primitiveType: MTLPrimitiveType = .triangle {
         didSet {
             if primitiveType != oldValue, primitiveType != .triangle {
@@ -48,24 +29,27 @@ open class Geometry: Codable {
         }
     }
 
-    public var windingOrder: MTLWinding = .counterClockwise
-    public var indexType: MTLIndexType = .uint32
-
-    public let publisher = PassthroughSubject<Geometry, Never>()
+    public let updatePublisher = PassthroughSubject<Geometry, Never>()
 
     public var vertexData: [Vertex] = [] {
         didSet {
-            publisher.send(self)
+            updatePublisher.send(self)
             _updateVertexBuffer = true
         }
     }
 
+    public var vertexCount: Int { vertexData.count }
+
+    public var indexType: MTLIndexType = .uint32
+
     public var indexData: [UInt32] = [] {
         didSet {
-            publisher.send(self)
+            updatePublisher.send(self)
             _updateIndexBuffer = true
         }
     }
+
+    public var indexCount: Int { indexData.count }
 
     public var bvh: BVH? {
         if _updateBVH, primitiveType == .triangle {
@@ -99,6 +83,8 @@ open class Geometry: Codable {
 
     private var _updateBVH = true
     private var _bvh: BVH?
+
+    
 
     private var _updateBounds = true {
         didSet {
@@ -206,6 +192,7 @@ open class Geometry: Codable {
             } else {
                 vertexBuffer = device.makeBuffer(bytes: vertexData, length: verticesSize, options: [])
                 vertexBuffer?.label = "Vertices"
+                vertexBuffers[VertexBufferIndex.Vertices] = vertexBuffer
             }
         } else {
             vertexBuffer = nil
@@ -224,7 +211,7 @@ open class Geometry: Codable {
     }
 
     private func setupBVH() {
-        _bvh = createBVH(getGeometryData(), false)
+        _bvh = createBVHFromGeometryData(getGeometryData(), false)
         _updateBVH = false
     }
 
@@ -286,14 +273,24 @@ open class Geometry: Codable {
         computeNormalsOfGeometryData(&data)
     }
 
-    public func setBuffer(_ buffer: MTLBuffer?, type: VertexBufferIndex) {
-        vertexBuffers[type] = buffer
-        buffer?.label = type.label
+    public func setBuffer(_ buffer: MTLBuffer?, at index: VertexBufferIndex) {
+        vertexBuffers[index] = buffer
     }
 
     public func transform(_ matrix: simd_float4x4) {
         transformVertices(&vertexData, Int32(vertexData.count), matrix)
     }
+
+    // MARK: - Bounds
+
+    open func computeBounds() -> Bounds {
+        if primitiveType == .triangle, let bvh = bvh, let node = bvh.getNode(index: 0) {
+            return node.aabb
+        }
+        return computeBoundsFromVertices(&vertexData, Int32(vertexData.count))
+    }
+
+    // MARK: - Intersects
 
     public func intersects(ray: Ray) -> Bool {
         return rayBoundsIntersect(ray, bounds)
@@ -305,12 +302,7 @@ open class Geometry: Codable {
         }
     }
 
-    open func computeBounds() -> Bounds {
-        if primitiveType == .triangle, let bvh = bvh, let node = bvh.getNode(index: 0) {
-            return node.aabb
-        }
-        return computeBoundsFromVertices(&vertexData, Int32(vertexData.count))
-    }
+    // MARK: - Deinit
 
     deinit {
         indexData = []
@@ -335,6 +327,6 @@ extension Geometry: Equatable {
 
 extension Geometry: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self).hashValue)
+        hasher.combine(id)
     }
 }

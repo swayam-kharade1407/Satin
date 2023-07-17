@@ -51,131 +51,22 @@ public func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescri
     if vertexDescriptor == SatinVertexDescriptor() {
         vertexSource = VertexSource.get()
     } else {
-        var vertexDataType: [String] = []
-        var vertexName: [String] = []
-        var vertexAttributes: [String] = []
+        var attributeDataType: [String] = []
+        var attributeName: [String] = []
+        var attributeAttribute: [String] = []
 
-        for i in 0 ..< 31 {
-            let format = vertexDescriptor.attributes[i].format
-            switch format {
-            case .invalid:
-                break
-            case .uchar2:
-                vertexDataType.append("uchar2")
-            case .uchar3:
-                vertexDataType.append("uchar3")
-            case .uchar4:
-                vertexDataType.append("uchar4")
-            case .char2:
-                vertexDataType.append("char2")
-            case .char3:
-                vertexDataType.append("char3")
-            case .char4:
-                vertexDataType.append("char4")
-            case .uchar2Normalized:
-                vertexDataType.append("uchar2")
-            case .uchar3Normalized:
-                vertexDataType.append("uchar3")
-            case .uchar4Normalized:
-                vertexDataType.append("uchar4")
-            case .char2Normalized:
-                vertexDataType.append("char2")
-            case .char3Normalized:
-                vertexDataType.append("char3")
-            case .char4Normalized:
-                vertexDataType.append("char4")
-            case .ushort2:
-                vertexDataType.append("ushort2")
-            case .ushort3:
-                vertexDataType.append("ushort3")
-            case .ushort4:
-                vertexDataType.append("ushort4")
-            case .short2:
-                vertexDataType.append("short2")
-            case .short3:
-                vertexDataType.append("short3")
-            case .short4:
-                vertexDataType.append("short4")
-            case .ushort2Normalized:
-                vertexDataType.append("ushort2")
-            case .ushort3Normalized:
-                vertexDataType.append("ushort3")
-            case .ushort4Normalized:
-                vertexDataType.append("ushort4")
-            case .short2Normalized:
-                vertexDataType.append("short2")
-            case .short3Normalized:
-                vertexDataType.append("short3")
-            case .short4Normalized:
-                vertexDataType.append("short4")
-            case .half2:
-                vertexDataType.append("half2")
-            case .half3:
-                vertexDataType.append("half3")
-            case .half4:
-                vertexDataType.append("half4")
-            case .float:
-                vertexDataType.append("float")
-            case .float2:
-                vertexDataType.append("float2")
-            case .float3:
-                vertexDataType.append("float3")
-            case .float4:
-                vertexDataType.append("float4")
-            case .int:
-                vertexDataType.append("int")
-            case .int2:
-                vertexDataType.append("int2")
-            case .int3:
-                vertexDataType.append("int3")
-            case .int4:
-                vertexDataType.append("int4")
-            case .uint:
-                vertexDataType.append("uint")
-            case .uint2:
-                vertexDataType.append("uint2")
-            case .uint3:
-                vertexDataType.append("uint3")
-            case .uint4:
-                vertexDataType.append("uint4")
-            case .int1010102Normalized:
-                vertexDataType.append("long4")
-            case .uint1010102Normalized:
-                vertexDataType.append("long4")
-            case .uchar4Normalized_bgra:
-                vertexDataType.append("uchar4")
-            case .uchar:
-                vertexDataType.append("uchar")
-            case .char:
-                vertexDataType.append("char")
-            case .ucharNormalized:
-                vertexDataType.append("uchar")
-            case .charNormalized:
-                vertexDataType.append("char")
-            case .ushort:
-                vertexDataType.append("ushort")
-            case .short:
-                vertexDataType.append("short")
-            case .ushortNormalized:
-                vertexDataType.append("ushort")
-            case .shortNormalized:
-                vertexDataType.append("short")
-            case .half:
-                vertexDataType.append("half")
-
-            @unknown default:
-                fatalError("Unknown vertex format: \(format)")
-            }
-
-            if let attri = VertexAttribute(rawValue: i) {
-                vertexName.append(attri.name)
-                vertexAttributes.append(attri.description)
+        for index in VertexAttributeIndex.allCases {
+            let format = vertexDescriptor.attributes[index.rawValue].format
+            if let dataType = format.dataType {
+                attributeDataType.append(dataType)
+                attributeName.append(index.name)
+                attributeAttribute.append(index.description)
             }
         }
 
         var structMembers: [String] = []
-        for i in 0 ..< vertexDataType.count {
-            structMembers.append("\t\(vertexDataType[i]) \(vertexName[i]) [[attribute(VertexAttribute\(vertexAttributes[i]))]];")
+        for i in 0 ..< attributeDataType.count {
+            structMembers.append("\t\(attributeDataType[i]) \(attributeName[i]) [[attribute(VertexAttribute\(attributeAttribute[i]))]];")
         }
 
         if !structMembers.isEmpty {

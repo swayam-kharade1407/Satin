@@ -11,8 +11,20 @@
 
 Bounds createBounds(void)
 {
-    return (Bounds) { .min = { INFINITY, INFINITY, INFINITY },
-                      .max = { -INFINITY, -INFINITY, -INFINITY } };
+    return (Bounds) { .min = { INFINITY, INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY, -INFINITY } };
+}
+
+Bounds computeBoundsFromFloatData(const void *data, int stride, int count)
+{
+    if (count > 0) {
+        Bounds result = createBounds();
+        for (int i = 0; i < count; i++) {
+            const float *ptr = (float *)data + i * stride;
+            result = expandBounds(result, simd_make_float3(*ptr, *(ptr+1), *(ptr+2)));
+        }
+        return result;
+    }
+    return createBounds();
 }
 
 Bounds computeBoundsFromVertices(const Vertex *vertices, int count)
@@ -27,8 +39,7 @@ Bounds computeBoundsFromVertices(const Vertex *vertices, int count)
     return createBounds();
 }
 
-Bounds computeBoundsFromVerticesAndTransform(const Vertex *vertices, int count,
-                                             simd_float4x4 transform)
+Bounds computeBoundsFromVerticesAndTransform(const Vertex *vertices, int count, simd_float4x4 transform)
 {
     if (count > 0) {
         Bounds result = createBounds();

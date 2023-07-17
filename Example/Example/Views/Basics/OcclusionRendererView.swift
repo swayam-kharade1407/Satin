@@ -13,7 +13,7 @@ struct OcclusionRendererView: View {
     var body: some View {
         ForgeView(renderer: OcclusionRenderer())
             .ignoresSafeArea()
-            .navigationTitle("Occlusion")
+            .navigationTitle("Occlusion Material")
     }
 }
 

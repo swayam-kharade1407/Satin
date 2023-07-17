@@ -13,7 +13,6 @@ public struct IntersectionResult {
     public let distance: Float
     public let normal: simd_float3
     public let position: simd_float3
-    public let uv: simd_float2
     public let primitiveIndex: UInt32
 }
 
@@ -43,10 +42,6 @@ public extension BVH {
         return positions.advanced(by: Int(index)).pointee
     }
 
-    func getVertex(index: UInt32) -> Vertex {
-        return geometry.vertexData[Int(index)]
-    }
-
     func getTriangle(index: UInt32) -> TriangleIndices {
         return triangles.advanced(by: Int(index)).pointee
     }
@@ -69,14 +64,11 @@ public extension BVH {
             let b = getPosition(index: triangle.i1)
             let c = getPosition(index: triangle.i2)
 
-            var time: Float = 0.0
+            var time: Float = -1.0
 
             if rayTriangleIntersectionTime(ray, a, b, c, &time), time > .leastNonzeroMagnitude {
                 let intersection = ray.at(time)
                 let bc = getBarycentricCoordinates(intersection, a, b, c)
-                let v0 = getVertex(index: triangle.i0)
-                let v1 = getVertex(index: triangle.i1)
-                let v2 = getVertex(index: triangle.i2)
 
                 intersections.append(
                     IntersectionResult(
@@ -84,7 +76,6 @@ public extension BVH {
                         distance: simd_length(intersection - ray.origin),
                         normal: simd_normalize(simd_cross(b - a, c - a)),
                         position: intersection,
-                        uv: v0.uv * bc.x + v1.uv * bc.y + v2.uv * bc.z,
                         primitiveIndex: primitiveIndex
                     )
                 )

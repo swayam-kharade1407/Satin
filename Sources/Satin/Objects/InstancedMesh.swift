@@ -223,7 +223,6 @@ public class InstancedMesh: Mesh {
                     distance: intersection.distance,
                     normal: intersection.normal,
                     position: simd_make_float3(getWorldMatrixAt(index: instance) * simd_make_float4(intersection.position, 1.0)),
-                    uv: intersection.uv,
                     primitiveIndex: intersection.primitiveIndex,
                     object: self,
                     submesh: nil,

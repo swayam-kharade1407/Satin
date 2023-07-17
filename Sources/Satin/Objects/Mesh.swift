@@ -102,7 +102,6 @@ open class Mesh: Object, Renderable {
     public init(label: String = "Mesh", geometry: Geometry, material: Material?) {
         self.geometry = geometry
         self.material = material
-        material?.vertexDescriptor = geometry.vertexDescriptor
         super.init(label)
     }
 
@@ -173,6 +172,7 @@ open class Mesh: Object, Renderable {
 
     open func setupMaterial() {
         guard let context = context, let material = material else { return }
+        material.vertexDescriptor = geometry.vertexDescriptor
         material.context = context
     }
 
@@ -255,7 +255,7 @@ open class Mesh: Object, Renderable {
             if let indexBuffer = geometry.indexBuffer {
                 renderEncoder.drawIndexedPrimitives(
                     type: geometry.primitiveType,
-                    indexCount: geometry.indexData.count,
+                    indexCount: geometry.indexCount,
                     indexType: geometry.indexType,
                     indexBuffer: indexBuffer,
                     indexBufferOffset: 0,
@@ -265,7 +265,7 @@ open class Mesh: Object, Renderable {
                 renderEncoder.drawPrimitives(
                     type: geometry.primitiveType,
                     vertexStart: 0,
-                    vertexCount: geometry.vertexData.count,
+                    vertexCount: geometry.vertexCount,
                     instanceCount: instanceCount
                 )
             }
@@ -308,13 +308,20 @@ open class Mesh: Object, Renderable {
                 worldMatrix * simd_make_float4(geometryIntersection.position, 1.0)
             )
 
+            /*
+             let v0 = getVertex(index: triangle.i0)
+             let v1 = getVertex(index: triangle.i1)
+             let v2 = getVertex(index: triangle.i2)
+
+             uv: v0.uv * bc.x + v1.uv * bc.y + v2.uv * bc.z,
+             */
+
             results.append(
                 RaycastResult(
                     barycentricCoordinates: geometryIntersection.barycentricCoordinates,
                     distance: simd_length(hitPosition - ray.origin),
                     normal: normalMatrix * geometryIntersection.normal,
                     position: hitPosition,
-                    uv: geometryIntersection.uv,
                     primitiveIndex: geometryIntersection.primitiveIndex,
                     object: self,
                     submesh: nil
