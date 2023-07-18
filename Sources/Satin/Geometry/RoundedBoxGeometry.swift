@@ -7,29 +7,46 @@
 
 import SatinCore
 
-public final class RoundedBoxGeometry: Geometry {
-    override public init() {
+public final class RoundedBoxGeometry: SatinGeometry {
+    public var size: simd_float3 {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radius: Float {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var resolution: Int {
+        didSet {
+            if oldValue != resolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(size: Float = 2, radius: Float = 0.25, resolution: Int = 1) {
+        self.size = .init(repeating: 2.0)
+        self.radius = radius
+        self.resolution = resolution
         super.init()
-        setupData(width: 2, height: 2, depth: 2, radius: 0.25, res: 1)
     }
 
-    public init(size: Float, radius: Float, res: Int) {
+    public init(size: simd_float3 = .init(repeating: 2.0), radius: Float = 0.25, resolution: Int = 1) {
+        self.size = size
+        self.radius = radius
+        self.resolution = resolution
         super.init()
-        setupData(width: size, height: size, depth: size, radius: radius, res: res)
     }
 
-    public init(size: (width: Float, height: Float, depth: Float), radius: Float, res: Int) {
-        super.init()
-        setupData(width: size.width, height: size.height, depth: size.depth, radius: radius, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(width: Float, height: Float, depth: Float, radius: Float, res: Int) {
-        var geometryData = generateRoundedBoxGeometryData(width, height, depth, radius, Int32(res))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateRoundedBoxGeometryData(size.x, size.y, size.z, radius, Int32(resolution))
     }
 }

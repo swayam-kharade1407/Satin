@@ -7,24 +7,31 @@
 
 import SatinCore
 
-public final class OctaSphereGeometry: Geometry {
-    override public init() {
+public final class OctaSphereGeometry: SatinGeometry {
+    public var radius: Float = 1 {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var resolution: Int = 1 {
+        didSet {
+            if oldValue != resolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+
+    public init(radius: Float, resolution: Int) {
+        self.radius = radius
+        self.resolution = resolution
         super.init()
-        setupData(radius: 1, res: 1)
     }
 
-    public init(radius: Float, res: Int) {
-        super.init()
-        setupData(radius: radius, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(radius: Float, res: Int) {
-        var geometryData = generateOctaSphereGeometryData(radius, Int32(res))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateOctaSphereGeometryData(radius, Int32(resolution))
     }
 }

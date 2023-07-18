@@ -79,34 +79,36 @@ class ExportGeometryRenderer: BaseRenderer {
         let meshes = getMeshes(scene, true, false)
 
         for mesh in meshes {
-            guard let indexBuffer = mesh.geometry.indexBuffer else { continue }
+//            guard let indexBuffer = mesh.geometry.indexBuffer else { continue }
+//
+//            let geometry = mesh.geometry
+//
+//            let vertexCount = geometry.vertexData.count
+//            let vertexStride = MemoryLayout<Vertex>.stride
+//
+//            let indexCount = geometry.indexData.count
+//            let bytesPerIndex = MemoryLayout<UInt32>.size
+//
+//            let byteCountVertices = vertexCount * vertexStride
+//            let byteCountFaces = indexCount * bytesPerIndex
+//
+//            var vertexData: [Vertex] = []
+//            for var vertex in geometry.vertexData {
+//                vertex.position = mesh.worldMatrix * vertex.position
+//                vertexData.append(vertex)
+//            }
+//
+//            vertexData.withUnsafeMutableBufferPointer { vertexPointer in
+//                let mdlVertexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: vertexPointer.baseAddress!, count: byteCountVertices, deallocator: .none), type: .vertex)
+//                let mdlIndexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: indexBuffer.contents(), count: byteCountFaces, deallocator: .none), type: .index)
+//
+//                let submesh = MDLSubmesh(indexBuffer: mdlIndexBuffer, indexCount: geometry.indexData.count, indexType: .uInt32, geometryType: .triangles, material: nil)
+//
+//                let mesh = MDLMesh(vertexBuffer: mdlVertexBuffer, vertexCount: geometry.vertexData.count, descriptor: SatinModelIOVertexDescriptor(), submeshes: [submesh])
+//                asset.add(mesh)
 
-            let geometry = mesh.geometry
-
-            let vertexCount = geometry.vertexData.count
-            let vertexStride = MemoryLayout<Vertex>.stride
-
-            let indexCount = geometry.indexData.count
-            let bytesPerIndex = MemoryLayout<UInt32>.size
-
-            let byteCountVertices = vertexCount * vertexStride
-            let byteCountFaces = indexCount * bytesPerIndex
-
-            var vertexData: [Vertex] = []
-            for var vertex in geometry.vertexData {
-                vertex.position = mesh.worldMatrix * vertex.position
-                vertexData.append(vertex)
-            }
-
-            vertexData.withUnsafeMutableBufferPointer { vertexPointer in
-                let mdlVertexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: vertexPointer.baseAddress!, count: byteCountVertices, deallocator: .none), type: .vertex)
-                let mdlIndexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: indexBuffer.contents(), count: byteCountFaces, deallocator: .none), type: .index)
-
-                let submesh = MDLSubmesh(indexBuffer: mdlIndexBuffer, indexCount: geometry.indexData.count, indexType: .uInt32, geometryType: .triangles, material: nil)
-
-                let mesh = MDLMesh(vertexBuffer: mdlVertexBuffer, vertexCount: geometry.vertexData.count, descriptor: SatinModelIOVertexDescriptor(), submeshes: [submesh])
-                asset.add(mesh)
-            }
+//            }
+            fatalError("implement this function")
         }
 
         if MDLAsset.canExportFileExtension("obj") {

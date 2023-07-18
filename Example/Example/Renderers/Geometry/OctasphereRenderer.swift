@@ -13,7 +13,7 @@ import Forge
 import Satin
 
 class OctasphereRenderer: BaseRenderer {
-    lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, res: 3), material: BasicDiffuseMaterial(0.75))
+    lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, resolution: 3), material: BasicDiffuseMaterial(0.75))
     lazy var scene = Object("Scene", [mesh])
     lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 

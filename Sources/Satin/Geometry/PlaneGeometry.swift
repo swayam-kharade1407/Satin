@@ -8,7 +8,7 @@
 
 import SatinCore
 
-public final class PlaneGeometry: Geometry {
+public final class PlaneGeometry: SatinGeometry {
     public enum PlaneOrientation: Int32 {
         case xy = 0 // points in +z direction
         case yx = 1 // points in -z direction
@@ -18,88 +18,74 @@ public final class PlaneGeometry: Geometry {
         case zy = 5 // points in -x direction
     }
 
-    public init(size: Float = 2) {
+
+    var width: Float {
+        get {
+            size.x
+        }
+        set {
+            size.x = newValue
+        }
+    }
+
+    var height: Float {
+        get {
+            size.y
+        }
+        set {
+            size.y = newValue
+        }
+    }
+
+    var size: simd_float2 = .init(repeating: 2) {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var resolution: simd_int2 = .init(repeating: 1)  {
+        didSet {
+            if oldValue != resolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var orientation: PlaneOrientation = .xy  {
+        didSet {
+            if oldValue != orientation {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var centered: Bool = true  {
+        didSet {
+            if oldValue != centered {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(size: Float = 2, resolution: Int = 1, orientation: PlaneOrientation = .xy, centered: Bool = true) {
+        self.size = .init(repeating: size)
+        self.resolution = .init(repeating: Int32(resolution))
+        self.orientation = orientation
+        self.centered = centered
         super.init()
-        setupData(width: size, height: size, resU: 1, resV: 1)
     }
 
-    public init(size: Float, plane: PlaneOrientation = .xy) {
+    public init(width: Float = 2, height: Float = 2, widthResolution: Int = 1, heightResolution: Int = 1, orientation: PlaneOrientation = .xy, centered: Bool = true) {
+        self.size = simd_make_float2(width, height)
+        self.resolution = simd_make_int2(Int32(widthResolution), Int32(heightResolution))
+        self.orientation = orientation
+        self.centered = centered
         super.init()
-        setupData(width: size, height: size, resU: 1, resV: 1, plane: plane)
     }
 
-    public init(size: Float, plane: PlaneOrientation = .xy, centered: Bool = true) {
-        super.init()
-        setupData(width: size, height: size, resU: 1, resV: 1, plane: plane, centered: centered)
-    }
-
-    public init(size: Float, res: Int) {
-        super.init()
-        setupData(width: size, height: size, resU: res, resV: res)
-    }
-
-    public init(size: Float, res: Int, plane: PlaneOrientation = .xy) {
-        super.init()
-        setupData(width: size, height: size, resU: res, resV: res, plane: plane)
-    }
-
-    public init(size: Float, res: Int, plane: PlaneOrientation = .xy, centered: Bool = true) {
-        super.init()
-        setupData(width: size, height: size, resU: res, resV: res, plane: plane, centered: centered)
-    }
-
-    public init(size: (width: Float, height: Float)) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: 1, resV: 1)
-    }
-
-    public init(size: (width: Float, height: Float), plane: PlaneOrientation = .xy) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: 1, resV: 1, plane: plane)
-    }
-
-    public init(size: (width: Float, height: Float), plane: PlaneOrientation = .xy, centered: Bool = true) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: 1, resV: 1, plane: plane, centered: centered)
-    }
-
-    public init(size: (width: Float, height: Float), res: Int) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res, resV: res)
-    }
-
-    public init(size: (width: Float, height: Float), res: Int, plane: PlaneOrientation = .xy) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res, resV: res, plane: plane)
-    }
-
-    public init(size: (width: Float, height: Float), res: Int, plane: PlaneOrientation = .xy, centered: Bool = true) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res, resV: res, plane: plane, centered: centered)
-    }
-
-    public init(size: (width: Float, height: Float), res: (u: Int, v: Int)) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res.u, resV: res.v)
-    }
-
-    public init(size: (width: Float, height: Float), res: (u: Int, v: Int), plane: PlaneOrientation = .xy) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res.u, resV: res.v, plane: plane)
-    }
-
-    public init(size: (width: Float, height: Float), res: (u: Int, v: Int), plane: PlaneOrientation = .xy, centered: Bool = true) {
-        super.init()
-        setupData(width: size.width, height: size.height, resU: res.u, resV: res.v, plane: plane, centered: centered)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(width: Float, height: Float, resU: Int, resV: Int, plane: PlaneOrientation = .xy, centered: Bool = true) {
-        var geometryData = generatePlaneGeometryData(width, height, Int32(resU), Int32(resV), plane.rawValue, centered)
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generatePlaneGeometryData(size.x, size.y, resolution.x, resolution.y, orientation.rawValue, centered)
     }
 }

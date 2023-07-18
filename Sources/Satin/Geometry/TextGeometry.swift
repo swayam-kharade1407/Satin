@@ -5,15 +5,15 @@
 //  Created by Reza Ali on 1/10/22.
 //
 
-import Metal
 import CoreText
 import Foundation
-import simd
+import Metal
 import SatinCore
+import simd
 
 extension CTTextAlignment: Codable {}
 
-open class TextGeometry: Geometry {
+public class TextGeometry: SatinGeometry {
     public enum VerticalAlignment: Int, Codable {
         case top = 0
         case center = 1
@@ -23,7 +23,7 @@ open class TextGeometry: Geometry {
     public var verticalAlignment: VerticalAlignment = .center {
         didSet {
             if verticalAlignment != oldValue {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -31,7 +31,7 @@ open class TextGeometry: Geometry {
     public var textAlignment: CTTextAlignment = .natural {
         didSet {
             if textAlignment != oldValue {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -39,7 +39,7 @@ open class TextGeometry: Geometry {
     public var text = "" {
         didSet {
             if text != oldValue {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -47,7 +47,7 @@ open class TextGeometry: Geometry {
     public var pivot = simd_float2(repeating: 0.0) {
         didSet {
             if pivot != oldValue {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -55,7 +55,7 @@ open class TextGeometry: Geometry {
     public var textBounds = CGSize(width: -1, height: -1) {
         didSet {
             if textBounds != oldValue {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -63,7 +63,7 @@ open class TextGeometry: Geometry {
     public var kern: Float = 0.0 {
         didSet {
             if oldValue != kern {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -71,7 +71,7 @@ open class TextGeometry: Geometry {
     public var lineSpacing: Float = 0.0 {
         didSet {
             if oldValue != kern {
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -81,7 +81,7 @@ open class TextGeometry: Geometry {
             if fontName != oldValue {
                 ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
                 needsClear = true
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -91,7 +91,7 @@ open class TextGeometry: Geometry {
             if fontSize != oldValue {
                 ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
                 needsClear = true
-                needsSetup = true
+                _updateGeometryData = true
             }
         }
     }
@@ -266,9 +266,9 @@ open class TextGeometry: Geometry {
 
     var needsClear = false
 
-    var needsSetup = true {
+    override public var _updateGeometryData: Bool {
         didSet {
-            if needsSetup {
+            if _updateGeometryData {
                 needsTextSetup = true
             }
         }
@@ -292,64 +292,11 @@ open class TextGeometry: Geometry {
         self.lineSpacing = lineSpacing
         ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
         super.init()
-        updateData()
-    }
-
-    public required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        verticalAlignment = try values.decode(VerticalAlignment.self, forKey: .verticalAlignment)
-        textAlignment = try values.decode(CTTextAlignment.self, forKey: .textAlignment)
-        text = try values.decode(String.self, forKey: .text)
-        pivot = try values.decode(simd_float2.self, forKey: .pivot)
-        textBounds = try values.decode(CGSize.self, forKey: .textBounds)
-        lineSpacing = try values.decode(Float.self, forKey: .lineSpacing)
-        fontName = try values.decode(String.self, forKey: .fontName)
-        fontSize = try values.decode(Float.self, forKey: .fontSize)
-        ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
-        try super.init(from: decoder)
-    }
-
-    override open func encode(to encoder: Encoder) throws {
-        try super.encode(to: encoder)
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(verticalAlignment, forKey: .verticalAlignment)
-        try container.encode(textAlignment, forKey: .textAlignment)
-        try container.encode(text, forKey: .text)
-        try container.encode(pivot, forKey: .pivot)
-        try container.encode(textBounds, forKey: .textBounds)
-        try container.encode(kern, forKey: .kern)
-        try container.encode(lineSpacing, forKey: .lineSpacing)
-        try container.encode(fontName, forKey: .fontName)
-        try container.encode(fontSize, forKey: .fontSize)
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case verticalAlignment
-        case textAlignment
-        case text
-        case pivot
-        case textBounds
-        case kern
-        case lineSpacing
-        case fontName
-        case fontSize
-    }
-
-    override public func update(_ commandBuffer: MTLCommandBuffer) {
-        updateData()
-        super.update(commandBuffer)
-    }
-
-    private func updateData() {
-        if needsSetup {
-            setupData()
-            needsSetup = false
-        }
     }
 
     var angleLimit: Float = degToRad(7.5)
 
-    func setupData() {
+    override public func generateGeometryData() -> GeometryData {
         var gData = GeometryData(vertexCount: 0, vertexData: nil, indexCount: 0, indexData: nil)
 
         if needsClear {
@@ -378,8 +325,7 @@ open class TextGeometry: Geometry {
             }
         }
 
-        setFrom(&gData)
-        freeGeometryData(&gData)
+        return gData
     }
 
     func addGlyphGeometryData(_ gData: inout GeometryData, _ charOffset: Int, _ glyph: CGGlyph, _ glyphPosition: CGPoint, _ origin: CGPoint) {
@@ -410,8 +356,7 @@ open class TextGeometry: Geometry {
                 createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
                 copyTriangleDataToGeometryData(&triData, &cData)
                 freeTriangleData(&triData)
-            }
-            else {
+            } else {
                 print("Triangulation for \(char) FAILED!")
             }
 

@@ -8,32 +8,39 @@
 
 import SatinCore
 
-public final class SphereGeometry: Geometry {
-    override public init() {
+public final class SphereGeometry: SatinGeometry {
+    public var radius: Float {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var verticalResolution: Int {
+        didSet {
+            if oldValue != verticalResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(radius: Float, angularResolution: Int, verticalResolution: Int) {
+        self.radius = radius
+        self.angularResolution = angularResolution
+        self.verticalResolution = verticalResolution
         super.init()
-        setupData(radius: 1, res: (angular: 60, vertical: 60))
     }
 
-    public convenience init(radius: Float) {
-        self.init(radius: radius, res: (60, 60))
-    }
-
-    public convenience init(radius: Float, res: Int) {
-        self.init(radius: radius, res: (res, res))
-    }
-
-    public init(radius: Float, res: (angular: Int, vertical: Int)) {
-        super.init()
-        setupData(radius: radius, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(radius: Float, res: (angular: Int, vertical: Int)) {
-        var geometryData = generateSphereGeometryData(radius, Int32(res.angular), Int32(res.vertical))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateSphereGeometryData(radius, Int32(angularResolution), Int32(verticalResolution))
     }
 }

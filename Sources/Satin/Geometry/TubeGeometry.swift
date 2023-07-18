@@ -7,24 +7,66 @@
 
 import SatinCore
 
-public final class TubeGeometry: Geometry {
-    override public init() {
+public final class TubeGeometry: SatinGeometry {
+    public var radius: Float {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var height: Float {
+        didSet {
+            if oldValue != height {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var startAngle: Float {
+        didSet {
+            if oldValue != startAngle {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var endAngle: Float {
+        didSet {
+            if oldValue != endAngle {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var verticalResolution: Int {
+        didSet {
+            if oldValue != verticalResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(radius: Float, height: Float, startAngle: Float, endAngle: Float, angularResolution: Int, verticalResolution: Int) {
+        self.radius = radius
+        self.height = height
+        self.startAngle = startAngle
+        self.endAngle = endAngle
+        self.angularResolution = angularResolution
+        self.verticalResolution = verticalResolution
         super.init()
-        setupData(size: (1, 2), angles: (0.0, Float.pi * 2.0), res: (60, 1))
     }
 
-    public init(size: (radius: Float, height: Float), angles: (start: Float, end: Float), res: (angular: Int, vertical: Int)) {
-        super.init()
-        setupData(size: size, angles: angles, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: (radius: Float, height: Float), angles: (start: Float, end: Float), res: (angular: Int, vertical: Int)) {
-        var geometryData = generateTubeGeometryData(size.radius, size.height, angles.start, angles.end, Int32(res.angular), Int32(res.vertical))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateTubeGeometryData(radius, height, startAngle, endAngle, Int32(angularResolution), Int32(verticalResolution))
     }
 }

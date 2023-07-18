@@ -33,7 +33,7 @@ class ContactShadowRenderer: BaseRenderer {
     // MARK: - 3D Scene
 
     lazy var spheres: Object = {
-        let geometry = RoundedBoxGeometry(size: (1, 1, 1), radius: 0.25, res: 3)
+        let geometry = RoundedBoxGeometry(size: 1, radius: 0.25, resolution: 3)
         let geometrySize = geometry.bounds.size
 
         let material = MatCapMaterial(texture: matcapTexture)
@@ -118,7 +118,7 @@ class ContactShadowRenderer: BaseRenderer {
     lazy var spheresContainer = Object("Spheres Container", [spheres, floorMesh])
 
     lazy var scene = Object("Scene", [spheresContainer])
-    lazy var floorMesh = Mesh(geometry: PlaneGeometry(size: 1.0, plane: .zx), material: BasicTextureMaterial())
+    lazy var floorMesh = Mesh(geometry: PlaneGeometry(size: 1.0, orientation: .zx), material: BasicTextureMaterial())
 
     lazy var camera: PerspectiveCamera = {
         var camera = PerspectiveCamera(position: [20, 20, 20], near: 0.01, far: 100.0, fov: 10)

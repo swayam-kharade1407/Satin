@@ -13,6 +13,120 @@ import MetalKit
 import Forge
 import Satin
 
+class SuperShapeGeometry: SatinGeometry {
+    var r1: Float { didSet {
+        if oldValue != r1 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var a1: Float { didSet {
+        if oldValue != a1 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var b1: Float { didSet {
+        if oldValue != b1 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var m1: Float { didSet {
+        if oldValue != m1 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n11: Float { didSet {
+        if oldValue != n11 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n21: Float { didSet {
+        if oldValue != n21 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n31: Float { didSet {
+        if oldValue != n31 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var r2: Float { didSet {
+        if oldValue != r2 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var a2: Float { didSet {
+        if oldValue != a2 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var b2: Float { didSet {
+        if oldValue != b2 {
+            _updateGeometryData = true
+        }
+    }}
+    var m2: Float { didSet {
+        if oldValue != m2 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n12: Float { didSet {
+        if oldValue != n12 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n22: Float { didSet {
+        if oldValue != n22 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var n32: Float { didSet {
+        if oldValue != n32 {
+            _updateGeometryData = true
+        }
+    }}
+
+    var res: Int { didSet {
+        if oldValue != res {
+            _updateGeometryData = true
+        }
+    }}
+
+    init(r1: Float, a1: Float, b1: Float, m1: Float, n11: Float, n21: Float, n31: Float, r2: Float, a2: Float, b2: Float, m2: Float, n12: Float, n22: Float, n32: Float, res: Int) {
+        self.r1 = r1
+        self.a1 = a1
+        self.b1 = b1
+        self.m1 = m1
+        self.n11 = n11
+        self.n21 = n21
+        self.n31 = n31
+        self.r2 = r2
+        self.a2 = a2
+        self.b2 = b2
+        self.m2 = m2
+        self.n12 = n12
+        self.n22 = n22
+        self.n32 = n32
+        self.res = res
+        super.init()
+    }
+
+    override public func generateGeometryData() -> GeometryData {
+        generateSuperShapeGeometryData(r1, a1, b1, m1, n11, n21, n31, r2, a2, b2, m2, n12, n22, n32, Int32(res), Int32(res))
+    }
+}
+
 class SuperShapesRenderer: BaseRenderer {
     var cancellables = Set<AnyCancellable>()
 
@@ -24,7 +138,6 @@ class SuperShapesRenderer: BaseRenderer {
         }
     }
 
-    var resParam = IntParameter("Resolution", 300, 3, 300, .slider)
     var r1Param = FloatParameter("R1", 1.0, 0, 2, .inputfield)
     var a1Param = FloatParameter("A1", 1.0, 0.0, 5.0, .slider)
     var b1Param = FloatParameter("B1", 1.0, 0.0, 5.0, .slider)
@@ -39,10 +152,29 @@ class SuperShapesRenderer: BaseRenderer {
     var n12Param = FloatParameter("N12", 1.0, 0.0, 100.0, .slider)
     var n22Param = FloatParameter("N22", 1.371561, 0.0, 100.0, .slider)
     var n32Param = FloatParameter("N32", 0.651718, 0.0, 100.0, .slider)
+    var resParam = IntParameter("Resolution", 300, 3, 300, .slider)
 
     var parameters: ParameterGroup!
 
-    var mesh = Mesh(geometry: Geometry(), material: BasicDiffuseMaterial(0.7))
+    lazy var geometry = SuperShapeGeometry(
+        r1: r1Param.value,
+        a1: a1Param.value,
+        b1: b1Param.value,
+        m1: m1Param.value,
+        n11: n11Param.value,
+        n21: n21Param.value,
+        n31: n31Param.value,
+        r2: r2Param.value,
+        a2: a2Param.value,
+        b2: b2Param.value,
+        m2: m2Param.value,
+        n12: n12Param.value,
+        n22: n22Param.value,
+        n32: n32Param.value,
+        res: resParam.value
+    )
+
+    lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
 
     lazy var camera: PerspectiveCamera = {
         let camera = PerspectiveCamera(position: simd_make_float3(2.0, 1.0, 4.0), near: 0.001, far: 200.0)
@@ -93,26 +225,21 @@ class SuperShapesRenderer: BaseRenderer {
     }
 
     func setupGeometry() {
-        let res = Int32(resParam.value)
-        var geoData = generateSuperShapeGeometryData(
-            r1Param.value,
-            a1Param.value,
-            b1Param.value,
-            m1Param.value,
-            n11Param.value,
-            n21Param.value,
-            n31Param.value,
-            r2Param.value,
-            a2Param.value,
-            b2Param.value,
-            m2Param.value,
-            n12Param.value,
-            n22Param.value,
-            n32Param.value,
-            res, res
-        )
-        mesh.geometry = Geometry(&geoData)
-        freeGeometryData(&geoData)
+        geometry.r1 = r1Param.value
+        geometry.a1 = a1Param.value
+        geometry.b1 = b1Param.value
+        geometry.m1 = m1Param.value
+        geometry.n11 = n11Param.value
+        geometry.n21 = n21Param.value
+        geometry.n31 = n31Param.value
+        geometry.r2 = r2Param.value
+        geometry.a2 = a2Param.value
+        geometry.b2 = b2Param.value
+        geometry.m2 = m2Param.value
+        geometry.n12 = n12Param.value
+        geometry.n22 = n22Param.value
+        geometry.n32 = n32Param.value
+        geometry.res = resParam.value
     }
 
     func setupObservers() {

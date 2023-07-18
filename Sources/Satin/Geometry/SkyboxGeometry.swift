@@ -6,19 +6,21 @@
 
 import SatinCore
 
-public final class SkyboxGeometry: Geometry {
+public final class SkyboxGeometry: SatinGeometry {
+    public var size: Float {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
     public init(size: Float = 2) {
+        self.size = size
         super.init()
-        setupData(size: size)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: Float) {
-        var geometryData = generateSkyboxGeometryData(size)
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateSkyboxGeometryData(size)
     }
 }

@@ -58,7 +58,7 @@ class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
     }()
 
     lazy var mesh: InstancedMesh = {
-        let mesh = InstancedMesh(geometry: IcoSphereGeometry(radius: 0.875, res: 4), material: customMaterial, count: 11 * 12)
+        let mesh = InstancedMesh(geometry: IcoSphereGeometry(radius: 0.875, resolution: 4), material: customMaterial, count: 11 * 12)
         mesh.label = "Spheres"
         let placer = Object()
         for y in 0 ..< 12 {

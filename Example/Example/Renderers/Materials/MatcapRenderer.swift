@@ -38,8 +38,6 @@ class MatcapRenderer: BaseRenderer {
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)
 
-    var mesh: Mesh!
-
     override func setupMtkView(_ metalKitView: MTKView) {
         metalKitView.sampleCount = 1
         metalKitView.depthStencilPixelFormat = .depth32Float
@@ -57,35 +55,77 @@ class MatcapRenderer: BaseRenderer {
     }
 
     func loadModel() {
-        let asset = MDLAsset(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"), vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: context.device))
+        let asset = MDLAsset(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"))
 
-        // MatCapMaterial inspired by @TheSpite
-        // https://www.clicktorelease.com/code/spherical-normal-mapping/
-
-        mesh = Mesh(geometry: Geometry(), material: MatCapMaterial(texture: matcapTexture!))
-        mesh.label = "Suzanne"
-
-        let geo = mesh.geometry
+        let geometry = Geometry()
         let object0 = asset.object(at: 0)
-        if let objMesh = object0 as? MDLMesh {
-            objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
+        if let object = object0 as? MDLMesh {
+            object.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
+            let descriptor = object.vertexDescriptor
 
-            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
-            geo.vertexBuffer = (objMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
-            guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
-            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
-            geo.indexData = indexData
-            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
+            if object.vertexBuffers.count == 1, let vertexBuffer = object.vertexBuffers.first { // interleaved
+                let count = object.vertexCount
+                let stride = vertexBuffer.length / count
+                let data = vertexBuffer.map().bytes
+
+                let buffer = InterleavedBuffer(index: .Vertices, data: data, stride: stride, count: count)
+                geometry.addSource(vertexBuffer)
+
+                for index in VertexAttributeIndex.allCases {
+                    if let attribute = descriptor.attributeNamed(index.mdl) {
+                        let offset = attribute.offset
+                        switch attribute.format {
+                            case .float3:
+                                geometry.addAttribute(
+                                    Float3InterleavedBufferAttribute(
+                                        buffer: buffer,
+                                        offset: offset
+                                    ), for: index
+                                )
+                            case .float2:
+                                geometry.addAttribute(
+                                    Float2InterleavedBufferAttribute(
+                                        buffer: buffer,
+                                        offset: offset
+                                    ), for: index
+                                )
+                            case .float4:
+                                geometry.addAttribute(
+                                    Float4InterleavedBufferAttribute(
+                                        buffer: buffer,
+                                        offset: offset
+                                    ), for: index
+                                )
+                            case .float:
+                                geometry.addAttribute(
+                                    FloatInterleavedBufferAttribute(
+                                        buffer: buffer,
+                                        offset: offset
+                                    ), for: index
+                                )
+                            default:
+                                fatalError("Format not supported")
+                        }
+                    }
+                }
+            } else { // seperate buffers for each attribute
+            }
+
+            guard let submeshes = object.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
+
+            let indexBuffer = sub.indexBuffer(asIndexType: .uInt32)
+            geometry.setElements(ElementBuffer(type: .uint32, data: indexBuffer.map().bytes, count: sub.indexCount))
+            geometry.addSource(indexBuffer)
         }
 
-        scene.add(mesh)
+        scene.add(
+            Mesh(label: "Suzanne", geometry: geometry, material: MatCapMaterial(texture: matcapTexture!))
+        )
     }
 
     func loadKnot() {
         let twoPi = Float.pi * 2.0
-        let geometry = ParametricGeometry(u: (0.0, twoPi), v: (0.0, twoPi), res: (300, 16), generator: { u, v in
+        let geometry = ParametricGeometry(rangeU: 0.0...twoPi, rangeV: 0.0...twoPi, resolution: [300, 16], generator: { u, v in
             let R: Float = 1.0
             let r: Float = 0.25
             let c: Float = 0.05
@@ -94,10 +134,7 @@ class MatcapRenderer: BaseRenderer {
             return torusKnotGenerator(u, v, R, r, c, q, p)
         })
 
-        // MatCapMaterial inspired by @TheSpite
-        // https://www.clicktorelease.com/code/spherical-normal-mapping/
-
-        mesh = Mesh(geometry: geometry, material: MatCapMaterial(texture: matcapTexture!))
+        let mesh = Mesh(geometry: geometry, material: MatCapMaterial(texture: matcapTexture!))
         mesh.cullMode = .none
         mesh.label = "Knot"
         mesh.scale = .init(repeating: 2.5)

@@ -34,7 +34,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var torus: Mesh = {
-        let mesh = Mesh(geometry: TorusGeometry(radius: (0.5, 2.0), res: (90, 30)), material: depthMaterial)
+        let mesh = Mesh(geometry: TorusGeometry(minorRadius: 0.5, majorRadius: 2.0, minorResolution: 30, majorResolution: 90), material: depthMaterial)
         mesh.label = "Torus"
         mesh.position = [2, -2, -2]
         mesh.orientation = simd_quatf(angle: Float.pi * 0.25, axis: normalize([1, 1, 1]))
@@ -42,7 +42,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var cylinder: Mesh = {
-        let mesh = Mesh(geometry: CylinderGeometry(size: (0.5, 2.0), res: (60, 1, 1)), material: depthMaterial)
+        let mesh = Mesh(geometry: CylinderGeometry(radius: 0.5, height: 2.0), material: depthMaterial)
         mesh.label = "Cylinder"
         mesh.position = [-2, 2, 2]
         mesh.orientation = simd_quatf(angle: -Float.pi * 0.25, axis: normalize([0.5, 1, 1]))
@@ -50,7 +50,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var capsule: Mesh = {
-        let mesh = Mesh(geometry: CapsuleGeometry(size: (0.5, 2.0), res: (60, 30, 1)), material: depthMaterial)
+        let mesh = Mesh(geometry: CapsuleGeometry(radius: 0.5, height: 2.0), material: depthMaterial)
         mesh.label = "Capsule"
         mesh.position = [2, -2, 2]
         mesh.orientation = simd_quatf(angle: -Float.pi * 0.25, axis: normalize([0.5, 0.5, 1]))
@@ -62,14 +62,14 @@ class DepthMaterialRenderer: BaseRenderer {
         mesh.label = "Box"
         mesh.position = [2.5, 3.0, -3]
         mesh.orientation = simd_quatf(angle: -Float.pi * 0.25, axis: normalize([1.0, -0.25, 0.25]))
-        let rod = Mesh(geometry: CylinderGeometry(size: (0.1, 6.0), res: (24, 1, 1)), material: depthMaterial)
+        let rod = Mesh(geometry: CylinderGeometry(radius: 0.1, height: 6.0, angularResolution: 24), material: depthMaterial)
         rod.label = "Rod"
         mesh.add(rod)
         return mesh
     }()
 
     lazy var longBox: Mesh = {
-        let mesh = Mesh(geometry: BoxGeometry(size: (0.5, 2.0, 4.0)), material: depthMaterial)
+        let mesh = Mesh(geometry: BoxGeometry(width: 0.5, height: 2.0, depth: 4.0), material: depthMaterial)
         mesh.label = "Long Box"
         mesh.position = [-2, -3, 0]
         mesh.orientation = simd_quatf(angle: -Float.pi * 0.25, axis: normalize([0.5, -0.5, 0.25]))
@@ -77,7 +77,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var cone: Mesh = {
-        let mesh = Mesh(geometry: ConeGeometry(size: (1.0, 2.0), res: (30, 30, 30)), material: depthMaterial)
+        let mesh = Mesh(geometry: ConeGeometry(radius: 1.0, height: 2.0, angularResolution: 30), material: depthMaterial)
         mesh.label = "Cone"
         mesh.position = [-3, 0, -2]
         mesh.orientation = simd_quatf(angle: Float.pi * 0.25, axis: normalize([1.0, 0.5, 0.25]))
@@ -85,7 +85,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var sphere: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.5, res: 0), material: depthMaterial)
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.5, resolution: 0), material: depthMaterial)
         mesh.label = "Sphere"
         return mesh
     }()

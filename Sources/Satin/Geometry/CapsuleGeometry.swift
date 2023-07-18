@@ -9,30 +9,81 @@
 import simd
 import SatinCore
 
-public final class CapsuleGeometry: Geometry {
+public final class CapsuleGeometry: SatinGeometry {
     public enum Axis: Int32 {
         case x = 0
         case y = 1
         case z = 2
     }
 
-    public init(size: (radius: Float, height: Float), axis: Axis = .y) {
+    public var radius: Float {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var height: Float {
+        didSet {
+            if oldValue != height {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int = 60 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radialResolution: Int = 30 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var verticalResolution: Int = 1 {
+        didSet {
+            if oldValue != verticalResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var axis: Axis = .y {
+        didSet {
+            if oldValue != axis {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(radius: Float, height: Float, axis: Axis = .y) {
+        self.radius = radius
+        self.height = height
+        self.axis = axis
+
         super.init()
-        setupData(size: size, res: (60, 30, 30), axis: axis)
     }
 
-    public init(size: (radius: Float, height: Float), res: (angular: Int, radial: Int, vertical: Int), axis: Axis = .y) {
+    public init(radius: Float, height: Float, angularResolution: Int = 60, radialResolution: Int = 30, verticalResolution: Int = 1, axis: Axis = .y) {
+        self.radius = radius
+        self.height = height
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
+        self.verticalResolution = verticalResolution
+        self.axis = axis
+
         super.init()
-        setupData(size: size, res: res, axis: axis)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: (radius: Float, height: Float), res: (angular: Int, radial: Int, vertical: Int), axis: Axis) {
-        var geometryData = generateCapsuleGeometryData(size.radius, size.height, Int32(res.angular), Int32(res.radial), Int32(res.vertical), axis.rawValue)
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateCapsuleGeometryData(radius, height, Int32(angularResolution), Int32(radialResolution), Int32(verticalResolution), axis.rawValue)
     }
 }

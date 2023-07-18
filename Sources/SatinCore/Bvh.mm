@@ -178,10 +178,10 @@ void subdivideBVHNode(BVH *bvh, uint32_t nodeIndex)
 }
 
 BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH) {
-    return createBVHFromFloatData(geometry.vertexData, sizeof(Vertex)/sizeof(float), geometry.vertexCount, (uint32_t*) geometry.indexData, geometry.indexCount * 3, useSAH);
+    return createBVHFromFloatData(geometry.vertexData, sizeof(Vertex)/sizeof(float), geometry.vertexCount, geometry.indexData, geometry.indexCount * 3, true, useSAH);
 }
 
-BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const uint32_t *indexData, int indexCount, bool useSAH) {
+BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const void *indexData, int indexCount, bool uint32, bool useSAH) {
     const bool hasTriangles = indexCount > 0;
     const uint32_t triCount = hasTriangles ? (indexCount / 3) : (vertexCount / 3);
 
@@ -196,7 +196,18 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
         triIDs[i] = i;
 
         const uint32_t offset = i * 3;
-        const TriangleIndices tri = hasTriangles ? (TriangleIndices) { indexData[offset], indexData[offset + 1], indexData[offset + 2] } : (TriangleIndices) { offset, offset + 1, offset + 2 };
+        TriangleIndices tri = (TriangleIndices) { offset, offset + 1, offset + 2 };
+
+        if(hasTriangles) {
+            if(uint32) {
+                uint32_t *indicies = (uint32_t *)indexData;
+                tri = (TriangleIndices) { indicies[offset], indicies[offset + 1], indicies[offset + 2] };
+            }
+            else {
+                uint16_t *indicies = (uint16_t *)indexData;
+                tri = (TriangleIndices) { indicies[offset], indicies[offset + 1], indicies[offset + 2] };
+            }
+        }
 
         triangles[i] = tri;
 

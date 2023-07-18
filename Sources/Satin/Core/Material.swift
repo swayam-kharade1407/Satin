@@ -360,13 +360,15 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         uniformsNeedsUpdate = false
     }
 
-    open func update(camera _: Camera) {}
-
-    open func update(_: MTLCommandBuffer) {
+    open func update(camera: Camera, viewport: simd_float4) {
         updateDepth()
         updateShader()
         updateUniforms()
         onUpdate?()
+    }
+
+    open func encode(_: MTLCommandBuffer) {
+
     }
 
     open func updateShader() {

@@ -84,21 +84,22 @@ class TessellatedMesh: Object, Renderable {
 
     // MARK: - Update
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        material?.update(commandBuffer)
-        geometry.update(commandBuffer)
-        super.update(commandBuffer)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
+        material?.encode(commandBuffer)
+        geometry.encode(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera)
+        material?.update(camera: camera, viewport: viewport)
+        geometry.update(camera: camera, viewport: viewport)
         vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw
 
     open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material else { return }
+        guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material, let buffer = geometry.vertexBuffers[.Vertices] else { return }
 
         material.bind(renderEncoder, shadow: shadow)
         renderEncoder.setFrontFacing(windingOrder)
@@ -111,11 +112,7 @@ class TessellatedMesh: Object, Renderable {
             index: VertexBufferIndex.VertexUniforms.rawValue
         )
 
-        renderEncoder.setVertexBuffer(
-            geometry.vertexBuffer,
-            offset: 0,
-            index: VertexBufferIndex.Vertices.rawValue
-        )
+        renderEncoder.setVertexBuffer(buffer, offset: 0, index: VertexBufferIndex.Vertices.rawValue )
 
         renderEncoder.setTessellationFactorBuffer(
             tessellator.buffer,

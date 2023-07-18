@@ -7,28 +7,52 @@
 
 import SatinCore
 
-public final class RoundedRectGeometry: Geometry {
-    public init(size: (width: Float, height: Float), radius: Float = 0.5, res: (angular: Int, radial: Int) = (32, 32)) {
+public final class RoundedRectGeometry: SatinGeometry {
+    public var size: simd_float2 {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radius: Float = 0.5 {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int = 32 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radialResolution: Int = 32 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var cornerResolution: Int32 { Int32(2 * angularResolution / 3) }
+    public var edgeX: Int32 { Int32(Float(angularResolution) * size.x / radius) / 6 }
+    public var edgeY: Int32 { Int32(Float(angularResolution) * size.y / radius) / 6 }
+
+    public init(width: Float, height: Float, radius: Float, angularResolution: Int, radialResolution: Int) {
+        self.size = simd_make_float2(width, height)
+        self.radius = radius
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
         super.init()
-        let edgeX = Int(Float(res.angular) * size.width / radius) / 6
-        let edgeY = Int(Float(res.angular) * size.height / radius) / 6
-        setupData(size: size, radius: radius, res: (2 * res.angular / 3, edgeX, edgeY, res.radial))
     }
 
-    public init(size: Float = 2.0, radius: Float = 0.5, res: (angular: Int, radial: Int) = (32, 32)) {
-        super.init()
-        let edgeX = Int(Float(res.angular) * size / radius) / 6
-        let edgeY = Int(Float(res.angular) * size / radius) / 6
-        setupData(size: (size, size), radius: radius, res: (2 * res.angular / 3, edgeX, edgeY, res.radial))
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: (width: Float, height: Float), radius: Float, res: (corner: Int, edgeX: Int, edgeY: Int, radial: Int)) {
-        var geometryData = generateRoundedRectGeometryData(size.width, size.height, radius, Int32(res.corner), Int32(res.edgeX), Int32(res.edgeY), Int32(res.radial))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateRoundedRectGeometryData(size.x, size.y, radius, cornerResolution, edgeX, edgeY, Int32(radialResolution))
     }
 }

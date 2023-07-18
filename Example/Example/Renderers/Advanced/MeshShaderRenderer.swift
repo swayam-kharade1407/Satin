@@ -13,7 +13,7 @@ import Forge
 import Satin
 
 class MeshShaderRenderer: BaseRenderer {
-    var geometry = IcoSphereGeometry(radius: 1.0, res: 4)
+    var geometry = IcoSphereGeometry(radius: 1.0, resolution: 4)
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
     fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
@@ -259,13 +259,14 @@ private class CustomMesh: Object, Renderable {
 
     // MARK: - Update
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        material?.update(commandBuffer)
-        super.update(commandBuffer)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
+        material?.encode(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera)
+        material?.update(camera: camera, viewport: viewport)
+        geometry.update(camera: camera, viewport: viewport)
         vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
     }
 
@@ -280,31 +281,33 @@ private class CustomMesh: Object, Renderable {
         renderEncoder.setCullMode(cullMode)
         renderEncoder.setTriangleFillMode(triangleFillMode)
 
-        renderEncoder.setObjectBuffer(
-            geometry.vertexBuffer,
-            offset: 0,
-            index: ObjectBufferIndex.Vertices.rawValue
-        )
+        fatalError("implement")
 
-        renderEncoder.setObjectBuffer(
-            geometry.indexBuffer,
-            offset: 0,
-            index: ObjectBufferIndex.Indicies.rawValue
-        )
-
-        renderEncoder.setMeshBuffer(
-            vertexUniforms.buffer,
-            offset: vertexUniforms.offset,
-            index: MeshBufferIndex.VertexUniforms.rawValue
-        )
-
-        let instances = geometry.indexData.count / 3
-
-        renderEncoder.drawMeshThreadgroups(
-            MTLSizeMake(instances, 1, 1),
-            threadsPerObjectThreadgroup: MTLSizeMake(1, 1, 1),
-            threadsPerMeshThreadgroup: MTLSizeMake(36, 1, 1)
-        )
+//        renderEncoder.setObjectBuffer(
+//            geometry.vertexBuffer,
+//            offset: 0,
+//            index: ObjectBufferIndex.Vertices.rawValue
+//        )
+//
+//        renderEncoder.setObjectBuffer(
+//            geometry.indexBuffer,
+//            offset: 0,
+//            index: ObjectBufferIndex.Indicies.rawValue
+//        )
+//
+//        renderEncoder.setMeshBuffer(
+//            vertexUniforms.buffer,
+//            offset: vertexUniforms.offset,
+//            index: MeshBufferIndex.VertexUniforms.rawValue
+//        )
+//
+//        let instances = geometry.indexData.count / 3
+//
+//        renderEncoder.drawMeshThreadgroups(
+//            MTLSizeMake(instances, 1, 1),
+//            threadsPerObjectThreadgroup: MTLSizeMake(1, 1, 1),
+//            threadsPerMeshThreadgroup: MTLSizeMake(36, 1, 1)
+//        )
     }
 
     func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {

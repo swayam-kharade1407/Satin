@@ -7,19 +7,21 @@
 
 import SatinCore
 
-public final class SquircleGeometry: Geometry {
-    public init(size: Float = 2.0, p: Float = 4.0, res: (angular: Int, radial: Int) = (90, 20)) {
+public final class SquircleGeometry: SatinGeometry {
+    var size: Float = 2.0
+    var radius: Float = 4.0
+    var angularResolution: Int = 90
+    var radialResolution: Int = 20
+
+    public init(size: Float, radius: Float, angularResolution: Int, radialResolution: Int) {
+        self.size = size
+        self.radius = radius
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
         super.init()
-        setupData(size: size, p: p, res: res)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: Float, p: Float, res: (angular: Int, radial: Int)) {
-        var geometryData = generateSquircleGeometryData(size, p, Int32(res.angular), Int32(res.radial))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateSquircleGeometryData(size, radius, Int32(angularResolution), Int32(radialResolution))
     }
 }

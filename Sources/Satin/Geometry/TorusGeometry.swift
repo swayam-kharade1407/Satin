@@ -8,24 +8,48 @@
 
 import SatinCore
 
-public final class TorusGeometry: Geometry {
-    override public init() {
+public final class TorusGeometry: SatinGeometry {
+    public var minorRadius: Float {
+        didSet {
+            if oldValue != minorRadius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var majorRadius: Float {
+        didSet {
+            if oldValue != majorRadius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var minorResolution: Int {
+        didSet {
+            if oldValue != minorResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var majorResolution: Int {
+        didSet {
+            if oldValue != majorResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(minorRadius: Float, majorRadius: Float, minorResolution: Int = 30, majorResolution: Int = 60) {
+        self.minorRadius = minorRadius
+        self.majorRadius = majorRadius
+        self.minorResolution = minorResolution
+        self.majorResolution = majorResolution
         super.init()
-        setupData(radius: (1, 2), res: (60, 60))
     }
 
-    public init(radius: (minor: Float, major: Float), res: (minor: Int, major: Int) = (60, 60)) {
-        super.init()
-        setupData(radius: radius, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(radius: (minor: Float, major: Float), res: (minor: Int, major: Int)) {
-        var geometryData = generateTorusGeometryData(radius.minor, radius.major, Int32(res.minor), Int32(res.major))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateTorusGeometryData(minorRadius, majorRadius, Int32(minorResolution), Int32(majorResolution))
     }
 }

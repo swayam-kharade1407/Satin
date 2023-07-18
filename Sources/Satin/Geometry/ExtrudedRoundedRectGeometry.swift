@@ -8,31 +8,69 @@
 import Foundation
 import SatinCore
 
-public final class ExtrudedRoundedRectGeometry: Geometry {
-    public init(size: (width: Float, height: Float, depth: Float), radius: Float = 0.5, res: (angular: Int, radial: Int, depth: Int) = (32, 32, 1)) {
+public final class ExtrudedRoundedRectGeometry: SatinGeometry {
+    var size: simd_float3 {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var radius: Float {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var angularResolution: Int = 32 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var radialResolution: Int = 32 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var depthResolution: Int = 1 {
+        didSet {
+            if oldValue != depthResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    var cornerResolution: Int32 {
+        Int32(2 * angularResolution / 3)
+    }
+
+    var edgeXResolution: Int32 {
+        Int32(Float(angularResolution) * size.x / radius) / 6
+    }
+
+    var edgeYResolution: Int32 {
+        Int32(Float(angularResolution) * size.y / radius) / 6
+    }
+
+    public init(width: Float, height: Float, depth: Float, radius: Float, angularResolution: Int, radialResolution: Int, depthResolution: Int) {
+        self.size = simd_make_float3(width, height, depth)
+        self.radius = radius
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
+        self.depthResolution = depthResolution
         super.init()
-        let edgeX = Int(Float(res.angular) * size.width / radius) / 6
-        let edgeY = Int(Float(res.angular) * size.height / radius) / 6
-        let edgeZ = res.depth
-        setupData(size: size, radius: radius, res: (2 * res.angular / 3, edgeX, edgeY, edgeZ, res.radial))
     }
 
-    public init(size: Float, depth: Float, radius: Float = 0.5, res: (angular: Int, radial: Int, depth: Int) = (32, 32, 1)) {
-        super.init()
-        let edgeX = Int(Float(res.angular) * size / radius) / 6
-        let edgeY = Int(Float(res.angular) * size / radius) / 6
-        let edgeZ = res.depth
-        setupData(size: (size, size, depth), radius: radius, res: (2 * res.angular / 3, edgeX, edgeY, edgeZ, res.radial))
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: (width: Float, height: Float, depth: Float), radius: Float, res: (corner: Int, edgeX: Int, edgeY: Int, edgeZ: Int, radial: Int)) {
-        primitiveType = .triangle
-        var geometryData = generateExtrudedRoundedRectGeometryData(size.width, size.height, size.depth, radius, Int32(res.corner), Int32(res.edgeX), Int32(res.edgeY), Int32(res.edgeZ), Int32(res.radial))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateExtrudedRoundedRectGeometryData(size.x, size.y, size.z, radius, cornerResolution, edgeXResolution, edgeYResolution, Int32(depthResolution), Int32(radialResolution))
     }
 }

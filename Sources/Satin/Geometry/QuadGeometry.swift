@@ -8,19 +8,21 @@
 
 import SatinCore
 
-public final class QuadGeometry: Geometry {
+public final class QuadGeometry: SatinGeometry {
+    public var size: Float {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
     public init(size: Float = 2) {
+        self.size = size
         super.init()
-        setupData(size: size)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: Float) {
-        var geometryData = generateQuadGeometryData(size)
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateQuadGeometryData(size)
     }
 }

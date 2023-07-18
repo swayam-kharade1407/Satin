@@ -20,7 +20,7 @@ class PostProcessingRenderer: BaseRenderer {
 
     var renderTexture: MTLTexture?
     var material = BasicDiffuseMaterial(0.7)
-    var geometry = IcoSphereGeometry(radius: 1.0, res: 0)
+    var geometry = IcoSphereGeometry(radius: 1.0, resolution: 0)
 
     lazy var scene: Object = {
         let scene = Object("Scene")

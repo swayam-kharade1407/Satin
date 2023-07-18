@@ -116,7 +116,9 @@ public class InstancedMesh: Mesh {
         setupInstanceBuffer()
     }
 
-    override public func update(_ commandBuffer: MTLCommandBuffer) {
+    public override func update(camera: Camera, viewport: simd_float4) {
+        super.update(camera: camera, viewport: viewport)
+
         if _updateInstanceMatricesUniforms {
             updateInstanceMatricesUniforms()
         }
@@ -128,8 +130,6 @@ public class InstancedMesh: Mesh {
         if _updateInstanceMatrixBuffer {
             updateInstanceBuffer()
         }
-
-        super.update(commandBuffer)
     }
 
     override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {

@@ -1,11 +1,12 @@
 //
 //  VertexFunctionConstants.swift
-//  
+//
 //
 //  Created by Reza Ali on 3/17/23.
 //
 
 import Foundation
+import ModelIO
 
 public enum VertexBufferIndex: Int, CaseIterable, Codable {
     case Vertices = 0
@@ -15,25 +16,34 @@ public enum VertexBufferIndex: Int, CaseIterable, Codable {
     case MaterialUniforms = 3
     case ShadowMatrices = 4
 
-    case Positions = 5
-    case Normals = 6
-    case Texcoords = 7
-    case Tangents = 8
-    case Bitangents = 9
-    case Colors = 10
+    case Position = 5
+    case Normal = 6
+    case Texcoord = 7
+    case Tangent = 8
+    case Bitangent = 9
+    case Color = 10
+    case Anisotropy = 11
+    case Binormal = 12
+    case Occlusion = 13
+    case EdgeCrease = 14
+    case JointIndices = 15
+    case JointWeights = 16
+    case ShadingBasisU = 17
+    case ShadingBasisV = 18
+    case SubdivisionStencil = 19
 
-    case Custom0 = 11
-    case Custom1 = 12
-    case Custom2 = 13
-    case Custom3 = 14
-    case Custom4 = 15
-    case Custom5 = 16
-    case Custom6 = 17
-    case Custom7 = 18
-    case Custom8 = 19
-    case Custom9 = 20
-    case Custom10 = 21
-    case Custom11 = 22
+    case Custom0 = 20
+    case Custom1 = 21
+    case Custom2 = 22
+    case Custom3 = 23
+    case Custom4 = 24
+    case Custom5 = 25
+    case Custom6 = 26
+    case Custom7 = 27
+    case Custom8 = 28
+    case Custom9 = 29
+    case Custom10 = 30
+    case Custom11 = 31
 
     public var label: String {
         String(describing: self)
@@ -47,22 +57,89 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
     case Tangent = 3
     case Bitangent = 4
     case Color = 5
-
-    case Custom0 = 6
-    case Custom1 = 7
-    case Custom2 = 8
-    case Custom3 = 9
-    case Custom4 = 10
-    case Custom5 = 11
-    case Custom6 = 12
-    case Custom7 = 13
-    case Custom8 = 14
-    case Custom9 = 15
-    case Custom10 = 16
-    case Custom11 = 17
+    case Anisotropy = 6
+    case Binormal = 7
+    case Occlusion = 8
+    case EdgeCrease = 9
+    case JointIndices = 10
+    case JointWeights = 11
+    case ShadingBasisU = 12
+    case ShadingBasisV = 13
+    case SubdivisionStencil = 14
+    case Custom0 = 15
+    case Custom1 = 16
+    case Custom2 = 17
+    case Custom3 = 18
+    case Custom4 = 19
+    case Custom5 = 20
+    case Custom6 = 21
+    case Custom7 = 22
+    case Custom8 = 23
+    case Custom9 = 24
+    case Custom10 = 25
+    case Custom11 = 26
 
     public var description: String {
         String(describing: self).titleCase
+    }
+
+    public var mdl: String {
+        switch self {
+            case .Position:
+                return MDLVertexAttributePosition
+            case .Normal:
+                return MDLVertexAttributeNormal
+            case .Texcoord:
+                return MDLVertexAttributeTextureCoordinate
+            case .Tangent:
+                return MDLVertexAttributeTangent
+            case .Bitangent:
+                return MDLVertexAttributeBitangent
+            case .Color:
+                return MDLVertexAttributeColor
+            case .Anisotropy:
+                return MDLVertexAttributeAnisotropy
+            case .Binormal:
+                return MDLVertexAttributeBinormal
+            case .Occlusion:
+                return MDLVertexAttributeOcclusionValue
+            case .EdgeCrease:
+                return MDLVertexAttributeEdgeCrease
+            case .JointIndices:
+                return MDLVertexAttributeJointIndices
+            case .JointWeights:
+                return MDLVertexAttributeJointWeights
+            case .ShadingBasisU:
+                return MDLVertexAttributeShadingBasisU
+            case .ShadingBasisV:
+                return MDLVertexAttributeShadingBasisV
+            case .SubdivisionStencil:
+                return MDLVertexAttributeSubdivisionStencil
+            case .Custom0:
+                return "Invalid"
+            case .Custom1:
+                return "Invalid"
+            case .Custom2:
+                return "Invalid"
+            case .Custom3:
+                return "Invalid"
+            case .Custom4:
+                return "Invalid"
+            case .Custom5:
+                return "Invalid"
+            case .Custom6:
+                return "Invalid"
+            case .Custom7:
+                return "Invalid"
+            case .Custom8:
+                return "Invalid"
+            case .Custom9:
+                return "Invalid"
+            case .Custom10:
+                return "Invalid"
+            case .Custom11:
+                return "Invalid"
+        }
     }
 
     public var name: String {
@@ -81,41 +158,59 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
     var bufferIndex: VertexBufferIndex {
         switch self {
             case .Position:
-                return VertexBufferIndex.Positions
+                return .Position
             case .Normal:
-                return VertexBufferIndex.Normals
+                return .Normal
             case .Texcoord:
-                return VertexBufferIndex.Texcoords
+                return .Texcoord
             case .Tangent:
-                return VertexBufferIndex.Tangents
+                return .Tangent
             case .Bitangent:
-                return VertexBufferIndex.Bitangents
+                return .Bitangent
             case .Color:
-                return VertexBufferIndex.Colors
+                return .Color
+            case .Anisotropy:
+                return .Anisotropy
+            case .Binormal:
+                return .Binormal
+            case .Occlusion:
+                return .Occlusion
+            case .EdgeCrease:
+                return .Occlusion
+            case .JointIndices:
+                return .Occlusion
+            case .JointWeights:
+                return .Occlusion
+            case .ShadingBasisU:
+                return .Occlusion
+            case .ShadingBasisV:
+                return .Occlusion
+            case .SubdivisionStencil:
+                return .Occlusion
             case .Custom0:
-                return VertexBufferIndex.Custom0
+                return .Custom0
             case .Custom1:
-                return VertexBufferIndex.Custom1
+                return .Custom1
             case .Custom2:
-                return VertexBufferIndex.Custom2
+                return .Custom2
             case .Custom3:
-                return VertexBufferIndex.Custom3
+                return .Custom3
             case .Custom4:
-                return VertexBufferIndex.Custom4
+                return .Custom4
             case .Custom5:
-                return VertexBufferIndex.Custom5
+                return .Custom5
             case .Custom6:
-                return VertexBufferIndex.Custom6
+                return .Custom6
             case .Custom7:
-                return VertexBufferIndex.Custom7
+                return .Custom7
             case .Custom8:
-                return VertexBufferIndex.Custom8
+                return .Custom8
             case .Custom9:
-                return VertexBufferIndex.Custom9
+                return .Custom9
             case .Custom10:
-                return VertexBufferIndex.Custom10
+                return .Custom10
             case .Custom11:
-                return VertexBufferIndex.Custom11
+                return .Custom11
         }
     }
 }

@@ -58,7 +58,7 @@ public enum AttributeType: String, Codable {
     }
 }
 
-public protocol VertexAttribute: Codable, Equatable, AnyObject {
+public protocol VertexAttribute: Equatable, AnyObject {
     associatedtype ValueType: Codable
     var id: String { get }
 
@@ -76,6 +76,8 @@ public protocol BufferAttribute: VertexAttribute {
     var data: [ValueType] { get set }
 
     var length: Int { get }
+
+    var needsUpdate: Bool { get set }
     var delegate: BufferAttributeDelegate? { get set }
 
     func makeBuffer(device: MTLDevice) -> MTLBuffer?

@@ -15,28 +15,28 @@ import Satin
 class DirectionalShadowRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
-    let lightHelperGeo = BoxGeometry(size: (0.1, 0.1, 0.5))
+    let lightHelperGeo = BoxGeometry(width: 0.1, height: 0.1, depth: 0.5)
     let lightHelperMat = BasicDiffuseMaterial(0.7)
 
     lazy var lightHelperMesh0 = Mesh(geometry: lightHelperGeo, material: lightHelperMat)
     lazy var lightHelperMesh1 = Mesh(geometry: lightHelperGeo, material: lightHelperMat)
 
     var baseMesh = Mesh(
-        geometry: BoxGeometry(size: (1.25, 0.125, 1.25), res: 5),
+        geometry: BoxGeometry(width: 1.25, height: 0.125, depth: 1.25, resolution: 5),
         material: StandardMaterial(baseColor: [1.0, 1.0, 1.0, 1.0], metallic: 0.75, roughness: 0.25)
     )
 
     var torusMesh = Mesh(
-        geometry: TorusGeometry(radius: (0.1, 0.5)),
+        geometry: TorusGeometry(minorRadius: 0.1, majorRadius: 0.5),
         material: StandardMaterial(baseColor: [1, 1, 1, 1], metallic: 1.0, roughness: 0.25, specular: 1.0)
     )
 
     var sphereMesh = Mesh(
-        geometry: IcoSphereGeometry(radius: 0.25, res: 3),
+        geometry: IcoSphereGeometry(radius: 0.25, resolution: 3),
         material: StandardMaterial(baseColor: .one, metallic: 0.8, roughness: 0.5, specular: 1.0)
     )
 
-    var floorMesh = Mesh(geometry: PlaneGeometry(size: 8.0, plane: .zx), material: ShadowMaterial())
+    var floorMesh = Mesh(geometry: PlaneGeometry(size: 8.0, orientation: .zx), material: ShadowMaterial())
 
     var light0 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
     var light1 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)

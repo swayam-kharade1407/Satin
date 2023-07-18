@@ -126,40 +126,41 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
             bufferAllocator: MTKMeshBufferAllocator(device: context.device)
         )
 
-        let object0 = asset.object(at: 0)
+        fatalError("implement")
+//        let object0 = asset.object(at: 0)
         let geo = Geometry()
-        if let objMesh = object0 as? MDLMesh {
-            objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
-
-            objMesh.addTangentBasis(
-                forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
-                tangentAttributeNamed: MDLVertexAttributeTangent,
-                bitangentAttributeNamed: MDLVertexAttributeBitangent
-            )
-
-            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
-
-            if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
-                geo.setBuffer(firstBuffer.buffer, at: VertexBufferIndex.Vertices)
-                firstBuffer.buffer.label = "Vertices"
-            }
-
-            if let secondBuffer = objMesh.vertexBuffers[VertexBufferIndex.Custom0.rawValue] as? MTKMeshBuffer {
-                geo.setBuffer(secondBuffer.buffer, at: VertexBufferIndex.Custom0)
-                secondBuffer.buffer.label = "Custom0"
-            }
-
-            guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
-            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
-            geo.indexData = indexData
-            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
-        }
-
-        if let descriptor = MTKMetalVertexDescriptorFromModelIO(customVertexDescriptor) {
-            material.vertexDescriptor = descriptor
-        }
+//        if let objMesh = object0 as? MDLMesh {
+//            objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
+//
+//            objMesh.addTangentBasis(
+//                forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
+//                tangentAttributeNamed: MDLVertexAttributeTangent,
+//                bitangentAttributeNamed: MDLVertexAttributeBitangent
+//            )
+//
+//            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
+//            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
+//
+//            if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
+//                geo.setBuffer(firstBuffer.buffer, at: VertexBufferIndex.Vertices)
+//                firstBuffer.buffer.label = "Vertices"
+//            }
+//
+//            if let secondBuffer = objMesh.vertexBuffers[VertexBufferIndex.Custom0.rawValue] as? MTKMeshBuffer {
+//                geo.setBuffer(secondBuffer.buffer, at: VertexBufferIndex.Custom0)
+//                secondBuffer.buffer.label = "Custom0"
+//            }
+//
+//            guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
+//            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
+//            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
+//            geo.indexData = indexData
+//            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
+//        }
+//
+//        if let descriptor = MTKMetalVertexDescriptorFromModelIO(customVertexDescriptor) {
+//            material.vertexDescriptor = descriptor
+//        }
 
         let model = Mesh(geometry: geo, material: material)
         model.label = "Suzanne"

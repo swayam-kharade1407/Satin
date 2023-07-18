@@ -69,13 +69,14 @@ class TextRenderer: BaseRenderer {
         let mesh = Mesh(geometry: geo, material: mat)
         scene.add(mesh)
 
-        let pGeo = Geometry()
-        pGeo.vertexData = geo.vertexData
-        pGeo.primitiveType = .point
-        let pmat = BasicPointMaterial([1, 1, 1, 0.5], 6, .alpha)
-        pmat.depthWriteEnabled = false
-        let pmesh = Mesh(geometry: pGeo, material: pmat)
-        scene.add(pmesh)
+        fatalError("generate point mesh")
+//        let pGeo = Geometry()
+//        pGeo.vertexData = geo.vertexData
+//        pGeo.primitiveType = .point
+//        let pmat = BasicPointMaterial([1, 1, 1, 0.5], 6, .alpha)
+//        pmat.depthWriteEnabled = false
+//        let pmesh = Mesh(geometry: pGeo, material: pmat)
+//        scene.add(pmesh)
 
         let fmat = BasicColorMaterial([1, 1, 1, 0.025], .additive)
         fmat.depthWriteEnabled = false

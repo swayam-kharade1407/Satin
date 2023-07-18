@@ -17,7 +17,7 @@ class ProjectedShadowRenderer: BaseRenderer {
 
     lazy var scene = Object("Scene", [shadowPlaneMesh, mesh])
     lazy var mesh: Mesh = {
-        let mesh = Mesh(geometry: TorusGeometry(radius: (0.1, 0.5)), material: NormalColorMaterial(true))
+        let mesh = Mesh(geometry: TorusGeometry(minorRadius: 0.1, majorRadius: 0.5), material: NormalColorMaterial(true))
         mesh.label = "Box"
         mesh.position = .init(0, 2.0, 0)
         return mesh
@@ -25,7 +25,7 @@ class ProjectedShadowRenderer: BaseRenderer {
 
     lazy var shadowMaterial = BasicTextureMaterial(texture: nil, flipped: true)
     lazy var shadowRenderer = MeshShadowRenderer(device: device, mesh: mesh, size: (512, 512))
-    lazy var shadowPlaneMesh = Mesh(geometry: PlaneGeometry(size: (4, 4), plane: .zx), material: shadowMaterial)
+    lazy var shadowPlaneMesh = Mesh(geometry: PlaneGeometry(size: 4, orientation: .zx), material: shadowMaterial)
 
     lazy var camera: PerspectiveCamera = {
         var camera = PerspectiveCamera(position: [4.0, 6.0, 4.0], near: 0.01, far: 1000.0)

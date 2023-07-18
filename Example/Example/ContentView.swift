@@ -236,7 +236,8 @@ struct ContentView: View {
             }
             .navigationTitle("Satin Examples")
 
-            BufferGeometryRendererView()
+//            BufferGeometryRendererView()
+            MatcapRendererView()
         }
     }
 }

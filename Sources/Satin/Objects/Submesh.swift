@@ -60,8 +60,8 @@ open class Submesh {
         setupMaterial()
     }
 
-    func update(_ commandBuffer: MTLCommandBuffer) {
-        material?.update(commandBuffer)
+    func encode(_ commandBuffer: MTLCommandBuffer) {
+        material?.encode(commandBuffer)
     }
 
     private func setupMaterial() {

@@ -9,32 +9,50 @@
 import simd
 import SatinCore
 
-public final class CircleGeometry: Geometry {
-    override public init() {
+public final class CircleGeometry: SatinGeometry {
+    public var radius: Float = 1 {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int = 60 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radialResolution: Int = 1 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(radius: Float) {
+        self.radius = radius
         super.init()
-        setupData(radius: 1, res: (60, 1))
     }
 
-    public convenience init(radius: Float) {
-        self.init(radius: radius, res: (60, 1))
-    }
-
-    public convenience init(radius: Float, res: Int) {
-        self.init(radius: radius, res: (res, 1))
-    }
-
-    public init(radius: Float, res: (angular: Int, radial: Int)) {
+    public init(radius: Float, angularResolution: Int) {
+        self.radius = radius
+        self.angularResolution = angularResolution
         super.init()
-        setupData(radius: radius, res: res)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
+    public init(radius: Float, angularResolution: Int, radialResolution: Int) {
+        self.radius = radius
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
+        super.init()
     }
 
-    func setupData(radius: Float, res: (angular: Int, radial: Int)) {
-        var geometryData = generateCircleGeometryData(radius, Int32(res.angular), Int32(res.radial))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateCircleGeometryData(radius, Int32(angularResolution), Int32(radialResolution))
     }
 }

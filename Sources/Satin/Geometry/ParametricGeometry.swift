@@ -10,27 +10,123 @@ import simd
 import SatinCore
 
 public final class ParametricGeometry: Geometry {
-    public init(u: (min: Float, max: Float), v: (min: Float, max: Float), res: (u: Int, v: Int), generator: (_ u: Float, _ v: Float) -> simd_float3) {
+    var rangeU: ClosedRange<Float> = 0.0...1.0 {
+        didSet {
+            if oldValue != rangeV {
+                _updateGeometry = true
+            }
+        }
+    }
+    var rangeV: ClosedRange<Float> = 0.0...1.0 {
+        didSet {
+            if oldValue != rangeV {
+                _updateGeometry = true
+            }
+        }
+    }
+
+    var generator: (Float, Float) -> simd_float3 {
+        didSet {
+            _updateGeometry = true
+        }
+    }
+
+    var resolution: simd_int2 {
+        didSet {
+            if oldValue != resolution {
+                _updateGeometry = true
+            }
+        }
+    }
+
+    var vertexData: [Vertex] = []
+    var indexData: [UInt32] = []
+
+    var _updateGeometry = true
+
+    public init(rangeU: ClosedRange<Float>, rangeV: ClosedRange<Float>, resolution: simd_int2, generator: @escaping (_ u: Float, _ v: Float) -> simd_float3) {
+        self.rangeU = rangeU
+        self.rangeV = rangeV
+        self.resolution = resolution
+        self.generator = generator
         super.init()
-        setupData(u: u, v: v, res: res, generator: generator)
+        setupGeometry()
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
+    public override func update(camera: Camera, viewport: simd_float4) {
+        if _updateGeometry {
+            setupGeometry()
+        }
+        super.update(camera: camera, viewport: viewport)
     }
 
-    func setupData(u: (min: Float, max: Float), v: (min: Float, max: Float), res: (u: Int, v: Int), generator: (_ u: Float, _ v: Float) -> simd_float3) {
-        let ru = res.u
-        let rv = res.v
+    func setupGeometry() {
+        generateGeometry()
+
+        let interleavedBuffer = InterleavedBuffer(
+            index: .Vertices,
+            data: &vertexData,
+            stride: MemoryLayout<Vertex>.size,
+            count: vertexData.count,
+            stepRate: 1,
+            stepFunction: .perVertex
+        )
+
+        if indexData.count > 0 {
+            self.elementBuffer = ElementBuffer(type: .uint32, data: &indexData, count: indexData.count)
+        } else {
+            self.elementBuffer = nil
+        }
+
+        var offset = 0
+
+        addAttribute(
+            Float4InterleavedBufferAttribute(
+                buffer: interleavedBuffer,
+                offset: offset
+            ),
+            for: .Position
+        )
+
+        offset += MemoryLayout<Float>.size * 4
+
+        addAttribute(
+            Float3InterleavedBufferAttribute(
+                buffer: interleavedBuffer,
+                offset: offset
+            ),
+            for: .Normal
+        )
+
+        offset += MemoryLayout<Float>.size * 4
+
+        addAttribute(
+            Float2InterleavedBufferAttribute(
+                buffer: interleavedBuffer,
+                offset: offset
+            ),
+            for: .Texcoord
+        )
+
+
+        _updateGeometry = false
+    }
+
+    public func generateGeometry() {
+        vertexData.removeAll(keepingCapacity: true)
+        indexData.removeAll(keepingCapacity: true)
+
+        let ru = resolution.x
+        let rv = resolution.y
 
         let ruf = Float(ru)
         let rvf = Float(rv)
 
-        let ruInc = (u.max - u.min) / ruf
-        let rvInc = (v.max - v.min) / rvf
+        let ruInc = (rangeU.upperBound - rangeU.lowerBound) / ruf
+        let rvInc = (rangeV.upperBound - rangeV.lowerBound) / rvf
 
-        let uminf = Float(u.min)
-        let vminf = Float(v.min)
+        let uminf = Float(rangeU.lowerBound)
+        let vminf = Float(rangeV.lowerBound)
 
         for v in 0 ... rv {
             let vf = Float(v)

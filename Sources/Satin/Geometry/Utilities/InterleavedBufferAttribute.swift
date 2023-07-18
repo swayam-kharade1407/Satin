@@ -11,7 +11,6 @@ import simd
 
 public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAttribute {
     public var id: String = UUID().uuidString
-    public var index: VertexAttributeIndex
     public var buffer: InterleavedBuffer
     public var offset: Int
 
@@ -29,34 +28,13 @@ public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAtt
 
     public var components: Int { 0 }
 
-    private enum CodingKeys: String, CodingKey {
-        case index
-        case buffer
-        case offset
-    }
-
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        index = try container.decode(VertexAttributeIndex.self, forKey: .index)
-        buffer = try container.decode(InterleavedBuffer.self, forKey: .buffer)
-        offset = try container.decode(Int.self, forKey: .offset)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(index, forKey: .index)
-        try container.encode(buffer, forKey: .buffer)
-        try container.encode(offset, forKey: .offset)
-    }
-
-    public init(index: VertexAttributeIndex, buffer: InterleavedBuffer, offset: Int) {
-        self.index = index
+    public init(buffer: InterleavedBuffer, offset: Int) {
         self.buffer = buffer
         self.offset = offset
     }
 
     public static func == (lhs: GenericInterleavedBufferAttribute<T>, rhs: GenericInterleavedBufferAttribute<T>) -> Bool {
-        lhs.id == rhs.id
+        lhs === rhs
     }
 }
 

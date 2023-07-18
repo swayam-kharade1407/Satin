@@ -19,7 +19,7 @@ class BufferGeometryMesh: Object, Renderable {
 
     var triangleFillMode: MTLTriangleFillMode = .fill
 
-    var geometry: BufferGeometry {
+    var geometry: Geometry {
         didSet {
             if geometry != oldValue {
                 setupGeometry()
@@ -46,7 +46,7 @@ class BufferGeometryMesh: Object, Renderable {
 
     var uniforms: VertexUniformBuffer?
 
-    public init(label: String = "Buffer Geometry Mesh", geometry: BufferGeometry, material: Material) {
+    public init(label: String = "Buffer Geometry Mesh", geometry: Geometry, material: Material) {
         self.geometry = geometry
         self.material = material
         super.init(label)
@@ -78,14 +78,15 @@ class BufferGeometryMesh: Object, Renderable {
         uniforms = VertexUniformBuffer(device: context.device)
     }
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        geometry.update(commandBuffer)
-        material?.update(commandBuffer)
-        super.update(commandBuffer)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
+        geometry.encode(commandBuffer)
+        material?.encode(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera)
+        geometry.update(camera: camera, viewport: viewport)
+        material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
     }
 
@@ -110,11 +111,11 @@ class BufferGeometryMesh: Object, Renderable {
             renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.VertexUniforms.rawValue)
         }
 
-        if let indexBuffer = geometry.indexBuffer {
+        if let indexBuffer = geometry.indexBuffer, let indexType = geometry.indexType {
             renderEncoder.drawIndexedPrimitives(
                 type: geometry.primitiveType,
                 indexCount: geometry.indexCount,
-                indexType: geometry.indexType,
+                indexType: indexType,
                 indexBuffer: indexBuffer,
                 indexBufferOffset: 0,
                 instanceCount: instanceCount
@@ -191,11 +192,12 @@ class BufferGeometryMesh: Object, Renderable {
 }
 
 class BufferGeometryRenderer: BaseRenderer {
-    var geometry = BufferGeometry()
+    var geometryData = createGeometryData()
+    var geometry = Geometry()
     lazy var mesh = BufferGeometryMesh(geometry: geometry, material: NormalColorMaterial())
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, res: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1
         mesh.visible = false
@@ -218,7 +220,7 @@ class BufferGeometryRenderer: BaseRenderer {
 
     override func setup() {
         if interleaved {
-            setupInterleavedBufferGeometry()
+            setupInterleavedBufferGeometry(size: 1.0)
         } else {
             setupBufferGeometry()
         }
@@ -228,11 +230,16 @@ class BufferGeometryRenderer: BaseRenderer {
     }
 
     deinit {
+        freeGeometryData(&geometryData)
         cameraController.disable()
     }
 
+    var theta: Float = 0.0
+
     override func update() {
+        setupInterleavedBufferGeometry(size: 1.0 + 0.25 * sin(theta))
         cameraController.update()
+        theta += 0.1
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
@@ -252,10 +259,11 @@ class BufferGeometryRenderer: BaseRenderer {
 
     // MARK: Geometry Generation
 
-    func setupInterleavedBufferGeometry() {
+    func setupInterleavedBufferGeometry(size: Float) {
+        freeGeometryData(&geometryData)
 //        var geoData = SatinCore.generateQuadGeometryData(1.0)
 //        var geoData = SatinCore.generateBoxGeometryData(1, 1, 1, 0, 0, 0, 1, 1, 1)
-        var geoData = SatinCore.generateRoundedBoxGeometryData(1, 1, 1, 0.25, 3)
+        geometryData = SatinCore.generateRoundedBoxGeometryData(size, size, size, 0.25, 3)
 
         // position (4) & normal (3) & uv (2)
         //        var data: [Float] = [
@@ -265,44 +273,37 @@ class BufferGeometryRenderer: BaseRenderer {
         //             -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0
         //        ]
 
-        if let data = geoData.vertexData {
+        if let data = geometryData.vertexData {
 
-            let count = Int(geoData.vertexCount)
-
+            let vertexCount = Int(geometryData.vertexCount)
             let interleavedBuffer = InterleavedBuffer(
                 index: .Vertices,
                 data: data,
                 stride: MemoryLayout<Vertex>.size,
-                count: count,
+                count: vertexCount,
                 stepRate: 1,
                 stepFunction: .perVertex
             )
 
-            let indexCount = Int(geoData.indexCount) * 3
-            if indexCount > 0, let data = geoData.indexData {
-                data.withMemoryRebound(to: UInt32.self, capacity: indexCount) { ptr in
-                    geometry.indexData = Array(UnsafeBufferPointer(start: ptr, count: indexCount))
-                }
+            if geometryData.indexCount > 0 {
+                geometry.elementBuffer = ElementBuffer(type: .uint32, data: &geometryData.indexData, count: Int(geometryData.indexCount * 3))
             } else {
-
-                geometry.indexData = []
+                geometry.elementBuffer = nil
             }
 
             var offset = 0
-            geometry.setAttribute(Float4InterleavedBufferAttribute(index: .Position, buffer: interleavedBuffer, offset: offset), for: .Position)
+            geometry.addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
             offset += MemoryLayout<Float>.size * 4
 
-            geometry.setAttribute(Float3InterleavedBufferAttribute(index: .Normal, buffer: interleavedBuffer, offset: offset), for: .Normal)
+            geometry.addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
             offset += MemoryLayout<Float>.size * 4
 
-            geometry.setAttribute(Float2InterleavedBufferAttribute(index: .Texcoord, buffer: interleavedBuffer, offset: offset), for: .Texcoord)
+            geometry.addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
         }
-
-//        freeGeometryData(&geoData)
     }
 
     func setupBufferGeometry() {
-        geometry.setAttribute(
+        geometry.addAttribute(
             Float4BufferAttribute(
                 data: [
                     [-1.0, -1.0, 0.0, 1.0],
@@ -326,7 +327,7 @@ class BufferGeometryRenderer: BaseRenderer {
 //            )
 //        )
 
-        geometry.setAttribute(
+        geometry.addAttribute(
             Float3BufferAttribute(
                 data: [
                     [0.0, 0.0, 1.0],
@@ -338,7 +339,7 @@ class BufferGeometryRenderer: BaseRenderer {
             for: .Normal
         )
 
-        geometry.setAttribute(
+        geometry.addAttribute(
             Float2BufferAttribute(
                 data: [
                     [0.0, 0.0],
@@ -350,7 +351,7 @@ class BufferGeometryRenderer: BaseRenderer {
             for: .Texcoord
         )
 
-        geometry.setAttribute(
+        geometry.addAttribute(
             Float4BufferAttribute(
                 data: [
                     [0.0, 0.0, 0.0, 1.0],
@@ -362,7 +363,8 @@ class BufferGeometryRenderer: BaseRenderer {
             for: .Color
         )
 
-        geometry.indexData = [0, 1, 2, 0, 2, 3]
+        var elements = [0, 1, 2, 2, 3, 0]
+        geometry.elementBuffer = ElementBuffer(type: .uint32, data: &elements, count: 6)
     }
 
 #if os(macOS)

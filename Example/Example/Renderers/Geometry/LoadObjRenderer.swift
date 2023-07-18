@@ -39,21 +39,30 @@ class LoadObjRenderer: BaseRenderer {
 
     func loadOBJ(url: URL) {
         let asset = MDLAsset(url: url, vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: context.device))
-        let mesh = Mesh(geometry: Geometry(), material: BasicDiffuseMaterial(0.0))
+        let geometry = Geometry()
+        let mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.0))
         mesh.label = "Suzanne"
 
         let geo = mesh.geometry
         let object0 = asset.object(at: 0)
         if let objMesh = object0 as? MDLMesh {
             objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
-            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
-            geo.vertexBuffer = (objMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
+
+            var vertexData = objMesh.vertexBuffers[VertexBufferIndex.Vertices.rawValue].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
+
+            let interleavedBuffer = InterleavedBuffer(index: .Vertices, data: vertexData, stride: MemoryLayout<Vertex>.size, count: objMesh.vertexCount)
+
+            var offset = 0
+            geometry.addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
+            offset += MemoryLayout<Float>.size * 4
+            geometry.addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
+            offset += MemoryLayout<Float>.size * 4
+            geometry.addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
+
             guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
+
             let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
-            geo.indexData = indexData
-            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
+            geometry.elementBuffer = ElementBuffer(type: .uint32, data: indexDataPtr, count: sub.indexCount)
         }
 
         mesh.scale = simd_float3(repeating: 2.0)
@@ -73,48 +82,48 @@ class LoadObjRenderer: BaseRenderer {
     }
 
     func loadChildren(_ parent: Object, _ children: [MDLObject]) {
-        for child in children {
-            if let mdlMesh = child as? MDLMesh {
-                let geometry = Geometry()
-                let mesh = Mesh(geometry: geometry, material: NormalColorMaterial())
-                mesh.label = child.name
-                parent.add(mesh)
-
-                let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
-                geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
-                geometry.vertexBuffer = (mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
-
-                if let mdlSubMeshes = mdlMesh.submeshes {
-                    let mdlSubMeshesCount = mdlSubMeshes.count
-                    for index in 0 ..< mdlSubMeshesCount {
-                        let mdlSubmesh = mdlSubMeshes[index] as! MDLSubmesh
-                        if mdlSubmesh.geometryType == .triangles {
-                            let indexCount = mdlSubmesh.indexCount
-                            let indexDataPtr = mdlSubmesh.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
-                            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: indexCount))
-                            let submesh = Submesh(
-                                parent: mesh,
-                                indexData: indexData,
-                                indexBuffer: (mdlSubmesh.indexBuffer as! MTKMeshBuffer).buffer
-                            )
-                            submesh.label = mdlSubmesh.name
-                            mesh.addSubmesh(submesh)
-                        }
-                    }
-                }
-
-                if let transform = mdlMesh.transform {
-                    mesh.localMatrix = transform.matrix
-                }
-
-                loadChildren(mesh, child.children.objects)
-            } else {
-                let object = Object()
-                object.label = child.name
-                parent.add(object)
-                loadChildren(object, child.children.objects)
-            }
-        }
+//        for child in children {
+//            if let mdlMesh = child as? MDLMesh {
+//                let geometry = Geometry()
+//                let mesh = Mesh(geometry: geometry, material: NormalColorMaterial())
+//                mesh.label = child.name
+//                parent.add(mesh)
+//
+//                let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
+//                geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
+//                geometry.vertexBuffer = (mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
+//
+//                if let mdlSubMeshes = mdlMesh.submeshes {
+//                    let mdlSubMeshesCount = mdlSubMeshes.count
+//                    for index in 0 ..< mdlSubMeshesCount {
+//                        let mdlSubmesh = mdlSubMeshes[index] as! MDLSubmesh
+//                        if mdlSubmesh.geometryType == .triangles {
+//                            let indexCount = mdlSubmesh.indexCount
+//                            let indexDataPtr = mdlSubmesh.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
+//                            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: indexCount))
+//                            let submesh = Submesh(
+//                                parent: mesh,
+//                                indexData: indexData,
+//                                indexBuffer: (mdlSubmesh.indexBuffer as! MTKMeshBuffer).buffer
+//                            )
+//                            submesh.label = mdlSubmesh.name
+//                            mesh.addSubmesh(submesh)
+//                        }
+//                    }
+//                }
+//
+//                if let transform = mdlMesh.transform {
+//                    mesh.localMatrix = transform.matrix
+//                }
+//
+//                loadChildren(mesh, child.children.objects)
+//            } else {
+//                let object = Object()
+//                object.label = child.name
+//                parent.add(object)
+//                loadChildren(object, child.children.objects)
+//            }
+//        }
     }
 
     override func update() {

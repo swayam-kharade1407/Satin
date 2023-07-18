@@ -178,13 +178,13 @@ class LoadedMesh: Object, Renderable {
 
     // MARK: - Update
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        material?.update(commandBuffer)
-        super.update(commandBuffer)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
+        material?.encode(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera)
+        material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
     }
 

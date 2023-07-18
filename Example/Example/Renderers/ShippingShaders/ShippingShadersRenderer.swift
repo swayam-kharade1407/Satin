@@ -17,7 +17,7 @@ class ShippingShadersRenderer: BaseRenderer {
     lazy var shippingMaterial: Material = Material(shader: shader)
 
     lazy var mesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, res: 0), material: shippingMaterial)
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: shippingMaterial)
         mesh.cullMode = .none
         return mesh
     }()

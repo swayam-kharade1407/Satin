@@ -64,7 +64,7 @@ open class Mesh: Object, Renderable {
 
     public var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
 
-    open var geometry: Geometry {
+    open var geometry = Geometry() {
         didSet {
             if geometry != oldValue {
                 setupGeometry()
@@ -105,40 +105,14 @@ open class Mesh: Object, Renderable {
         super.init(label)
     }
 
-    // MARK: - CodingKeys
-
-    public enum CodingKeys: String, CodingKey {
-        case triangleFillMode
-        case cullMode
-        case instanceCount
-        case geometry
-        case material
-    }
 
     // MARK: - Decode
 
     public required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        triangleFillMode = try values.decode(MTLTriangleFillMode.self, forKey: .triangleFillMode)
-        cullMode = try values.decode(MTLCullMode.self, forKey: .cullMode)
-        instanceCount = try values.decode(Int.self, forKey: .instanceCount)
-        geometry = try values.decode(Geometry.self, forKey: .geometry)
-        material = try values.decode(AnyMaterial?.self, forKey: .material)?.material
         try super.init(from: decoder)
     }
 
-    // MARK: - Encode
-
-    override open func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(triangleFillMode, forKey: .triangleFillMode)
-        try container.encode(cullMode, forKey: .cullMode)
-        try container.encode(instanceCount, forKey: .instanceCount)
-        try container.encode(geometry, forKey: .geometry)
-        if let material = material {
-            try container.encode(AnyMaterial(material), forKey: .material)
-        }
-    }
+    // MARK: - Deinit
 
     deinit {
         cleanupGeometrySubscriber()
@@ -212,17 +186,18 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Update
 
-    override open func update(_ commandBuffer: MTLCommandBuffer) {
-        geometry.update(commandBuffer)
-        material?.update(commandBuffer)
+    override open func encode(_ commandBuffer: MTLCommandBuffer) {
+        geometry.encode(commandBuffer)
+        material?.encode(commandBuffer)
         for submesh in submeshes {
-            submesh.update(commandBuffer)
+            submesh.encode(commandBuffer)
         }
-        super.update(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override open func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera)
+        geometry.update(camera: camera, viewport: viewport)
+        material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
     }
 
@@ -252,11 +227,11 @@ open class Mesh: Object, Renderable {
             }
         } else {
             bindMaterial(renderEncoder, shadow: shadow)
-            if let indexBuffer = geometry.indexBuffer {
+            if let indexBuffer = geometry.indexBuffer, let indexType = geometry.indexType {
                 renderEncoder.drawIndexedPrimitives(
                     type: geometry.primitiveType,
                     indexCount: geometry.indexCount,
-                    indexType: geometry.indexType,
+                    indexType: indexType,
                     indexBuffer: indexBuffer,
                     indexBufferOffset: 0,
                     instanceCount: instanceCount

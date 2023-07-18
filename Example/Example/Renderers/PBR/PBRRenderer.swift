@@ -55,7 +55,7 @@ class PBRRenderer: BaseRenderer {
     }()
 
     lazy var mesh: InstancedMesh = {
-        let mesh = InstancedMesh(geometry: IcoSphereGeometry(radius: 0.875, res: 4), material: customMaterial, count: 11 * 11)
+        let mesh = InstancedMesh(geometry: IcoSphereGeometry(radius: 0.875, resolution: 4), material: customMaterial, count: 11 * 11)
         mesh.label = "Spheres"
         let placer = Object()
         for y in 0 ..< 11 {

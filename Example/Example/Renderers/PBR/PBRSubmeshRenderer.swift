@@ -144,29 +144,31 @@ class PBRSubmeshRenderer: BaseRenderer {
                 mesh.label = child.name
                 parent.add(mesh)
 
-                let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
-                geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
-                geometry.vertexBuffer = (mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
+                fatalError("implement")
 
-                if let mdlSubMeshes = mdlMesh.submeshes {
-                    let mdlSubMeshesCount = mdlSubMeshes.count
-                    for index in 0 ..< mdlSubMeshesCount {
-                        let mdlSubmesh = mdlSubMeshes[index] as! MDLSubmesh
-                        if mdlSubmesh.geometryType == .triangles, let mdlMaterial = mdlSubmesh.material {
-                            let indexCount = mdlSubmesh.indexCount
-                            let indexDataPtr = mdlSubmesh.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
-                            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: indexCount))
-                            let submesh = Submesh(
-                                parent: mesh,
-                                indexData: indexData,
-                                indexBuffer: (mdlSubmesh.indexBuffer as! MTKMeshBuffer).buffer,
-                                material: PhysicalMaterial(material: mdlMaterial, textureLoader: textureLoader)
-                            )
-                            submesh.label = mdlSubmesh.name
-                            mesh.addSubmesh(submesh)
-                        }
-                    }
-                }
+//                let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
+//                geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
+//                geometry.vertexBuffer = (mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
+//
+//                if let mdlSubMeshes = mdlMesh.submeshes {
+//                    let mdlSubMeshesCount = mdlSubMeshes.count
+//                    for index in 0 ..< mdlSubMeshesCount {
+//                        let mdlSubmesh = mdlSubMeshes[index] as! MDLSubmesh
+//                        if mdlSubmesh.geometryType == .triangles, let mdlMaterial = mdlSubmesh.material {
+//                            let indexCount = mdlSubmesh.indexCount
+//                            let indexDataPtr = mdlSubmesh.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
+//                            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: indexCount))
+//                            let submesh = Submesh(
+//                                parent: mesh,
+//                                indexData: indexData,
+//                                indexBuffer: (mdlSubmesh.indexBuffer as! MTKMeshBuffer).buffer,
+//                                material: PhysicalMaterial(material: mdlMaterial, textureLoader: textureLoader)
+//                            )
+//                            submesh.label = mdlSubmesh.name
+//                            mesh.addSubmesh(submesh)
+//                        }
+//                    }
+//                }
 
                 if let transform = mdlMesh.transform {
                     mesh.localMatrix = transform.matrix

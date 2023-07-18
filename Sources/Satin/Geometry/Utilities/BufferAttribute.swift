@@ -14,11 +14,12 @@ public protocol BufferAttributeDelegate: AnyObject {
 }
 
 public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
-    public var id: String = UUID().uuidString
+    public let id: String = UUID().uuidString
 
     public typealias ValueType = T
 
-    // Delegate
+    // Update & Delegate
+    public var needsUpdate: Bool = true
     public weak var delegate: BufferAttributeDelegate?
 
     // Getable Properties
@@ -37,23 +38,9 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
 
     public var data: [ValueType] {
         didSet {
+            needsUpdate = true
             delegate?.updated(attribute: self)
         }
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case index
-        case data
-    }
-
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        data = try container.decode([ValueType].self, forKey: .data)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(data, forKey: .data)
     }
 
     public init(data: [ValueType]) {
@@ -65,7 +52,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public static func == (lhs: GenericBufferAttribute<T>, rhs: GenericBufferAttribute<T>) -> Bool {
-        lhs.id == rhs.id
+        lhs === rhs
     }
 }
 

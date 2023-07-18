@@ -8,24 +8,57 @@
 
 import SatinCore
 
-public final class CylinderGeometry: Geometry {
-    override public init() {
+public final class CylinderGeometry: SatinGeometry {
+    public var radius: Float = 1.0 {
+        didSet {
+            if oldValue != radius {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var height: Float = 2.0 {
+        didSet {
+            if oldValue != height {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var angularResolution: Int = 60 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var radialResolution: Int = 1 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public var verticalResolution: Int = 1 {
+        didSet {
+            if oldValue != verticalResolution {
+                _updateGeometryData = true
+            }
+        }
+    }
+
+    public init(radius: Float, height: Float, angularResolution: Int = 60, radialResolution: Int = 1, verticalResolution: Int = 1) {
+        self.radius = radius
+        self.height = height
+        self.angularResolution = angularResolution
+        self.radialResolution = radialResolution
+        self.verticalResolution = verticalResolution
         super.init()
-        setupData(size: (1, 2), res: (60, 1, 1))
     }
 
-    public init(size: (radius: Float, height: Float), res: (angular: Int, radial: Int, vertical: Int)) {
-        super.init()
-        setupData(size: size, res: res)
-    }
-
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: (radius: Float, height: Float), res: (angular: Int, radial: Int, vertical: Int)) {
-        var geometryData = generateCylinderGeometryData(size.radius, size.height, Int32(res.angular), Int32(res.radial), Int32(res.vertical))
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    override public func generateGeometryData() -> GeometryData {
+        generateCylinderGeometryData(radius, height, Int32(angularResolution), Int32(radialResolution), Int32(verticalResolution))
     }
 }

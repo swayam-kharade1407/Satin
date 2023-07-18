@@ -19,7 +19,7 @@ class TessellationRenderer: BaseRenderer {
         functionName: "tessellationTriUpdate"
     )
 
-    lazy var tessGeometry = TessellatedGeometry(baseGeometry: IcoSphereGeometry(radius: 1, res: 1))
+    lazy var tessGeometry = TessellatedGeometry(baseGeometry: IcoSphereGeometry(radius: 1, resolution: 1))
     lazy var tessMaterial = TessellatedMaterial(pipelinesURL: pipelinesURL, geometry: tessGeometry)
     lazy var tessMesh = TessellatedMesh(geometry: tessGeometry, material: tessMaterial, tessellator: tessellator)
 

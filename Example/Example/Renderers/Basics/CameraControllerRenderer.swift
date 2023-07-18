@@ -20,8 +20,8 @@ class CameraControllerRenderer: BaseRenderer {
         let material = BasicColorMaterial(simd_make_float4(1.0, 1.0, 1.0, 1.0))
         let intervals = 5
         let intervalsf = Float(intervals)
-        let geometryX = CapsuleGeometry(size: (0.005, intervalsf), axis: .x)
-        let geometryZ = CapsuleGeometry(size: (0.005, intervalsf), axis: .z)
+        let geometryX = CapsuleGeometry(radius: 0.005, height: intervalsf, axis: .x)
+        let geometryZ = CapsuleGeometry(radius: 0.005, height: intervalsf, axis: .z)
         for i in 0 ... intervals {
             let fi = Float(i)
             let meshX = Mesh(geometry: geometryX, material: material)
@@ -40,10 +40,11 @@ class CameraControllerRenderer: BaseRenderer {
         let object = Object()
         let intervals = 5
         let intervalsf = Float(intervals)
-        let size = (Float(0.005), intervalsf)
-        object.add(Mesh(geometry: CapsuleGeometry(size: size, axis: .x), material: BasicColorMaterial(simd_make_float4(1.0, 0.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(size: size, axis: .y), material: BasicColorMaterial(simd_make_float4(0.0, 1.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(size: size, axis: .z), material: BasicColorMaterial(simd_make_float4(0.0, 0.0, 1.0, 1.0))))
+        let radius = Float(0.005)
+        let height = intervalsf
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .x), material: BasicColorMaterial(simd_make_float4(1.0, 0.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(simd_make_float4(0.0, 1.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(simd_make_float4(0.0, 0.0, 1.0, 1.0))))
         return object
     }()
 

@@ -14,36 +14,22 @@ import MetalKit
 import Forge
 import Satin
 
-open class IcosahedronGeometry: Geometry {
-    public init(size: Float = 2, res: Int = 6) {
+open class IcosahedronGeometry: SatinGeometry {
+    var size: Float = 2
+    var resolution: Int = 1
+
+    public init(size: Float = 2, resolution: Int = 1) {
+        self.size = size
+        self.resolution = resolution
         super.init()
-        setupData(size: size, res: res)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: Float, res: Int) {
-        primitiveType = .triangle
-        var geo = generateIcosahedronGeometryData(size, Int32(res))
-        let vCount = Int(geo.vertexCount)
-        if vCount > 0, let data = geo.vertexData {
-            vertexData = Array(UnsafeBufferPointer(start: data, count: vCount))
-        }
-
-        let indexCount = Int(geo.indexCount) * 3
-        if indexCount > 0, let data = geo.indexData {
-            data.withMemoryRebound(to: UInt32.self, capacity: indexCount) { ptr in
-                indexData = Array(UnsafeBufferPointer(start: ptr, count: indexCount))
-            }
-        }
-        freeGeometryData(&geo)
+    override open func generateGeometryData() -> GeometryData {
+        generateIcosahedronGeometryData(size, Int32(resolution))
     }
 }
 
 class CustomGeometryRenderer: BaseRenderer {
-
     var scene = Object("Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
@@ -69,7 +55,7 @@ class CustomGeometryRenderer: BaseRenderer {
     }
 
     func setupMesh() {
-        mesh = Mesh(geometry: IcosahedronGeometry(size: 1.0, res: 4), material: NormalColorMaterial(true))
+        mesh = Mesh(geometry: IcosahedronGeometry(size: 1.0, resolution: 4), material: NormalColorMaterial(true))
         mesh.label = "Icosahedron"
         mesh.triangleFillMode = .lines
         scene.add(mesh)

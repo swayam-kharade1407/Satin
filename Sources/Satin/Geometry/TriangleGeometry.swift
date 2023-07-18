@@ -8,19 +8,21 @@
 
 import SatinCore
 
-public final class TriangleGeometry: Geometry {
+public final class TriangleGeometry: SatinGeometry {
+    var size: Float {
+        didSet {
+            if oldValue != size {
+                _updateGeometryData = true
+            }
+        }
+    }
+
     public init(size: Float = 1) {
+        self.size = size
         super.init()
-        setupData(size: size)
     }
 
-    public required init(from decoder: Decoder) throws {
-        try super.init(from: decoder)
-    }
-
-    func setupData(size: Float) {
-        var geometryData = generateTriangleGeometryData(size)
-        setFrom(&geometryData)
-        freeGeometryData(&geometryData)
+    public override func generateGeometryData() -> GeometryData {
+        generateTriangleGeometryData(size)
     }
 }

@@ -360,7 +360,8 @@ open class Renderer {
         shadowCasters.removeAll(keepingCapacity: true)
         shadowReceivers.removeAll(keepingCapacity: true)
 
-        camera.update(commandBuffer) // FIXME: - traverse children and make sure you update everything
+        camera.update(camera: camera, viewport: _viewport)
+        camera.encode(commandBuffer) // FIXME: - traverse children and make sure you update everything
 
         updateLists(object: scene)
 
@@ -465,7 +466,7 @@ open class Renderer {
             }
 
             object.context = context
-            object.update(commandBuffer)
+            object.encode(commandBuffer)
         }
     }
 

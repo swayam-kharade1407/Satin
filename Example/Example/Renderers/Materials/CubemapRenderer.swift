@@ -26,7 +26,7 @@ class CubemapRenderer: BaseRenderer {
 
     lazy var mesh: Mesh = {
         let twoPi = Float.pi * 2.0
-        let geometry = ParametricGeometry(u: (0.0, twoPi), v: (0.0, twoPi), res: (400, 32), generator: { u, v in
+        let geometry = ParametricGeometry(rangeU: 0.0...twoPi, rangeV: 0.0...twoPi, resolution: [400, 32], generator: { u, v in
             let R: Float = 0.75
             let r: Float = 0.25
             let c: Float = 0.125
