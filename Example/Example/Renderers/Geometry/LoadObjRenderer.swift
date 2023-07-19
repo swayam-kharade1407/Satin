@@ -52,7 +52,7 @@ class LoadObjRenderer: BaseRenderer {
             let interleavedBuffer = InterleavedBuffer(
                 index: .Vertices,
                 data: vertexBuffer.map().bytes,
-                stride: vertexBuffer.length/objMesh.vertexCount,
+                stride: vertexBuffer.length / objMesh.vertexCount,
                 count: objMesh.vertexCount,
                 source: vertexBuffer
             )
@@ -67,11 +67,13 @@ class LoadObjRenderer: BaseRenderer {
             guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
 
             let indexBuffer = sub.indexBuffer(asIndexType: .uInt32)
-            geometry.elementBuffer = ElementBuffer(
-                type: .uint32,
-                data: indexBuffer.map().bytes,
-                count: sub.indexCount,
-                source: indexBuffer
+            geometry.setElements(
+                ElementBuffer(
+                    type: .uint32,
+                    data: indexBuffer.map().bytes,
+                    count: sub.indexCount,
+                    source: indexBuffer
+                )
             )
         }
 

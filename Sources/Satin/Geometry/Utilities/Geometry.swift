@@ -57,7 +57,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         }
     }
 
-    public var elementBuffer: ElementBuffer? {
+    public internal(set) var elementBuffer: ElementBuffer? {
         didSet {
             if oldValue != elementBuffer, elementBuffer != nil {
                 _updateIndexBuffer = true

@@ -90,7 +90,6 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                             ), for: attributeIndex
                         )
                     case .float3:
-                        print("float3 stride: \(stride)")
                         geometry.addAttribute(
                             Float3InterleavedBufferAttribute(
                                 buffer: buffer,
@@ -126,8 +125,6 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                             Float4BufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
                         )
                     case .float3:
-                        print("float3 stride: \(stride)")
-
                         if stride == MemoryLayout<MTLPackedFloat3>.stride {
                             let ptr = bytes.bindMemory(to: MTLPackedFloat3.self, capacity: count)
                             let data = Array(UnsafeBufferPointer(start: ptr, count: count))

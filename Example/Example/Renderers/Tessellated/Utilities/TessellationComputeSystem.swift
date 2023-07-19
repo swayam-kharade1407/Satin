@@ -110,6 +110,7 @@ class TessellationComputeSystem<T>: Tessellator {
 
     func setup(_ geometry: TessellatedGeometry) {
         self.geometry = geometry
+        setupSource()
         setupPipeline()
         setupBuffer(geometry)
     }

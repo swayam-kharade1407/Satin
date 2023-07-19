@@ -12,7 +12,7 @@
 typedef struct {
     float size; //slider,0,1,0.025
     float height; //slider,0,1,0.125
-    float time;
+    float time; //input
 } CustomUniforms;
 
 struct VertexIn {

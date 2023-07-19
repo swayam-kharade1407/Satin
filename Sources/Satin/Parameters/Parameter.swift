@@ -28,7 +28,7 @@ public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
     var label: String { get }
     var description: String { get }
 
-    var delegate: ParameterDelegate? { get set }
+    var onUpdate: PassthroughSubject<Parameter, Never> { get }
 
     subscript<T>(_: Int) -> T { get set }
     func dataType<T>() -> T.Type
@@ -38,7 +38,7 @@ public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
 }
 
 public protocol ValueParameter: Parameter {
-    associatedtype ValueType: Codable
+    associatedtype ValueType: Codable & Equatable
     var value: ValueType { get set }
 }
 

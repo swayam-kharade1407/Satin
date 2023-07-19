@@ -8,13 +8,13 @@
 import Combine
 import Foundation
 
-public class GenericParameter<T: Codable>: ValueParameter, ObservableObject {
+public class GenericParameter<T: Codable & Equatable>: ValueParameter, ObservableObject {
     public var id: String = UUID().uuidString
     
     public typealias ValueType = T
 
     // Delegate
-    public weak var delegate: ParameterDelegate?
+    public let onUpdate = PassthroughSubject<Parameter, Never>()
 
     // Getable Properties
     public var type: ParameterType { .generic }
@@ -34,7 +34,13 @@ public class GenericParameter<T: Codable>: ValueParameter, ObservableObject {
         "Label: \(label) type: \(string) value: \(value)"
     }
 
-    @Published public var value: ValueType
+    @Published public var value: ValueType {
+        didSet {
+            if value != oldValue {
+                onUpdate.send(self)
+            }
+        }
+    }
 
     public subscript<T>(_: Int) -> T {
         get {
@@ -95,9 +101,18 @@ public class GenericParameter<T: Codable>: ValueParameter, ObservableObject {
     }
 }
 
-public class GenericParameterWithMinMax<T: Codable>: GenericParameter<T> {
-    @Published public var min: ValueType
-    @Published public var max: ValueType
+public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParameter<T> {
+    @Published public var min: ValueType {
+        didSet {
+            onUpdate.send(self)
+        }
+    }
+
+    @Published public var max: ValueType {
+        didSet {
+            onUpdate.send(self)
+        }
+    }
 
     private enum CodingKeys: String, CodingKey {
         case controlType

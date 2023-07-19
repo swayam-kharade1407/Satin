@@ -44,6 +44,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     @Published public var paramsMap: [String: Parameter] = [:]
     public weak var delegate: ParameterGroupDelegate? = nil
 
+    private var paramSubscriptions: [String: AnyCancellable] = [:]
+
     deinit {
         params = []
         paramsMap = [:]
@@ -65,23 +67,26 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     public func append(_ param: Parameter) {
-        if param.delegate == nil {
-            param.delegate = self
-        }
         params.append(param)
         paramsMap[param.label] = param
+        paramSubscriptions[param.label] = param.onUpdate.sink { [weak self] p in
+            guard let self = self else { return }
+            self._updateData = true
+            self.objectWillChange.send()
+            self.delegate?.update(parameter: p, from: self)
+        }
+
         delegate?.added(parameter: param, from: self)
     }
 
     public func remove(_ param: Parameter) {
         let key = param.label
         paramsMap.removeValue(forKey: key)
+        paramSubscriptions.removeValue(forKey: key)
+        
         for (i, p) in params.enumerated() {
             if p.label == key {
                 params.remove(at: i)
-                if param.delegate === self {
-                    param.delegate = nil
-                }
                 break
             }
         }
@@ -89,13 +94,9 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     public func clear() {
-        for param in params {
-            if param.delegate === self {
-                param.delegate = nil
-            }
-        }
         params = []
         paramsMap = [:]
+        paramSubscriptions = [:]
         delegate?.cleared(group: self)
     }
 
@@ -593,8 +594,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     public func updated(parameter: Parameter) {
-        objectWillChange.send()
         _updateData = true
+        objectWillChange.send()
         delegate?.update(parameter: parameter, from: self)
     }
 }

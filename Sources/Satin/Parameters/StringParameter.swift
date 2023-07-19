@@ -13,12 +13,10 @@ public final class StringParameter: GenericParameter<String> {
     override public var string: String { "string" }
     override public var count: Int { value.count }
 
-    @Published public var options: [String] = []
-
-    override public var value: GenericParameter<String>.ValueType {
+    @Published public var options: [String] = [] {
         didSet {
-            if value != oldValue {
-                delegate?.updated(parameter: self)
+            if oldValue != options {
+                onUpdate.send(self)
             }
         }
     }

@@ -11,10 +11,15 @@ import Metal
 import Satin
 
 class TessellatedGeometry: Geometry {
+
+    let baseGeometry: Geometry
+
     var patchCount: Int { indexCount > 0 ? (indexCount / 3) : (vertexCount / 3) }
+
     let controlPointsPerPatch: Int = 3
     var partitionMode: MTLTessellationPartitionMode { .integer }
     var stepFunction: MTLTessellationFactorStepFunction { .perPatch }
+
     var controlPointBuffer: MTLBuffer? { vertexBuffers[VertexBufferIndex.Vertices] ?? nil }
     var controlPointIndexBuffer: MTLBuffer? { indexBuffer }
     var controlPointIndexType: MTLTessellationControlPointIndexType {
@@ -28,7 +33,15 @@ class TessellatedGeometry: Geometry {
     }
 
     public init(baseGeometry: Geometry) {
+        self.baseGeometry = baseGeometry
         super.init(primitiveType: baseGeometry.primitiveType, windingOrder: baseGeometry.windingOrder)
+        for (index, attribute) in baseGeometry.vertexAttributes {
+            addAttribute(attribute, for: index)
+        }
+
+        if let elementBuffer = baseGeometry.elementBuffer {
+            setElements(elementBuffer)
+        }
     }
 
     override func generateVertexDescriptor()  -> MTLVertexDescriptor {

@@ -42,15 +42,15 @@ class TessellationRenderer: BaseRenderer {
         camera.lookAt(target: .zero)
 
         tessMaterial.depthBias = DepthBias(bias: -1, slope: -1, clamp: -1)
-        tessWireMesh.triangleFillMode = .lines
 
+        tessWireMesh.triangleFillMode = .lines
         tessWireMaterial.blending = .additive
         tessWireMaterial.depthBias = DepthBias(bias: 1, slope: 1, clamp: 1)
         tessWireMaterial.set("Color", [1.0, 1.0, 1.0, 0.33])
 
-        renderer.compile(scene: scene, camera: camera)
-
         tessellator.setup(tessGeometry)
+
+        renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {
@@ -68,8 +68,8 @@ class TessellationRenderer: BaseRenderer {
         let oscEdge = Float(sin(currentTime * 0.5))
         let oscInsider = Float(cos(currentTime * 1.25))
 
-        tessellator.set("edgeTessellationFactor", abs(oscEdge) * 16.0)
-        tessellator.set("insideTessellationFactor", abs(oscInsider) * 16.0)
+        tessellator.set("Edge Tessellation Factor", abs(oscEdge) * 16.0)
+        tessellator.set("Inside Tessellation Factor", abs(oscInsider) * 16.0)
 
         cameraController.update()
     }

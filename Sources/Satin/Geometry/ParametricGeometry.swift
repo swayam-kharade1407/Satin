@@ -6,18 +6,19 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import simd
 import SatinCore
+import simd
 
 public final class ParametricGeometry: Geometry {
-    var rangeU: ClosedRange<Float> = 0.0...1.0 {
+    var rangeU: ClosedRange<Float> = 0.0 ... 1.0 {
         didSet {
             if oldValue != rangeV {
                 _updateGeometry = true
             }
         }
     }
-    var rangeV: ClosedRange<Float> = 0.0...1.0 {
+
+    var rangeV: ClosedRange<Float> = 0.0 ... 1.0 {
         didSet {
             if oldValue != rangeV {
                 _updateGeometry = true
@@ -53,7 +54,7 @@ public final class ParametricGeometry: Geometry {
         setupGeometry()
     }
 
-    public override func update(camera: Camera, viewport: simd_float4) {
+    override public func update(camera: Camera, viewport: simd_float4) {
         if _updateGeometry {
             setupGeometry()
         }
@@ -72,14 +73,16 @@ public final class ParametricGeometry: Geometry {
         )
 
         if indexData.count > 0 {
-            self.elementBuffer = ElementBuffer(
-                type: .uint32,
-                data: &indexData,
-                count: indexData.count,
-                source: indexData
+            setElements(
+                ElementBuffer(
+                    type: .uint32,
+                    data: &indexData,
+                    count: indexData.count,
+                    source: indexData
+                )
             )
         } else {
-            self.elementBuffer = nil
+            setElements(nil)
         }
 
         var offset = 0
@@ -111,7 +114,6 @@ public final class ParametricGeometry: Geometry {
             ),
             for: .Texcoord
         )
-
 
         _updateGeometry = false
     }

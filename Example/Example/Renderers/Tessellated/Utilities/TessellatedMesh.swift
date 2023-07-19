@@ -28,7 +28,7 @@ class TessellatedMesh: Object, Renderable {
     private var vertexUniforms: VertexUniformBuffer?
 
     var drawable: Bool {
-        guard material?.pipeline != nil else { return false }
+        guard material?.pipeline != nil, geometry.vertexBuffers[.Vertices] != nil else { return false }
         return true
     }
 
@@ -56,8 +56,6 @@ class TessellatedMesh: Object, Renderable {
         self.geometry = geometry
         self.material = material
         self.tessellator = tessellator
-
-        self.material?.vertexDescriptor = geometry.vertexDescriptor
         super.init("Tessellated Mesh")
     }
 
@@ -74,6 +72,7 @@ class TessellatedMesh: Object, Renderable {
 
     func setupMaterial() {
         guard let context = context, let material = material else { return }
+        material.vertexDescriptor = geometry.vertexDescriptor
         material.context = context
     }
 
@@ -99,7 +98,7 @@ class TessellatedMesh: Object, Renderable {
     // MARK: - Draw
 
     open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material, let buffer = geometry.vertexBuffers[.Vertices] else { return }
+        guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material, !geometry.vertexBuffers.isEmpty else { return }
 
         material.bind(renderEncoder, shadow: shadow)
         renderEncoder.setFrontFacing(windingOrder)
@@ -112,7 +111,10 @@ class TessellatedMesh: Object, Renderable {
             index: VertexBufferIndex.VertexUniforms.rawValue
         )
 
-        renderEncoder.setVertexBuffer(buffer, offset: 0, index: VertexBufferIndex.Vertices.rawValue )
+
+        for (index, buffer) in geometry.vertexBuffers {
+            renderEncoder.setVertexBuffer(buffer, offset: 0, index: index.rawValue )
+        }
 
         renderEncoder.setTessellationFactorBuffer(
             tessellator.buffer,

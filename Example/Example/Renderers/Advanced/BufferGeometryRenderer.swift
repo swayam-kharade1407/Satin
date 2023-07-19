@@ -274,7 +274,6 @@ class BufferGeometryRenderer: BaseRenderer {
         //        ]
 
         if let data = geometryData.vertexData {
-
             let vertexCount = Int(geometryData.vertexCount)
             let interleavedBuffer = InterleavedBuffer(
                 index: .Vertices,
@@ -285,14 +284,16 @@ class BufferGeometryRenderer: BaseRenderer {
             )
 
             if geometryData.indexCount > 0 {
-                geometry.elementBuffer = ElementBuffer(
-                    type: .uint32,
-                    data: geometryData.indexData,
-                    count: Int(geometryData.indexCount * 3),
-                    source: geometryData
+                geometry.setElements(
+                    ElementBuffer(
+                        type: .uint32,
+                        data: geometryData.indexData,
+                        count: Int(geometryData.indexCount * 3),
+                        source: geometryData
+                    )
                 )
             } else {
-                geometry.elementBuffer = nil
+                geometry.setElements(nil)
             }
 
             var offset = 0
@@ -366,7 +367,7 @@ class BufferGeometryRenderer: BaseRenderer {
         )
 
         var elements = [0, 1, 2, 2, 3, 0]
-        geometry.elementBuffer = ElementBuffer(type: .uint32, data: &elements, count: 6, source: elements)
+        geometry.setElements(ElementBuffer(type: .uint32, data: &elements, count: 6, source: elements))
     }
 
 #if os(macOS)

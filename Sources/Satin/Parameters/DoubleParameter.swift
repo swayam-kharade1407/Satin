@@ -13,14 +13,6 @@ public final class DoubleParameter: GenericParameterWithMinMax<Double> {
     override public var string: String { "double" }
     override public var count: Int { 1 }
 
-    override public var value: GenericParameter<Double>.ValueType {
-        didSet {
-            if value != oldValue {
-                delegate?.updated(parameter: self)
-            }
-        }
-    }
-
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, 0.0, 1.0, controlType)
     }

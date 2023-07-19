@@ -1,6 +1,6 @@
 //
 //  SatinGeometry.swift
-//  
+//
 //
 //  Created by Reza Ali on 7/17/23.
 //
@@ -22,7 +22,7 @@ open class SatinGeometry: Geometry {
         freeGeometryData(&geometryData)
     }
 
-    public override func update(camera: Camera, viewport: simd_float4) {
+    override public func update(camera: Camera, viewport: simd_float4) {
         if _updateGeometryData {
             setupGeometry()
         }
@@ -54,14 +54,16 @@ open class SatinGeometry: Geometry {
             )
 
             if geometryData.indexCount > 0, let indexData = geometryData.indexData {
-                self.elementBuffer = ElementBuffer(
-                    type: .uint32,
-                    data: indexData,
-                    count: Int(geometryData.indexCount) * 3,
-                    source: geometryData
+                setElements(
+                    ElementBuffer(
+                        type: .uint32,
+                        data: indexData,
+                        count: Int(geometryData.indexCount) * 3,
+                        source: geometryData
+                    )
                 )
             } else {
-                self.elementBuffer = nil
+                setElements(nil)
             }
 
             var offset = 0
