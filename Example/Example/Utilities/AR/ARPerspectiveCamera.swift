@@ -33,7 +33,7 @@ class ARPerspectiveCamera: PerspectiveCamera {
         fatalError("init(from:) has not been implemented")
     }
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
+    override func update(camera: Camera, viewport: simd_float4) {
         guard let frame = session.currentFrame,
               let orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation else { return }
 
@@ -44,7 +44,7 @@ class ARPerspectiveCamera: PerspectiveCamera {
         localToWorld = viewMatrix.inverse * orientationCorrection(orientation: orientation)
         intrinsics = frame.camera.intrinsics
 
-        super.update(commandBuffer)
+        super.update(camera: camera, viewport: viewport)
     }
 
     private let yzFlipMatrix = matrix_float4x4(

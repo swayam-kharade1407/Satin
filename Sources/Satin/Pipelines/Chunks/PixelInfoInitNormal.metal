@@ -1,5 +1,5 @@
 #if defined(NORMAL_MAP)
-    const float2 normalTexcoord = (uniforms.normalTexcoordTransform * float3(in.texcoords, 1.0)).xy;
+    const float2 normalTexcoord = (uniforms.normalTexcoordTransform * float3(in.texcoord, 1.0)).xy;
     float3 mapNormal = normalMap.sample(normalSampler, normalTexcoord).rgb * 2.0 - 1.0;
 
 #if defined(HAS_TANGENT) && defined(HAS_BITANGENT)
@@ -9,8 +9,8 @@
 #else
     const float3 Q1 = dfdx(in.worldPosition);
     const float3 Q2 = dfdy(in.worldPosition);
-    const float2 st1 = dfdx(in.texcoords);
-    const float2 st2 = dfdy(in.texcoords);
+    const float2 st1 = dfdx(in.texcoord);
+    const float2 st2 = dfdy(in.texcoord);
 
     float3 normal = in.normal;
     float3 tangent = normalize(Q1 * st2.y - Q2 * st1.y);

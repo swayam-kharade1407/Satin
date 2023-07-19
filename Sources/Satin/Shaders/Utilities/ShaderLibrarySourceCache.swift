@@ -111,7 +111,7 @@ public final class ShaderLibrarySourceCache {
         )
 
         //        modifyShaderSource(source: &source) // PBR
-
+        
         ShaderLibrarySourceCache.cache[configuration] = source
 
         return source

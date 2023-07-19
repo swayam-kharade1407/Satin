@@ -9,6 +9,7 @@
 import Foundation
 import Metal
 import Combine
+import simd
 
 import Satin
 

@@ -10,12 +10,14 @@ vertex VertexData customVertex
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
 )
 {
+    const float4 position = float4(in.position.xyz, 1.0);
+
     VertexData out;
 #if INSTANCING
-    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * in.position;
+    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * position;
     out.normal = instanceUniforms[instanceID].normalMatrix * in.normal;
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * in.position;
+    out.position = vertexUniforms.modelViewProjectionMatrix * position;
     out.normal = vertexUniforms.normalMatrix * in.normal;
 #endif
     out.uv = in.uv;

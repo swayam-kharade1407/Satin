@@ -16,11 +16,11 @@ func ARLidarMeshVertexDescriptor() -> MTLVertexDescriptor {
     // position
     let vertexDescriptor = MTLVertexDescriptor()
 
-    vertexDescriptor.vertexAttributes[0].format = MTLVertexFormat.float3
-    vertexDescriptor.vertexAttributes[0].offset = 0
-    vertexDescriptor.vertexAttributes[0].bufferIndex = 0
+    vertexDescriptor.attributes[0].format = MTLVertexFormat.float3
+    vertexDescriptor.attributes[0].offset = 0
+    vertexDescriptor.attributes[0].bufferIndex = 0
 
-    vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 3
+    vertexDescriptor.layouts[0].stride = MemoryLayout<MTLPackedFloat3>.stride
     vertexDescriptor.layouts[0].stepRate = 1
     vertexDescriptor.layouts[0].stepFunction = .perVertex
 
@@ -107,16 +107,16 @@ class ARLidarMesh: Object, Renderable {
 
     // MARK: - Update
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        if let meshAnchor = meshAnchor { localMatrix = meshAnchor.transform }
-        material?.update(commandBuffer)
-        super.update(commandBuffer)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
+        material?.encode(commandBuffer)
+        super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        super.update(camera: camera, viewport: viewport)
-        material?.update(camera: camera)
+        if let meshAnchor = meshAnchor { localMatrix = meshAnchor.transform }
+        material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
+        super.update(camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw

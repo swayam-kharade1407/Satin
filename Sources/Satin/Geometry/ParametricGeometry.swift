@@ -68,12 +68,16 @@ public final class ParametricGeometry: Geometry {
             data: &vertexData,
             stride: MemoryLayout<Vertex>.size,
             count: vertexData.count,
-            stepRate: 1,
-            stepFunction: .perVertex
+            source: vertexData
         )
 
         if indexData.count > 0 {
-            self.elementBuffer = ElementBuffer(type: .uint32, data: &indexData, count: indexData.count)
+            self.elementBuffer = ElementBuffer(
+                type: .uint32,
+                data: &indexData,
+                count: indexData.count,
+                source: indexData
+            )
         } else {
             self.elementBuffer = nil
         }

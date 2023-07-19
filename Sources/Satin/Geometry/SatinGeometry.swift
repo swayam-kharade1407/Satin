@@ -50,12 +50,16 @@ open class SatinGeometry: Geometry {
                 data: vertexData,
                 stride: MemoryLayout<Vertex>.size,
                 count: vertexCount,
-                stepRate: 1,
-                stepFunction: .perVertex
+                source: geometryData
             )
 
             if geometryData.indexCount > 0, let indexData = geometryData.indexData {
-                self.elementBuffer = ElementBuffer(type: .uint32, data: indexData, count: Int(geometryData.indexCount) * 3)
+                self.elementBuffer = ElementBuffer(
+                    type: .uint32,
+                    data: indexData,
+                    count: Int(geometryData.indexCount) * 3,
+                    source: geometryData
+                )
             } else {
                 self.elementBuffer = nil
             }

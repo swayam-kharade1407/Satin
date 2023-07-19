@@ -51,6 +51,8 @@ class MatcapRenderer: BaseRenderer {
     }
 
     deinit {
+        print("removing all meshes / objects")
+        scene.removeAll()
         cameraController.disable()
     }
 
@@ -68,8 +70,13 @@ class MatcapRenderer: BaseRenderer {
                 let stride = vertexBuffer.length / count
                 let data = vertexBuffer.map().bytes
 
-                let buffer = InterleavedBuffer(index: .Vertices, data: data, stride: stride, count: count)
-                geometry.addSource(vertexBuffer)
+                let buffer = InterleavedBuffer(
+                    index: .Vertices,
+                    data: data,
+                    stride: stride,
+                    count: count,
+                    source: vertexBuffer
+                )
 
                 for index in VertexAttributeIndex.allCases {
                     if let attribute = descriptor.attributeNamed(index.mdl) {
@@ -109,13 +116,20 @@ class MatcapRenderer: BaseRenderer {
                     }
                 }
             } else { // seperate buffers for each attribute
+                
             }
 
             guard let submeshes = object.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
 
             let indexBuffer = sub.indexBuffer(asIndexType: .uInt32)
-            geometry.setElements(ElementBuffer(type: .uint32, data: indexBuffer.map().bytes, count: sub.indexCount))
-            geometry.addSource(indexBuffer)
+            geometry.setElements(
+                ElementBuffer(
+                    type: .uint32,
+                    data: indexBuffer.map().bytes,
+                    count: sub.indexCount,
+                    source: indexBuffer
+                )
+            )
         }
 
         scene.add(

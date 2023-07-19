@@ -69,7 +69,7 @@ class TextRenderer: BaseRenderer {
         let mesh = Mesh(geometry: geo, material: mat)
         scene.add(mesh)
 
-        fatalError("generate point mesh")
+//        fatalError("generate point mesh")
 //        let pGeo = Geometry()
 //        pGeo.vertexData = geo.vertexData
 //        pGeo.primitiveType = .point

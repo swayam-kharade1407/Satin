@@ -55,7 +55,7 @@ class ARPointCloudRenderer: BaseRenderer {
 
     // MARK: - 3D
 
-    lazy var mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.001, res: 2), material: PointMaterial(pipelinesURL: pipelinesURL))
+    lazy var mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.001, resolution: 2), material: PointMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object("Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)

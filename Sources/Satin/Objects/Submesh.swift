@@ -24,7 +24,7 @@ open class Submesh {
         return indexData.count
     }
 
-    public var indexBufferOffset = 0
+    public var offset = 0
     public var indexType: MTLIndexType = .uint32
     public var indexBuffer: MTLBuffer?
     public var indexData: [UInt32] = [] {
@@ -35,22 +35,22 @@ open class Submesh {
         }
     }
 
-    unowned var parent: Mesh
+    weak var parent: Mesh?
     var material: Material?
 
     public init(
+        label: String = "Submesh",
         parent: Mesh,
         indexData: [UInt32],
         indexBuffer: MTLBuffer? = nil,
-        indexBufferOffset: Int = 0,
+        offset: Int = 0,
         material: Material? = nil
     ) {
         self.parent = parent
         self.indexData = indexData
         self.indexBuffer = indexBuffer
-        self.indexBufferOffset = indexBufferOffset
+        self.offset = offset
         self.material = material
-        material?.vertexDescriptor = parent.geometry.vertexDescriptor
     }
 
     private func setup() {
@@ -65,7 +65,8 @@ open class Submesh {
     }
 
     private func setupMaterial() {
-        guard let context = context, let material = material else { return }
+        guard let context = context, let material = material, let parent = parent else { return }
+        material.vertexDescriptor = parent.geometry.vertexDescriptor
         material.context = context
     }
 

@@ -20,14 +20,15 @@ vertex DiffuseVertexData basicDiffuseVertex
     // inject shadow vertex args
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
+    const float4 position = float4(in.position.xyz, 1.0);
 #if INSTANCING
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
     
-    const float4 viewPosition = vertexUniforms.viewMatrix * modelMatrix * in.position;
+    const float4 viewPosition = vertexUniforms.viewMatrix * modelMatrix * position;
     const float3 normal = normalMatrix * in.normal;
 #else
-    const float4 viewPosition = vertexUniforms.modelViewMatrix * in.position;
+    const float4 viewPosition = vertexUniforms.modelViewMatrix * position;
     const float3 normal = vertexUniforms.normalMatrix * in.normal;
 #endif
     

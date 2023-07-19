@@ -70,7 +70,7 @@ class ARBloomRenderer: BaseRenderer {
     lazy var sessionPublisher = ARSessionPublisher(session: session)
     var sessionSubscriptions = Set<AnyCancellable>()
 
-    let geometry = IcoSphereGeometry(radius: 0.1, res: 3)
+    let geometry = IcoSphereGeometry(radius: 0.1, resolution: 3)
 
     var occlusionMaterial = {
         let material = BasicColorMaterial([1, 1, 1, 0], .disabled)

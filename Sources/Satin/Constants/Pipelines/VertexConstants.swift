@@ -83,6 +83,43 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
         String(describing: self).titleCase
     }
 
+    public init(name: String) {
+        switch name {
+            case MDLVertexAttributePosition:
+                self = .Position
+            case MDLVertexAttributeNormal:
+                self = .Normal
+            case MDLVertexAttributeTextureCoordinate:
+                self = .Texcoord
+            case MDLVertexAttributeTangent:
+                self = .Tangent
+            case MDLVertexAttributeBitangent:
+                self = .Bitangent
+            case MDLVertexAttributeColor:
+                self = .Color
+            case MDLVertexAttributeAnisotropy:
+                self = .Anisotropy
+            case MDLVertexAttributeBinormal:
+                self = .Binormal
+            case MDLVertexAttributeOcclusionValue:
+                self = .Occlusion
+            case MDLVertexAttributeEdgeCrease:
+                self = .EdgeCrease
+            case MDLVertexAttributeJointIndices:
+                self = .JointIndices
+            case MDLVertexAttributeJointWeights:
+                self = .JointWeights
+            case MDLVertexAttributeShadingBasisU:
+                self = .ShadingBasisU
+            case MDLVertexAttributeShadingBasisV:
+                self = .ShadingBasisV
+            case MDLVertexAttributeSubdivisionStencil:
+                self = .SubdivisionStencil
+            default:
+                fatalError("Unknown Vertex Attribute: \(name)")
+        }
+    }
+
     public var mdl: String {
         switch self {
             case .Position:
@@ -155,7 +192,7 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
         "HAS_" + name.uppercased()
     }
 
-    var bufferIndex: VertexBufferIndex {
+    public var bufferIndex: VertexBufferIndex {
         switch self {
             case .Position:
                 return .Position

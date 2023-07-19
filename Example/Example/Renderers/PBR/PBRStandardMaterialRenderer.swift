@@ -35,12 +35,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         ]
     }
 
-    lazy var skybox: Mesh = {
-        let mesh = Mesh(geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())
-        mesh.label = "Skybox"
-        return mesh
-    }()
-
+    lazy var skybox: Mesh = .init(label: "Skybox", geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())
     lazy var scene = Scene("Scene", [skybox])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.01, far: 1000.0)
@@ -117,55 +112,21 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
 
     // MARK: - Scene
 
+    lazy var textureLoader = MTKTextureLoader(device: device)
+
     func setupScene() {
-        let customVertexDescriptor = CustomModelIOVertexDescriptor()
-
-        let asset = MDLAsset(
-            url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"),
-            vertexDescriptor: customVertexDescriptor,
-            bufferAllocator: MTKMeshBufferAllocator(device: context.device)
-        )
-
-        fatalError("implement")
-//        let object0 = asset.object(at: 0)
-        let geo = Geometry()
-//        if let objMesh = object0 as? MDLMesh {
-//            objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
-//
-//            objMesh.addTangentBasis(
-//                forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
-//                tangentAttributeNamed: MDLVertexAttributeTangent,
-//                bitangentAttributeNamed: MDLVertexAttributeBitangent
-//            )
-//
-//            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-//            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
-//
-//            if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
-//                geo.setBuffer(firstBuffer.buffer, at: VertexBufferIndex.Vertices)
-//                firstBuffer.buffer.label = "Vertices"
-//            }
-//
-//            if let secondBuffer = objMesh.vertexBuffers[VertexBufferIndex.Custom0.rawValue] as? MTKMeshBuffer {
-//                geo.setBuffer(secondBuffer.buffer, at: VertexBufferIndex.Custom0)
-//                secondBuffer.buffer.label = "Custom0"
-//            }
-//
-//            guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
-//            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-//            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
-//            geo.indexData = indexData
-//            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
-//        }
-//
-//        if let descriptor = MTKMetalVertexDescriptorFromModelIO(customVertexDescriptor) {
-//            material.vertexDescriptor = descriptor
-//        }
-
-        let model = Mesh(geometry: geo, material: material)
-        model.label = "Suzanne"
-
-        scene.add(model)
+        if let model = loadAsset(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj")) {
+            var mesh: Mesh?
+            model.apply { obj in
+                if let m = obj as? Mesh {
+                    mesh = m
+                }
+            }
+            if let mesh = mesh {
+                mesh.material = material
+                scene.add(mesh)
+            }
+        }
     }
 
     // MARK: - Textures
@@ -206,7 +167,8 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
                 ])
                 material.setTexture(texture, type: type)
             }
-        } catch {
+        }
+        catch {
             print(error.localizedDescription)
         }
     }
@@ -214,67 +176,10 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
     // MARK: - Environment Textures
 
     func loadHdri() {
-        if let hdr = loadHDR(
-            device: device,
-            url: texturesURL.appendingPathComponent("brown_photostudio_02_2k.hdr")
-        ) {
+        let url = texturesURL.appendingPathComponent("brown_photostudio_02_2k.hdr")
+        if let hdr = loadHDR(device: device, url: url) {
             scene.setEnvironment(texture: hdr)
         }
-    }
-
-    // MARK: - Vertex Generics
-
-    struct VertexGenerics {
-        var tangent: simd_float3
-        var bitangent: simd_float3
-    }
-
-    func CustomModelIOVertexDescriptor() -> MDLVertexDescriptor {
-        let descriptor = MDLVertexDescriptor()
-
-        var offset = 0
-        descriptor.attributes[VertexAttributeIndex.Position.rawValue] = MDLVertexAttribute(
-            name: MDLVertexAttributePosition,
-            format: .float4,
-            offset: offset,
-            bufferIndex: VertexBufferIndex.Vertices.rawValue
-        )
-        offset += MemoryLayout<Float>.size * 4
-
-        descriptor.attributes[VertexAttributeIndex.Normal.rawValue] = MDLVertexAttribute(
-            name: MDLVertexAttributeNormal,
-            format: .float3,
-            offset: offset,
-            bufferIndex: VertexBufferIndex.Vertices.rawValue
-        )
-        offset += MemoryLayout<Float>.size * 4
-
-        descriptor.attributes[VertexAttributeIndex.Texcoord.rawValue] = MDLVertexAttribute(
-            name: MDLVertexAttributeTextureCoordinate,
-            format: .float2,
-            offset: offset,
-            bufferIndex: VertexBufferIndex.Vertices.rawValue
-        )
-
-        descriptor.layouts[VertexBufferIndex.Vertices.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Vertex>.stride)
-
-        descriptor.attributes[VertexAttributeIndex.Tangent.rawValue] = MDLVertexAttribute(
-            name: MDLVertexAttributeTangent,
-            format: .float3,
-            offset: 0,
-            bufferIndex: VertexBufferIndex.Custom0.rawValue
-        )
-
-        descriptor.attributes[VertexAttributeIndex.Bitangent.rawValue] = MDLVertexAttribute(
-            name: MDLVertexAttributeBitangent,
-            format: .float3,
-            offset: MemoryLayout<Float>.size * 4,
-            bufferIndex: VertexBufferIndex.Custom0.rawValue
-        )
-
-        descriptor.layouts[VertexBufferIndex.Custom0.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 8)
-
-        return descriptor
     }
 
     func updated(material: Material) {

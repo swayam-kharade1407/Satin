@@ -21,7 +21,6 @@ public enum AttributeType: String, Codable {
     case float2
     case float3
     case float4
-    case packedfloat3
     case generic
 
     var format: MTLVertexFormat {
@@ -50,8 +49,6 @@ public enum AttributeType: String, Codable {
                 return .float3
             case .float4:
                 return .float4
-            case .packedfloat3:
-                return .float3
             case .generic:
                 return .invalid
         }

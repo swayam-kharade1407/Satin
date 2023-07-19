@@ -97,8 +97,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         }
     }
 
-    private var sources: [Any] = []
-
     // MARK: - Init
 
     public init(primitiveType: MTLPrimitiveType = .triangle, windingOrder: MTLWinding = .counterClockwise) {
@@ -145,10 +143,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         }
     }
 
-    public func addSource(_ source: Any) {
-        sources.append(source)
-    }
-
     public func removeAttribute(_ index: VertexAttributeIndex) {
         if let attribute = vertexAttributes[index] {
             if let bufferAttribute = attribute as? any BufferAttribute {
@@ -162,6 +156,9 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         for (index, attribute) in vertexAttributes {
             if let bufferAttribute = attribute as? any BufferAttribute {
                 bufferAttribute.delegate = nil
+            }
+            else if let interleavedAttribute = attribute as? (any InterleavedBufferAttribute) {
+                interleavedAttribute.buffer.delegate = nil
             }
             vertexAttributes.removeValue(forKey: index)
         }
@@ -214,7 +211,13 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
     private func setupBufferAttribute(_ device: MTLDevice, attribute: any BufferAttribute, for index: VertexAttributeIndex) {
         let bufferIndex = index.bufferIndex
-        vertexBuffers[bufferIndex] = attribute.makeBuffer(device: device)
+        if let buffer = attribute.makeBuffer(device: device) {
+            buffer.label = index.name
+            vertexBuffers[bufferIndex] = buffer
+        }
+        else {
+            vertexBuffers[bufferIndex] = nil
+        }
 
         attribute.needsUpdate = false
     }
@@ -225,7 +228,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
         guard buffer.needsUpdate || vertexBuffers[bufferIndex] == nil else { return }
         vertexBuffers[bufferIndex] = device.makeBuffer(bytes: buffer.data, length: buffer.length)
-
         buffer.needsUpdate = false
     }
 
@@ -355,17 +357,17 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     // MARK: - Deinit
 
     deinit {
+        removeAttributes()
+
         vertexAttributes.removeAll()
         vertexBuffers.removeAll()
 
-        elementBuffer = nil
+        elementBuffer?.delegate = nil
+        elementBuffer = nil        
         indexBuffer = nil
 
         _bvh.clear()
         _bounds.clear()
-
-        print("removing all sources")
-        sources.removeAll()
     }
 
     // MARK: - Updated Buffer Attribute Data

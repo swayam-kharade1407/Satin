@@ -13,6 +13,7 @@ import MetalKit
 
 import Forge
 import Satin
+import SatinCore
 
 class ARSatinSceneKitRenderer: BaseRenderer, ARSessionDelegate {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
@@ -49,7 +50,7 @@ class ARSatinSceneKitRenderer: BaseRenderer, ARSessionDelegate {
 
     // MARK: - Satin
 
-    let boxGeometry = BoxGeometry(size: (0.1, 0.1, 0.1))
+    let boxGeometry = BoxGeometry(size: 0.1)
     let boxMaterial = BasicDiffuseMaterial(0.7)
 
     var scene = Object("Scene")

@@ -27,9 +27,9 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     public var format: MTLVertexFormat { type.format }
 
     // Computed Properties
-    public var size: Int { return MemoryLayout<ValueType>.size }
-    public var stride: Int { return MemoryLayout<ValueType>.stride }
-    public var alignment: Int { return MemoryLayout<ValueType>.alignment }
+    public var size: Int { return MemoryLayout<T>.size }
+    public var stride: Int { return MemoryLayout<T>.stride }
+    public var alignment: Int { return MemoryLayout<T>.alignment }
 
     public var components: Int { 0 }
     public var count: Int { data.count }
@@ -116,11 +116,7 @@ public final class Float4BufferAttribute: GenericBufferAttribute<simd_float4> {
     override public var components: Int { 4 }
 }
 
-public final class PackedFloat3BufferAttribute: GenericBufferAttribute<simd_float3> {
-    override public var type: AttributeType { .packedfloat3 }
+public final class PackedFloat3BufferAttribute: GenericBufferAttribute<MTLPackedFloat3> {
+    override public var type: AttributeType { .float3 }
     override public var components: Int { 3 }
-
-    override public var size: Int { return 12 }
-    override public var stride: Int { return 12 }
-    override public var alignment: Int { return 4 }
 }

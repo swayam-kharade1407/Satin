@@ -192,10 +192,6 @@ struct ContentView: View {
                             Label("Satin + SceneKit", systemImage: "plus")
                         }
 
-                        NavigationLink(destination: ShippingShadersRendererView()) {
-                            Label("Shipping Shaders", systemImage: "shippingbox")
-                        }
-
                         NavigationLink(destination: TessellationRendererView()) {
                             Label("Tessellation", systemImage: "square.split.2x2")
                         }
@@ -237,7 +233,7 @@ struct ContentView: View {
             .navigationTitle("Satin Examples")
 
 //            BufferGeometryRendererView()
-            MatcapRendererView()
+//            MatcapRendererView()
         }
     }
 }

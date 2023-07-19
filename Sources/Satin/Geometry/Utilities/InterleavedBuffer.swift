@@ -25,22 +25,26 @@ public class InterleavedBuffer: Equatable {
 
     var length: Int { stride * count }
 
+    var source: Any?
+
     public var needsUpdate: Bool = true
 
     public weak var delegate: InterleavedBufferDelegate?
 
-    public init(index: VertexBufferIndex, data: UnsafeRawPointer, stride: Int, count: Int, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public init(index: VertexBufferIndex, data: UnsafeRawPointer, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.index = index
         self.data = data
         self.stride = stride
         self.count = count
+        self.source = source
         self.stepRate = stepRate
         self.stepFunction = stepFunction
     }
 
-    public func updateData(data: UnsafeRawPointer, stride: Int, count: Int) {
+    public func updateData(data: UnsafeRawPointer, stride: Int, count: Int, source: Any) {
         self.stride = stride
         self.count = count
+        self.source = source
         self.data = data
         self.needsUpdate = true
         delegate?.updated(buffer: self)
@@ -48,6 +52,10 @@ public class InterleavedBuffer: Equatable {
 
     public static func == (lhs: InterleavedBuffer, rhs: InterleavedBuffer) -> Bool {
         lhs === rhs
+    }
+
+    deinit {
+        source = nil
     }
 }
 

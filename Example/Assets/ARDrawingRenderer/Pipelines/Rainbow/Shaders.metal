@@ -16,11 +16,13 @@ vertex CustomVertexData rainbowVertex
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
 )
 {
+    const float4 position = float4(in.position.xyz, 1.0);
+
     CustomVertexData out;
 #if INSTANCING
-    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * in.position;
+    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * position;
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * in.position;
+    out.position = vertexUniforms.modelViewProjectionMatrix * position;
 #endif
     out.id = float(instanceID);
     return out;

@@ -95,7 +95,7 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
     var session = ARSession()
 
     var shadowPlaneMesh = Mesh(
-        geometry: PlaneGeometry(size: 1.0, plane: .zx),
+        geometry: PlaneGeometry(size: 1.0, orientation: .zx),
         material: BasicTextureMaterial(texture: nil, flipped: false)
     )
 

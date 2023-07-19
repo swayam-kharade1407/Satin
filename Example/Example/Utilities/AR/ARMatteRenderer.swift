@@ -120,13 +120,14 @@ class ARMatteRenderer {
         let displayToCameraTransform = frame.displayTransform(for: interfaceOrientation, viewportSize: viewportSize).inverted()
 
         let geo = QuadGeometry()
-        for (index, vertex) in geo.vertexData.enumerated() {
+        let vertexCount = Int(geo.geometryData.vertexCount)
+        for i in 0..<vertexCount {
+            let vertex = geo.geometryData.vertexData[i]
             let uv = vertex.uv
             let textureCoord = CGPoint(x: CGFloat(uv.x), y: CGFloat(uv.y))
             let transformedCoord = textureCoord.applying(displayToCameraTransform)
-            geo.vertexData[index].uv = simd_make_float2(Float(transformedCoord.x), Float(transformedCoord.y))
+            geo.geometryData.vertexData[i].uv = simd_make_float2(Float(transformedCoord.x), Float(transformedCoord.y))
         }
-
         mesh.geometry = geo
     }
 

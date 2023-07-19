@@ -32,8 +32,8 @@ public final class PointGeometry: Geometry {
 
     func setupGeometry() {
         removeAttributes()
-        
-        let interleavedBuffer = InterleavedBuffer(index: .Vertices, data: &vertexData, stride: MemoryLayout<Vertex>.size, count: vertexData.count)
+
+        let interleavedBuffer = InterleavedBuffer(index: .Vertices, data: &vertexData, stride: MemoryLayout<Vertex>.size, count: vertexData.count, source: vertexData)
 
         var offset = 0
         addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)

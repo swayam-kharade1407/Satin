@@ -19,7 +19,7 @@ import Satin
 class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
     let session = ARSession()
 
-    let boxGeometry = BoxGeometry(size: (0.1, 0.1, 0.1))
+    let boxGeometry = BoxGeometry(size: 0.1)
     let boxMaterial = UvColorMaterial()
 
     var meshAnchorMap: [UUID: Mesh] = [:]

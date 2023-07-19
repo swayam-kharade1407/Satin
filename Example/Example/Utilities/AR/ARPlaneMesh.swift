@@ -22,7 +22,10 @@ class ARPlaneMesh: Mesh {
 
     public init(label: String, anchor: ARPlaneAnchor, material: Satin.Material) {
         self.anchor = anchor
-        super.init(geometry: Geometry(), material: material)
+        let geometry = Geometry()
+        geometry.addAttribute(Float3BufferAttribute(data: []), for: .Position)
+        geometry.addAttribute(Float2BufferAttribute(data: []), for: .Texcoord)
+        super.init(geometry: geometry, material: material)
         self.label = label
     }
 
@@ -40,16 +43,14 @@ class ARPlaneMesh: Mesh {
     }
 
     private func updateGeometry() {
-        let vertices = anchor.geometry.vertices
-        let uvs = anchor.geometry.textureCoordinates
-        var verts = [Vertex]()
-        let normal = anchor.alignment == .horizontal ? Satin.worldUpDirection : Satin.worldForwardDirection
-        for (vert, uv) in zip(vertices, uvs) {
-            verts.append(Vertex(position: .init(vert, 1), normal: normal, uv: uv))
-        }
-        let indices = anchor.geometry.triangleIndices.map { UInt32($0) }
-        geometry.vertexData = verts
-        geometry.indexData = indices
+        guard let positionBuffer = geometry.getAttribute(.Position) as? Float3BufferAttribute,
+              let texcoordBuffer = geometry.getAttribute(.Texcoord) as? Float2BufferAttribute else { return }
+
+        positionBuffer.data = anchor.geometry.vertices
+        texcoordBuffer.data = anchor.geometry.textureCoordinates
+
+        var elements = anchor.geometry.triangleIndices
+        geometry.setElements(ElementBuffer(type: .uint16, data: &elements, count: elements.count, source: elements))
     }
 }
 

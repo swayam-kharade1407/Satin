@@ -222,7 +222,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _updateLocalBounds = true {
+    internal var _updateLocalBounds = true {
         didSet {
             if _updateLocalBounds {
                 _updateWorldBounds = true
@@ -230,7 +230,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _localBounds = createBounds()
+    internal var _localBounds = createBounds()
     public var localBounds: Bounds {
         if _updateLocalBounds {
             _localBounds = computeLocalBounds()
@@ -250,7 +250,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _updateWorldBounds = true {
+    internal var _updateWorldBounds = true {
         didSet {
             if _updateWorldBounds {
                 parent?._updateWorldBounds = true

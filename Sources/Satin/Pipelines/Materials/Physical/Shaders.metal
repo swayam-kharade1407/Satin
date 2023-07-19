@@ -10,13 +10,20 @@ typedef struct {
     float4 position [[position]];
     // inject shadow coords
     float3 normal;
+    float2 texcoord;
+
+#if defined(HAS_COLOR)
+    float4 color;
+#endif
+
 #if defined(HAS_TANGENT)
     float3 tangent;
 #endif
+
 #if defined(HAS_BITANGENT)
     float3 bitangent;
 #endif
-    float2 texcoords;
+
     float3 worldPosition;
     float3 cameraPosition;
 #if defined(HAS_TRANSMISSION)
@@ -39,17 +46,27 @@ vertex CustomVertexData physicalVertex
     const float3x3 normalMatrix = vertexUniforms.normalMatrix;
     const float4x4 modelMatrix = vertexUniforms.modelMatrix;
 #endif
+
+    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 worldPosition = modelMatrix * position;
     CustomVertexData out;
-    out.position = vertexUniforms.viewProjectionMatrix * modelMatrix * in.position;
-    out.texcoords = in.uv;
+    out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
+    out.texcoord = in.uv;
     out.normal = normalMatrix * in.normal;
+
+#if defined(HAS_COLOR)
+    out.color = in.color;
+#endif
+
 #if defined(HAS_TANGENT)
      out.tangent = normalMatrix * in.tangent;
 #endif
+
 #if defined(HAS_BITANGENT)
     out.bitangent = in.bitangent;
 #endif
-    out.worldPosition = (modelMatrix * in.position).xyz;
+
+    out.worldPosition = worldPosition.xyz;
     out.cameraPosition = vertexUniforms.worldCameraPosition.xyz;
 #if defined(HAS_TRANSMISSION)
     float3 modelScale;

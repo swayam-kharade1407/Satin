@@ -1,6 +1,6 @@
 //
 //  ElementBuffer.swift
-//  
+//
 //
 //  Created by Reza Ali on 7/17/23.
 //
@@ -24,21 +24,29 @@ public class ElementBuffer: Equatable {
     public private(set) var count: Int // represents the total number of indices
     public var length: Int { size * count }
 
+    var source: Any?
+
     public var needsUpdate: Bool = true
 
     public weak var delegate: ElementBufferDelegate?
 
-    public init(type: MTLIndexType, data: UnsafeRawPointer, count: Int) {
+    public init(type: MTLIndexType, data: UnsafeRawPointer, count: Int, source: Any) {
         self.type = type
         self.data = data
         self.count = count
+        self.source = source
     }
 
-    public func updateData(data: UnsafeRawPointer, count: Int) {
+    public func updateData(data: UnsafeRawPointer, count: Int, source: Any) {
         self.data = data
         self.count = count
-        self.needsUpdate = true
+        self.source = source
+        needsUpdate = true
         delegate?.updated(buffer: self)
+    }
+
+    deinit {
+        source = nil
     }
 
     public static func == (lhs: ElementBuffer, rhs: ElementBuffer) -> Bool {

@@ -33,13 +33,13 @@ class ARPostProcessor: PostProcessor {
             blending = .alpha
         }
 
-        override func update(_ commandBuffer: MTLCommandBuffer) {
+        override func update(camera: Camera, viewport: simd_float4) {
             time = getTime() - startTime
             set("Time", Float(time))
             if let cameraGrainTexture = cameraGrainTexture {
                 set("Grain Size", simd_make_float2(Float(cameraGrainTexture.width), Float(cameraGrainTexture.height)))
             }
-            super.update(commandBuffer)
+            super.update(camera: camera, viewport: viewport)
         }
 
         required init(from _: Decoder) throws {

@@ -48,9 +48,14 @@ class LoadObjRenderer: BaseRenderer {
         if let objMesh = object0 as? MDLMesh {
             objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
 
-            var vertexData = objMesh.vertexBuffers[VertexBufferIndex.Vertices.rawValue].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-
-            let interleavedBuffer = InterleavedBuffer(index: .Vertices, data: vertexData, stride: MemoryLayout<Vertex>.size, count: objMesh.vertexCount)
+            let vertexBuffer = objMesh.vertexBuffers[VertexBufferIndex.Vertices.rawValue]
+            let interleavedBuffer = InterleavedBuffer(
+                index: .Vertices,
+                data: vertexBuffer.map().bytes,
+                stride: vertexBuffer.length/objMesh.vertexCount,
+                count: objMesh.vertexCount,
+                source: vertexBuffer
+            )
 
             var offset = 0
             geometry.addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
@@ -61,8 +66,13 @@ class LoadObjRenderer: BaseRenderer {
 
             guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
 
-            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-            geometry.elementBuffer = ElementBuffer(type: .uint32, data: indexDataPtr, count: sub.indexCount)
+            let indexBuffer = sub.indexBuffer(asIndexType: .uInt32)
+            geometry.elementBuffer = ElementBuffer(
+                type: .uint32,
+                data: indexBuffer.map().bytes,
+                count: sub.indexCount,
+                source: indexBuffer
+            )
         }
 
         mesh.scale = simd_float3(repeating: 2.0)

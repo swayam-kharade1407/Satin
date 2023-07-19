@@ -16,12 +16,15 @@ vertex CustomVertexData basicPointVertex(Vertex in [[stage_in]],
 // inject instancing args
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
     constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]) {
+
+    const float4 position = float4(in.position.xyz, 1.0);
+
     CustomVertexData out;
 #if INSTANCING
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
-    out.position = vertexUniforms.viewProjectionMatrix * modelMatrix * in.position;
+    out.position = vertexUniforms.viewProjectionMatrix * modelMatrix * position;
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * in.position;
+    out.position = vertexUniforms.modelViewProjectionMatrix * position;
 #endif
     out.pointSize = uniforms.pointSize;
     return out;

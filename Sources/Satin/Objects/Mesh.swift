@@ -95,7 +95,7 @@ open class Mesh: Object, Renderable {
         return allMaterials
     }
 
-    internal var geometrySubscriber: AnyCancellable?
+    internal var geometrySubscription: AnyCancellable?
 
     public internal(set) var submeshes: [Submesh] = []
 
@@ -104,7 +104,6 @@ open class Mesh: Object, Renderable {
         self.material = material
         super.init(label)
     }
-
 
     // MARK: - Decode
 
@@ -128,12 +127,17 @@ open class Mesh: Object, Renderable {
     }
 
     internal func cleanupGeometrySubscriber() {
-        geometrySubscriber?.cancel()
-        geometrySubscriber = nil
+        geometrySubscription?.cancel()
+        geometrySubscription = nil
     }
 
     open func setupGeometry() {
         guard let context = context else { return }
+        geometrySubscription = geometry.onUpdate.sink { [weak self] geo in
+            guard let self = self else { return }
+            self._updateLocalBounds = true
+            self.material?.vertexDescriptor = geo.vertexDescriptor
+        }
         geometry.context = context
     }
 
@@ -220,7 +224,7 @@ open class Mesh: Object, Renderable {
                         indexCount: submesh.indexCount,
                         indexType: submesh.indexType,
                         indexBuffer: indexBuffer,
-                        indexBufferOffset: submesh.indexBufferOffset,
+                        indexBufferOffset: submesh.offset,
                         instanceCount: instanceCount
                     )
                 }

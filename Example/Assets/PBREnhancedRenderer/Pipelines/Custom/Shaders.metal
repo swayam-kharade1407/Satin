@@ -8,7 +8,13 @@ typedef struct {
 typedef struct {
     float4 position [[position]];
     float3 normal;
-    float2 texcoords;
+    float2 texcoord;
+#if defined(HAS_TANGENT)
+    float3 tangent;
+#endif
+#if defined(HAS_BITANGENT)
+    float3 bitangent;
+#endif
     float3 worldPosition;
     float3 cameraPosition;
 #if defined(HAS_TRANSMISSION)
@@ -37,11 +43,14 @@ vertex CustomVertexData customVertex(
     const float4x4 modelMatrix = vertexUniforms.modelMatrix;
 #endif
 
+    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 worldPosition = modelMatrix * position;
+
     CustomVertexData out;
-    out.position = vertexUniforms.viewProjectionMatrix * modelMatrix * in.position;
-    out.texcoords = in.uv;
+    out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
+    out.texcoord = in.uv;
     out.normal = normalMatrix * in.normal;
-    out.worldPosition = (modelMatrix * in.position).xyz;
+    out.worldPosition = worldPosition.xyz;
     out.cameraPosition = vertexUniforms.worldCameraPosition.xyz;
     out.xyz = xyz;
 #if defined(HAS_TRANSMISSION)
@@ -90,7 +99,7 @@ fragment float4 customFragment
 #include "Chunks/PixelInfoInitView.metal"
 #include "Chunks/PixelInfoInitPosition.metal"
 
-#if 0
+#if defined(HAS_TANGENT) && defined(HAS_BITANGENT)
     pixel.normal = normalize(in.normal);
     pixel.tangent = normalize(in.tangent);
     pixel.bitangent = normalize(in.bitangent);
@@ -98,7 +107,7 @@ fragment float4 customFragment
 #else
     float3 tangent, bitangent, normal = normalize(in.normal);
 
-    getTangentAndBitangent(normal, -pixel.view, in.texcoords, tangent, bitangent);
+    getTangentAndBitangent(normal, -pixel.view, in.texcoord, tangent, bitangent);
 
     pixel.normal = normal;
     pixel.tangent = tangent;

@@ -13,11 +13,12 @@ import MetalKit
 
 import Forge
 import Satin
+import SatinCore
 
 class ARRenderer: BaseRenderer, ARSessionDelegate {
     var session = ARSession()
 
-    let boxGeometry = BoxGeometry(size: (0.1, 0.1, 0.1))
+    let boxGeometry = BoxGeometry(width: 0.1, height: 0.1, depth: 0.1)
     let boxMaterial = UvColorMaterial()
     var meshAnchorMap: [UUID: Mesh] = [:]
     

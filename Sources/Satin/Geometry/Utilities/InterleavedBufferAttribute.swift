@@ -36,6 +36,8 @@ public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAtt
     public static func == (lhs: GenericInterleavedBufferAttribute<T>, rhs: GenericInterleavedBufferAttribute<T>) -> Bool {
         lhs === rhs
     }
+
+    deinit {}
 }
 
 public final class FloatInterleavedBufferAttribute: GenericInterleavedBufferAttribute<Float> {
@@ -58,11 +60,11 @@ public final class Float4InterleavedBufferAttribute: GenericInterleavedBufferAtt
     override public var components: Int { simd_float4.scalarCount }
 }
 
-public final class PackedFloat3InterleavedBufferAttribute: GenericInterleavedBufferAttribute<simd_float3> {
-    override public var type: AttributeType { .packedfloat3 }
-    override public var components: Int { simd_float3.scalarCount }
-
-    override public var size: Int { return 12 }
-    override public var stride: Int { return 12 }
-    override public var alignment: Int { return 4 }
-}
+//public final class PackedFloat3InterleavedBufferAttribute: GenericInterleavedBufferAttribute<simd_float3> {
+//    override public var type: AttributeType { .packedfloat3 }
+//    override public var components: Int { simd_float3.scalarCount }
+//
+//    override public var size: Int { return 12 }
+//    override public var stride: Int { return 12 }
+//    override public var alignment: Int { return 4 }
+//}

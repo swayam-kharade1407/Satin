@@ -281,12 +281,16 @@ class BufferGeometryRenderer: BaseRenderer {
                 data: data,
                 stride: MemoryLayout<Vertex>.size,
                 count: vertexCount,
-                stepRate: 1,
-                stepFunction: .perVertex
+                source: geometryData
             )
 
             if geometryData.indexCount > 0 {
-                geometry.elementBuffer = ElementBuffer(type: .uint32, data: &geometryData.indexData, count: Int(geometryData.indexCount * 3))
+                geometry.elementBuffer = ElementBuffer(
+                    type: .uint32,
+                    data: geometryData.indexData,
+                    count: Int(geometryData.indexCount * 3),
+                    source: geometryData
+                )
             } else {
                 geometry.elementBuffer = nil
             }
@@ -294,10 +298,8 @@ class BufferGeometryRenderer: BaseRenderer {
             var offset = 0
             geometry.addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
             offset += MemoryLayout<Float>.size * 4
-
             geometry.addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
             offset += MemoryLayout<Float>.size * 4
-
             geometry.addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
         }
     }
@@ -364,7 +366,7 @@ class BufferGeometryRenderer: BaseRenderer {
         )
 
         var elements = [0, 1, 2, 2, 3, 0]
-        geometry.elementBuffer = ElementBuffer(type: .uint32, data: &elements, count: 6)
+        geometry.elementBuffer = ElementBuffer(type: .uint32, data: &elements, count: 6, source: elements)
     }
 
 #if os(macOS)

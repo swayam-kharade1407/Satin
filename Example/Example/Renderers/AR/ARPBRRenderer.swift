@@ -78,8 +78,8 @@ fileprivate class ARScene: Object, Environment {
         return closest
     }
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        super.update(commandBuffer)
+    override func update(camera: Camera, viewport: simd_float4) {
+        super.update(camera: camera, viewport: viewport)
         guard let currentFrame = session.currentFrame else { return }
 
         if let lightEstimate = currentFrame.lightEstimate {
@@ -136,15 +136,14 @@ fileprivate class ARObject: Object {
         fatalError("init(from:) has not been implemented")
     }
 
-    override func update(_ commandBuffer: MTLCommandBuffer) {
-        super.update(commandBuffer)
-
+    override func update(camera: Camera, viewport: simd_float4) {
         if let anchor = anchor,
            let currentFrame = session.currentFrame,
-           let index = currentFrame.anchors.firstIndex(of: anchor)
-        {
+           let index = currentFrame.anchors.firstIndex(of: anchor) {
             worldMatrix = currentFrame.anchors[index].transform
         }
+
+        super.update(camera: camera, viewport: viewport)
     }
 }
 
@@ -187,57 +186,23 @@ class Model: Object {
         material.setTexture(tmpTexture, type: .normal)
         material.setTexture(tmpTexture, type: .roughness)
 
-        let customVertexDescriptor = CustomModelIOVertexDescriptor()
-
-        let asset = MDLAsset(
-            url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"),
-            vertexDescriptor: customVertexDescriptor,
-            bufferAllocator: MTKMeshBufferAllocator(device: device)
-        )
-
-        let object0 = asset.object(at: 0)
-        let geo = Geometry()
-
-        if let objMesh = object0 as? MDLMesh {
-            objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
-            objMesh.addTangentBasis(
-                forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
-                tangentAttributeNamed: MDLVertexAttributeTangent,
-                bitangentAttributeNamed: MDLVertexAttributeBitangent
-            )
-
-            let vertexData = objMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: objMesh.vertexCount)
-            geo.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: objMesh.vertexCount))
-
-            if let firstBuffer = objMesh.vertexBuffers.first as? MTKMeshBuffer {
-                geo.setBuffer(firstBuffer.buffer, type: .Vertices)
-                firstBuffer.buffer.label = "Vertices"
+        if let model = loadAsset(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj")) {
+            var mesh: Mesh?
+            model.apply { obj in
+                if let m = obj as? Mesh {
+                    mesh = m
+                }
             }
+            if let mesh = mesh {
+                mesh.material = material
+                mesh.label = "Suzanne Mesh"
+                mesh.scale = .init(repeating: 0.25)
 
-            if let secondBuffer = objMesh.vertexBuffers[1] as? MTKMeshBuffer {
-                geo.setBuffer(secondBuffer.buffer, type: .Generics)
-                secondBuffer.buffer.label = "Generics"
+                let meshBounds = mesh.localBounds
+                mesh.position.y += meshBounds.size.y * 0.5 + 0.05
+                add(mesh)
             }
-
-            guard let submeshes = objMesh.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
-            let indexDataPtr = sub.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: sub.indexCount)
-            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: sub.indexCount))
-            geo.indexData = indexData
-            geo.indexBuffer = (sub.indexBuffer as! MTKMeshBuffer).buffer
         }
-
-        if let descriptor = MTKMetalVertexDescriptorFromModelIO(customVertexDescriptor) {
-            geo.vertexDescriptor = descriptor
-        }
-
-        let model = Mesh(geometry: geo, material: material)
-        model.label = "Suzanne Mesh"
-        model.scale = .init(repeating: 0.25)
-
-        let modelBounds = model.localBounds
-        model.position.y += modelBounds.size.y * 0.5 + 0.05
-
-        add(model)
     }
 
     func setupTextures() async {
@@ -320,7 +285,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     var shadowPlaneMesh = {
         let material = BasicTextureMaterial(texture: nil, flipped: false)
         material.depthBias = DepthBias(bias: 100.0, slope: 100.0, clamp: 100.0)
-        let mesh = Mesh(geometry: PlaneGeometry(size: 1.0, plane: .zx), material: material)
+        let mesh = Mesh(geometry: PlaneGeometry(size: 1.0, orientation: .zx), material: material)
         mesh.label = "Shadow Catcher"
         return mesh
     }()

@@ -37,14 +37,12 @@ class VertexAttributesRenderer: BaseRenderer {
         metalKitView.colorPixelFormat = .bgra8Unorm
     }
 
-    var loadedMesh: LoadedMesh!
-
     override func setup() {
-        loadedMesh = LoadedMesh(
-            url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"),
-            material: CustomMaterial(pipelinesURL: pipelinesURL)
-        )
-        scene.add(loadedMesh)
+        let url = modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj")
+        guard let model = loadAsset(url: url), let mesh = getMeshes(model, true, true).first else { return }
+
+        mesh.material = CustomMaterial(pipelinesURL: pipelinesURL)
+        scene.add(mesh)
     }
 
     deinit {

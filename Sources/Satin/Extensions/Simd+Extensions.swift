@@ -5,8 +5,33 @@
 //  Created by Reza Ali on 9/14/19.
 //
 
+import Metal
 import simd
 import SatinCore
+
+extension MTLPackedFloat3: Codable {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let x = try values.decode(Float.self, forKey: .x)
+        let y = try values.decode(Float.self, forKey: .y)
+        let z = try values.decode(Float.self, forKey: .z)
+        self.init()
+        self.x = x
+        self.y = y
+        self.z = z
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(x, forKey: .x)
+        try container.encode(y, forKey: .y)
+        try container.encode(z, forKey: .z)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case x, y, z
+    }
+}
 
 extension simd_quatf: Codable {
     public init(from decoder: Decoder) throws {
