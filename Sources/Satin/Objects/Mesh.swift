@@ -203,6 +203,7 @@ open class Mesh: Object, Renderable {
         geometry.update(camera: camera, viewport: viewport)
         material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
+        super.update(camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw

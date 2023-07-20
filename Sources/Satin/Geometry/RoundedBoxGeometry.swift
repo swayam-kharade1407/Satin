@@ -33,7 +33,7 @@ public final class RoundedBoxGeometry: SatinGeometry {
     }
 
     public init(size: Float = 2, radius: Float = 0.25, resolution: Int = 1) {
-        self.size = .init(repeating: 2.0)
+        self.size = .init(repeating: size)
         self.radius = radius
         self.resolution = resolution
         super.init()
