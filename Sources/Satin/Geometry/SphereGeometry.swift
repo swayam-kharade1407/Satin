@@ -9,7 +9,7 @@
 import SatinCore
 
 public final class SphereGeometry: SatinGeometry {
-    public var radius: Float {
+    public var radius: Float = 1.0 {
         didSet {
             if oldValue != radius {
                 _updateGeometryData = true
@@ -17,7 +17,7 @@ public final class SphereGeometry: SatinGeometry {
         }
     }
 
-    public var angularResolution: Int {
+    public var angularResolution: Int = 60 {
         didSet {
             if oldValue != angularResolution {
                 _updateGeometryData = true
@@ -25,7 +25,7 @@ public final class SphereGeometry: SatinGeometry {
         }
     }
 
-    public var verticalResolution: Int {
+    public var verticalResolution: Int = 30 {
         didSet {
             if oldValue != verticalResolution {
                 _updateGeometryData = true
@@ -33,7 +33,7 @@ public final class SphereGeometry: SatinGeometry {
         }
     }
 
-    public init(radius: Float, angularResolution: Int, verticalResolution: Int) {
+    public init(radius: Float = 1.0, angularResolution: Int = 60, verticalResolution: Int = 30) {
         self.radius = radius
         self.angularResolution = angularResolution
         self.verticalResolution = verticalResolution

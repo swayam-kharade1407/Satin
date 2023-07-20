@@ -275,6 +275,7 @@ class ARBloomRenderer: BaseRenderer {
                 geometry: geometry,
                 material: BasicColorMaterial(simd_float4(.random(in: 0.25 ... 1), 0.8), .alpha)
             )
+            mesh.doubleSided = true
             mesh.cullMode = .none
             mesh.scale = .init(repeating: .random(in: 0.25 ... 1.0))
 
