@@ -166,7 +166,6 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                         let indexCount = mdlSubmesh.indexCount
                         let indexBuffer = mdlSubmesh.indexBuffer(asIndexType: .uInt32)
                         let indexBytes = indexBuffer.map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
-                        let indexData = Array(UnsafeBufferPointer(start: indexBytes, count: indexCount))
 
                         var material: Material?
                         if let mdlMaterial = mdlSubmesh.material, let textureLoader = textureLoader {
@@ -177,7 +176,12 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                             Submesh(
                                 label: mdlSubmesh.name,
                                 parent: stnMesh,
-                                indexData: indexData,
+                                elementBuffer: ElementBuffer(
+                                    type: .uint32,
+                                    data: indexBytes,
+                                    count: indexCount,
+                                    source: indexBuffer
+                                ),
                                 material: material
                             )
                         )

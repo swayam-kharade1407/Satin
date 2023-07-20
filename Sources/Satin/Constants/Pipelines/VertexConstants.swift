@@ -120,7 +120,7 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
         }
     }
 
-    public var mdl: String {
+    public var mdlName: String {
         switch self {
             case .Position:
                 return MDLVertexAttributePosition

@@ -193,15 +193,14 @@ open class Mesh: Object, Renderable {
     override open func encode(_ commandBuffer: MTLCommandBuffer) {
         geometry.encode(commandBuffer)
         material?.encode(commandBuffer)
-        for submesh in submeshes {
-            submesh.encode(commandBuffer)
-        }
+        for submesh in submeshes { submesh.encode(commandBuffer) }
         super.encode(commandBuffer)
     }
 
     override open func update(camera: Camera, viewport: simd_float4) {
         geometry.update(camera: camera, viewport: viewport)
         material?.update(camera: camera, viewport: viewport)
+        for submesh in submeshes { submesh.update(camera: camera, viewport: viewport) }
         uniforms?.update(object: self, camera: camera, viewport: viewport)
         super.update(camera: camera, viewport: viewport)
     }
@@ -218,12 +217,14 @@ open class Mesh: Object, Renderable {
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {
-                if let indexBuffer = submesh.indexBuffer, let material = submesh.material {
-                    material.bind(renderEncoder, shadow: shadow)
+                if let indexBuffer = submesh.indexBuffer, let indexType = submesh.indexType {
+                    if let material = submesh.material {
+                        material.bind(renderEncoder, shadow: shadow)
+                    }
                     renderEncoder.drawIndexedPrimitives(
                         type: geometry.primitiveType,
                         indexCount: submesh.indexCount,
-                        indexType: submesh.indexType,
+                        indexType: indexType,
                         indexBuffer: indexBuffer,
                         indexBufferOffset: submesh.offset,
                         instanceCount: instanceCount

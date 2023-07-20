@@ -79,7 +79,7 @@ class MatcapRenderer: BaseRenderer {
                 )
 
                 for index in VertexAttributeIndex.allCases {
-                    if let attribute = descriptor.attributeNamed(index.mdl) {
+                    if let attribute = descriptor.attributeNamed(index.mdlName) {
                         let offset = attribute.offset
                         switch attribute.format {
                             case .float3:

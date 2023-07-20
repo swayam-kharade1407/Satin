@@ -12,19 +12,20 @@ import ModelIO
 
 import Forge
 import Satin
+import SatinCore
 
 class ExportGeometryRenderer: BaseRenderer {
     lazy var material = BasicDiffuseMaterial(0.9)
 
     lazy var metal: Mesh = {
-        let geo = ExtrudedTextGeometry(text: "SATIN", fontSize: 1, distance: 0.5)
-        let mesh = Mesh(geometry: geo, material: material)
+        let geo = ExtrudedTextGeometry(text: "SATIN", fontName: "Ariel", fontSize: 1, distance: 0.5)
+        let mesh = Mesh(label: "SATIN", geometry: geo, material: material)
         mesh.position = [0, 0.25, 0]
         return mesh
     }()
 
     lazy var rocks: Mesh = {
-        let mesh = Mesh(geometry: ExtrudedTextGeometry(text: "ROCKS", fontSize: 1, distance: 0.5),
+        let mesh = Mesh(label: "ROCKS", geometry: ExtrudedTextGeometry(text: "ROCKS", fontName: "Ariel", fontSize: 1, distance: 0.5),
                         material: material)
         mesh.position = [0, -0.75, 0]
         return mesh
@@ -76,47 +77,69 @@ class ExportGeometryRenderer: BaseRenderer {
         let allocator = MDLMeshBufferDataAllocator()
         let asset = MDLAsset(bufferAllocator: allocator)
 
+        let mdlObject = MDLObject()
+        mdlObject.name = scene.label
+        mdlObject.transform = MDLTransform(matrix: scene.localMatrix)
+
         let meshes = getMeshes(scene, true, false)
 
         for mesh in meshes {
-//            guard let indexBuffer = mesh.geometry.indexBuffer else { continue }
-//
-//            let geometry = mesh.geometry
-//
-//            let vertexCount = geometry.vertexData.count
-//            let vertexStride = MemoryLayout<Vertex>.stride
-//
-//            let indexCount = geometry.indexData.count
-//            let bytesPerIndex = MemoryLayout<UInt32>.size
-//
-//            let byteCountVertices = vertexCount * vertexStride
-//            let byteCountFaces = indexCount * bytesPerIndex
-//
-//            var vertexData: [Vertex] = []
-//            for var vertex in geometry.vertexData {
-//                vertex.position = mesh.worldMatrix * vertex.position
-//                vertexData.append(vertex)
-//            }
-//
-//            vertexData.withUnsafeMutableBufferPointer { vertexPointer in
-//                let mdlVertexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: vertexPointer.baseAddress!, count: byteCountVertices, deallocator: .none), type: .vertex)
-//                let mdlIndexBuffer = allocator.newBuffer(with: Data(bytesNoCopy: indexBuffer.contents(), count: byteCountFaces, deallocator: .none), type: .index)
-//
-//                let submesh = MDLSubmesh(indexBuffer: mdlIndexBuffer, indexCount: geometry.indexData.count, indexType: .uInt32, geometryType: .triangles, material: nil)
-//
-//                let mesh = MDLMesh(vertexBuffer: mdlVertexBuffer, vertexCount: geometry.vertexData.count, descriptor: SatinModelIOVertexDescriptor(), submeshes: [submesh])
-//                asset.add(mesh)
+            print("exporting: \(mesh.label)")
+            guard let geometry = mesh.geometry as? SatinGeometry else { continue }
 
-//            }
-            fatalError("implement this function")
+            var geometryData = geometry.geometryData
+
+            let vertexCount = Int(geometryData.vertexCount)
+            let vertexStride = MemoryLayout<Vertex>.stride
+            let byteCountVertices = vertexCount * vertexStride
+
+            let indexCount = Int(geometryData.indexCount * 3)
+            let bytesPerIndex = MemoryLayout<UInt32>.size
+            let byteCountIndices = indexCount * bytesPerIndex
+
+            var data = duplicateGeometryData(&geometryData)
+            transformGeometryData(&data, mesh.localMatrix)
+
+            let mdlVertexBuffer = allocator.newBuffer(
+                with: Data(bytes: data.vertexData, count: byteCountVertices),
+                type: .vertex
+            )
+
+            let mdlIndexBuffer = allocator.newBuffer(
+                with: Data(bytes: data.indexData, count: byteCountIndices),
+                type: .index
+            )
+
+            let submesh = MDLSubmesh(
+                indexBuffer: mdlIndexBuffer,
+                indexCount: indexCount,
+                indexType: .uInt32,
+                geometryType: .triangles,
+                material: nil
+            )
+
+            let descriptor = ModelIOVertexDescriptor(geometry.vertexDescriptor)
+
+            let mdlMesh = MDLMesh(
+                vertexBuffer: mdlVertexBuffer,
+                vertexCount: vertexCount,
+                descriptor: descriptor,
+                submeshes: [submesh]
+            )
+
+            mdlObject.addChild(mdlMesh)
+
+            freeGeometryData(&data)
         }
+
+        asset.add(mdlObject)
 
         if MDLAsset.canExportFileExtension("obj") {
             print("can export objs")
             do {
                 try asset.export(to: url)
             } catch {
-                print(error.localizedDescription)
+                print("Export Error: \(error.localizedDescription)")
             }
         } else {
             fatalError("Can't export OBJ")

@@ -331,6 +331,12 @@ void copyGeometryData(GeometryData *dest, GeometryData *src)
     copyGeometryIndexData(dest, src, 0, src->indexCount);
 }
 
+GeometryData duplicateGeometryData(GeometryData *src) {
+    GeometryData dest = createGeometryData();
+    copyGeometryData(&dest, src);
+    return dest;
+}
+
 void computeNormalsOfGeometryData(GeometryData *data)
 {
 

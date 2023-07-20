@@ -9,6 +9,32 @@ import Metal
 import ModelIO
 import SatinCore
 
+public func ModelIOVertexDescriptor(_ mtlVertexDescriptor: MTLVertexDescriptor) -> MDLVertexDescriptor {
+    let descriptor = MDLVertexDescriptor()
+
+    var bufferIndicies = [Int]()
+    for index in VertexAttributeIndex.allCases {
+        if let attribute = mtlVertexDescriptor.attributes[index.rawValue] {
+            print(attribute)
+            descriptor.attributes[index.rawValue] = MDLVertexAttribute(
+                name: index.mdlName,
+                format: attribute.format.mdlFormat,
+                offset: attribute.offset,
+                bufferIndex: attribute.bufferIndex
+            )
+            bufferIndicies.append(attribute.bufferIndex)
+        }
+    }
+
+    for index in bufferIndicies {
+        if let layout = mtlVertexDescriptor.layouts[index] {
+            descriptor.layouts[index] = MDLVertexBufferLayout(stride: layout.stride)
+        }
+    }
+
+    return descriptor
+}
+
 public func SatinVertexDescriptor() -> MTLVertexDescriptor {
     // position
     let vertexDescriptor = MTLVertexDescriptor()

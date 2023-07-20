@@ -6,8 +6,120 @@
 //
 
 import Metal
+import ModelIO
 
 extension MTLVertexFormat {
+    var mdlFormat: MDLVertexFormat {
+        switch self {
+            case .invalid:
+                return .invalid
+            case .uchar2:
+                return .uChar2
+            case .uchar3:
+                return .uChar3
+            case .uchar4:
+                return .uChar4
+            case .char2:
+                return .char2
+            case .char3:
+                return .char3
+            case .char4:
+                return .char4
+            case .uchar2Normalized:
+                return .uChar2Normalized
+            case .uchar3Normalized:
+                return .uChar3Normalized
+            case .uchar4Normalized:
+                return .uChar4Normalized
+            case .char2Normalized:
+                return .char2Normalized
+            case .char3Normalized:
+                return .char3Normalized
+            case .char4Normalized:
+                return .char4Normalized
+            case .ushort2:
+                return .uShort2
+            case .ushort3:
+                return .uShort3
+            case .ushort4:
+                return .uShort4
+            case .short2:
+                return .short2
+            case .short3:
+                return .short3
+            case .short4:
+                return .short4
+            case .ushort2Normalized:
+                return .uShort2Normalized
+            case .ushort3Normalized:
+                return .uShort3Normalized
+            case .ushort4Normalized:
+                return .uShort4Normalized
+            case .short2Normalized:
+                return .short2Normalized
+            case .short3Normalized:
+                return .short3Normalized
+            case .short4Normalized:
+                return .short4Normalized
+            case .half2:
+                return .half2
+            case .half3:
+                return .half3
+            case .half4:
+                return .half4
+            case .float:
+                return .float
+            case .float2:
+                return .float2
+            case .float3:
+                return .float3
+            case .float4:
+                return .float4
+            case .int:
+                return .int
+            case .int2:
+                return .int2
+            case .int3:
+                return .int3
+            case .int4:
+                return .int4
+            case .uint:
+                return .uInt
+            case .uint2:
+                return .uInt2
+            case .uint3:
+                return .uInt3
+            case .uint4:
+                return .uInt4
+            case .int1010102Normalized:
+                return .int1010102Normalized
+            case .uint1010102Normalized:
+                return .uInt1010102Normalized
+            case .uchar4Normalized_bgra:
+                return .uChar4Normalized
+            case .uchar:
+                return .uChar
+            case .char:
+                return .char
+            case .ucharNormalized:
+                return .uCharNormalized
+            case .charNormalized:
+                return .charNormalized
+            case .ushort:
+                return .uShort
+            case .short:
+                return .short
+            case .ushortNormalized:
+                return .uShortNormalized
+            case .shortNormalized:
+                return .shortNormalized
+            case .half:
+                return .half
+            @unknown default:
+                return .invalid
+        }
+    }
+
     var dataType: String? {
         switch self {
             case .invalid:

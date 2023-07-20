@@ -103,6 +103,7 @@ void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, Geo
 void copyGeometryVertexData(GeometryData *dest, GeometryData *src, int start, int end);
 void copyGeometryIndexData(GeometryData *dest, GeometryData *src, int start, int end);
 void copyGeometryData(GeometryData *dest, GeometryData *src);
+GeometryData duplicateGeometryData(GeometryData *src);
 
 void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, int triangleCount);
 

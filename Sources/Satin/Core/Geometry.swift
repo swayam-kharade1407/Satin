@@ -74,6 +74,16 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         }
     }
 
+    private var _updateIndexBuffer = true {
+        didSet {
+            if _updateIndexBuffer {
+                _bounds.clear()
+                _bvh.clear()
+                onUpdate.send(self)
+            }
+        }
+    }
+
     private var _bvh = ValueCache<BVH>()
     public var bvh: BVH? {
         if primitiveType == .triangle {
@@ -85,16 +95,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     private var _bounds = ValueCache<Bounds>()
     public var bounds: Bounds {
         _bounds.get { computeBounds() }
-    }
-
-    private var _updateIndexBuffer = true {
-        didSet {
-            if _updateIndexBuffer {
-                _bounds.clear()
-                _bvh.clear()
-                onUpdate.send(self)
-            }
-        }
     }
 
     // MARK: - Init
@@ -197,13 +197,17 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     // MARK: - Setup Index Buffer
 
     private func setupIndexBuffer() {
-        guard let device = context?.device, let elementBuffer = elementBuffer else { return }
+        guard let device = context?.device, let elementBuffer = elementBuffer, elementBuffer.needsUpdate else { return }
         if elementBuffer.count > 0 {
             indexBuffer = device.makeBuffer(bytes: elementBuffer.data, length: elementBuffer.length, options: [])
-            indexBuffer?.label = "Indices"
+            if let indexBuffer = indexBuffer {
+                indexBuffer.label = "\(id) Indices"
+                elementBuffer.needsUpdate = false
+            }
         }
         else {
             indexBuffer = nil
+            elementBuffer.needsUpdate = false
         }
     }
 
