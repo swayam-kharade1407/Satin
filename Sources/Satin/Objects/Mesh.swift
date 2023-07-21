@@ -8,8 +8,8 @@
 
 import Combine
 import Metal
-import simd
 import SatinCore
+import simd
 
 open class Mesh: Object, Renderable {
     public var opaque: Bool {
@@ -143,9 +143,7 @@ open class Mesh: Object, Renderable {
 
     open func setupSubmeshes() {
         guard let context = context else { return }
-        for submesh in submeshes {
-            submesh.context = context
-        }
+        for submesh in submeshes { submesh.context = context }
     }
 
     open func setupMaterial() {
@@ -189,6 +187,13 @@ open class Mesh: Object, Renderable {
     }
 
     // MARK: - Update
+
+    override open func update() {
+        geometry.update()
+        material?.update()
+        for submesh in submeshes { submesh.update() }
+        super.update()
+    }
 
     override open func encode(_ commandBuffer: MTLCommandBuffer) {
         geometry.encode(commandBuffer)

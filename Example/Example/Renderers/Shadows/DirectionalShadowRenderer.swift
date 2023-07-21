@@ -132,6 +132,9 @@ class DirectionalShadowRenderer: BaseRenderer {
         theta += .pi * 0.5
         light1.position = simd_make_float3(radius * sin(theta), 5.0, radius * cos(theta))
         light1.lookAt(target: .zero, up: Satin.worldUpDirection)
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

@@ -360,6 +360,7 @@ open class Renderer {
         shadowCasters.removeAll(keepingCapacity: true)
         shadowReceivers.removeAll(keepingCapacity: true)
 
+        camera.context = context
         camera.update(camera: camera, viewport: _viewport)
         camera.encode(commandBuffer) // FIXME: - traverse children and make sure you update everything
 
@@ -453,19 +454,16 @@ open class Renderer {
                         }
                     }
 
-                    if let cubemapTexture = cubemapTexture,
-                       let skyboxMaterial = material as? SkyboxMaterial
-                    {
+                    if let cubemapTexture = cubemapTexture, let skyboxMaterial = material as? SkyboxMaterial {
                         skyboxMaterial.texture = cubemapTexture
                         skyboxMaterial.texcoordTransform = reflectionTexcoordTransform
                         skyboxMaterial.environmentIntensity = environmentIntensity
                     }
                 }
-            } else {
-                object.update(camera: camera, viewport: _viewport)
             }
 
             object.context = context
+            object.update(camera: camera, viewport: _viewport)
             object.encode(commandBuffer)
         }
     }

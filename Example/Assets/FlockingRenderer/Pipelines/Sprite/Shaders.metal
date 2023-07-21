@@ -31,7 +31,7 @@ vertex CustomVertexData spriteVertex( uint instanceID [[instance_id]],
 	constant FlockingUniforms &compute [[buffer( VertexBufferCustom1 )]] )
 {
     Flocking particle = particles[instanceID];
-	float4 position = in.position;
+	float4 position = float4(in.position, 1.0);
 	position.xy += particle.position;
     
     const float2 vel = normalize( particle.velocity );

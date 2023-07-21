@@ -18,7 +18,7 @@ class MeshShadowRenderer {
         _texture
     }
 
-    public var update = true
+    public var _update = true
 
     private var subscription: AnyCancellable?
     private var device: MTLDevice
@@ -69,15 +69,20 @@ class MeshShadowRenderer {
         _texture = createTexture(device: device, width: width, height: height, pixelFormat: .bgra8Unorm)
 
         subscription = mesh.transformPublisher.sink { [weak self] object in
-            self?.update = true
+            self?._update = true
             self?.shadowMesh.worldMatrix = object.worldMatrix
             let alpha = remap(object.worldPosition.y, 0, 3.0, 1.0, 0.0)
             self?.shadowMesh.material?.set("Color", [0.0, 0.0, 0.0, alpha])
         }
     }
 
+    func update() {
+        camera.update()
+        scene.update()
+    }
+
     func draw(commandBuffer: MTLCommandBuffer) {
-        guard update, var _texture = _texture else { return }
+        guard _update, var _texture = _texture else { return }
 
         let rpd = MTLRenderPassDescriptor()
         rpd.colorAttachments[0].texture = _texture
@@ -93,7 +98,7 @@ class MeshShadowRenderer {
 
         blurFilter.encode(commandBuffer: commandBuffer, inPlaceTexture: &_texture)
 
-        update = false
+        _update = false
     }
 
     func createTexture(device: MTLDevice, width: Int, height: Int, pixelFormat: MTLPixelFormat) -> MTLTexture? {

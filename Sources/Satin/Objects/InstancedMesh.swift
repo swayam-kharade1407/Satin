@@ -116,20 +116,11 @@ public class InstancedMesh: Mesh {
         setupInstanceBuffer()
     }
 
-    public override func update(camera: Camera, viewport: simd_float4) {
-        if _updateInstanceMatricesUniforms {
-            updateInstanceMatricesUniforms()
-        }
-
-        if _setupInstanceMatrixBuffer {
-            setupInstanceBuffer()
-        }
-
-        if _updateInstanceMatrixBuffer {
-            updateInstanceBuffer()
-        }
-
-        super.update(camera: camera, viewport: viewport)
+    override public func update() {
+        if _updateInstanceMatricesUniforms { updateInstanceMatricesUniforms() }
+        if _setupInstanceMatrixBuffer { setupInstanceBuffer() }
+        if _updateInstanceMatrixBuffer { updateInstanceBuffer() }
+        super.update()
     }
 
     override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {

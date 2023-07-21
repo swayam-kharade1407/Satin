@@ -18,8 +18,9 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
     public var context: Context? {
         didSet {
-            guard let context = context, context != oldValue else { return }
-            setup()
+            if context != nil, context != oldValue {
+                setup()
+            }
         }
     }
 
@@ -108,9 +109,11 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         updateBuffers()
     }
 
-    open func update(camera: Camera, viewport: simd_float4) {
+    open func update() {
         updateBuffers()
     }
+
+    open func update(camera: Camera, viewport: simd_float4) {}
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
@@ -231,7 +234,15 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         let bufferIndex = buffer.index
 
         guard buffer.needsUpdate || vertexBuffers[bufferIndex] == nil else { return }
-        vertexBuffers[bufferIndex] = device.makeBuffer(bytes: buffer.data, length: buffer.length)
+
+        if buffer.length > 0, let data = buffer.data, let vertexBuffer = device.makeBuffer(bytes: data, length: buffer.length) {
+            vertexBuffer.label = bufferIndex.label
+            vertexBuffers[bufferIndex] = vertexBuffer
+        }
+        else {
+            vertexBuffers[bufferIndex] = nil
+        }
+
         buffer.needsUpdate = false
     }
 
@@ -367,7 +378,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         vertexBuffers.removeAll()
 
         elementBuffer?.delegate = nil
-        elementBuffer = nil        
+        elementBuffer = nil
         indexBuffer = nil
 
         _bvh.clear()
@@ -386,7 +397,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         _updateVertexBuffers = true
     }
 
-    // MARK: - Updated Eleement Buffer Data {
+    // MARK: - Updated Element Buffer Data {
 
     public func updated(buffer: ElementBuffer) {
         _updateIndexBuffer = true

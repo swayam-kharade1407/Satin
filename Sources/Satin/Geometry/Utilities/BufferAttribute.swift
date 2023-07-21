@@ -48,7 +48,8 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func makeBuffer(device: MTLDevice) -> MTLBuffer? {
-        device.makeBuffer(bytes: &data, length: length)
+        guard length > 0 else { return nil }
+        return device.makeBuffer(bytes: &data, length: length)
     }
 
     public static func == (lhs: GenericBufferAttribute<T>, rhs: GenericBufferAttribute<T>) -> Bool {

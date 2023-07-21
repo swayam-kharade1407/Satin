@@ -81,65 +81,10 @@ class LoadObjRenderer: BaseRenderer {
         scene.add(mesh)
     }
 
-    func loadUSD(url: URL) {
-        let asset = MDLAsset(url: url, vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: context.device))
-        scene = Object()
-        let object = asset.object(at: 0)
-        print(object.name)
-        scene.label = object.name
-        if let transform = object.transform {
-            scene.localMatrix = transform.matrix
-        }
-        loadChildren(scene, object.children.objects)
-    }
-
-    func loadChildren(_ parent: Object, _ children: [MDLObject]) {
-//        for child in children {
-//            if let mdlMesh = child as? MDLMesh {
-//                let geometry = Geometry()
-//                let mesh = Mesh(geometry: geometry, material: NormalColorMaterial())
-//                mesh.label = child.name
-//                parent.add(mesh)
-//
-//                let vertexData = mdlMesh.vertexBuffers[0].map().bytes.bindMemory(to: Vertex.self, capacity: mdlMesh.vertexCount)
-//                geometry.vertexData = Array(UnsafeBufferPointer(start: vertexData, count: mdlMesh.vertexCount))
-//                geometry.vertexBuffer = (mdlMesh.vertexBuffers[0] as! MTKMeshBuffer).buffer
-//
-//                if let mdlSubMeshes = mdlMesh.submeshes {
-//                    let mdlSubMeshesCount = mdlSubMeshes.count
-//                    for index in 0 ..< mdlSubMeshesCount {
-//                        let mdlSubmesh = mdlSubMeshes[index] as! MDLSubmesh
-//                        if mdlSubmesh.geometryType == .triangles {
-//                            let indexCount = mdlSubmesh.indexCount
-//                            let indexDataPtr = mdlSubmesh.indexBuffer(asIndexType: .uInt32).map().bytes.bindMemory(to: UInt32.self, capacity: indexCount)
-//                            let indexData = Array(UnsafeBufferPointer(start: indexDataPtr, count: indexCount))
-//                            let submesh = Submesh(
-//                                parent: mesh,
-//                                indexData: indexData,
-//                                indexBuffer: (mdlSubmesh.indexBuffer as! MTKMeshBuffer).buffer
-//                            )
-//                            submesh.label = mdlSubmesh.name
-//                            mesh.addSubmesh(submesh)
-//                        }
-//                    }
-//                }
-//
-//                if let transform = mdlMesh.transform {
-//                    mesh.localMatrix = transform.matrix
-//                }
-//
-//                loadChildren(mesh, child.children.objects)
-//            } else {
-//                let object = Object()
-//                object.label = child.name
-//                parent.add(object)
-//                loadChildren(object, child.children.objects)
-//            }
-//        }
-    }
-
     override func update() {
         cameraController.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

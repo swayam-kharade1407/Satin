@@ -14,7 +14,7 @@ open class Submesh {
     public var label = "Submesh"
     open var context: Context? {
         didSet {
-            if context != nil {
+            if context != nil, context != oldValue {
                 setup()
             }
         }
@@ -58,19 +58,17 @@ open class Submesh {
         self.material = material
     }
 
-    private func setup() {
+    open func setup() {
         updateBuffer()
         setupMaterial()
     }
 
-    func updateBuffer() {
-        if _updateIndexBuffer {
-            setupIndexBuffer()
-        }
+    open func update() {
+        updateBuffer()
+        material?.update()
     }
 
     open func update(camera: Camera, viewport: simd_float4) {
-        updateBuffer()
         material?.update(camera: camera, viewport: viewport)
     }
 
@@ -101,6 +99,12 @@ open class Submesh {
         else {
             indexBuffer = nil
             elementBuffer.needsUpdate = false
+        }
+    }
+
+    private func updateBuffer() {
+        if _updateIndexBuffer {
+            setupIndexBuffer()
         }
     }
 }

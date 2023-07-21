@@ -161,6 +161,8 @@ class ContactShadowRenderer: BaseRenderer {
     override func update() {
         theta = 2.0 * Float(getTime() - startTime)
         cameraController.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

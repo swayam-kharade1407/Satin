@@ -60,6 +60,10 @@ class ProjectedShadowRenderer: BaseRenderer {
         mesh.orientation = simd_quatf(angle: angle, axis: simd_normalize([sin(angle), cos(angle), 0.25]))
         angle += 0.015
         mesh.position.y = 2.0 + sin(angle)
+
+        shadowRenderer.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

@@ -62,6 +62,11 @@ class ARLidarMeshRenderer: BaseRenderer {
         )
     }
 
+    override func update() {
+        camera.update()
+        scene.update()
+    }
+
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
 

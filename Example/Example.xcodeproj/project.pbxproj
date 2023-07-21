@@ -321,7 +321,6 @@
 				E1BEFC4729EDBE5A00F9CE60 /* PBR */,
 				E19D4C4229F9C24500DF993D /* PostProcessing */,
 				E19D4C4629F9C28700DF993D /* Shadows */,
-				E1BCF34129DA3E910076C163 /* Tessellated */,
 			);
 			path = Renderers;
 			sourceTree = "<group>";
@@ -526,6 +525,7 @@
 		E19D4C4029F9C23900DF993D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
+				E1BCF34129DA3E910076C163 /* Tessellated */,
 				E1EC55D8268785630097C140 /* RayMarchingRenderer.swift */,
 				E11CCFFE2683EAD5005BEA88 /* SatinSceneKitRenderer.swift */,
 				E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */,

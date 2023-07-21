@@ -155,7 +155,9 @@ open class Shader {
 
     public var context: Context? {
         didSet {
-            if context != nil, oldValue != context { setup() }
+            if context != nil, context != oldValue {
+                setup()
+            }
         }
     }
 

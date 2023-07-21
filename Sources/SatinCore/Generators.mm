@@ -17,6 +17,54 @@
 extern "C" {
 #endif
 
+GeometryData generateLineGeometryData() {
+    const int vertices = 16;
+    const int triangles = 18;
+
+    Vertex *vtx = (Vertex *)malloc(vertices * sizeof(Vertex));
+    TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
+
+    vtx[0] = (Vertex) { .position = simd_make_float4(-2.0, 2.0, 0.0, 1.0), .normal = simd_make_float3(-1.0, 1.0, 0.0), .uv = simd_make_float2(0.0, 1.0) };
+    vtx[1] = (Vertex) { .position = simd_make_float4(-1.0, 2.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 1.0, 0.0), .uv = simd_make_float2(0.0, 1.0) };
+    vtx[2] = (Vertex) { .position = simd_make_float4(1.0, 2.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 1.0, 0.0), .uv = simd_make_float2(1.0, 1.0) };
+    vtx[3] = (Vertex) { .position = simd_make_float4(2.0, 2.0, 0.0, 1.0), .normal = simd_make_float3(1.0, 1.0, 0.0), .uv = simd_make_float2(1.0, 1.0) };
+    vtx[4] = (Vertex) { .position = simd_make_float4(-2.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(-1.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 1.0) };
+    vtx[5] = (Vertex) { .position = simd_make_float4(-1.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 1.0) };
+    vtx[6] = (Vertex) { .position = simd_make_float4(1.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 1.0) };
+    vtx[7] = (Vertex) { .position = simd_make_float4(2.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(1.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 1.0) };
+    vtx[8] = (Vertex) { .position = simd_make_float4(-2.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(-1.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 0.0) };
+    vtx[9] = (Vertex) { .position = simd_make_float4(-1.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 0.0) };
+    vtx[10] = (Vertex) { .position = simd_make_float4(1.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 0.0) };
+    vtx[11] = (Vertex) { .position = simd_make_float4(2.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(1.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 0.0) };
+    vtx[12] = (Vertex) { .position = simd_make_float4(-2.0, -2.0, 0.0, 1.0), .normal = simd_make_float3(-1.0, -1.0, 0.0), .uv = simd_make_float2(0.0, 0.0) };
+    vtx[13] = (Vertex) { .position = simd_make_float4(-1.0, -2.0, 0.0, 1.0), .normal = simd_make_float3(0.0, -1.0, 0.0), .uv = simd_make_float2(0.0, 0.0) };
+    vtx[14] = (Vertex) { .position = simd_make_float4(1.0, -2.0, 0.0, 1.0), .normal = simd_make_float3(0.0, -1.0, 0.0), .uv = simd_make_float2(1.0, 0.0) };
+    vtx[15] = (Vertex) { .position = simd_make_float4(2.0, -2.0, 0.0, 1.0), .normal = simd_make_float3(1.0, -1.0, 0.0), .uv = simd_make_float2(1.0, 0.0) };
+
+    ind[0] = (TriangleIndices) { .i0 = 4, .i1 = 5, .i2 = 1 };
+    ind[1] = (TriangleIndices) { .i0 = 4, .i1 = 1, .i2 = 0 };
+    ind[2] = (TriangleIndices) { .i0 = 5, .i1 = 6, .i2 = 2 };
+    ind[3] = (TriangleIndices) { .i0 = 5, .i1 = 2, .i2 = 1 };
+    ind[4] = (TriangleIndices) { .i0 = 6, .i1 = 7, .i2 = 3 };
+    ind[5] = (TriangleIndices) { .i0 = 6, .i1 = 3, .i2 = 2 };
+    ind[6] = (TriangleIndices) { .i0 = 8, .i1 = 9, .i2 = 5 };
+    ind[7] = (TriangleIndices) { .i0 = 8, .i1 = 5, .i2 = 4 };
+    ind[8] = (TriangleIndices) { .i0 = 9, .i1 = 10, .i2 = 6 };
+    ind[9] = (TriangleIndices) { .i0 = 9, .i1 = 6, .i2 = 5 };
+    ind[10] = (TriangleIndices) { .i0 = 10, .i1 = 11, .i2 = 7 };
+    ind[11] = (TriangleIndices) { .i0 = 10, .i1 = 7, .i2 = 6 };
+    ind[12] = (TriangleIndices) { .i0 = 12, .i1 = 13, .i2 = 9 };
+    ind[13] = (TriangleIndices) { .i0 = 12, .i1 = 9, .i2 = 8 };
+    ind[14] = (TriangleIndices) { .i0 = 13, .i1 = 14, .i2 = 10 };
+    ind[15] = (TriangleIndices) { .i0 = 13, .i1 = 10, .i2 = 9 };
+    ind[16] = (TriangleIndices) { .i0 = 14, .i1 = 15, .i2 = 11 };
+    ind[17] = (TriangleIndices) { .i0 = 14, .i1 = 11, .i2 = 10 };
+
+    return (GeometryData) {
+        .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind
+    };
+}
+
 GeometryData generateBoxGeometryData(float width, float height, float depth, float centerX,
                                      float centerY, float centerZ, int widthResolution,
                                      int heightResolution, int depthResolution) {

@@ -87,6 +87,9 @@ class SatinSceneKitRenderer: BaseRenderer {
         cameraController.update()
         scnCamera.projectionTransform = SCNMatrix4(camera.projectionMatrix)
         cameraNode.simdTransform = camera.worldMatrix
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

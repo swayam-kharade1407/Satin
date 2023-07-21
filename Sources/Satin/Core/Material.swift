@@ -28,7 +28,7 @@ public struct DepthBias: Codable {
 
 open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     @Published open var id: String = UUID().uuidString
-    
+
     var prefix: String {
         var result = String(describing: type(of: self)).replacingOccurrences(of: "Material", with: "")
         if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != result {
@@ -245,7 +245,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public init(shader: Shader) {
         self.shader = shader
-        self.label = shader.label
+        label = shader.label
 
         configuration = shader.configuration.rendering
         parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
@@ -331,7 +331,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         return SourceShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
-
     open func setupShader() {
         if shader == nil {
             shader = createShader()
@@ -360,15 +359,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         uniformsNeedsUpdate = false
     }
 
-    open func update(camera: Camera, viewport: simd_float4) {
+    open func update() {
         updateDepth()
         updateShader()
         updateUniforms()
         onUpdate?()
-    }
-
-    open func encode(_: MTLCommandBuffer) {
-
     }
 
     open func updateShader() {
@@ -385,6 +380,10 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         uniforms?.update()
     }
 
+    open func update(camera: Camera, viewport: simd_float4) {}
+
+    open func encode(_ commandBuffer: MTLCommandBuffer) {}
+    
     open func bindPipeline(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
         guard let pipeline = shadow ? shadowPipeline : pipeline else { return }
         renderEncoder.setRenderPipelineState(pipeline)
@@ -535,11 +534,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     public func setParameters(from incomingParams: ParameterGroup) {
-        self.parameters = incomingParams.clone()
+        parameters = incomingParams.clone()
     }
 
     public func setParameters(from material: Material) {
-        self.parameters = material.parameters.clone()
+        parameters = material.parameters.clone()
     }
 
     public func get(_ name: String) -> Parameter? {

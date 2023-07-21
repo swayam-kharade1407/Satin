@@ -45,6 +45,8 @@ class MeshShaderRenderer: BaseRenderer {
     override func update() {
         meshNormals.material?.set("Time", Float(getTime() - startTime))
         cameraController.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
@@ -85,29 +87,31 @@ private class CustomShader: SourceShader {
     }
 
     override open func makePipeline() throws -> MTLRenderPipelineState? {
-        if #available(macOS 13.0, iOS 16.0, *),
-           let context = context,
-           let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
-           let objectFunction = library.makeFunction(name: objectFunctionName),
-           let meshFunction = library.makeFunction(name: meshFunctionName),
-           let fragmentFunction = library.makeFunction(name: fragmentFunctionName)
-        {
-            var descriptor = MTLMeshRenderPipelineDescriptor()
-            descriptor.label = label + " Mesh"
+        if #available(macOS 13.0, iOS 16.0, *) {
+            if let context = context,
+               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
+               let objectFunction = library.makeFunction(name: objectFunctionName),
+               let meshFunction = library.makeFunction(name: meshFunctionName),
+               let fragmentFunction = library.makeFunction(name: fragmentFunctionName) {
+                var descriptor = MTLMeshRenderPipelineDescriptor()
+                descriptor.label = label + " Mesh"
 
-            descriptor.objectFunction = objectFunction
-            descriptor.meshFunction = meshFunction
-            descriptor.fragmentFunction = fragmentFunction
+                descriptor.objectFunction = objectFunction
+                descriptor.meshFunction = meshFunction
+                descriptor.fragmentFunction = fragmentFunction
 
-            descriptor.rasterSampleCount = context.sampleCount
-            descriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
-            descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
-            descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
+                descriptor.rasterSampleCount = context.sampleCount
+                descriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
+                descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
+                descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 
-            setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
+                setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
 
-            return try context.device.makeRenderPipelineState(descriptor: descriptor, options: []).0
-
+                return try context.device.makeRenderPipelineState(descriptor: descriptor, options: []).0
+             }
+            else {
+                return nil
+            }
         } else {
             fatalError("Mesh Shader's are not supported")
         }
@@ -273,15 +277,23 @@ private class CustomMesh: Object, Renderable {
 
     // MARK: - Update
 
+    override func update() {
+        geometry.update()
+        material?.update()
+        super.update()
+    }
+
     override func encode(_ commandBuffer: MTLCommandBuffer) {
+        geometry.encode(commandBuffer)
         material?.encode(commandBuffer)
         super.encode(commandBuffer)
     }
 
     override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera, viewport: viewport)
         geometry.update(camera: camera, viewport: viewport)
+        material?.update(camera: camera, viewport: viewport)
         vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
+        super.update(camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw

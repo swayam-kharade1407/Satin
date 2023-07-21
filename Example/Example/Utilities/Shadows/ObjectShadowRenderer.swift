@@ -158,6 +158,8 @@ class ObjectShadowRenderer {
             }
         }
 
+        finalScene.update()
+
         let rpd = MTLRenderPassDescriptor()
         rpd.renderTargetWidth = resolution
         rpd.renderTargetHeight = resolution
@@ -205,6 +207,8 @@ class ObjectShadowRenderer {
         updateCamera()
         updateTexture()
         updateBlur()
+
+        object.update()
     }
 
     private func updateCamera() {
@@ -229,6 +233,7 @@ class ObjectShadowRenderer {
         catcher.worldPosition = objectCenter
         catcher.position.y = .zero
         catcher.scale = .init(repeating: size + padding * 2.0)
+        camera.update()
     }
 
     private func updateTexture() {

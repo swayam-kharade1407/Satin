@@ -99,6 +99,9 @@ class FlockingRenderer: BaseRenderer {
         let time = Float(CFAbsoluteTimeGetCurrent() - startTime)
         particleSystem.set("Time", time)
         spriteMaterial.set("Time", time)
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

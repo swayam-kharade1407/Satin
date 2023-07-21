@@ -16,7 +16,7 @@ public class InterleavedBuffer: Equatable {
     public let id: String = UUID().uuidString
 
     public let index: VertexBufferIndex
-    public private(set) var data: UnsafeRawPointer
+    public private(set) var data: UnsafeRawPointer?
     public private(set) var stride: Int // represents the distance to another vertex (in bytes) i.e. MemoryLayout<Float>.size * 4
     public private(set) var count: Int // represents the total number of vertices
 
@@ -31,7 +31,7 @@ public class InterleavedBuffer: Equatable {
 
     public weak var delegate: InterleavedBufferDelegate?
 
-    public init(index: VertexBufferIndex, data: UnsafeRawPointer, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public init(index: VertexBufferIndex, data: UnsafeRawPointer?, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.index = index
         self.data = data
         self.stride = stride

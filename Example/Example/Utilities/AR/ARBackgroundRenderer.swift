@@ -103,7 +103,7 @@ class ARBackgroundRenderer: PostProcessor {
         _updateGeometry = true
     }
 
-    internal func update() {
+   override func update() {
         guard let frame = session.currentFrame else { return }
 
         updateTextures(frame)
@@ -112,16 +112,8 @@ class ARBackgroundRenderer: PostProcessor {
             updateGeometry(frame)
             _updateGeometry = false
         }
-    }
-
-    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        update()
-        super.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
-    }
-
-    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, renderTarget: MTLTexture) {
-        update()
-        super.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer, renderTarget: renderTarget)
+       
+       super.update()
     }
 
     override func resize(_ size: (width: Float, height: Float)) {

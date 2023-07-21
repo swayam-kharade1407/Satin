@@ -65,6 +65,12 @@ class TessellatedMesh: Object, Renderable {
         setupMaterial()
     }
 
+    override func update() {
+        geometry.update()
+        material?.update()
+        super.update()
+    }
+
     func setupGeometry() {
         guard let context = context else { return }
         geometry.context = context
@@ -93,6 +99,7 @@ class TessellatedMesh: Object, Renderable {
         material?.update(camera: camera, viewport: viewport)
         geometry.update(camera: camera, viewport: viewport)
         vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
+        super.update(camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw
@@ -110,7 +117,6 @@ class TessellatedMesh: Object, Renderable {
             offset: vertexUniforms.offset,
             index: VertexBufferIndex.VertexUniforms.rawValue
         )
-
 
         for (index, buffer) in geometry.vertexBuffers {
             renderEncoder.setVertexBuffer(buffer, offset: 0, index: index.rawValue )

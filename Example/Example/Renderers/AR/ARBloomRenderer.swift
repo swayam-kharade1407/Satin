@@ -163,6 +163,8 @@ class ARBloomRenderer: BaseRenderer {
             contentTexture = createTexture("Content Texture", colorPixelFormat, 1)
             _updateTextures = false
         }
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

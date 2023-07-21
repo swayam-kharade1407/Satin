@@ -15,6 +15,8 @@
 extern "C" {
 #endif
 
+GeometryData generateLineGeometryData();
+
 GeometryData generateBoxGeometryData(float width, float height, float depth, float centerX,
                                      float centerY, float centerZ, int widthResolution,
                                      int heightResolution, int depthResolution);

@@ -126,6 +126,10 @@ class ARPointCloudRenderer: BaseRenderer {
         renderer.compile(scene: scene, camera: camera)
     }
 
+    override func update() {
+        camera.update()
+        scene.update()
+    }
     // MARK: - Draw
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

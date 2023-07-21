@@ -92,6 +92,8 @@ class BufferComputeRenderer: BaseRenderer {
         camera.position = simd_make_float3(radius * sin(time), radius * cos(time), 100.0)
 
         cameraController.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

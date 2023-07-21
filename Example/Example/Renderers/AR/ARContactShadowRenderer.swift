@@ -175,6 +175,10 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
                 light.intensity = Float(ambient)
             }
         }
+
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

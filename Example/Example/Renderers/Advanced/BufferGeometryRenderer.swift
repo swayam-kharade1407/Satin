@@ -78,6 +78,12 @@ class BufferGeometryMesh: Object, Renderable {
         uniforms = VertexUniformBuffer(device: context.device)
     }
 
+    override func update() {
+        geometry.update()
+        material?.update()
+        super.update()
+    }
+
     override func encode(_ commandBuffer: MTLCommandBuffer) {
         geometry.encode(commandBuffer)
         material?.encode(commandBuffer)
@@ -88,6 +94,7 @@ class BufferGeometryMesh: Object, Renderable {
         geometry.update(camera: camera, viewport: viewport)
         material?.update(camera: camera, viewport: viewport)
         uniforms?.update(object: self, camera: camera, viewport: viewport)
+        super.update(camera: camera, viewport: viewport)
     }
 
     func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
@@ -240,6 +247,9 @@ class BufferGeometryRenderer: BaseRenderer {
         setupInterleavedBufferGeometry(size: 1.0 + 0.25 * sin(theta))
         cameraController.update()
         theta += 0.1
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

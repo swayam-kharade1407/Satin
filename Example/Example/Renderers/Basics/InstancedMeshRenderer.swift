@@ -98,6 +98,9 @@ class InstancedMeshRenderer: BaseRenderer {
         container.position = [2.0 * sin(getTime()), 0.0, 0.0]
         container.scale = .init(repeating: 1.0 + abs(cos(getTime())))
         container.orientation = .init(angle: cos(getTime()) * .pi, axis: simd_normalize(.one))
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

@@ -33,9 +33,13 @@ open class PostProcessor {
         renderer.compile(scene: scene, camera: camera)
     }
 
-    open func draw(renderPassDescriptor: MTLRenderPassDescriptor,
-                   commandBuffer: MTLCommandBuffer, renderTarget: MTLTexture)
-    {
+    open func update() {
+        camera.update()
+        scene.update()
+    }
+
+    open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, renderTarget: MTLTexture) {
+        update()
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -45,9 +49,8 @@ open class PostProcessor {
         )
     }
 
-    open func draw(renderPassDescriptor: MTLRenderPassDescriptor,
-                   commandBuffer: MTLCommandBuffer)
-    {
+    open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        update()
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

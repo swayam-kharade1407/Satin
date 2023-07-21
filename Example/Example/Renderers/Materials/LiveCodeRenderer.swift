@@ -80,6 +80,9 @@ class LiveCodeRenderer: BaseRenderer {
         if let material = mesh.material {
             material.set("Time", Float(getTime() - startTime))
         }
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

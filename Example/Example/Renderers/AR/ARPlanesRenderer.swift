@@ -92,8 +92,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Satin.Renderer(context: context)
-        renderer.label = "Content Renderer"
+        let renderer = Satin.Renderer(label: "Content Renderer", context: context)
         renderer.colorLoadAction = .load
         return renderer
     }()
@@ -134,6 +133,11 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
     override func setup() {
         backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
         renderer.compile(scene: scene, camera: camera)
+    }
+
+    override func update() {
+        camera.update()
+        scene.update()
     }
 
     // MARK: - Draw

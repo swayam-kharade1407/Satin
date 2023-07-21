@@ -19,7 +19,7 @@ open class Object: Codable, ObservableObject {
 
     open var context: Context? = nil {
         didSet {
-            if context != nil, context !== oldValue {
+            if context != nil, context != oldValue {
                 setup()
             }
         }
@@ -393,11 +393,14 @@ open class Object: Codable, ObservableObject {
         return result
     }
 
+    open func update() {
+        onUpdate?()
+        for child in children { child.update() }
+    }
+
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
-    open func update(camera: Camera, viewport: simd_float4) {
-        onUpdate?()
-    }
+    open func update(camera: Camera, viewport: simd_float4) {}
 
     // MARK: - Inserting, Adding, Attaching & Removing
 

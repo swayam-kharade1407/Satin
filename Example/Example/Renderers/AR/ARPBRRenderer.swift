@@ -78,8 +78,7 @@ fileprivate class ARScene: Object, Environment {
         return closest
     }
 
-    override func update(camera: Camera, viewport: simd_float4) {
-        super.update(camera: camera, viewport: viewport)
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
         guard let currentFrame = session.currentFrame else { return }
 
         if let lightEstimate = currentFrame.lightEstimate {
@@ -136,14 +135,14 @@ fileprivate class ARObject: Object {
         fatalError("init(from:) has not been implemented")
     }
 
-    override func update(camera: Camera, viewport: simd_float4) {
+    override func encode(_ commandBuffer: MTLCommandBuffer) {
         if let anchor = anchor,
            let currentFrame = session.currentFrame,
-           let index = currentFrame.anchors.firstIndex(of: anchor) {
+           let index = currentFrame.anchors.firstIndex(of: anchor)
+        {
             worldMatrix = currentFrame.anchors[index].transform
         }
-
-        super.update(camera: camera, viewport: viewport)
+        super.encode(commandBuffer)
     }
 }
 
@@ -377,6 +376,9 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     override func update() {
         let time = getTime() - startTime
         model.orientation = simd_quatf(angle: Float(time), axis: Satin.worldUpDirection)
+
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

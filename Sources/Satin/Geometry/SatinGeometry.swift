@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Metal
 import SatinCore
 
 open class SatinGeometry: Geometry {
@@ -22,56 +23,57 @@ open class SatinGeometry: Geometry {
         freeGeometryData(&geometryData)
     }
 
-    override public func update(camera: Camera, viewport: simd_float4) {
-        if _updateGeometryData {
-            setupGeometry()
-        }
-
-        super.update(camera: camera, viewport: viewport)
-    }
-
-    open func generateGeometryData() -> GeometryData {
-        createGeometryData()
-    }
-
     open func setupGeometry() {
         freeGeometryData(&geometryData)
         setFrom(geometryData: generateGeometryData())
         _updateGeometryData = false
     }
 
+    open override func update() {
+        updateGeometry()
+        super.update()
+    }
+
+    open func updateGeometry() {
+        if _updateGeometryData {
+            setupGeometry()
+        }
+    }
+
+    open func generateGeometryData() -> GeometryData {
+        createGeometryData()
+    }
+
     internal func setFrom(geometryData: GeometryData) {
         self.geometryData = geometryData
 
-        if let vertexData = geometryData.vertexData {
-            let vertexCount = Int(geometryData.vertexCount)
-            let interleavedBuffer = InterleavedBuffer(
-                index: .Vertices,
-                data: vertexData,
-                stride: MemoryLayout<Vertex>.size,
-                count: vertexCount,
-                source: geometryData
-            )
+        let vertexCount = Int(geometryData.vertexCount)
+        let interleavedBuffer = InterleavedBuffer(
+            index: .Vertices,
+            data: geometryData.vertexData,
+            stride: MemoryLayout<Vertex>.size,
+            count: vertexCount,
+            source: geometryData
+        )
 
-            if geometryData.indexCount > 0, let indexData = geometryData.indexData {
-                setElements(
-                    ElementBuffer(
-                        type: .uint32,
-                        data: indexData,
-                        count: Int(geometryData.indexCount) * 3,
-                        source: geometryData
-                    )
+        if geometryData.indexCount > 0, let indexData = geometryData.indexData {
+            setElements(
+                ElementBuffer(
+                    type: .uint32,
+                    data: indexData,
+                    count: Int(geometryData.indexCount) * 3,
+                    source: geometryData
                 )
-            } else {
-                setElements(nil)
-            }
-
-            var offset = 0
-            addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
-            offset += MemoryLayout<Float>.size * 4
-            addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
-            offset += MemoryLayout<Float>.size * 4
-            addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
+            )
+        } else {
+            setElements(nil)
         }
+
+        var offset = 0
+        addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
+        offset += MemoryLayout<Float>.size * 4
+        addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
+        offset += MemoryLayout<Float>.size * 4
+        addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
     }
 }

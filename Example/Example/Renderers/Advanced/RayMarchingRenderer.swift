@@ -61,6 +61,8 @@ class RayMarchingRenderer: BaseRenderer {
 
     override func update() {
         cameraController.update()
+        camera.update()
+        scene.update()
     }
 
     override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {

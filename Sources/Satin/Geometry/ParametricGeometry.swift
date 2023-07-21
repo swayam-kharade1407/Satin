@@ -7,6 +7,7 @@
 //
 
 import SatinCore
+import Metal
 import simd
 
 public final class ParametricGeometry: Geometry {
@@ -54,11 +55,10 @@ public final class ParametricGeometry: Geometry {
         setupGeometry()
     }
 
-    override public func update(camera: Camera, viewport: simd_float4) {
-        if _updateGeometry {
-            setupGeometry()
-        }
-        super.update(camera: camera, viewport: viewport)
+
+    public override func encode(_ commandBuffer: MTLCommandBuffer) {
+        updateGeometry()
+        super.encode(commandBuffer)
     }
 
     func setupGeometry() {
@@ -116,6 +116,12 @@ public final class ParametricGeometry: Geometry {
         )
 
         _updateGeometry = false
+    }
+
+    func updateGeometry() {
+        if _updateGeometry {
+            setupGeometry()            
+        }
     }
 
     public func generateGeometry() {
