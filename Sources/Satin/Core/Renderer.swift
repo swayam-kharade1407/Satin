@@ -452,12 +452,14 @@ open class Renderer {
                         if let brdfTexture = brdfTexture {
                             pbrMaterial.setTexture(brdfTexture, type: .brdf)
                         }
+                        pbrMaterial.update()
                     }
 
                     if let cubemapTexture = cubemapTexture, let skyboxMaterial = material as? SkyboxMaterial {
                         skyboxMaterial.texture = cubemapTexture
                         skyboxMaterial.texcoordTransform = reflectionTexcoordTransform
                         skyboxMaterial.environmentIntensity = environmentIntensity
+                        skyboxMaterial.update()
                     }
                 }
             }
