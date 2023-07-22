@@ -22,6 +22,7 @@ public final class UniformBuffer {
         let length = alignedSize * Satin.maxBuffersInFlight
 
         guard let buffer = device.makeBuffer(length: length, options: options) else { fatalError("Unable to create Uniform Buffer") }
+
         buffer.label = parameters.label
         self.buffer = buffer
 

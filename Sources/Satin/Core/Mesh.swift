@@ -167,7 +167,11 @@ open class Mesh: Object, Renderable {
 
     open func bindUniforms(_ renderEncoder: MTLRenderCommandEncoder) {
         guard let uniforms = uniforms else { return }
-        renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.VertexUniforms.rawValue)
+        renderEncoder.setVertexBuffer(
+            uniforms.buffer,
+            offset: uniforms.offset,
+            index: VertexBufferIndex.VertexUniforms.rawValue
+        )
     }
 
     open func bindGeometry(_ renderEncoder: MTLRenderCommandEncoder) {

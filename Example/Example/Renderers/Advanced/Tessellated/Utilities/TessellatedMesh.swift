@@ -63,6 +63,7 @@ class TessellatedMesh: Object, Renderable {
         setupGeometry()
         setupUniforms()
         setupMaterial()
+        super.setup()
     }
 
     override func update() {

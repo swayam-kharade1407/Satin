@@ -60,6 +60,7 @@ class BufferGeometryMesh: Object, Renderable {
         setupUniforms()
         setupGeometry()
         setupMaterial()
+        super.setup()
     }
 
     func setupGeometry() {
