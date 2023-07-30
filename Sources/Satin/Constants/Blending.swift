@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public enum Blending: Codable {
+public enum Blending: String, Codable {
     case disabled
     case alpha
     case additive

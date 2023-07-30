@@ -13,69 +13,102 @@ import ModelIO
 import simd
 
 open class PhysicalMaterial: StandardMaterial {
-    public var subsurface: Float = .zero {
-        didSet {
-            set("Subsurface", subsurface)
+    public var subsurface: Float {
+        get {
+            (get("Subsurface") as? FloatParameter)!.value
+        }
+        set {
+            set("Subsurface", newValue)
         }
     }
 
-    public var anisotropic: Float = .zero {
-        didSet {
-            set("Anisotropic", anisotropic)
+    public var anisotropic: Float {
+        get {
+            (get("Anisotropic") as? FloatParameter)!.value
+        }
+        set {
+            set("Anisotropic", newValue)
         }
     }
 
-    public var anisotropicAngle: Float = .zero {
-        didSet {
-            set("Anisotropic Angle", anisotropicAngle)
+    public var anisotropicAngle: Float {
+        get {
+            (get("Anisotropic Angle") as? FloatParameter)!.value
+        }
+        set {
+            set("Anisotropic Angle", newValue)
         }
     }
 
-    public var specularTint: Float = .zero {
-        didSet {
-            set("Specular Tint", specularTint)
+    public var specularTint: Float {
+        get {
+            (get("Specular Tint") as? FloatParameter)!.value
+        }
+        set {
+            set("Specular Tint", newValue)
         }
     }
 
-    public var clearcoat: Float = .zero {
-        didSet {
-            set("Clearcoat", clearcoat)
+    public var clearcoat: Float {
+        get {
+            (get("Clearcoat") as? FloatParameter)!.value
+        }
+        set {
+            set("Clearcoat", newValue)
         }
     }
 
-    public var clearcoatRoughness: Float = .zero {
-        didSet {
-            set("Clearcoat Roughness", clearcoatRoughness)
+    public var clearcoatRoughness: Float {
+        get {
+            (get("Clearcoat Roughness") as? FloatParameter)!.value
+        }
+        set {
+            set("Clearcoat Roughness", newValue)
         }
     }
 
-    public var sheen: Float = .zero {
-        didSet {
-            set("Sheen", sheen)
+    public var sheen: Float {
+        get {
+            (get("Sheen") as? FloatParameter)!.value
+        }
+        set {
+            set("Sheen", newValue)
         }
     }
 
-    public var sheenTint: Float = .zero {
-        didSet {
-            set("Sheen Tint", sheenTint)
+    public var sheenTint: Float {
+        get {
+            (get("Sheen Tint") as? FloatParameter)!.value
+        }
+        set {
+            set("Sheen Tint", newValue)
         }
     }
 
-    public var transmission: Float = .zero {
-        didSet {
-            set("Transmission", transmission)
+    public var transmission: Float {
+        get {
+            (get("Transmission") as? FloatParameter)!.value
+        }
+        set {
+            set("Transmission", newValue)
         }
     }
 
-    public var thickness: Float = .zero {
-        didSet {
-            set("Thickness", thickness)
+    public var thickness: Float {
+        get {
+            (get("Thickness") as? FloatParameter)!.value
+        }
+        set {
+            set("Thickness", newValue)
         }
     }
 
-    public var indexOfRefraction: Float = 1.5 {
-        didSet {
-            set("Index of Refraction", indexOfRefraction)
+    public var indexOfRefraction: Float {
+        get {
+            (get("Index of Refraction") as? FloatParameter)!.value
+        }
+        set {
+            set("Index of Refraction", newValue)
         }
     }
 
@@ -127,21 +160,6 @@ open class PhysicalMaterial: StandardMaterial {
         lighting = true
         blending = .disabled
         initalize()
-    }
-
-    override func initalizeParameters() {
-        super.initalizeParameters()
-        set("Specular Tint", specularTint)
-        set("Anisotropic", anisotropic)
-        set("Anisotropic Angle", anisotropicAngle)
-        set("Clearcoat", clearcoat)
-        set("Clearcoat Roughness", clearcoatRoughness)
-        set("Subsurface", subsurface)
-        set("Sheen", sheen)
-        set("Sheen Tint", sheenTint)
-        set("Transmission", transmission)
-        set("Thickness", thickness)
-        set("indexOfRefraction", indexOfRefraction)
     }
 
     override open func createShader() -> Shader {

@@ -13,45 +13,66 @@ import ModelIO
 import simd
 
 open class StandardMaterial: Material {
-    public var baseColor: simd_float4 = .one {
-        didSet {
-            set("Base Color", baseColor)
+    public var baseColor: simd_float4 {
+        get {
+            (get("Base Color") as? Float4Parameter)!.value
+        }
+        set {
+            set("Base Color", newValue)
         }
     }
 
-    public var emissiveColor: simd_float4 = .zero {
-        didSet {
-            set("Emissive Color", emissiveColor)
+    public var emissiveColor: simd_float4 {
+        get {
+            (get("Emissive Color") as? Float4Parameter)!.value
+        }
+        set {
+            set("Emissive Color", newValue)
         }
     }
 
-    public var specular: Float = 0.5 {
-        didSet {
-            set("Specular", specular)
+    public var specular: Float {
+        get {
+            (get("Specular") as? FloatParameter)!.value
+        }
+        set {
+            set("Specular", newValue)
         }
     }
 
-    public var metallic: Float = 0.0 {
-        didSet {
-            set("Metallic", metallic)
+    public var metallic: Float {
+        get {
+            (get("Metallic") as? FloatParameter)!.value
+        }
+        set {
+            set("Metallic", newValue)
         }
     }
 
-    public var roughness: Float = 0.0 {
-        didSet {
-            set("Roughness", roughness)
+    public var roughness: Float {
+        get {
+            (get("Roughness") as? FloatParameter)!.value
+        }
+        set {
+            set("Roughness", newValue)
         }
     }
 
-    public var environmentIntensity: Float = 1.0 {
-        didSet {
-            set("Environment Intensity", environmentIntensity)
+    public var environmentIntensity: Float {
+        get {
+            (get("Environment Intensity") as? FloatParameter)!.value
+        }
+        set {
+            set("Environment Intensity", newValue)
         }
     }
 
-    public var gammaCorrection: Float = 1.0 {
-        didSet {
-            set("Gamma Correction", gammaCorrection)
+    public var gammaCorrection: Float {
+        get {
+            (get("Gamma Correction") as? FloatParameter)!.value
+        }
+        set {
+            set("Gamma Correction", newValue)
         }
     }
 
@@ -162,7 +183,6 @@ open class StandardMaterial: Material {
     }
 
     func initalize() {
-        initalizeParameters()
         initalizeTexcoordParameters()
     }
 
@@ -170,16 +190,6 @@ open class StandardMaterial: Material {
         for type in PBRTextureIndex.allTexcoordCases {
             set(type.texcoordName.titleCase, matrix_identity_float3x3)
         }
-    }
-
-    func initalizeParameters() {
-        set("Base Color", baseColor)
-        set("Emissive Color", emissiveColor)
-        set("Roughness", roughness)
-        set("Metallic", metallic)
-        set("Specular", specular)
-        set("Environment Intensity", environmentIntensity)
-        set("Gamma Correction", gammaCorrection)
     }
 
     public required init(from decoder: Decoder) throws {
