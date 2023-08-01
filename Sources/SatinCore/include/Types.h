@@ -107,6 +107,9 @@ GeometryData duplicateGeometryData(GeometryData *src);
 
 void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, int triangleCount);
 
+void combineTriangleFaceMap(TriangleFaceMap *dest, TriangleFaceMap *src);
+void combineTriangleData(TriangleData *dest, TriangleData *src, int offset);
+
 void combineGeometryData(GeometryData *dest, GeometryData *src);
 void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 offset);
 void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale);

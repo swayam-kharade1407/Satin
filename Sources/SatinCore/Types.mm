@@ -159,6 +159,52 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
     }
 }
 
+void combineTriangleFaceMap(TriangleFaceMap *dest, TriangleFaceMap *src) {
+    if (src->count > 0) {
+        size_t srcSize = sizeof(uint32_t) * src->count;
+
+        if (dest->count > 0) {
+            int totalCount = src->count + dest->count;
+            size_t destSize = sizeof(uint32_t) * totalCount;
+
+            dest->data = (uint32_t *)realloc(dest->data, destSize);
+            memcpy(dest->data + dest->count, src->data, srcSize);
+
+            dest->count = totalCount;
+        }
+        else {
+            dest->data = (uint32_t *)malloc(srcSize);
+            memcpy(dest->data, src->data, srcSize);
+
+            dest->count = src->count;
+        }
+    }
+}
+
+void combineTriangleData(TriangleData *dest, TriangleData *src, int offset) {
+    if (src->count > 0) {
+        if (dest->count > 0) {
+            int totalCount = src->count + dest->count;
+            dest->indices = (TriangleIndices *)realloc(dest->indices, totalCount * sizeof(TriangleIndices));
+            memcpy(dest->indices + dest->count, src->indices, src->count * sizeof(TriangleIndices));
+            if (offset > 0) {
+                for (int i = dest->count; i < totalCount; i++) {
+                    TriangleIndices *t = &dest->indices[i];
+                    t->i0 += offset;
+                    t->i1 += offset;
+                    t->i2 += offset;
+                }
+            }
+            dest->count = totalCount;
+        }
+        else {
+            dest->indices = (TriangleIndices *)malloc(sizeof(TriangleIndices) * src->count);
+            memcpy(dest->indices, src->indices, sizeof(TriangleIndices) * src->count);
+            dest->count = src->count;
+        }
+    }
+}
+
 void combineGeometryData(GeometryData *dest, GeometryData *src)
 {
     int destPreCombineVertexCount = dest->vertexCount;
@@ -339,7 +385,6 @@ GeometryData duplicateGeometryData(GeometryData *src) {
 
 void computeNormalsOfGeometryData(GeometryData *data)
 {
-
     const simd_float3 zero = simd_make_float3(0.0);
     for (int i = 0; i < data->vertexCount; i++) {
         data->vertexData[i].normal = zero;

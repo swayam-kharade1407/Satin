@@ -115,6 +115,36 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
                 self = .ShadingBasisV
             case MDLVertexAttributeSubdivisionStencil:
                 self = .SubdivisionStencil
+            case "position":
+                self = .Position
+            case "normal":
+                self = .Normal
+            case "texcoord":
+                self = .Texcoord
+            case "tangent":
+                self = .Tangent
+            case "bitangent":
+                self = .Bitangent
+            case "color":
+                self = .Color
+            case "anisotropy":
+                self = .Anisotropy
+            case "binormal":
+                self = .Binormal
+            case "occlusion":
+                self = .Occlusion
+            case "edgeCrease":
+                self = .EdgeCrease
+            case "jointIndices":
+                self = .JointIndices
+            case "jointWeights":
+                self = .JointWeights
+            case "shadingBasisU":
+                self = .ShadingBasisU
+            case "ShadingBasisV":
+                self = .ShadingBasisV
+            case "subdivisionStencil":
+                self = .SubdivisionStencil
             default:
                 fatalError("Unknown Vertex Attribute: \(name)")
         }

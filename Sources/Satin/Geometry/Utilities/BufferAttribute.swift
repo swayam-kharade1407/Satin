@@ -13,6 +13,33 @@ public protocol BufferAttributeDelegate: AnyObject {
     func updated(attribute: any BufferAttribute)
 }
 
+import Combine
+import Foundation
+
+open class AnyBufferAttribute: Codable {
+    public var attribute: any BufferAttribute
+
+    public init(_ attribute: any BufferAttribute) {
+        self.attribute = attribute
+    }
+
+    private enum CodingKeys: CodingKey {
+        case type, attribute
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(AttributeType.self, forKey: .type)
+        attribute = try type.metatype.init(from: container.superDecoder(forKey: .attribute))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(attribute.type, forKey: .type)
+        try attribute.encode(to: container.superEncoder(forKey: .attribute))
+    }
+}
+
 public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     public let id: String = UUID().uuidString
 
@@ -36,6 +63,15 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
 
     public var length: Int { count * stride }
 
+    public subscript<ValueType>(index: Int) -> ValueType {
+        get {
+            return data[index] as! ValueType
+        }
+        set {
+            data[index] = newValue as! T
+        }
+    }
+
     public var data: [ValueType] {
         didSet {
             needsUpdate = true
@@ -47,9 +83,40 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         self.data = data
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case count
+        case data
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let count = try container.decode(Int.self, forKey: .count)
+        let bytes = try container.decode(Data.self, forKey: .data)
+        var data: [ValueType] = []
+        bytes.withUnsafeBytes { ptr in
+            let typedPtr = ptr.baseAddress?.assumingMemoryBound(to: ValueType.self)
+            data = Array(UnsafeBufferPointer(start: typedPtr, count: count))
+        }
+        self.data = data
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(count, forKey: .count)
+        try container.encode(getData(), forKey: .data)
+    }
+
     public func makeBuffer(device: MTLDevice) -> MTLBuffer? {
         guard length > 0 else { return nil }
         return device.makeBuffer(bytes: &data, length: length)
+    }
+
+    public func getData() -> Data {
+        return Data(bytes: &data, count: length)
+    }
+
+    public func append(_ value: ValueType) {
+        data.append(value)
     }
 
     public static func == (lhs: GenericBufferAttribute<T>, rhs: GenericBufferAttribute<T>) -> Bool {
