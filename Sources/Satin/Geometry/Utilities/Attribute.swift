@@ -90,37 +90,3 @@ public enum AttributeType: String, Codable {
         }
     }
 }
-
-public protocol VertexAttribute: Equatable, AnyObject {
-    associatedtype ValueType: Codable
-    var id: String { get }
-
-    var type: AttributeType { get }
-    var format: MTLVertexFormat { get }
-    var count: Int { get } // this represents how many elements we have in a BufferAttribute (5 positions) or how many vertices we have in an InterleavedBufferAttribute
-
-    var size: Int { get }
-    var stride: Int { get }
-    var alignment: Int { get }
-    var components: Int { get }
-}
-
-public protocol BufferAttribute: VertexAttribute, Codable {
-    var data: [ValueType] { get set }
-
-    var length: Int { get }
-
-    subscript<ValueType>(_: Int) -> ValueType { get set }
-
-    var needsUpdate: Bool { get set }
-    var delegate: BufferAttributeDelegate? { get set }
-
-    func append(_ value: ValueType)
-    func makeBuffer(device: MTLDevice) -> MTLBuffer?
-    func getData() -> Data
-}
-
-public protocol InterleavedBufferAttribute: VertexAttribute {
-    var buffer: InterleavedBuffer { get }
-    var offset: Int { get }
-}

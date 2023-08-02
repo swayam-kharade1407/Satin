@@ -8,6 +8,11 @@
 import Foundation
 import Metal
 
+public protocol InterleavedBufferAttribute: VertexAttribute {
+    var buffer: InterleavedBuffer { get }
+    var offset: Int { get }
+}
+
 public protocol InterleavedBufferDelegate: AnyObject {
     func updated(buffer: InterleavedBuffer)
 }
