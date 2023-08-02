@@ -249,7 +249,7 @@ public final class Float2BufferAttribute: GenericBufferAttribute<simd_float2> {
     override public var components: Int { 2 }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
-        append(simd_mix(data[start], data[end], simd_make_float2(time)))
+        append(simd_mix(data[start], data[end], simd_float2(repeating: time)))
     }
 }
 
@@ -258,7 +258,7 @@ public final class Float3BufferAttribute: GenericBufferAttribute<simd_float3> {
     override public var components: Int { 3 }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
-        append(simd_mix(data[start], data[end], simd_make_float3(time)))
+        append(simd_mix(data[start], data[end], simd_float3(repeating: time)))
     }
 }
 
@@ -267,7 +267,7 @@ public final class Float4BufferAttribute: GenericBufferAttribute<simd_float4> {
     override public var components: Int { 4 }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
-        append(simd_mix(data[start], data[end], simd_make_float4(time)))
+        append(simd_mix(data[start], data[end], simd_float4(repeating: time)))
     }
 }
 
