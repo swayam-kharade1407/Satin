@@ -136,7 +136,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func duplicate() -> any BufferAttribute {
-        return GenericBufferAttribute<T>(data: data)
+        fatalError("Generic Buffer")
     }
 
     public func duplicate(at index: Int) {
@@ -160,6 +160,10 @@ public final class BoolBufferAttribute: GenericBufferAttribute<Bool> {
     override public var type: AttributeType { .bool }
     override public var components: Int { 1 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return BoolBufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(time > 0.5 ? data[end] : data[start])
     }
@@ -168,6 +172,10 @@ public final class BoolBufferAttribute: GenericBufferAttribute<Bool> {
 public final class UInt16BufferAttribute: GenericBufferAttribute<UInt16> {
     override public var type: AttributeType { .uint16 }
     override public var components: Int { 1 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return UInt16BufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(UInt16(simd_mix(Float(data[start]), Float(data[end]), time)))
@@ -178,6 +186,10 @@ public final class UInt32BufferAttribute: GenericBufferAttribute<UInt32> {
     override public var type: AttributeType { .uint32 }
     override public var components: Int { 1 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return UInt32BufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(UInt32(simd_mix(Float(data[start]), Float(data[end]), time)))
     }
@@ -187,6 +199,10 @@ public final class IntBufferAttribute: GenericBufferAttribute<simd_int1> {
     override public var type: AttributeType { .int }
     override public var components: Int { 1 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return IntBufferAttribute(data: data)
+    }
+    
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(Int32(simd_mix(Float(data[start]), Float(data[end]), time)))
     }
@@ -195,6 +211,10 @@ public final class IntBufferAttribute: GenericBufferAttribute<simd_int1> {
 public final class Int2BufferAttribute: GenericBufferAttribute<simd_int2> {
     override public var type: AttributeType { .int2 }
     override public var components: Int { 2 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return Int2BufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         let startValue = data[start]
@@ -212,6 +232,10 @@ public final class Int3BufferAttribute: GenericBufferAttribute<simd_int3> {
     override public var type: AttributeType { .int3 }
     override public var components: Int { 3 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return Int3BufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         let startValue = data[start]
         let endValue = data[end]
@@ -228,6 +252,10 @@ public final class Int3BufferAttribute: GenericBufferAttribute<simd_int3> {
 public final class Int4BufferAttribute: GenericBufferAttribute<simd_int4> {
     override public var type: AttributeType { .int4 }
     override public var components: Int { 4 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return Int4BufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         let startValue = data[start]
@@ -247,6 +275,10 @@ public final class LongBufferAttribute: GenericBufferAttribute<Int> {
     override public var type: AttributeType { .long }
     override public var components: Int { 1 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return LongBufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(Int(simd_mix(Float(data[start]), Float(data[end]), time)))
     }
@@ -255,6 +287,10 @@ public final class LongBufferAttribute: GenericBufferAttribute<Int> {
 public final class FloatBufferAttribute: GenericBufferAttribute<simd_float1> {
     override public var type: AttributeType { .float }
     override public var components: Int { 1 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return FloatBufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(simd_mix(data[start], data[end], time))
@@ -265,6 +301,10 @@ public final class Float2BufferAttribute: GenericBufferAttribute<simd_float2> {
     override public var type: AttributeType { .float2 }
     override public var components: Int { 2 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return Float2BufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(simd_mix(data[start], data[end], simd_float2(repeating: time)))
     }
@@ -273,6 +313,10 @@ public final class Float2BufferAttribute: GenericBufferAttribute<simd_float2> {
 public final class Float3BufferAttribute: GenericBufferAttribute<simd_float3> {
     override public var type: AttributeType { .float3 }
     override public var components: Int { 3 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return Float3BufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(simd_mix(data[start], data[end], simd_float3(repeating: time)))
@@ -283,6 +327,10 @@ public final class Float4BufferAttribute: GenericBufferAttribute<simd_float4> {
     override public var type: AttributeType { .float4 }
     override public var components: Int { 4 }
 
+    override public func duplicate() -> any BufferAttribute {
+        return Float4BufferAttribute(data: data)
+    }
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(simd_mix(data[start], data[end], simd_float4(repeating: time)))
     }
@@ -291,6 +339,10 @@ public final class Float4BufferAttribute: GenericBufferAttribute<simd_float4> {
 public final class PackedFloat3BufferAttribute: GenericBufferAttribute<MTLPackedFloat3> {
     override public var type: AttributeType { .float3 }
     override public var components: Int { 3 }
+
+    override public func duplicate() -> any BufferAttribute {
+        return PackedFloat3BufferAttribute(data: data)
+    }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
         let startValue = data[start]
