@@ -201,7 +201,7 @@ public func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, sh
             if i > 0 {
                 injection += "\t"
             }
-            injection += "out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms.modelMatrix * in.position;\n"
+            injection += "out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms.modelMatrix * float4(in.position.xyz, 1.0);\n"
         }
     }
     source = source.replacingOccurrences(of: "// inject shadow vertex calc\n", with: injection)

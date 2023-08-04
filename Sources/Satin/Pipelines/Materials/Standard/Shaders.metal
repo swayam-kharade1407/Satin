@@ -44,7 +44,11 @@ vertex CustomVertexData standardVertex
     
     CustomVertexData out;
     out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
+
+#if defined(HAS_TEXCOORD)
     out.texcoord = in.uv;
+#endif
+
     out.normal = normalMatrix * in.normal;
 
 #if defined(HAS_COLOR)

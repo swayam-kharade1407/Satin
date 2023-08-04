@@ -1,11 +1,10 @@
-#if defined(NORMAL_MAP)
+#if defined(NORMAL_MAP) && defined(HAS_TEXCOORD)
     const float2 normalTexcoord = (uniforms.normalTexcoordTransform * float3(in.texcoord, 1.0)).xy;
     float3 mapNormal = normalMap.sample(normalSampler, normalTexcoord).rgb * 2.0 - 1.0;
 
 #if defined(HAS_TANGENT) && defined(HAS_BITANGENT)
     const float3x3 TBN(in.tangent, in.bitangent, in.normal);
     pixel.normal = normalize(TBN * mapNormal);
-    
 #else
     const float3 Q1 = dfdx(in.worldPosition);
     const float3 Q2 = dfdy(in.worldPosition);

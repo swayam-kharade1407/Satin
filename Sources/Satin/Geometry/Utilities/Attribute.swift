@@ -24,7 +24,7 @@ public enum AttributeType: String, Codable {
     case float4
     case generic
 
-    var format: MTLVertexFormat {
+    public var format: MTLVertexFormat {
         switch self {
             case .bool:
                 return .invalid
@@ -57,7 +57,7 @@ public enum AttributeType: String, Codable {
         }
     }
 
-    var metatype: any BufferAttribute.Type {
+    public var metatype: any BufferAttribute.Type {
         switch self {
             case .float4:
                 return Float4BufferAttribute.self

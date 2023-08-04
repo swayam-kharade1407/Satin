@@ -27,8 +27,13 @@ public protocol BufferAttribute: VertexAttribute, Codable {
     func duplicate(at index: Int)
     func remove(at index: Int)
     func removeLast()
+    func reserveCapacity(_ minimumCapacity: Int)
 
     func interpolate(start: Int, end: Int, at time: Float)
+
+    init()
+    init(data: [ValueType])
+    init(defaultValue: ValueType, count: Int)
 }
 
 public protocol BufferAttributeDelegate: AnyObject {
@@ -74,8 +79,16 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         }
     }
 
-    public init(data: [ValueType]) {
+    public required init() {
+        self.data = []
+    }
+
+    required public init(data: [ValueType]) {
         self.data = data
+    }
+
+    required public init(defaultValue: ValueType, count: Int) {
+        self.data = Array(repeating: defaultValue, count: count)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -112,6 +125,10 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
 
     public func append(_ value: ValueType) {
         data.append(value)
+    }
+
+    public func reserveCapacity(_ minimumCapacity: Int) {
+        data.reserveCapacity(minimumCapacity)
     }
 
     public static func == (lhs: GenericBufferAttribute<T>, rhs: GenericBufferAttribute<T>) -> Bool {
