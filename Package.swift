@@ -57,5 +57,5 @@ let package = Package(
         )
     ],
     swiftLanguageVersions: [.v5],
-    cxxLanguageStandard: .cxx14
+    cxxLanguageStandard: .cxx17
 )
