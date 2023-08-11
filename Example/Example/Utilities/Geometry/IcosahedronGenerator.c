@@ -22,7 +22,7 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
     int vertices = 12;
     int triangles = 20;
 
-    Vertex *vtx = (Vertex *)malloc(sizeof(Vertex) * vertices);
+    SatinVertex *vtx = (SatinVertex *)malloc(sizeof(SatinVertex) * vertices);
     TriangleIndices *ind = (TriangleIndices *)malloc(sizeof(TriangleIndices) * triangles);
 
     vtx[0].position = simd_make_float4(0.0, h, w, 1.0);
@@ -67,7 +67,7 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
     for (int r = 0; r < res; r++) {
         int newTriangles = triangles * 4;
         int newVertices = vertices + triangles * 3;
-        vtx = (Vertex *)realloc(vtx, newVertices * sizeof(Vertex));
+        vtx = (SatinVertex *)realloc(vtx, newVertices * sizeof(SatinVertex));
         TriangleIndices *newInd = (TriangleIndices *)malloc(newTriangles * sizeof(TriangleIndices));
 
         int j = vertices;
@@ -78,9 +78,9 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
             const int i1 = t.i1;
             const int i2 = t.i2;
 
-            const Vertex v0 = vtx[i0];
-            const Vertex v1 = vtx[i1];
-            const Vertex v2 = vtx[i2];
+            const SatinVertex v0 = vtx[i0];
+            const SatinVertex v1 = vtx[i1];
+            const SatinVertex v2 = vtx[i2];
 
             // a
             vtx[j].position = simd_make_float4(v0.position + v1.position) * 0.5;

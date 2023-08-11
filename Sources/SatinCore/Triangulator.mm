@@ -183,15 +183,15 @@ void appendVertexData(GeometryData *gDataDest, GeometryData *gDataSrc)
         if (gDataDest->vertexCount > 0) {
             int totalCount = gDataSrc->vertexCount + gDataDest->vertexCount;
             gDataDest->vertexData =
-                (Vertex *)realloc(gDataDest->vertexData, totalCount * sizeof(Vertex));
+                (SatinVertex *)realloc(gDataDest->vertexData, totalCount * sizeof(SatinVertex));
             memcpy(gDataDest->vertexData + gDataDest->vertexCount, gDataSrc->vertexData,
-                   gDataSrc->vertexCount * sizeof(Vertex));
+                   gDataSrc->vertexCount * sizeof(SatinVertex));
             gDataDest->vertexCount += gDataSrc->vertexCount;
         }
         else {
-            gDataDest->vertexData = (Vertex *)malloc(gDataSrc->vertexCount * sizeof(Vertex));
+            gDataDest->vertexData = (SatinVertex *)malloc(gDataSrc->vertexCount * sizeof(SatinVertex));
             memcpy(gDataDest->vertexData, gDataSrc->vertexData,
-                   gDataSrc->vertexCount * sizeof(Vertex));
+                   gDataSrc->vertexCount * sizeof(SatinVertex));
             gDataDest->vertexCount = gDataSrc->vertexCount;
         }
     }
@@ -657,7 +657,7 @@ void reverseStructure(tsVertex *structure)
     } while (curr != head);
 }
 
-tsVertex *createVertexStructure(Vertex *vertices, const uint32_t *face, int length)
+tsVertex *createVertexStructure(SatinVertex *vertices, const uint32_t *face, int length)
 {
     //    printf("face length: %d\n", length);
     //    printf("CREATING VERTEX STRUCTURE!\n\n");
@@ -680,9 +680,9 @@ tsVertex *createVertexStructure(Vertex *vertices, const uint32_t *face, int leng
         uint32_t index1 = face[i1];
         uint32_t index2 = face[i2];
 
-        Vertex *v0 = &vertices[index0];
-        Vertex *v1 = &vertices[index1];
-        Vertex *v2 = &vertices[index2];
+        SatinVertex *v0 = &vertices[index0];
+        SatinVertex *v1 = &vertices[index1];
+        SatinVertex *v2 = &vertices[index2];
 
         simd_float3 p0 = simd_make_float3(v0->position);
         simd_float3 p1 = simd_make_float3(v1->position);
@@ -726,7 +726,7 @@ tsVertex *createVertexStructure(Vertex *vertices, const uint32_t *face, int leng
     return structure;
 }
 
-tsPath *createPathStructure(Vertex *vertices, const uint32_t *face, int length)
+tsPath *createPathStructure(SatinVertex *vertices, const uint32_t *face, int length)
 {
     tsPath *result = (tsPath *)malloc(sizeof(tsPath));
     result->index = 0;
@@ -1033,7 +1033,7 @@ int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gDa
         int indexCount = length * 2;
         GeometryData extrudeData = (GeometryData) {
             .vertexCount = vertexCount,
-            .vertexData = (Vertex *)malloc(vertexCount * sizeof(Vertex)),
+            .vertexData = (SatinVertex *)malloc(vertexCount * sizeof(SatinVertex)),
             .indexCount = indexCount,
             .indexData = (TriangleIndices *)malloc(indexCount * sizeof(TriangleIndices))
         };
@@ -1044,14 +1044,14 @@ int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gDa
             const simd_float2 pt = curr->v;
             const float uv = (float)j / lengthMinusOne;
             // front vertex
-            extrudeData.vertexData[j] = (Vertex) {
+            extrudeData.vertexData[j] = (SatinVertex) {
                 .position = simd_make_float4(pt.x, pt.y, 1.0, 1.0),
                 .normal = simd_make_float3(0.0, 0.0, 0.0),
                 .uv = simd_make_float2(uv, 0.0)
             };
 
             // rear vertex
-            extrudeData.vertexData[j + length] = (Vertex) {
+            extrudeData.vertexData[j + length] = (SatinVertex) {
                 .position = simd_make_float4(pt.x, pt.y, -1.0, 1.0),
                 .normal = simd_make_float3(0.0, 0.0, 0.0),
                 .uv = simd_make_float2(uv, 1.0)

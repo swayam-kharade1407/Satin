@@ -19,7 +19,7 @@ typedef struct Vertex {
     simd_float4 position;
     simd_float3 normal;
     simd_float2 uv;
-} Vertex;
+} SatinVertex;
 
 typedef struct Bounds {
     simd_float3 min;
@@ -65,7 +65,7 @@ typedef struct TriangleData {
 
 typedef struct GeometryData {
     int vertexCount;
-    Vertex *vertexData;
+    SatinVertex *vertexData;
     int indexCount;
     TriangleIndices *indexData;
 } GeometryData;
@@ -95,7 +95,7 @@ void freeTriangleData(TriangleData *data);
 GeometryData createGeometryData(void);
 void freeGeometryData(GeometryData *data);
 
-void copyVertexDataToGeometryData(Vertex *vertices, int count, GeometryData *destData);
+void copyVertexDataToGeometryData(SatinVertex *vertices, int count, GeometryData *destData);
 void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destData);
 
 void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *tData);
@@ -119,7 +119,7 @@ void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src, simd
 void computeNormalsOfGeometryData(GeometryData *data);
 void reverseFacesOfGeometryData(GeometryData *data);
 
-void transformVertices(Vertex *vertices, int vertexCount, simd_float4x4 transform);
+void transformVertices(SatinVertex *vertices, int vertexCount, simd_float4x4 transform);
 void transformGeometryData(GeometryData *data, simd_float4x4 transform);
 
 void deindexGeometryData(GeometryData *dest, GeometryData *src);

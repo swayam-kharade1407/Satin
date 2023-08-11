@@ -27,7 +27,7 @@ Bounds computeBoundsFromFloatData(const void *data, int stride, int count)
     return createBounds();
 }
 
-Bounds computeBoundsFromVertices(const Vertex *vertices, int count)
+Bounds computeBoundsFromVertices(const SatinVertex *vertices, int count)
 {
     if (count > 0) {
         Bounds result = createBounds();
@@ -39,7 +39,7 @@ Bounds computeBoundsFromVertices(const Vertex *vertices, int count)
     return createBounds();
 }
 
-Bounds computeBoundsFromVerticesAndTransform(const Vertex *vertices, int count, simd_float4x4 transform)
+Bounds computeBoundsFromVerticesAndTransform(const SatinVertex *vertices, int count, simd_float4x4 transform)
 {
     if (count > 0) {
         Bounds result = createBounds();

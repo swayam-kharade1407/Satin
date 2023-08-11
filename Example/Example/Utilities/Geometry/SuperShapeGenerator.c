@@ -33,7 +33,7 @@ GeometryData generateSuperShapeGeometryData(float r1, float a1, float b1, float 
     int vertices = (resTheta + 1) * (resPhi + 1);
     int triangles = (resTheta * resPhi) * 2;
 
-    Vertex *vtx = (Vertex *)malloc(sizeof(Vertex) * vertices);
+    SatinVertex *vtx = (SatinVertex *)malloc(sizeof(SatinVertex) * vertices);
     TriangleIndices *ind = (TriangleIndices *)malloc(sizeof(TriangleIndices) * triangles);
 
     int triIndex = 0;

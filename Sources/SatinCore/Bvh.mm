@@ -178,7 +178,7 @@ void subdivideBVHNode(BVH *bvh, uint32_t nodeIndex)
 }
 
 BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH) {
-    return createBVHFromFloatData(geometry.vertexData, sizeof(Vertex)/sizeof(float), geometry.vertexCount, geometry.indexData, geometry.indexCount * 3, true, useSAH);
+    return createBVHFromFloatData(geometry.vertexData, sizeof(SatinVertex)/sizeof(float), geometry.vertexCount, geometry.indexData, geometry.indexCount * 3, true, useSAH);
 }
 
 BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const void *indexData, int indexCount, bool uint32, bool useSAH) {
