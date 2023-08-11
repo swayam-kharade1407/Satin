@@ -391,7 +391,7 @@ class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         let buffer = audioBuffers[channel]
 
         if bytesPerSample == 4 {
-            buffer.assign(from: amplitudes.assumingMemoryBound(to: Float.self), count: numberOfSamples)
+            buffer.update(from: amplitudes.assumingMemoryBound(to: Float.self), count: numberOfSamples)
         } else if bytesPerSample == 2 {
             var factor = Float(Int16.max)
             vDSP_vflt16(amplitudes.assumingMemoryBound(to: Int16.self), 1, buffer, 1, vDSP_Length(numberOfSamples))

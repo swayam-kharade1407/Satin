@@ -17,6 +17,10 @@ Rectangle createRectangle(void)
     return (Rectangle) { .min = { INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY } };
 }
 
+simd_float2 rectangleCorner(const Rectangle *a, int index) {
+    return simd_make_float2(index & 1 ? a->min.x : a->max.x, index & 2 ? a->min.y : a->max.y);
+}
+
 Rectangle expandRectangle(Rectangle rect, simd_float2 pt)
 {
     return (Rectangle) { .min = simd_min(rect.min, pt), .max = simd_max(rect.max, pt) };

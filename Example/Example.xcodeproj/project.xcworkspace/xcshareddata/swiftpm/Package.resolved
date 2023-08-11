@@ -6,13 +6,13 @@
       "location" : "git@github.com:Hi-Rez/ForgePro.git",
       "state" : {
         "branch" : "main",
-        "revision" : "e80944fdf30ab73c010ac96adce67e50af91c55b"
+        "revision" : "55f043da86acd6fe41191d941f1bd1c87d640d4a"
       }
     },
     {
       "identity" : "spectra",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Hi-Rez/Spectra",
+      "location" : "git@github.com:Hi-Rez/Spectra.git",
       "state" : {
         "branch" : "master",
         "revision" : "43a24736252863edfbde73e1d3754d7ecdcf46fe"
