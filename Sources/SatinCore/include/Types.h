@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-typedef struct Vertex {
+typedef struct SatinVertex {
     simd_float4 position;
     simd_float3 normal;
     simd_float2 uv;

@@ -41,7 +41,7 @@ public final class ParametricGeometry: Geometry {
         }
     }
 
-    var vertexData: [Vertex] = []
+    var vertexData: [SatinVertex] = []
     var indexData: [UInt32] = []
 
     var _updateGeometry = true
@@ -67,7 +67,7 @@ public final class ParametricGeometry: Geometry {
         let interleavedBuffer = InterleavedBuffer(
             index: .Vertices,
             data: &vertexData,
-            stride: MemoryLayout<Vertex>.size,
+            stride: MemoryLayout<SatinVertex>.size,
             count: vertexData.count,
             source: vertexData
         )
@@ -180,7 +180,7 @@ public final class ParametricGeometry: Geometry {
                 }
 
                 vertexData.append(
-                    Vertex(
+                    SatinVertex(
                         position: simd_make_float4(pos, 1.0),
                         normal: normal,
                         uv: simd_make_float2(uf / ruf, vf / rvf)

@@ -57,7 +57,7 @@ public func SatinVertexDescriptor() -> MTLVertexDescriptor {
     vertexDescriptor.attributes[uvIndex].bufferIndex = 0
 
     let verticesIndex = VertexBufferIndex.Vertices.rawValue
-    vertexDescriptor.layouts[verticesIndex].stride = MemoryLayout<Vertex>.stride
+    vertexDescriptor.layouts[verticesIndex].stride = MemoryLayout<SatinVertex>.stride
     vertexDescriptor.layouts[verticesIndex].stepRate = 1
     vertexDescriptor.layouts[verticesIndex].stepFunction = .perVertex
 
@@ -91,7 +91,7 @@ public func SatinModelIOVertexDescriptor() -> MDLVertexDescriptor {
         bufferIndex: 0
     )
 
-    descriptor.layouts[VertexBufferIndex.Vertices.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<Vertex>.stride)
+    descriptor.layouts[VertexBufferIndex.Vertices.rawValue] = MDLVertexBufferLayout(stride: MemoryLayout<SatinVertex>.stride)
 
     return descriptor
 }

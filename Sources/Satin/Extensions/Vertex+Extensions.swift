@@ -7,7 +7,7 @@
 
 import SatinCore
 
-extension Vertex: Codable {
+extension SatinVertex: Codable {
     private enum CodingKeys: String, CodingKey {
         case position
         case normal

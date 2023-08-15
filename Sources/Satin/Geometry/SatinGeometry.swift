@@ -51,7 +51,7 @@ open class SatinGeometry: Geometry {
         let interleavedBuffer = InterleavedBuffer(
             index: .Vertices,
             data: geometryData.vertexData,
-            stride: MemoryLayout<Vertex>.size,
+            stride: MemoryLayout<SatinVertex>.size,
             count: vertexCount,
             source: geometryData
         )
