@@ -11,7 +11,7 @@ fragment float4 postFragment( VertexData in [[stage_in]],
 
     const float aspect = float(renderTex.get_width()) / float(renderTex.get_height());
     
-    float2 uv = in.uv;
+    float2 uv = in.texcoord;
     uv.x *= aspect;
     
     float div = 0.01;

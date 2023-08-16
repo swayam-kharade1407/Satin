@@ -92,7 +92,7 @@ class ExportGeometryRenderer: BaseRenderer {
             var geometryData = geometry.geometryData
 
             let vertexCount = Int(geometryData.vertexCount)
-            let vertexStride = MemoryLayout<Vertex>.stride
+            let vertexStride = MemoryLayout<SatinVertex>.stride
             let byteCountVertices = vertexCount * vertexStride
 
             let indexCount = Int(geometryData.indexCount * 3)

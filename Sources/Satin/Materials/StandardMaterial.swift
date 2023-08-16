@@ -155,9 +155,9 @@ open class StandardMaterial: Material {
         set(type.texcoordName.titleCase, transform)
     }
 
-    public init(baseColor: simd_float4,
-                metallic: Float,
-                roughness: Float,
+    public init(baseColor: simd_float4 = .one,
+                metallic: Float = 0.0,
+                roughness: Float = 0.2,
                 specular: Float = 0.5,
                 emissiveColor: simd_float4 = .zero,
                 maps: [PBRTextureIndex: MTLTexture?] = [:])
@@ -168,14 +168,6 @@ open class StandardMaterial: Material {
         self.roughness = roughness
         self.specular = specular
         self.emissiveColor = emissiveColor
-        self.maps = maps
-        lighting = true
-        blending = .disabled
-        initalize()
-    }
-
-    public init(maps: [PBRTextureIndex: MTLTexture?] = [:]) {
-        super.init()
         self.maps = maps
         lighting = true
         blending = .disabled
@@ -200,6 +192,11 @@ open class StandardMaterial: Material {
 
     public required init() {
         super.init()
+        self.baseColor = .one
+        self.metallic = 0.0
+        self.roughness = 0.2
+        self.specular = 0.5
+        self.emissiveColor = .zero
         lighting = true
         blending = .disabled
         initalize()
@@ -237,9 +234,7 @@ open class StandardMaterial: Material {
     internal func setTextureMultiplierUniformToOne(type: PBRTextureIndex) {
         switch type {
             case .baseColor:
-                baseColor.x = 1.0
-                baseColor.y = 1.0
-                baseColor.z = 1.0
+                baseColor = .one
             case .subsurface:
                 break
             case .metallic:

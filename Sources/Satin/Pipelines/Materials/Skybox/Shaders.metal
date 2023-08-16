@@ -10,7 +10,7 @@ typedef struct {
 
 typedef struct {
     float4 position [[position]];
-    float3 uv;
+    float3 texcoord;
 } SkyVertexData;
 
 vertex SkyVertexData skyboxVertex(Vertex v [[stage_in]],
@@ -26,7 +26,7 @@ vertex SkyVertexData skyboxVertex(Vertex v [[stage_in]],
     const float4 position = v.position;
     SkyVertexData out;
     out.position = modelViewProjectionMatrix * position;
-    out.uv = position.xyz;
+    out.texcoord = position.xyz;
     return out;
 }
 
@@ -35,7 +35,7 @@ fragment float4 skyboxFragment(SkyVertexData in [[stage_in]],
     texturecube<float> cubeTex [[texture(FragmentTextureCustom0)]],
     sampler cubeTexSampler [[sampler(FragmentSamplerCustom0)]])
 {
-    float4 color = cubeTex.sample(cubeTexSampler, uniforms.texcoordTransform * in.uv);
+    float4 color = cubeTex.sample(cubeTexSampler, uniforms.texcoordTransform * in.texcoord);
     color.rgb *= uniforms.environmentIntensity;
     
     color.rgb = tonemap(color.rgb);

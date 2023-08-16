@@ -8,7 +8,7 @@ fragment float4 basicTextureFragment(VertexData in [[stage_in]],
     texture2d<float> tex [[texture(FragmentTextureCustom0)]],
     sampler texSampler [[sampler(FragmentSamplerCustom0)]])
 {
-    float2 uv = in.uv;
+    float2 uv = in.texcoord;
     uv.y = mix(uv.y, 1.0 - uv.y, uniforms.flipped);
     
     const float4 texSample = tex.sample(texSampler, uv);

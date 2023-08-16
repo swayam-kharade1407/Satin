@@ -20,7 +20,7 @@ vertex VertexData customVertex
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
     out.normal = vertexUniforms.normalMatrix * in.normal;
 #endif
-    out.uv = in.uv;
+    out.texcoord = in.texcoord;
     // inject shadow vertex calc
     return out;
 }

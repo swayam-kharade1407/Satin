@@ -11,7 +11,7 @@ fragment float4 shadowPostFragment
     depth2d<float, access::sample> depthTex [[texture( FragmentTextureCustom1 )]]
 )
 {
-    const float2 uv = in.uv;
+    const float2 uv = in.texcoord;
     const float near = uniforms.nearFar.x;
     const float far = uniforms.nearFar.y;
     const float nearMinusFar = near - far;

@@ -145,10 +145,6 @@ open class PhysicalMaterial: StandardMaterial {
         self.transmission = transmission
         self.thickness = thickness
         self.indexOfRefraction = ior
-
-        lighting = true
-        blending = .disabled
-        initalize()
     }
 
     public required init(from decoder: Decoder) throws {
@@ -157,9 +153,6 @@ open class PhysicalMaterial: StandardMaterial {
 
     public required init() {
         super.init()
-        lighting = true
-        blending = .disabled
-        initalize()
     }
 
     override open func createShader() -> Shader {
@@ -169,9 +162,7 @@ open class PhysicalMaterial: StandardMaterial {
     override internal func setTextureMultiplierUniformToOne(type: PBRTextureIndex) {
         switch type {
             case .baseColor:
-                baseColor.x = 1.0
-                baseColor.y = 1.0
-                baseColor.z = 1.0
+                baseColor = .one
             case .subsurface:
                 subsurface = 1.0
             case .metallic:

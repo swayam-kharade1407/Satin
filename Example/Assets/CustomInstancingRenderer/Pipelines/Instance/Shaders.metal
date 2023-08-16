@@ -25,7 +25,7 @@ typedef struct {
 typedef struct {
     float4 position [[position]];
     float4 color;
-    float2 uv;
+    float2 texcoord;
 } CustomVertexData;
 
 vertex CustomVertexData instanceVertex(
@@ -43,7 +43,7 @@ vertex CustomVertexData instanceVertex(
         uniforms.tColor
     };
 
-    const float2 uv = in.uv;
+    const float2 uv = in.texcoord;
 
     const int xLimit = uniforms.perRow;
     const int yLimit = uniforms.instanceCount / xLimit;
@@ -73,7 +73,7 @@ vertex CustomVertexData instanceVertex(
     CustomVertexData out;
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
     out.color = colors[colorIndex];
-    out.uv = in.uv;
+    out.texcoord = in.texcoord;
     return out;
 }
 
@@ -81,7 +81,7 @@ fragment float4 instanceFragment( CustomVertexData in [[stage_in]],
     constant InstanceUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]] )
 {
     float aspect = uniforms.width / uniforms.height;
-    float2 uv = 2.0 * in.uv - 1.0;
+    float2 uv = 2.0 * in.texcoord - 1.0;
     uv.x *= aspect;
     const float cr = max( min( uniforms.cornerRadius, aspect ), 0.025 );
     const float softness = 0.025;

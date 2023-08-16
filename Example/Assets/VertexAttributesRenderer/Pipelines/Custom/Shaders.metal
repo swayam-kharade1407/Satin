@@ -5,7 +5,7 @@ typedef struct {
 typedef struct {
     float4 position [[position]];
     float3 normal;
-    float2 uv;
+    float2 texcoord;
 #if defined(HAS_TANGENT)
     float3 tangent;
 #endif
@@ -23,8 +23,10 @@ vertex CustomVertexData customVertex(
     CustomVertexData out;
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
     out.normal = normalize(vertexUniforms.normalMatrix * in.normal);
-    out.uv = in.uv;
-
+#if defined(HAS_TEXCOORD)
+    out.texcoord = in.texcoord;
+#endif
+    
 #if defined(HAS_TANGENT)
     out.tangent = in.tangent;
 #endif

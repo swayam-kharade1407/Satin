@@ -17,7 +17,7 @@ fragment FragOut matteFragment
     depth2d<float> depthTexture [[ texture(FragmentTextureCustom1) ]]
 )
 {
-    const float2 uv = in.uv;
+    const float2 uv = in.texcoord;
 
     FragOut out;
     out.color = alphaTexture.sample(s, uv);

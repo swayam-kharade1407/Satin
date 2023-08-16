@@ -48,7 +48,7 @@ vertex CustomVertexData customVertex(
 
     CustomVertexData out;
     out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
-    out.texcoord = in.uv;
+    out.texcoord = in.texcoord;
     out.normal = normalMatrix * in.normal;
     out.worldPosition = worldPosition.xyz;
     out.cameraPosition = vertexUniforms.worldCameraPosition.xyz;

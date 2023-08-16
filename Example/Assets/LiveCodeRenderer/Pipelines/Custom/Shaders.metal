@@ -9,7 +9,7 @@ typedef struct {
 fragment float4 customFragment( VertexData in [[stage_in]],
                                constant CustomUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]] )
 {
-    float2 uv = 2.0 * in.uv - 1.0;
+    float2 uv = 2.0 * in.texcoord - 1.0;
     uv.x *= uniforms.appResolution.z;
     float2 norm = normalize( uv );
 

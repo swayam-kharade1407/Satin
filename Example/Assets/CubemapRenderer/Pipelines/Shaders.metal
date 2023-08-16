@@ -5,7 +5,7 @@ typedef struct {
     float3 worldPosition;
     float3 cameraPosition;
     float3 normal;
-    float2 uv;
+    float2 texcoord;
 } CustomVertexData;
 
 vertex CustomVertexData customVertex( Vertex v [[stage_in]],
@@ -15,7 +15,7 @@ vertex CustomVertexData customVertex( Vertex v [[stage_in]],
     const float4 position = v.position;
     CustomVertexData out;
     out.position = uniforms.projectionMatrix * uniforms.modelViewMatrix * position;
-    out.uv = v.uv;
+    out.texcoord = v.texcoord;
     out.normal = v.normal;
 
     const float3 worldPosition = ( uniforms.modelMatrix * position ).xyz;

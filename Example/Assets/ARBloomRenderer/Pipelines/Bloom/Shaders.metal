@@ -33,11 +33,11 @@ fragment float4 bloomFragment
     texture3d<float> grainTex [[texture( FragmentTextureCustom3 )]]
 )
 {
-    const float4 bgSample = bgTex.sample( s, in.uv );
-    const float4 bloomSample = bloomTex.sample( s, in.uv );
-    const float4 grainSample = getGrain(grainTex, in.position.xy, in.uv, uniforms.grainIntensity, uniforms.time);
+    const float4 bgSample = bgTex.sample( s, in.texcoord );
+    const float4 bloomSample = bloomTex.sample( s, in.texcoord );
+    const float4 grainSample = getGrain(grainTex, in.position.xy, in.texcoord, uniforms.grainIntensity, uniforms.time);
 
-    float4 contentSample = contentTex.sample( s, in.uv );
+    float4 contentSample = contentTex.sample( s, in.texcoord );
     contentSample.rgb += mix(0.0, grainSample.rgb * grainSample.a, contentSample.a * uniforms.grainAmount);
 
     float4 color = mix(bgSample, contentSample, contentSample.a);

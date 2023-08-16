@@ -24,8 +24,8 @@ vertex VertexData satinVertex
 
 #endif
 
-#if HAS_UV
-    out.uv = in.uv;
+#if HAS_TEXCOORD
+    out.texcoord = in.texcoord;
 #endif
 
     // inject shadow vertex calc

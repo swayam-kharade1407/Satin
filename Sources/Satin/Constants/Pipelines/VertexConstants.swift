@@ -210,16 +210,11 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
     }
 
     public var name: String {
-        switch self {
-            case .Texcoord:
-                return "uv"
-            default:
-                return String(describing: self).camelCase
-        }
+        return String(describing: self).camelCase
     }
 
     public var shaderDefine: String {
-        "HAS_" + name.uppercased()
+        "HAS_" + String(describing: self).uppercased()
     }
 
     public var bufferIndex: VertexBufferIndex {

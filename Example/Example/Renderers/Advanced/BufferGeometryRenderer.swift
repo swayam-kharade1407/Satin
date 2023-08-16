@@ -289,7 +289,7 @@ class BufferGeometryRenderer: BaseRenderer {
             let interleavedBuffer = InterleavedBuffer(
                 index: .Vertices,
                 data: data,
-                stride: MemoryLayout<Vertex>.size,
+                stride: MemoryLayout<SatinVertex>.size,
                 count: vertexCount,
                 source: geometryData
             )

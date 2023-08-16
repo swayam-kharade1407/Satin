@@ -52,7 +52,7 @@ vertex CustomVertexData physicalVertex
     CustomVertexData out;
     out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
 #if defined(HAS_TEXCOORD)
-    out.texcoord = in.uv;
+    out.texcoord = in.texcoord;
 #endif
     out.normal = normalMatrix * in.normal;
 

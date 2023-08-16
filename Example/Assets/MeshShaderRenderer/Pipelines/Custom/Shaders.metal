@@ -194,7 +194,7 @@ void customMesh
         VertexData v {
             .position = vertexUniforms.modelViewProjectionMatrix * float4(in.position, 1.0),
             .normal = vertexUniforms.normalMatrix * in.normal,
-            .uv = 0.0
+            .texcoord = 0.0
         };
 
         output.set_vertex( lane, v );

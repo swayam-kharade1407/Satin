@@ -52,7 +52,7 @@ fragment float4 chromaFragment( VertexData in [[stage_in]],
     constant ChromaUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
     texture2d<float> renderTex [[texture( FragmentTextureCustom0 )]] )
 {
-    float2 uv = in.uv;
+    float2 uv = in.texcoord;
     constexpr sampler s = sampler( min_filter::linear, mag_filter::linear );
 
     float2 max_distort = 0.05;

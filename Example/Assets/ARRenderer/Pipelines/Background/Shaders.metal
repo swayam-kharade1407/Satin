@@ -20,8 +20,8 @@ fragment float4 backgroundFragment( VertexData in [[stage_in]],
     );
     
     // Sample Y and CbCr textures to get the YCbCr color at the given texture coordinate
-    float4 ycbcr = float4(capturedImageTextureY.sample(colorSampler, in.uv).r,
-                          capturedImageTextureCbCr.sample(colorSampler, in.uv).rg, 1.0);
+    float4 ycbcr = float4(capturedImageTextureY.sample(colorSampler, in.texcoord).r,
+                          capturedImageTextureCbCr.sample(colorSampler, in.texcoord).rg, 1.0);
 
     // Return converted RGB color
     return ycbcrToRGBTransform * ycbcr;

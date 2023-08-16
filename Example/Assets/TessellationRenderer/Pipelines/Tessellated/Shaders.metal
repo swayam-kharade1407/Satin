@@ -49,7 +49,7 @@ T bilerp(T c00, T c01, T c10, T c11, float2 uv) {
 //    VertexData out;
 //    out.position = vertexUniforms.modelViewProjectionMatrix * position;
 //    out.normal = vertexUniforms.normalMatrix * normal;
-//    out.uv = uv;
+//    out.texcoord = uv;
 //
 //    return out;
 //}
@@ -57,7 +57,7 @@ T bilerp(T c00, T c01, T c10, T c11, float2 uv) {
 typedef struct {
     float4 position [[position]];
     float3 normal;
-    float2 uv;
+    float2 texcoord;
     uint patch;
     float len;
 } CustomVertexData;
@@ -87,7 +87,7 @@ vertex CustomVertexData tessellatedVertex
 
     float4 position = baryinterp(p00.position, p01.position, p10.position, positionInPatch);
     float3 normal = baryinterp(p00.normal, p01.normal, p10.normal, positionInPatch);
-    float2 uv = baryinterp(p00.uv, p01.uv, p10.uv, positionInPatch);
+    float2 texcoord = baryinterp(p00.texcoord, p01.texcoord, p10.texcoord, positionInPatch);
 
     const float sdfx = Line(positionInPatch, float3(1.0, 0.0, 0.0), float3(0.0, 0.0, 0.0));
     const float sdfy = Line(positionInPatch, float3(0.0, 1.0, 0.0), float3(0.0, 0.0, 0.0));
@@ -98,7 +98,7 @@ vertex CustomVertexData tessellatedVertex
     CustomVertexData out;
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
     out.normal = vertexUniforms.normalMatrix * normal;
-    out.uv = uv;
+    out.texcoord = texcoord;
     out.patch = patch_id;
     out.len = 1.0 - pow(len, 2.0);
 

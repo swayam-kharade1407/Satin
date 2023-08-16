@@ -14,7 +14,7 @@ typedef struct {
 
 typedef struct {
     float4 position [[position]];
-    float2 uv;
+    float2 texcoord;
 } CustomVertexData;
 
 vertex CustomVertexData fxaaVertex( Vertex in [[stage_in]],
@@ -23,7 +23,7 @@ vertex CustomVertexData fxaaVertex( Vertex in [[stage_in]],
 
     CustomVertexData out;
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
-    out.uv = in.uv;
+    out.texcoord = in.texcoord;
 
     return out;
 }
@@ -32,7 +32,7 @@ fragment float4 fxaaFragment( CustomVertexData in [[stage_in]],
     constant FxaaUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
     texture2d<float> renderTex [[texture( FragmentTextureCustom0 )]] )
 {
-    const float2 uv = in.uv;
+    const float2 uv = in.texcoord;
     constexpr sampler s = sampler( min_filter::linear, mag_filter::linear );
 
     const float2 rcpRes = uniforms.inverseResolution;

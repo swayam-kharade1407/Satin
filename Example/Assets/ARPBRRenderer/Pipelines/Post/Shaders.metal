@@ -32,11 +32,11 @@ fragment float4 postFragment
     texture3d<float> grainTex [[texture( FragmentTextureCustom3 )]]
 )
 {
-    const float depthMask = depthMaskTex.sample(s, in.uv).r;
-    const float4 realSample = realTex.sample(s, in.uv);
-    const float4 grainSample = getGrain(grainTex, in.position.xy, in.uv, uniforms.grainIntensity, uniforms.time);
+    const float depthMask = depthMaskTex.sample(s, in.texcoord).r;
+    const float4 realSample = realTex.sample(s, in.texcoord);
+    const float4 grainSample = getGrain(grainTex, in.position.xy, in.texcoord, uniforms.grainIntensity, uniforms.time);
 
-    float4 virtualSample = virtualTex.sample(s, in.uv);
+    float4 virtualSample = virtualTex.sample(s, in.texcoord);
     virtualSample.rgb += mix(0.0, grainSample.rgb * grainSample.a, virtualSample.a * uniforms.grainAmount);
 
     return mix(realSample, virtualSample, virtualSample.a * (1.0 - depthMask));

@@ -20,7 +20,7 @@ fragment float4 compositorFragment
 {
     constexpr sampler s = sampler( filter::linear );
 
-    const float2 uv = in.uv;
+    const float2 uv = in.texcoord;
     const float time = uniforms.time;
     const float2 grainSize = uniforms.grainSize;
     const float cameraGrainIntensity = uniforms.cameraGrainIntensity;
