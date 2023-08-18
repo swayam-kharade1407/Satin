@@ -11,17 +11,6 @@ import simd
 
 public final class Float2Parameter: GenericParameterWithMinMax<simd_float2> {
     override public var type: ParameterType { .float2 }
-    override public var string: String { "float2" }
-    override public var count: Int { 2 }
-
-    override public subscript<Float>(index: Int) -> Float {
-        get {
-            return value[index % count] as! Float
-        }
-        set {
-            value[index % count] = newValue as! Swift.Float
-        }
-    }
 
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, .zero, .one, controlType)

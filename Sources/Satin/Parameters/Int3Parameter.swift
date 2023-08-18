@@ -11,12 +11,6 @@ import simd
 
 public final class Int3Parameter: GenericParameterWithMinMax<simd_int3> {
     override public var type: ParameterType { .int3 }
-    override public var string: String { "int3" }
-    override public var count: Int { 3 }
-
-    override public func dataType<Int32>() -> Int32.Type {
-        return Int32.self
-    }
 
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, .zero, .one, controlType)

@@ -11,6 +11,4 @@ import Foundation
 
 public final class BoolParameter: GenericParameter<Bool> {
     override public var type: ParameterType { .bool }
-    override public var string: String { "bool" }
-    override public var count: Int { 1 }
 }

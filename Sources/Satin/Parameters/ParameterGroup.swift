@@ -11,9 +11,9 @@ import Foundation
 import simd
 
 public protocol ParameterGroupDelegate: AnyObject {
-    func added(parameter: Parameter, from group: ParameterGroup)
-    func removed(parameter: Parameter, from group: ParameterGroup)
-    func update(parameter: Parameter, from group: ParameterGroup)
+    func added(parameter: any Parameter, from group: ParameterGroup)
+    func removed(parameter: any Parameter, from group: ParameterGroup)
+    func update(parameter: any Parameter, from group: ParameterGroup)
     func loaded(group: ParameterGroup)
     func saved(group: ParameterGroup)
     func cleared(group: ParameterGroup)
@@ -31,7 +31,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     @Published public var label = ""
-    @Published public private(set) var params: [Parameter] = [] {
+    @Published public private(set) var params: [any Parameter] = [] {
         didSet {
             _updateSize = true
             _updateStride = true
@@ -41,7 +41,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    @Published public var paramsMap: [String: Parameter] = [:]
+    @Published public var paramsMap: [String: any Parameter] = [:]
     public weak var delegate: ParameterGroupDelegate? = nil
 
     private var paramSubscriptions: [String: AnyCancellable] = [:]
@@ -55,18 +55,18 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    public init(_ label: String = "", _ parameters: [Parameter] = []) {
+    public init(_ label: String = "", _ parameters: [any Parameter] = []) {
         self.label = label
         append(parameters)
     }
 
-    public func append(_ parameters: [Parameter]) {
+    public func append(_ parameters: [any Parameter]) {
         for p in parameters {
             append(p)
         }
     }
 
-    public func append(_ param: Parameter) {
+    public func append(_ param: any Parameter) {
         params.append(param)
         paramsMap[param.label] = param
         paramSubscriptions[param.label] = param.onUpdate.sink { [weak self] p in
@@ -79,7 +79,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         delegate?.added(parameter: param, from: self)
     }
 
-    public func remove(_ param: Parameter) {
+    public func remove(_ param: any Parameter) {
         let key = param.label
         paramsMap.removeValue(forKey: key)
         paramSubscriptions.removeValue(forKey: key)
@@ -250,7 +250,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    func setParameterFrom(param: Parameter, setValue: Bool, setOptions: Bool, append: Bool = true) {
+    func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, append: Bool = true) {
         let label = param.label
         if append, paramsMap[label] == nil {
             self.append(param)
@@ -589,11 +589,11 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    public func get(_ name: String) -> Parameter? {
+    public func get(_ name: String) -> (any Parameter)? {
         return paramsMap[name] ?? paramsMap[name.titleCase]
     }
 
-    public func updated(parameter: Parameter) {
+    public func updated(parameter: any Parameter) {
         _updateData = true
         objectWillChange.send()
         delegate?.update(parameter: parameter, from: self)

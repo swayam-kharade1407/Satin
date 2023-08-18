@@ -10,39 +10,33 @@ import Combine
 import Foundation
 
 public protocol ParameterDelegate: AnyObject {
-    func updated(parameter: Parameter)
+    func updated(parameter: any Parameter)
 }
 
 public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
+    associatedtype ValueType: Codable & Equatable
+
     var id: String { get }
-    
+    var value: ValueType { get set }
+
     var type: ParameterType { get }
     var string: String { get }
 
     var size: Int { get }
     var stride: Int { get }
     var alignment: Int { get }
-    var count: Int { get }
 
     var controlType: ControlType { get set }
     var label: String { get }
     var description: String { get }
 
-    var onUpdate: PassthroughSubject<Parameter, Never> { get }
-
-    subscript<T>(_: Int) -> T { get set }
-    func dataType<T>() -> T.Type
+    var onUpdate: PassthroughSubject<any Parameter, Never> { get }
 
     func alignData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer
     func writeData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer
 }
 
-public protocol ValueParameter: Parameter {
-    associatedtype ValueType: Codable & Equatable
-    var value: ValueType { get set }
-}
-
-public protocol ValueParameterWithMinMax: ValueParameter {
+public protocol ParameterWithMinMax: Parameter {
     var min: ValueType { get set }
     var max: ValueType { get set }
 }
@@ -65,7 +59,7 @@ public enum ControlType: String, Codable {
 public enum ParameterType: String, Codable {
     case bool, uint32, int, int2, int3, int4, float, float2, float3, float4, double, string, packedfloat3, float2x2, float3x3, float4x4, generic
 
-    var metatype: Parameter.Type {
+    var metatype: any Parameter.Type {
         switch self {
         case .bool:
             return BoolParameter.self
@@ -101,6 +95,17 @@ public enum ParameterType: String, Codable {
             return Float4x4Parameter.self
         default:
             fatalError("Unknown Parameter Type")
+        }
+    }
+
+    var string: String {
+        switch self {
+            case .uint32:
+                return "uint32_t"
+            case .packedfloat3:
+                return "packed_float3"
+            default:
+                return self.rawValue
         }
     }
 }

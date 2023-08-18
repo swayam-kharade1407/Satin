@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GenericParameter.swift
 //
 //
 //  Created by Reza Ali on 4/7/22.
@@ -8,23 +8,22 @@
 import Combine
 import Foundation
 
-public class GenericParameter<T: Codable & Equatable>: ValueParameter, ObservableObject {
+public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObject {
     public var id: String = UUID().uuidString
     
     public typealias ValueType = T
 
     // Delegate
-    public let onUpdate = PassthroughSubject<Parameter, Never>()
+    public let onUpdate = PassthroughSubject<any Parameter, Never>()
 
     // Getable Properties
     public var type: ParameterType { .generic }
-    public var string: String { "generic" }
+    public var string: String { type.string }
 
     // Computed Properties
     public var size: Int { return MemoryLayout<ValueType>.size }
     public var stride: Int { return MemoryLayout<ValueType>.stride }
     public var alignment: Int { return MemoryLayout<ValueType>.alignment }
-    public var count: Int { -1 }
 
     // Setable Properties
     public var controlType = ControlType.none
@@ -34,25 +33,12 @@ public class GenericParameter<T: Codable & Equatable>: ValueParameter, Observabl
         "Label: \(label) type: \(string) value: \(value)"
     }
 
-    @Published public var value: ValueType {
+    @Published public var value: T {
         didSet {
             if value != oldValue {
                 onUpdate.send(self)
             }
         }
-    }
-
-    public subscript<T>(_: Int) -> T {
-        get {
-            return value as! T
-        }
-        set {
-            value = newValue as! ValueType
-        }
-    }
-
-    public func dataType<T>() -> T.Type {
-        return T.self
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -77,8 +63,8 @@ public class GenericParameter<T: Codable & Equatable>: ValueParameter, Observabl
 
     public init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.label = label
-        self.controlType = controlType
         self.value = value
+        self.controlType = controlType
     }
 
     public func alignData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer {
@@ -94,7 +80,7 @@ public class GenericParameter<T: Codable & Equatable>: ValueParameter, Observabl
 
     public func writeData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer {
         var data = alignData(pointer: pointer, offset: &offset)
-        data.storeBytes(of: value, as: dataType())
+        data.storeBytes(of: value, as: ValueType.self)
         data += size
         offset += size
         return data
@@ -102,6 +88,8 @@ public class GenericParameter<T: Codable & Equatable>: ValueParameter, Observabl
 }
 
 public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParameter<T> {
+    public typealias ValueType = T
+
     @Published public var min: ValueType {
         didSet {
             onUpdate.send(self)
@@ -115,9 +103,6 @@ public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParamete
     }
 
     private enum CodingKeys: String, CodingKey {
-        case controlType
-        case label
-        case value
         case min
         case max
     }
@@ -130,19 +115,14 @@ public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParamete
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let controlType = try container.decode(ControlType.self, forKey: .controlType)
-        let label = try container.decode(String.self, forKey: .label)
-        let value = try container.decode(ValueType.self, forKey: .value)
         self.min = try container.decode(ValueType.self, forKey: .min)
         self.max = try container.decode(ValueType.self, forKey: .max)
-        super.init(label, value, controlType)
+        try super.init(from: decoder)
     }
 
     override public func encode(to encoder: Encoder) throws {
+        try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(controlType, forKey: .controlType)
-        try container.encode(label, forKey: .label)
-        try container.encode(value, forKey: .value)
         try container.encode(min, forKey: .min)
         try container.encode(max, forKey: .max)
     }

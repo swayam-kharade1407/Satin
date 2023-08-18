@@ -21,6 +21,7 @@ public protocol BufferAttribute: VertexAttribute, Codable {
     var delegate: BufferAttributeDelegate? { get set }
 
     func append(_ value: ValueType)
+    func append(contentsOf array: [ValueType])
     func makeBuffer(device: MTLDevice) -> MTLBuffer?
     func getData() -> Data
     func duplicate() -> any BufferAttribute
@@ -127,6 +128,10 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         data.append(value)
     }
 
+    public func append(contentsOf array: [ValueType]) {
+        data.append(contentsOf: array)
+    }
+
     public func reserveCapacity(_ minimumCapacity: Int) {
         data.reserveCapacity(minimumCapacity)
     }
@@ -136,7 +141,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func duplicate() -> any BufferAttribute {
-        fatalError("Generic Buffer")
+        return GenericBufferAttribute<ValueType>(data: data)
     }
 
     public func duplicate(at index: Int) {

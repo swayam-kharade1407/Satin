@@ -223,7 +223,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             vertexBuffers[bufferIndex] = buffer
         }
         else {
-            vertexBuffers[bufferIndex] = nil
+            vertexBuffers.removeValue(forKey: bufferIndex)
         }
 
         attribute.needsUpdate = false

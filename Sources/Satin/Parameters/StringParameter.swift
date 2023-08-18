@@ -10,8 +10,6 @@ import Foundation
 
 public final class StringParameter: GenericParameter<String> {
     override public var type: ParameterType { .string }
-    override public var string: String { "string" }
-    override public var count: Int { value.count }
 
     @Published public var options: [String] = [] {
         didSet {

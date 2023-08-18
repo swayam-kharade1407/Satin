@@ -9,6 +9,12 @@ import Metal
 import simd
 import SatinCore
 
+extension MTLPackedFloat3: Equatable {
+    public static func == (lhs: _MTLPackedFloat3, rhs: _MTLPackedFloat3) -> Bool {
+        lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
+    }
+}
+
 extension MTLPackedFloat3: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -59,23 +65,17 @@ extension simd_quatf: Codable {
 extension simd_float4x4: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let c0 = try values.decode(simd_float4.self, forKey: .col0)
-        let c1 = try values.decode(simd_float4.self, forKey: .col1)
-        let c2 = try values.decode(simd_float4.self, forKey: .col2)
-        let c3 = try values.decode(simd_float4.self, forKey: .col3)
-        self.init(c0, c1, c2, c3)
+        let columns = try values.decode([simd_float4].self, forKey: .columns)
+        self.init(columns: (columns[0], columns[1], columns[2], columns[3]))
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(columns.0, forKey: .col0)
-        try container.encode(columns.1, forKey: .col1)
-        try container.encode(columns.2, forKey: .col2)
-        try container.encode(columns.3, forKey: .col3)
+        try container.encode([columns.0, columns.1, columns.2, columns.3], forKey: .columns)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case col0, col1, col2, col3
+        case columns
     }
 }
 
@@ -90,39 +90,33 @@ public extension simd_float4x4 {
 extension simd_float3x3: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let c0 = try values.decode(simd_float3.self, forKey: .col0)
-        let c1 = try values.decode(simd_float3.self, forKey: .col1)
-        let c2 = try values.decode(simd_float3.self, forKey: .col2)
-        self.init(c0, c1, c2)
+        let columns = try values.decode([simd_float3].self, forKey: .columns)
+        self.init(columns: (columns[0], columns[1], columns[2]))
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(columns.0, forKey: .col0)
-        try container.encode(columns.1, forKey: .col1)
-        try container.encode(columns.2, forKey: .col2)
+        try container.encode([columns.0, columns.1, columns.2], forKey: .columns)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case col0, col1, col2
+        case columns
     }
 }
 
 extension simd_float2x2: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let c0 = try values.decode(simd_float2.self, forKey: .col0)
-        let c1 = try values.decode(simd_float2.self, forKey: .col1)
-        self.init(c0, c1)
+        let columns = try values.decode([simd_float2].self, forKey: .columns)
+        self.init(columns: (columns[0], columns[1]))
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(columns.0, forKey: .col0)
-        try container.encode(columns.1, forKey: .col1)
+        try container.encode([columns.0, columns.1], forKey: .columns)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case col0, col1
+        case columns
     }
 }

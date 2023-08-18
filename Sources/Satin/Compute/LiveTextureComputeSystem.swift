@@ -318,7 +318,7 @@ open class LiveTextureComputeSystem: TextureComputeSystem, ObservableObject {
         }
     }
 
-    public func get(_ name: String) -> Parameter? {
+    public func get(_ name: String) -> (any Parameter)? {
         return parameters.get(name)
     }
 }

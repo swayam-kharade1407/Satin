@@ -7,29 +7,36 @@
 //
 
 import Foundation
+import Combine
 import Metal
 import simd
 
+func align256(size: Int) -> Int {
+    return ((size + 255) / 256) * 256
+}
+
 public final class UniformBuffer {
-    public private(set) unowned var parameters: ParameterGroup
-    public private(set) var buffer: MTLBuffer!
+    public private(set) weak var parameters: ParameterGroup?
+    public private(set) var buffer: MTLBuffer?
     public private(set) var index: Int = -1
     public private(set) var offset = 0
+    public private(set) var alignedSize: Int
 
     public init(device: MTLDevice, parameters: ParameterGroup, options: MTLResourceOptions = [.cpuCacheModeWriteCombined]) {
         self.parameters = parameters
+        self.alignedSize = align256(size: parameters.size)
 
         let length = alignedSize * Satin.maxBuffersInFlight
 
-        guard let buffer = device.makeBuffer(length: length, options: options) else { fatalError("Unable to create Uniform Buffer") }
-
-        buffer.label = parameters.label
-        self.buffer = buffer
-
-        update()
+        if let buffer = device.makeBuffer(length: length, options: options) {
+            buffer.label = parameters.label
+            self.buffer = buffer
+            update()
+        }
     }
 
     public func update() {
+        guard let parameters = parameters, let buffer = buffer else { return }
         index = (index + 1) % maxBuffersInFlight
         offset = alignedSize * index
         (buffer.contents() + offset).copyMemory(from: parameters.data, byteCount: parameters.size)
@@ -37,13 +44,5 @@ public final class UniformBuffer {
 
     public func reset() {
         index = -1
-    }
-
-    private var alignedSize: Int {
-        align(size: parameters.size)
-    }
-
-    private func align(size: Int) -> Int {
-        return ((size + 255) / 256) * 256
     }
 }
