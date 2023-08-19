@@ -122,34 +122,34 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                         let ptr = bytes.bindMemory(to: simd_float4.self, capacity: count)
                         let data = Array(UnsafeBufferPointer(start: ptr, count: count))
                         geometry.addAttribute(
-                            Float4BufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
+                            Float4BufferAttribute(defaultValue: .one, data: data), for: VertexAttributeIndex(name: attribute.name)
                         )
                     case .float3:
                         if stride == MemoryLayout<MTLPackedFloat3>.stride {
                             let ptr = bytes.bindMemory(to: MTLPackedFloat3.self, capacity: count)
                             let data = Array(UnsafeBufferPointer(start: ptr, count: count))
                             geometry.addAttribute(
-                                PackedFloat3BufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
+                                PackedFloat3BufferAttribute(defaultValue: MTLPackedFloat3Make(0, 0, 0), data: data), for: VertexAttributeIndex(name: attribute.name)
                             )
                         }
                         else if stride == MemoryLayout<simd_float3>.stride {
                             let ptr = bytes.bindMemory(to: simd_float3.self, capacity: count)
                             let data = Array(UnsafeBufferPointer(start: ptr, count: count))
                             geometry.addAttribute(
-                                Float3BufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
+                                Float3BufferAttribute(defaultValue: .zero, data: data), for: VertexAttributeIndex(name: attribute.name)
                             )
                         }
                     case .float2:
                         let ptr = bytes.bindMemory(to: simd_float2.self, capacity: count)
                         let data = Array(UnsafeBufferPointer(start: ptr, count: count))
                         geometry.addAttribute(
-                            Float2BufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
+                            Float2BufferAttribute(defaultValue: .zero, data: data), for: VertexAttributeIndex(name: attribute.name)
                         )
                     case .float:
                         let ptr = bytes.bindMemory(to: Float.self, capacity: count)
                         let data = Array(UnsafeBufferPointer(start: ptr, count: count))
                         geometry.addAttribute(
-                            FloatBufferAttribute(data: data), for: VertexAttributeIndex(name: attribute.name)
+                            FloatBufferAttribute(defaultValue: .zero, data: data), for: VertexAttributeIndex(name: attribute.name)
                         )
                     default:
                         fatalError("Format not supported")

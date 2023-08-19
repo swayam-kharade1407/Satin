@@ -16,7 +16,7 @@ public final class PointGeometry: Geometry {
         }
     }
 
-    let pointBufferAttribute = Float3BufferAttribute(data: [])
+    let pointBufferAttribute = Float3BufferAttribute(defaultValue: .zero, data: [])
 
     public init(data: [simd_float3] = [.zero]) {
         self.data = data

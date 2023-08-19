@@ -11,15 +11,18 @@ import Metal
 import simd
 
 public protocol BufferAttribute: VertexAttribute, Codable {
+    var defaultValue: ValueType { get set }
     var data: [ValueType] { get set }
 
     var length: Int { get }
 
-    subscript<ValueType>(_: Int) -> ValueType { get set }
+    subscript<ValueType>(index: Int) -> ValueType { get set }
 
     var needsUpdate: Bool { get set }
     var delegate: BufferAttributeDelegate? { get set }
 
+    func resize(_ capacity: Int)
+    func expand(_ size: Int)
     func append(_ value: ValueType)
     func append(contentsOf array: [ValueType])
     func makeBuffer(device: MTLDevice) -> MTLBuffer?
@@ -28,12 +31,12 @@ public protocol BufferAttribute: VertexAttribute, Codable {
     func duplicate(at index: Int)
     func remove(at index: Int)
     func removeLast()
+    func removeLast(_ k: Int)
     func reserveCapacity(_ minimumCapacity: Int)
 
     func interpolate(start: Int, end: Int, at time: Float)
 
-    init()
-    init(data: [ValueType])
+    init(defaultValue: ValueType, data: [ValueType])
     init(defaultValue: ValueType, count: Int)
 }
 
@@ -73,6 +76,8 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         }
     }
 
+    public var defaultValue: ValueType
+
     public var data: [ValueType] {
         didSet {
             needsUpdate = true
@@ -80,26 +85,26 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         }
     }
 
-    public required init() {
-        self.data = []
-    }
-
-    required public init(data: [ValueType]) {
+    required public init(defaultValue: ValueType, data: [ValueType]) {
+        self.defaultValue = defaultValue
         self.data = data
     }
 
-    required public init(defaultValue: ValueType, count: Int) {
+    required public init(defaultValue: ValueType, count: Int = 0) {
+        self.defaultValue = defaultValue
         self.data = Array(repeating: defaultValue, count: count)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case count
+        case defaultValue
         case data
+        case count
     }
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let count = try container.decode(Int.self, forKey: .count)
+        self.defaultValue = try container.decode(ValueType.self, forKey: .defaultValue)
         let bytes = try container.decode(Data.self, forKey: .data)
         var data: [ValueType] = []
         bytes.withUnsafeBytes { ptr in
@@ -112,6 +117,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(count, forKey: .count)
+        try container.encode(defaultValue, forKey: .defaultValue)
         try container.encode(getData(), forKey: .data)
     }
 
@@ -128,6 +134,20 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         data.append(value)
     }
 
+    public func resize(_ capacity: Int) {
+        if data.count < capacity {
+            expand(capacity - data.count)
+        }
+        else if data.count > capacity {
+            removeLast(data.count - capacity)
+        }
+    }
+
+    public func expand(_ size: Int = 1) {
+        data.reserveCapacity(data.count + size)
+        data.append(contentsOf: Array(repeating: defaultValue, count: size))
+    }
+
     public func append(contentsOf array: [ValueType]) {
         data.append(contentsOf: array)
     }
@@ -141,7 +161,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func duplicate() -> any BufferAttribute {
-        return GenericBufferAttribute<ValueType>(data: data)
+        return GenericBufferAttribute<ValueType>(defaultValue: defaultValue, data: data)
     }
 
     public func duplicate(at index: Int) {
@@ -156,6 +176,10 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         data.removeLast()
     }
 
+    public func removeLast(_ k: Int) {
+        data.removeLast(k)
+    }
+
     public func interpolate(start: Int, end: Int, at time: Float) {
         fatalError("")
     }
@@ -166,7 +190,7 @@ public final class BoolBufferAttribute: GenericBufferAttribute<Bool> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return BoolBufferAttribute(data: data)
+        return BoolBufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -179,7 +203,7 @@ public final class UInt16BufferAttribute: GenericBufferAttribute<UInt16> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return UInt16BufferAttribute(data: data)
+        return UInt16BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -192,7 +216,7 @@ public final class UInt32BufferAttribute: GenericBufferAttribute<UInt32> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return UInt32BufferAttribute(data: data)
+        return UInt32BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -205,7 +229,7 @@ public final class IntBufferAttribute: GenericBufferAttribute<simd_int1> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return IntBufferAttribute(data: data)
+        return IntBufferAttribute(defaultValue: defaultValue, data: data)
     }
     
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -218,7 +242,7 @@ public final class Int2BufferAttribute: GenericBufferAttribute<simd_int2> {
     override public var components: Int { 2 }
 
     override public func duplicate() -> any BufferAttribute {
-        return Int2BufferAttribute(data: data)
+        return Int2BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -238,7 +262,7 @@ public final class Int3BufferAttribute: GenericBufferAttribute<simd_int3> {
     override public var components: Int { 3 }
 
     override public func duplicate() -> any BufferAttribute {
-        return Int3BufferAttribute(data: data)
+        return Int3BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -259,7 +283,7 @@ public final class Int4BufferAttribute: GenericBufferAttribute<simd_int4> {
     override public var components: Int { 4 }
 
     override public func duplicate() -> any BufferAttribute {
-        return Int4BufferAttribute(data: data)
+        return Int4BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -281,7 +305,7 @@ public final class LongBufferAttribute: GenericBufferAttribute<Int> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return LongBufferAttribute(data: data)
+        return LongBufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -294,7 +318,7 @@ public final class FloatBufferAttribute: GenericBufferAttribute<simd_float1> {
     override public var components: Int { 1 }
 
     override public func duplicate() -> any BufferAttribute {
-        return FloatBufferAttribute(data: data)
+        return FloatBufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -307,7 +331,7 @@ public final class Float2BufferAttribute: GenericBufferAttribute<simd_float2> {
     override public var components: Int { 2 }
 
     override public func duplicate() -> any BufferAttribute {
-        return Float2BufferAttribute(data: data)
+        return Float2BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -319,8 +343,17 @@ public final class Float3BufferAttribute: GenericBufferAttribute<simd_float3> {
     override public var type: AttributeType { .float3 }
     override public var components: Int { 3 }
 
+    subscript(index: Int) -> simd_float3 {
+        get {
+            data[index]
+        }
+        set {
+            data[index] = newValue
+        }
+    }
+
     override public func duplicate() -> any BufferAttribute {
-        return Float3BufferAttribute(data: data)
+        return Float3BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -333,7 +366,7 @@ public final class Float4BufferAttribute: GenericBufferAttribute<simd_float4> {
     override public var components: Int { 4 }
 
     override public func duplicate() -> any BufferAttribute {
-        return Float4BufferAttribute(data: data)
+        return Float4BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
@@ -346,7 +379,7 @@ public final class PackedFloat3BufferAttribute: GenericBufferAttribute<MTLPacked
     override public var components: Int { 3 }
 
     override public func duplicate() -> any BufferAttribute {
-        return PackedFloat3BufferAttribute(data: data)
+        return PackedFloat3BufferAttribute(defaultValue: defaultValue, data: data)
     }
 
     override public func interpolate(start: Int, end: Int, at time: Float) {
