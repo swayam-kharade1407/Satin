@@ -204,7 +204,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         if elementBuffer.count > 0 {
             indexBuffer = device.makeBuffer(bytes: elementBuffer.data, length: elementBuffer.length, options: [])
             if let indexBuffer = indexBuffer {
-                indexBuffer.label = "\(id) Indices"
+                indexBuffer.label = "Indices"
                 elementBuffer.needsUpdate = false
             }
         }
