@@ -874,8 +874,8 @@ GeometryData generateArcGeometryData(float innerRadius, float outerRadius, float
 
 GeometryData generateTorusGeometryData(float minorRadius, float majorRadius, int minorResolution,
                                        int majorResolution) {
-    const int slices = minorResolution > 2 ? minorResolution : 3;
-    const int angular = majorResolution > 2 ? majorResolution : 3;
+    const int angular = minorResolution > 2 ? minorResolution : 3;
+    const int slices = majorResolution > 2 ? majorResolution : 3;
 
     const float slicesf = (float)slices;
     const float angularf = (float)angular;

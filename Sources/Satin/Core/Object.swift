@@ -217,6 +217,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateLocalBounds {
                 _updateLocalBounds = true
+                parent?.updateLocalBounds = true
                 updateLocalBounds = false
             }
         }
@@ -245,6 +246,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateWorldBounds {
                 _updateWorldBounds = true
+                parent?.updateWorldBounds = true
                 updateWorldBounds = false
             }
         }
@@ -556,9 +558,9 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - isVisible
 
-    public func isVisible() -> Bool {
+    public var isVisible: Bool {
         if let parent = parent {
-            return (parent.isVisible() && visible)
+            return (parent.isVisible && visible)
         } else {
             return visible
         }
@@ -566,9 +568,9 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - isLight
 
-    public func isLight() -> Bool {
+    public var isLight: Bool {
         if let parent = parent {
-            return (parent.isLight() || (self is Light))
+            return (parent.isLight || (self is Light))
         } else {
             return (self is Light)
         }
