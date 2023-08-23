@@ -211,9 +211,35 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    // MARK: - Bounds
+    
+    open var updateBounds = true {
+        didSet {
+            if updateBounds {
+                _updateBounds = true
+            }
+        }
+    }
+    
+    internal var _updateBounds = true {
+        didSet {
+            updateLocalBounds = true
+        }
+    }
+
+    internal var _bounds = createBounds()
+    public var bounds: Bounds {
+        if _updateBounds {
+            _bounds = computeBounds()
+            _updateBounds = false
+        }
+        return _bounds
+    }
+
+
     // MARK: - Local Bounds
 
-    public var updateLocalBounds = true {
+    open var updateLocalBounds = true {
         didSet {
             if updateLocalBounds {
                 _updateLocalBounds = true
@@ -226,7 +252,7 @@ open class Object: Codable, ObservableObject {
     internal var _updateLocalBounds = true {
         didSet {
             if _updateLocalBounds {
-                _updateWorldBounds = true
+                updateWorldBounds = true
             }
         }
     }
@@ -242,25 +268,18 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - World Bounds
 
-    public var updateWorldBounds = true {
+    open var updateWorldBounds = true {
         didSet {
             if updateWorldBounds {
                 _updateWorldBounds = true
-                parent?.updateWorldBounds = true
                 updateWorldBounds = false
             }
         }
     }
 
-    internal var _updateWorldBounds = true {
-        didSet {
-            if _updateWorldBounds {
-                parent?._updateWorldBounds = true
-            }
-        }
-    }
+    internal var _updateWorldBounds = true
 
-    var _worldBounds = createBounds()
+    internal var _worldBounds = createBounds()
     public var worldBounds: Bounds {
         if _updateWorldBounds {
             _worldBounds = computeWorldBounds()
@@ -383,16 +402,16 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Compute Bounds
 
+    open func computeBounds() -> Bounds {
+        createBounds()
+    }
+
     open func computeLocalBounds() -> Bounds {
-        return Bounds(min: position, max: position)
+        transformBounds(bounds, localMatrix)
     }
 
     open func computeWorldBounds() -> Bounds {
-        var result = Bounds(min: worldPosition, max: worldPosition)
-        for child in children {
-            result = mergeBounds(result, child.worldBounds)
-        }
-        return result
+        children.reduce(transformBounds(bounds, worldMatrix)) { mergeBounds($0, $1.worldBounds) }
     }
 
     open func update() {

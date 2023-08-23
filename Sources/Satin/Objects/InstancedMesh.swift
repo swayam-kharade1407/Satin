@@ -178,10 +178,29 @@ public class InstancedMesh: Mesh {
 
     // MARK: - Intersections
 
-    override public func intersects(ray: Ray) -> Bool {
-        let geometryBounds = geometry.bounds
+    public override func computeLocalBounds() -> Bounds {
+        var result = createBounds()
         for i in 0 ..< instanceCount {
-            if rayBoundsIntersect(getWorldMatrixAt(index: i).inverse.act(ray), geometryBounds) {
+            result = mergeBounds(result, transformBounds(bounds, getMatrixAt(index: i)))
+        }
+        return result
+    }
+
+    public override func computeWorldBounds() -> Bounds {
+        var result = createBounds()
+        for i in 0 ..< instanceCount {
+            result = transformBounds(bounds, getWorldMatrixAt(index: i))
+        }
+
+        for child in children {
+            result = mergeBounds(result, child.worldBounds)
+        }
+        return result
+    }
+
+    override public func intersects(ray: Ray) -> Bool {
+        for i in 0 ..< instanceCount {
+            if rayBoundsIntersect(getWorldMatrixAt(index: i).inverse.act(ray), bounds) {
                 return true
             }
         }

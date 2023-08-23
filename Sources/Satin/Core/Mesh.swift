@@ -135,7 +135,7 @@ open class Mesh: Object, Renderable {
         guard let context = context else { return }
         geometrySubscription = geometry.onUpdate.sink { [weak self] geo in
             guard let self = self else { return }
-            self._updateLocalBounds = true
+            self.updateBounds = true
             self.material?.vertexDescriptor = geo.vertexDescriptor
         }
         geometry.context = context
@@ -269,12 +269,16 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Comoute Bounds
 
+    override open func computeBounds() -> Bounds {
+        geometry.bounds
+    }
+
     override open func computeLocalBounds() -> Bounds {
-        return transformBounds(geometry.bounds, localMatrix)
+        return transformBounds(bounds, localMatrix)
     }
 
     override open func computeWorldBounds() -> Bounds {
-        var result = transformBounds(geometry.bounds, worldMatrix)
+        var result = transformBounds(bounds, worldMatrix)
         for child in children {
             result = mergeBounds(result, child.worldBounds)
         }
