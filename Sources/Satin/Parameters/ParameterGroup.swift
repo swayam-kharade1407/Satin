@@ -6,6 +6,7 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+import Metal
 import Combine
 import Foundation
 import simd
@@ -531,6 +532,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
     public func set(_ name: String, _ value: simd_float3) {
         if let param = get(name), let p = param as? Float3Parameter {
+            p.value = value
+        }
+    }
+
+    public func set(_ name: String, _ value: MTLPackedFloat3) {
+        if let param = get(name), let p = param as? PackedFloat3Parameter {
             p.value = value
         }
     }

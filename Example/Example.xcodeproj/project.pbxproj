@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,7 @@
 		E11325CD28AEADAA0049CACC /* SuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11325CC28AEADAA0049CACC /* SuperShapesRenderer.swift */; };
 		E11325D028AEAEB50049CACC /* SuperShapeGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E11325CE28AEAEB50049CACC /* SuperShapeGenerator.c */; };
 		E11325D228AEB0770049CACC /* SuperShapesRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11325D128AEB0770049CACC /* SuperShapesRendererView.swift */; };
+		E11EA25A2A969575008FC06D /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E11EA2592A969575008FC06D /* Youi */; };
 		E135B12B29E6100F00073A85 /* ARCompositor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E135B12A29E6100F00073A85 /* ARCompositor.swift */; };
 		E135B12D29E61D5000073A85 /* ARMatteRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E135B12C29E61D5000073A85 /* ARMatteRenderer.swift */; };
 		E13687282900BBEC00FFF43F /* InstancedMeshRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13687272900BBEC00FFF43F /* InstancedMeshRenderer.swift */; };
@@ -70,6 +71,7 @@
 		E19D4C3629F9C02A00DF993D /* ARBloomRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D4C3529F9C02A00DF993D /* ARBloomRendererView.swift */; };
 		E19D4C4929F9CA3F00DF993D /* ARSessionPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D4C4829F9CA3F00DF993D /* ARSessionPublisher.swift */; };
 		E19D4C4B29F9CF3100DF993D /* ARPlaneMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D4C4A29F9CF3100DF993D /* ARPlaneMesh.swift */; };
+		E1A25D962A9687EC00895430 /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1A25D952A9687EC00895430 /* Youi */; };
 		E1BBE46329E4D17D00A21F3A /* ARLidarMeshRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46229E4D17D00A21F3A /* ARLidarMeshRenderer.swift */; };
 		E1BBE46529E4D1AB00A21F3A /* ARLidarMeshRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46429E4D1AB00A21F3A /* ARLidarMeshRendererView.swift */; };
 		E1BBE46729E4D5B000A21F3A /* ARLidarMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46629E4D5B000A21F3A /* ARLidarMesh.swift */; };
@@ -134,7 +136,6 @@
 		E1F4315A29C3ABCA00200E72 /* ARPerspectiveCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F4315929C3ABCA00200E72 /* ARPerspectiveCamera.swift */; };
 		E1FC980D29D501D600A70BB5 /* PBRStandardMaterialRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FC980C29D501D600A70BB5 /* PBRStandardMaterialRenderer.swift */; };
 		E1FDCA112A36929E00A1870D /* Forge in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA102A36929E00A1870D /* Forge */; };
-		E1FDCA142A3692B500A1870D /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA132A3692B500A1870D /* Youi */; };
 		E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA162A3692ED00A1870D /* Spectra */; };
 /* End PBXBuildFile section */
 
@@ -279,9 +280,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E11EA25A2A969575008FC06D /* Youi in Frameworks */,
 				E1FDCA112A36929E00A1870D /* Forge in Frameworks */,
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
-				E1FDCA142A3692B500A1870D /* Youi in Frameworks */,
+				E1A25D962A9687EC00895430 /* Youi in Frameworks */,
 				E17A55AC28A6C159008F1DDB /* Satin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -711,8 +713,9 @@
 			packageProductDependencies = (
 				E17A55AB28A6C159008F1DDB /* Satin */,
 				E1FDCA102A36929E00A1870D /* Forge */,
-				E1FDCA132A3692B500A1870D /* Youi */,
 				E1FDCA162A3692ED00A1870D /* Spectra */,
+				E1A25D952A9687EC00895430 /* Youi */,
+				E11EA2592A969575008FC06D /* Youi */,
 			);
 			productName = Example;
 			productReference = E1D714D128A6BAD900B517B6 /* Example.app */;
@@ -744,8 +747,8 @@
 			mainGroup = 66E67880243EC73A0070B294;
 			packageReferences = (
 				E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */,
-				E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */,
 				E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */,
+				E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */,
 			);
 			productRefGroup = 66E6788A243EC73A0070B294 /* Products */;
 			projectDirPath = "";
@@ -1135,17 +1138,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */ = {
+		E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:Hi-Rez/ForgePro.git";
+			repositoryURL = "git@github.com:Hi-Rez/YouiPro.git";
 			requirement = {
 				branch = main;
 				kind = branch;
 			};
 		};
-		E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */ = {
+		E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:Hi-Rez/YouiPro.git";
+			repositoryURL = "git@github.com:Hi-Rez/ForgePro.git";
 			requirement = {
 				branch = main;
 				kind = branch;
@@ -1162,19 +1165,23 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E11EA2592A969575008FC06D /* Youi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */;
+			productName = Youi;
+		};
 		E17A55AB28A6C159008F1DDB /* Satin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Satin;
+		};
+		E1A25D952A9687EC00895430 /* Youi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Youi;
 		};
 		E1FDCA102A36929E00A1870D /* Forge */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1FDCA0F2A36929E00A1870D /* XCRemoteSwiftPackageReference "ForgePro" */;
 			productName = Forge;
-		};
-		E1FDCA132A3692B500A1870D /* Youi */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FDCA122A3692B500A1870D /* XCRemoteSwiftPackageReference "YouiPro" */;
-			productName = Youi;
 		};
 		E1FDCA162A3692ED00A1870D /* Spectra */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -319,6 +319,7 @@ class BufferGeometryRenderer: BaseRenderer {
     func setupBufferGeometry() {
         geometry.addAttribute(
             Float4BufferAttribute(
+                defaultValue: .zero,
                 data: [
                     [-1.0, -1.0, 0.0, 1.0],
                     [1.0, -1.0, 0.0, 1.0],
@@ -343,6 +344,7 @@ class BufferGeometryRenderer: BaseRenderer {
 
         geometry.addAttribute(
             Float3BufferAttribute(
+                defaultValue: .zero,
                 data: [
                     [0.0, 0.0, 1.0],
                     [0.0, 0.0, 1.0],
@@ -355,6 +357,7 @@ class BufferGeometryRenderer: BaseRenderer {
 
         geometry.addAttribute(
             Float2BufferAttribute(
+                defaultValue: .zero,
                 data: [
                     [0.0, 0.0],
                     [1.0, 0.0],
@@ -367,6 +370,7 @@ class BufferGeometryRenderer: BaseRenderer {
 
         geometry.addAttribute(
             Float4BufferAttribute(
+                defaultValue: .zero,
                 data: [
                     [0.0, 0.0, 0.0, 1.0],
                     [0.0, 1.0, 0.0, 1.0],

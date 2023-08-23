@@ -6,12 +6,37 @@
 //
 
 import Metal
-import simd
 import SatinCore
+import simd
 
 extension MTLPackedFloat3: Equatable {
     public static func == (lhs: _MTLPackedFloat3, rhs: _MTLPackedFloat3) -> Bool {
         lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
+    }
+
+    public subscript(index: Int) -> Float {
+        get {
+            if index == 0 {
+                return self.x
+            }
+            else if index == 1 {
+                return self.y
+            }
+            else {
+                return self.z
+            }
+        }
+        set {
+            if index == 0 {
+                self.x = newValue
+            }
+            else if index == 1 {
+                self.y = newValue
+            }
+            else if index == 2 {
+                self.z = newValue
+            }
+        }
     }
 }
 

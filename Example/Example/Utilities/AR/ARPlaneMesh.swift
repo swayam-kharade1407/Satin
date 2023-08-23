@@ -23,8 +23,8 @@ class ARPlaneMesh: Mesh {
     public init(label: String, anchor: ARPlaneAnchor, material: Satin.Material) {
         self.anchor = anchor
         let geometry = Geometry()
-        geometry.addAttribute(Float3BufferAttribute(data: []), for: .Position)
-        geometry.addAttribute(Float2BufferAttribute(data: []), for: .Texcoord)
+        geometry.addAttribute(Float3BufferAttribute(defaultValue: .zero, data: []), for: .Position)
+        geometry.addAttribute(Float2BufferAttribute(defaultValue: .zero, data: []), for: .Texcoord)
         super.init(geometry: geometry, material: material)
         self.label = label
     }

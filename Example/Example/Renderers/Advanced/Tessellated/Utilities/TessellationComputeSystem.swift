@@ -246,6 +246,10 @@ class TessellationComputeSystem<T>: Tessellator {
         _parameters.set(name, value)
     }
 
+    public func set(_ name: String, _ value: MTLPackedFloat3) {
+        _parameters.set(name, value)
+    }
+
     public func set(_ name: String, _ value: simd_float4) {
         _parameters.set(name, value)
     }
@@ -282,7 +286,7 @@ class TessellationComputeSystem<T>: Tessellator {
         _parameters.set(name, value)
     }
 
-    public func get(_ name: String) -> Parameter? {
+    public func get(_ name: String) -> (any Parameter)? {
         return _parameters.get(name)
     }
 }

@@ -19,8 +19,8 @@ import SwiftUI
 class ARPlaneGeometry: Geometry {
     public init() {
         super.init()
-        addAttribute(Float3BufferAttribute(data: []), for: .Position)
-        addAttribute(Float2BufferAttribute(data: []), for: .Texcoord)
+        addAttribute(Float3BufferAttribute(defaultValue: .zero, data: []), for: .Position)
+        addAttribute(Float2BufferAttribute(defaultValue: .zero, data: []), for: .Texcoord)
     }
 }
 
