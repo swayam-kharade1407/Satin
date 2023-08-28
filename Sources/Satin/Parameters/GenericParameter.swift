@@ -33,7 +33,7 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
         "Label: \(label) type: \(string) value: \(value)"
     }
 
-    @Published public var value: T {
+    @Published public var value: ValueType {
         didSet {
             if value != oldValue {
                 onUpdate.send(self)

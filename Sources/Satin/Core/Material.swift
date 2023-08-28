@@ -257,6 +257,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public enum CodingKeys: String, CodingKey {
         case label
+
         case blending
         case sourceRGBBlendFactor
         case sourceAlphaBlendFactor
@@ -264,9 +265,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         case destinationAlphaBlendFactor
         case rgbBlendOperation
         case alphaBlendOperation
+
         case depthWriteEnabled
         case depthCompareFunction
         case depthBias
+
+        case castShadow
+        case receiveShadow
+
         case parameters
     }
 
@@ -279,6 +285,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public func decode(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         label = try values.decode(String.self, forKey: .label)
+
         blending = try values.decode(Blending.self, forKey: .blending)
         sourceRGBBlendFactor = try values.decode(MTLBlendFactor.self, forKey: .sourceRGBBlendFactor)
         sourceAlphaBlendFactor = try values.decode(MTLBlendFactor.self, forKey: .sourceAlphaBlendFactor)
@@ -286,9 +293,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         destinationAlphaBlendFactor = try values.decode(MTLBlendFactor.self, forKey: .destinationAlphaBlendFactor)
         rgbBlendOperation = try values.decode(MTLBlendOperation.self, forKey: .rgbBlendOperation)
         alphaBlendOperation = try values.decode(MTLBlendOperation.self, forKey: .alphaBlendOperation)
+
         depthWriteEnabled = try values.decode(Bool.self, forKey: .depthWriteEnabled)
         depthCompareFunction = try values.decode(MTLCompareFunction.self, forKey: .depthCompareFunction)
         depthBias = try values.decode(DepthBias?.self, forKey: .depthBias)
+
+        castShadow = try values.decode(Bool.self, forKey: .castShadow)
+        receiveShadow = try values.decode(Bool.self, forKey: .receiveShadow)
+
         parameters = try values.decode(ParameterGroup.self, forKey: .parameters)
     }
 
@@ -297,6 +309,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     open func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(label, forKey: .label)
+        
         try container.encode(blending, forKey: .blending)
         try container.encode(sourceRGBBlendFactor, forKey: .sourceRGBBlendFactor)
         try container.encode(sourceAlphaBlendFactor, forKey: .sourceAlphaBlendFactor)
@@ -304,9 +317,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         try container.encode(destinationAlphaBlendFactor, forKey: .destinationAlphaBlendFactor)
         try container.encode(rgbBlendOperation, forKey: .rgbBlendOperation)
         try container.encode(alphaBlendOperation, forKey: .alphaBlendOperation)
+        
         try container.encode(depthWriteEnabled, forKey: .depthWriteEnabled)
         try container.encode(depthCompareFunction, forKey: .depthCompareFunction)
         try container.encode(depthBias, forKey: .depthBias)
+
+        try container.encode(castShadow, forKey: .castShadow)
+        try container.encode(receiveShadow, forKey: .receiveShadow)
+
         try container.encode(parameters, forKey: .parameters)
     }
 

@@ -343,15 +343,6 @@ public final class Float3BufferAttribute: GenericBufferAttribute<simd_float3> {
     override public var type: AttributeType { .float3 }
     override public var components: Int { 3 }
 
-    subscript(index: Int) -> simd_float3 {
-        get {
-            data[index]
-        }
-        set {
-            data[index] = newValue
-        }
-    }
-
     override public func duplicate() -> any BufferAttribute {
         return Float3BufferAttribute(defaultValue: defaultValue, data: data)
     }
