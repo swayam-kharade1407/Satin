@@ -42,7 +42,7 @@ extension MTLPackedFloat3: Equatable {
 
 extension MTLPackedFloat3: Codable {
     public init(from decoder: Decoder) throws {
-        var values = try decoder.singleValueContainer()
+        let values = try decoder.singleValueContainer()
         let data = try values.decode(simd_float3.self)
         self.init()
         self.x = data.x
@@ -58,7 +58,7 @@ extension MTLPackedFloat3: Codable {
 
 extension simd_quatf: Codable {
     public init(from decoder: Decoder) throws {
-        var values = try decoder.singleValueContainer()
+        let values = try decoder.singleValueContainer()
         try self.init(vector: values.decode(simd_float4.self))
     }
 
@@ -70,7 +70,7 @@ extension simd_quatf: Codable {
 
 extension simd_float4x4: Codable {
     public init(from decoder: Decoder) throws {
-        var values = try decoder.singleValueContainer()
+        let values = try decoder.singleValueContainer()
         try self.init(values.decode([simd_float4].self))
     }
 
@@ -90,7 +90,7 @@ public extension simd_float4x4 {
 
 extension simd_float3x3: Codable {
     public init(from decoder: Decoder) throws {
-        var values = try decoder.singleValueContainer()
+        let values = try decoder.singleValueContainer()
         try self.init(values.decode([simd_float3].self))
     }
 
@@ -102,7 +102,7 @@ extension simd_float3x3: Codable {
 
 extension simd_float2x2: Codable {
     public init(from decoder: Decoder) throws {
-        var values = try decoder.singleValueContainer()
+        let values = try decoder.singleValueContainer()
         try self.init(values.decode([simd_float2].self))
     }
 
