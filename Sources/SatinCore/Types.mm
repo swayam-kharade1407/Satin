@@ -159,7 +159,7 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
     }
 }
 
-void combineTriangleFaceMap(TriangleFaceMap *dest, TriangleFaceMap *src) {
+void combineTriangleFaceMap(TriangleFaceMap *dest, const TriangleFaceMap *src) {
     if (src->count > 0) {
         size_t srcSize = sizeof(uint32_t) * src->count;
 

@@ -39,7 +39,7 @@ bool isClockwise(simd_float2 *polygon, int length);
 bool isColinear2(simd_float2 a, simd_float2 b, simd_float2 c);
 bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c);
 
-bool isConvex(simd_float2 *path, int length);
+bool isConvex(const simd_float2 *path, int length);
 
 bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c);
 

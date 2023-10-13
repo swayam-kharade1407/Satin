@@ -51,7 +51,7 @@ bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c)
            isZero((bax * cay) - (bay * cax));
 }
 
-bool isConvex(simd_float2 *path, int length) {
+bool isConvex(const simd_float2 *path, int length) {
     int end = (length + 1);
 
     int areaSign = 0;

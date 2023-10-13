@@ -5,6 +5,8 @@
 //  Created by Reza Ali on 03/26/23.
 //
 
+#if os(macOS) || os(iOS)
+
 import Combine
 import MetalKit
 import simd
@@ -821,3 +823,5 @@ public final class PerspectiveCameraController: CameraController, Codable {
         previousTime = currentTime
     }
 }
+
+#endif

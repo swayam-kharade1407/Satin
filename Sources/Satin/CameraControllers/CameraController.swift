@@ -5,6 +5,8 @@
 //  Created by Reza Ali on 03/25/23.
 //
 
+#if os(macOS) || os(iOS)
+
 import MetalKit
 import Combine
 
@@ -34,3 +36,5 @@ public protocol CameraController {
     func save(url: URL)
     func load(url: URL)
 }
+
+#endif
