@@ -143,6 +143,8 @@ open class Object: Codable, ObservableObject {
     var updateLocalMatrix = true {
         didSet {
             if updateLocalMatrix {
+                parent?.updateBounds = true
+
                 _updateLocalBounds = true
 
                 _normalMatrix.clear()
