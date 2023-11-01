@@ -14,7 +14,8 @@ import Satin
 import SatinCore
 
 class Renderer3D: BaseRenderer {
-    var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
+//    var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
+    var mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
@@ -26,7 +27,7 @@ class Renderer3D: BaseRenderer {
 
     lazy var scene = Object("Scene", [mesh, intersectionMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var camera = PerspectiveCamera(position: .init(repeating: 5.0), near: 0.01, far: 100.0, fov: 30)
+    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)
 
@@ -37,7 +38,7 @@ class Renderer3D: BaseRenderer {
     }
 
     override func setup() {
-        camera.lookAt(target: .zero)
+//        camera.lookAt(target: .zero)
         renderer.compile(scene: scene, camera: camera)
     }
 

@@ -6,6 +6,7 @@
 //
 
 #include <float.h>
+#include <math.h>
 #include "Geometry.h"
 
 bool greaterThanZero(float a) { return a > FLT_EPSILON; }
@@ -324,6 +325,19 @@ float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point)
     ac /= acLength;
     float angle = acos(simd_dot(ab, ac));
     return acLength * sin(angle);
+}
+
+simd_float3 closestPointOnLine(simd_float3 start, simd_float3 end, simd_float3 point)
+{
+    simd_float3 ab = end - start;
+    simd_float3 ac = point - start;
+
+    float projAbAc = simd_dot(ab, ac);
+    float abLength2 = simd_dot(ab, ab);
+
+    float distNormalized = fmax(fmin(1.0, projAbAc / abLength2), 0.0);
+
+    return start + ab * distNormalized;
 }
 
 float angle2(simd_float2 a)

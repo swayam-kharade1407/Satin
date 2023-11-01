@@ -82,6 +82,7 @@ simd_float2 projectedPointOnLine2(simd_float2 start, simd_float2 end, simd_float
 
 float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point);
 float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point);
+simd_float3 closestPointOnLine(simd_float3 start, simd_float3 end, simd_float3 point);
 
 float angle2(simd_float2 a);
 float angle(float x, float y);
