@@ -50,6 +50,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     deinit {
         params = []
         paramsMap = [:]
+        paramSubscriptions = [:]
+
         delegate = nil
         if _dataAllocated {
             _data.deallocate()
