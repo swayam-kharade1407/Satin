@@ -32,6 +32,7 @@ open class Shader {
         didSet {
             if configuration != oldValue {
                 pipelineNeedsUpdate = true
+                shadowPipelineNeedsUpdate = true
                 parametersNeedsUpdate = true
             }
         }

@@ -375,26 +375,26 @@ open class Renderer {
         objectList.append(object)
 
         let isVisible = visible && object.visible
-        if isVisible {
-            if let light = object as? Light {
-                lightList.append(light)
-                if light.castShadow {
-                    shadowList.append(light.shadow)
-                }
-            }
-            if let renderable = object as? Renderable {
-                if let renderPassList = renderLists[renderable.renderPass] {
-                    renderPassList.append(renderable)
-                } else {
-                    renderLists[renderable.renderPass] = RenderList(renderable)
-                }
+        guard isVisible else { return }
 
-                if renderable.receiveShadow {
-                    shadowReceivers.append(renderable)
-                }
-                if renderable.castShadow {
-                    shadowCasters.append(renderable)
-                }
+        if let light = object as? Light {
+            lightList.append(light)
+            if light.castShadow {
+                shadowList.append(light.shadow)
+            }
+        }
+        if let renderable = object as? Renderable {
+            if let renderPassList = renderLists[renderable.renderPass] {
+                renderPassList.append(renderable)
+            } else {
+                renderLists[renderable.renderPass] = RenderList(renderable)
+            }
+
+            if renderable.receiveShadow {
+                shadowReceivers.append(renderable)
+            }
+            if renderable.castShadow {
+                shadowCasters.append(renderable)
             }
         }
 
