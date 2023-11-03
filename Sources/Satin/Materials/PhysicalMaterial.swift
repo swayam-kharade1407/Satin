@@ -156,7 +156,10 @@ open class PhysicalMaterial: StandardMaterial {
     }
 
     override open func createShader() -> Shader {
-        return PhysicalShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
+        PhysicalShader(
+            label: label,
+            pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal")
+        )
     }
 
     override internal func setTextureMultiplierUniformToOne(type: PBRTextureIndex) {

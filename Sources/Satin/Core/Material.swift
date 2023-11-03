@@ -309,7 +309,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     open func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(label, forKey: .label)
-        
+
         try container.encode(blending, forKey: .blending)
         try container.encode(sourceRGBBlendFactor, forKey: .sourceRGBBlendFactor)
         try container.encode(sourceAlphaBlendFactor, forKey: .sourceAlphaBlendFactor)
@@ -317,7 +317,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         try container.encode(destinationAlphaBlendFactor, forKey: .destinationAlphaBlendFactor)
         try container.encode(rgbBlendOperation, forKey: .rgbBlendOperation)
         try container.encode(alphaBlendOperation, forKey: .alphaBlendOperation)
-        
+
         try container.encode(depthWriteEnabled, forKey: .depthWriteEnabled)
         try container.encode(depthCompareFunction, forKey: .depthCompareFunction)
         try container.encode(depthBias, forKey: .depthBias)
@@ -346,7 +346,10 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     // MARK: - Shader
 
     open func createShader() -> Shader {
-        return SourceShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
+        SourceShader(
+            label: label,
+            pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal")
+        )
     }
 
     open func setupShader() {
@@ -401,7 +404,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     open func update(camera: Camera, viewport: simd_float4) {}
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
-    
+
     open func bindPipeline(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
         guard let pipeline = shadow ? shadowPipeline : pipeline else { return }
         renderEncoder.setRenderPipelineState(pipeline)

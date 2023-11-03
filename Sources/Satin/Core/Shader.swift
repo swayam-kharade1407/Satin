@@ -31,8 +31,10 @@ open class Shader {
     public var configuration: ShaderConfiguration {
         didSet {
             if configuration != oldValue {
-                pipelineNeedsUpdate = true
+                definesNeedsUpdate = true
+                constantsNeedsUpdate = true
                 shadowPipelineNeedsUpdate = true
+                pipelineNeedsUpdate = true
                 parametersNeedsUpdate = true
             }
         }
