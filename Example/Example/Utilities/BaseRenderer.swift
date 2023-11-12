@@ -115,8 +115,8 @@ extension BaseRenderer {
 
     func updateInspector() {
         if _updateInspector {
-            DispatchQueue.main.async { [unowned self] in
-                self.setupInspector()
+            DispatchQueue.main.async { [weak self] in
+                self?.setupInspector()
             }
             _updateInspector = false
         }

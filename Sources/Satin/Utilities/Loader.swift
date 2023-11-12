@@ -111,7 +111,7 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                             ), for: attributeIndex
                         )
                     default:
-                        fatalError("Format not supported")
+                        print("Format not supported: \(attribute.name), \(attribute.format)")
                 }
             }
         }
@@ -152,7 +152,7 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                             FloatBufferAttribute(defaultValue: .zero, data: data), for: VertexAttributeIndex(name: attribute.name)
                         )
                     default:
-                        fatalError("Format not supported")
+                        print("Format not supported: \(attribute.name), \(attribute.format)")
                 }
             }
         }

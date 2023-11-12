@@ -52,7 +52,7 @@ vertex CustomVertexData standardVertex
     out.normal = normalMatrix * in.normal;
 
 #if defined(HAS_COLOR)
-    out.color = in.color;
+    out.color = float4(in.color.rgb, 1.0);
 #endif
 
 #if defined(HAS_TANGENT)

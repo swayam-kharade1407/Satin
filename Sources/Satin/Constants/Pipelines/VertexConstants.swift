@@ -80,7 +80,7 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
     case Custom11 = 26
 
     public var description: String {
-        String(describing: self).titleCase
+        String(describing: self).titleCase.replacingOccurrences(of: " ", with: "")
     }
 
     public init(name: String) {
@@ -238,17 +238,17 @@ public enum VertexAttributeIndex: Int, CaseIterable, Codable {
             case .Occlusion:
                 return .Occlusion
             case .EdgeCrease:
-                return .Occlusion
+                return .EdgeCrease
             case .JointIndices:
-                return .Occlusion
+                return .JointIndices
             case .JointWeights:
-                return .Occlusion
+                return .JointWeights
             case .ShadingBasisU:
-                return .Occlusion
+                return .ShadingBasisU
             case .ShadingBasisV:
-                return .Occlusion
+                return .ShadingBasisV
             case .SubdivisionStencil:
-                return .Occlusion
+                return .SubdivisionStencil
             case .Custom0:
                 return .Custom0
             case .Custom1:
