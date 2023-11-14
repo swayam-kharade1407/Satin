@@ -265,7 +265,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
                 descriptor.layouts[bufferIndex].stepRate = buffer.stepRate
                 descriptor.layouts[bufferIndex].stepFunction = buffer.stepFunction
             }
-            else {
+            else  {
                 let index = attributeIndex.rawValue
                 let bufferIndex = attributeIndex.bufferIndex.rawValue
                 descriptor.attributes[index].format = attribute.format
@@ -273,8 +273,8 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
                 descriptor.attributes[index].bufferIndex = bufferIndex
 
                 descriptor.layouts[bufferIndex].stride = attribute.stride
-                descriptor.layouts[bufferIndex].stepRate = 1
-                descriptor.layouts[bufferIndex].stepFunction = .perVertex
+                descriptor.layouts[bufferIndex].stepRate = attribute.stepRate
+                descriptor.layouts[bufferIndex].stepFunction = attribute.stepFunction
             }
         }
 

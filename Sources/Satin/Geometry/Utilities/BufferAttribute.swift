@@ -36,8 +36,8 @@ public protocol BufferAttribute: VertexAttribute, Codable {
 
     func interpolate(start: Int, end: Int, at time: Float)
 
-    init(defaultValue: ValueType, data: [ValueType])
-    init(defaultValue: ValueType, count: Int)
+    init(defaultValue: ValueType, data: [ValueType], stepRate: Int, stepFunction: MTLVertexStepFunction)
+    init(defaultValue: ValueType, count: Int, stepRate: Int, stepFunction: MTLVertexStepFunction)
 }
 
 public protocol BufferAttributeDelegate: AnyObject {
@@ -85,20 +85,29 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         }
     }
 
-    required public init(defaultValue: ValueType, data: [ValueType]) {
+    public let stepRate: Int
+    public let stepFunction: MTLVertexStepFunction
+
+    required public init(defaultValue: ValueType, data: [ValueType], stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.defaultValue = defaultValue
         self.data = data
+        self.stepRate = stepRate
+        self.stepFunction = stepFunction
     }
 
-    required public init(defaultValue: ValueType, count: Int = 0) {
+    required public init(defaultValue: ValueType, count: Int = 0, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.defaultValue = defaultValue
         self.data = Array(repeating: defaultValue, count: count)
+        self.stepRate = stepRate
+        self.stepFunction = stepFunction
     }
 
     private enum CodingKeys: String, CodingKey {
         case defaultValue
         case data
         case count
+        case stepRate
+        case stepFunction
     }
 
     public required init(from decoder: Decoder) throws {
@@ -112,6 +121,9 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
             data = Array(UnsafeBufferPointer(start: typedPtr, count: count))
         }
         self.data = data
+
+        self.stepRate = try container.decodeIfPresent(Int.self, forKey: .stepRate) ?? 1
+        self.stepFunction = try container.decodeIfPresent(MTLVertexStepFunction.self, forKey: .stepFunction) ?? .perVertex
     }
 
     public func encode(to encoder: Encoder) throws {

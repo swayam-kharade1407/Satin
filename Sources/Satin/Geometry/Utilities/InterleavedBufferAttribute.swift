@@ -28,9 +28,14 @@ public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAtt
 
     public var components: Int { 0 }
 
-    public init(buffer: InterleavedBuffer, offset: Int) {
+    public let stepRate: Int
+    public let stepFunction: MTLVertexStepFunction
+
+    public init(buffer: InterleavedBuffer, offset: Int, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.buffer = buffer
         self.offset = offset
+        self.stepRate = stepRate
+        self.stepFunction = stepFunction
     }
 
     public static func == (lhs: GenericInterleavedBufferAttribute<T>, rhs: GenericInterleavedBufferAttribute<T>) -> Bool {
