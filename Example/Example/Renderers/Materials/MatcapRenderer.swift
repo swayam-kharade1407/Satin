@@ -85,28 +85,28 @@ class MatcapRenderer: BaseRenderer {
                             case .float3:
                                 geometry.addAttribute(
                                     Float3InterleavedBufferAttribute(
-                                        buffer: buffer,
+                                        parent: buffer,
                                         offset: offset
                                     ), for: index
                                 )
                             case .float2:
                                 geometry.addAttribute(
                                     Float2InterleavedBufferAttribute(
-                                        buffer: buffer,
+                                        parent: buffer,
                                         offset: offset
                                     ), for: index
                                 )
                             case .float4:
                                 geometry.addAttribute(
                                     Float4InterleavedBufferAttribute(
-                                        buffer: buffer,
+                                        parent: buffer,
                                         offset: offset
                                     ), for: index
                                 )
                             case .float:
                                 geometry.addAttribute(
                                     FloatInterleavedBufferAttribute(
-                                        buffer: buffer,
+                                        parent: buffer,
                                         offset: offset
                                     ), for: index
                                 )

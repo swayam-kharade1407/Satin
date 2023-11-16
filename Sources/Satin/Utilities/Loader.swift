@@ -76,7 +76,7 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
         let index = bufferIndexMap[bufferIndex]!
 
         if bufferInterleaved[bufferIndex]! {
-            let buffer = InterleavedBuffer(index: index, data: bytes, stride: stride, count: count, source: vertexBuffer)
+            let parent = InterleavedBuffer(index: index, data: bytes, stride: stride, count: count, source: vertexBuffer)
 
             for attribute in bufferIndexAttributes[bufferIndex]! {
                 let offset = attribute.offset
@@ -85,28 +85,28 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
                     case .float4:
                         geometry.addAttribute(
                             Float4InterleavedBufferAttribute(
-                                buffer: buffer,
+                                parent: parent,
                                 offset: offset
                             ), for: attributeIndex
                         )
                     case .float3:
                         geometry.addAttribute(
                             Float3InterleavedBufferAttribute(
-                                buffer: buffer,
+                                parent: parent,
                                 offset: offset
                             ), for: attributeIndex
                         )
                     case .float2:
                         geometry.addAttribute(
                             Float2InterleavedBufferAttribute(
-                                buffer: buffer,
+                                parent: parent,
                                 offset: offset
                             ), for: attributeIndex
                         )
                     case .float:
                         geometry.addAttribute(
                             FloatInterleavedBufferAttribute(
-                                buffer: buffer,
+                                parent: parent,
                                 offset: offset
                             ), for: attributeIndex
                         )

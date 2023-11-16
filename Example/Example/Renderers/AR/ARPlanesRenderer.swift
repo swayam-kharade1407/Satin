@@ -17,10 +17,34 @@ import SatinCore
 import SwiftUI
 
 class ARPlaneGeometry: Geometry {
+
+    let positionBuffer = Float3BufferAttribute(defaultValue: .zero, data: [])
+    let texcoodsBuffer = Float2BufferAttribute(defaultValue: .zero, data: [])
+    let indicesBuffer = ElementBuffer(type: .uint16, data: nil, count: 0, source: [])
+
+    var positions = [simd_float3]() {
+        didSet {
+            positionBuffer.data = positions
+        }
+    }
+
+    var texcoords = [simd_float2]() {
+        didSet {
+            texcoodsBuffer.data = texcoords
+        }
+    }
+
+    var indices = [Int16]() {
+        didSet {
+            indicesBuffer.updateData(data: &indices, count: indices.count, source: indices)
+        }
+    }
+
     public init() {
         super.init()
-        addAttribute(Float3BufferAttribute(defaultValue: .zero, data: []), for: .Position)
-        addAttribute(Float2BufferAttribute(defaultValue: .zero, data: []), for: .Texcoord)
+        addAttribute(positionBuffer, for: .Position)
+        addAttribute(texcoodsBuffer, for: .Texcoord)
+        setElements(indicesBuffer)
     }
 }
 
@@ -62,14 +86,9 @@ class ARPlaneContainer: Object {
     }
 
     func updateGeometry() {
-        guard let positionBuffer = geometry.getAttribute(.Position) as? Float3BufferAttribute,
-              let texcoordBuffer = geometry.getAttribute(.Texcoord) as? Float2BufferAttribute else { return }
-
-        positionBuffer.data = anchor.geometry.vertices
-        texcoordBuffer.data = anchor.geometry.textureCoordinates
-
-        var elements = anchor.geometry.triangleIndices
-        geometry.setElements(ElementBuffer(type: .uint16, data: &elements, count: elements.count, source: elements))
+        geometry.positions = anchor.geometry.vertices
+        geometry.texcoords = anchor.geometry.textureCoordinates
+        geometry.indices = anchor.geometry.triangleIndices
     }
 }
 

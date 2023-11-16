@@ -89,7 +89,7 @@ public final class ParametricGeometry: Geometry {
 
         addAttribute(
             Float4InterleavedBufferAttribute(
-                buffer: interleavedBuffer,
+                parent: interleavedBuffer,
                 offset: offset
             ),
             for: .Position
@@ -99,7 +99,7 @@ public final class ParametricGeometry: Geometry {
 
         addAttribute(
             Float3InterleavedBufferAttribute(
-                buffer: interleavedBuffer,
+                parent: interleavedBuffer,
                 offset: offset
             ),
             for: .Normal
@@ -109,7 +109,7 @@ public final class ParametricGeometry: Geometry {
 
         addAttribute(
             Float2InterleavedBufferAttribute(
-                buffer: interleavedBuffer,
+                parent: interleavedBuffer,
                 offset: offset
             ),
             for: .Texcoord

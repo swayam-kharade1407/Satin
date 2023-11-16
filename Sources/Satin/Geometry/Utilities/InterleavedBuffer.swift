@@ -9,7 +9,7 @@ import Foundation
 import Metal
 
 public protocol InterleavedBufferAttribute: VertexAttribute {
-    var buffer: InterleavedBuffer { get }
+    var parent: InterleavedBuffer { get }
     var offset: Int { get }
 }
 
@@ -21,7 +21,7 @@ public class InterleavedBuffer: Equatable {
     public let id: String = UUID().uuidString
 
     public let index: VertexBufferIndex
-    public private(set) var data: UnsafeRawPointer?
+    public private(set) var data: UnsafeMutableRawPointer?
     public private(set) var stride: Int // represents the distance to another vertex (in bytes) i.e. MemoryLayout<Float>.size * 4
     public private(set) var count: Int // represents the total number of vertices
 
@@ -33,10 +33,11 @@ public class InterleavedBuffer: Equatable {
     var source: Any?
 
     public var needsUpdate: Bool = true
+    public var buffer: MTLBuffer? 
 
     public weak var delegate: InterleavedBufferDelegate?
 
-    public init(index: VertexBufferIndex, data: UnsafeRawPointer?, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public init(index: VertexBufferIndex, data: UnsafeMutableRawPointer?, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.index = index
         self.data = data
         self.stride = stride
@@ -46,13 +47,24 @@ public class InterleavedBuffer: Equatable {
         self.stepFunction = stepFunction
     }
 
-    public func updateData(data: UnsafeRawPointer, stride: Int, count: Int, source: Any) {
+    public func updateData(data: UnsafeMutableRawPointer, stride: Int, count: Int, source: Any) {
         self.stride = stride
         self.count = count
         self.source = source
         self.data = data
         self.needsUpdate = true
         delegate?.updated(buffer: self)
+    }
+
+    public func getBuffer(device: MTLDevice) -> MTLBuffer? {
+        guard length > 0, var data else { return nil }
+
+        if needsUpdate {
+            buffer = device.makeBuffer(bytesNoCopy: data, length: length)
+            needsUpdate = false
+        }
+
+        return buffer
     }
 
     public static func == (lhs: InterleavedBuffer, rhs: InterleavedBuffer) -> Bool {

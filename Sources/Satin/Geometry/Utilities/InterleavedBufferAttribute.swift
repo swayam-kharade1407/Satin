@@ -11,7 +11,7 @@ import simd
 
 public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAttribute {
     public var id: String = UUID().uuidString
-    public var buffer: InterleavedBuffer
+    public var parent: InterleavedBuffer
     public var offset: Int
 
     public typealias ValueType = T
@@ -19,8 +19,8 @@ public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAtt
     // Getable Properties
     public var type: AttributeType { .generic }
     public var format: MTLVertexFormat { type.format }
-    public var count: Int { buffer.count }
-    
+    public var count: Int { parent.count }
+
     // Computed Properties
     public var size: Int { return MemoryLayout<ValueType>.size }
     public var stride: Int { return MemoryLayout<ValueType>.stride }
@@ -31,8 +31,8 @@ public class GenericInterleavedBufferAttribute<T: Codable>: InterleavedBufferAtt
     public let stepRate: Int
     public let stepFunction: MTLVertexStepFunction
 
-    public init(buffer: InterleavedBuffer, offset: Int, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
-        self.buffer = buffer
+    public init(parent: InterleavedBuffer, offset: Int, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+        self.parent = parent
         self.offset = offset
         self.stepRate = stepRate
         self.stepFunction = stepFunction

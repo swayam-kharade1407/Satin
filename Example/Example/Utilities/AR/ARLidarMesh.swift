@@ -28,6 +28,8 @@ func ARLidarMeshVertexDescriptor() -> MTLVertexDescriptor {
 }
 
 class ARLidarMesh: Object, Renderable {
+    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
+    
     var opaque: Bool {
         material?.blending == .disabled
     }

@@ -13,6 +13,7 @@ import simd
 public protocol BufferAttribute: VertexAttribute, Codable {
     var defaultValue: ValueType { get set }
     var data: [ValueType] { get set }
+    var buffer: MTLBuffer? { get }
 
     var length: Int { get }
 
@@ -25,7 +26,7 @@ public protocol BufferAttribute: VertexAttribute, Codable {
     func expand(_ size: Int)
     func append(_ value: ValueType)
     func append(contentsOf array: [ValueType])
-    func makeBuffer(device: MTLDevice) -> MTLBuffer?
+    func getBuffer(device: MTLDevice) -> MTLBuffer?
     func getData() -> Data
     func duplicate() -> any BufferAttribute
     func duplicate(at index: Int)
@@ -85,17 +86,19 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         }
     }
 
+    public var buffer: MTLBuffer?
+
     public let stepRate: Int
     public let stepFunction: MTLVertexStepFunction
 
-    required public init(defaultValue: ValueType, data: [ValueType], stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public required init(defaultValue: ValueType, data: [ValueType], stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.defaultValue = defaultValue
         self.data = data
         self.stepRate = stepRate
         self.stepFunction = stepFunction
     }
 
-    required public init(defaultValue: ValueType, count: Int = 0, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public required init(defaultValue: ValueType, count: Int = 0, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.defaultValue = defaultValue
         self.data = Array(repeating: defaultValue, count: count)
         self.stepRate = stepRate
@@ -133,9 +136,15 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         try container.encode(getData(), forKey: .data)
     }
 
-    public func makeBuffer(device: MTLDevice) -> MTLBuffer? {
+    public func getBuffer(device: MTLDevice) -> MTLBuffer? {
         guard length > 0 else { return nil }
-        return device.makeBuffer(bytes: &data, length: length)
+
+        if needsUpdate {
+            buffer = device.makeBuffer(bytesNoCopy: &data, length: length)
+            needsUpdate = false
+        }
+
+        return buffer
     }
 
     public func getData() -> Data {
@@ -243,7 +252,7 @@ public final class IntBufferAttribute: GenericBufferAttribute<simd_int1> {
     override public func duplicate() -> any BufferAttribute {
         return IntBufferAttribute(defaultValue: defaultValue, data: data)
     }
-    
+
     override public func interpolate(start: Int, end: Int, at time: Float) {
         append(Int32(simd_mix(Float(data[start]), Float(data[end]), time)))
     }

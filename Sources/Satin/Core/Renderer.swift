@@ -493,11 +493,14 @@ open class Renderer {
         renderEncoder.pushDebugGroup(renderable.label)
 #endif
 
-        let materials = renderable.materials
-        let lighting = materials.filter { $0.lighting }
-        let receiveShadow = materials.filter { $0.receiveShadow }
+        var lighting = false
+        var receiveShadow = false
+        for material in renderable.materials {
+            lighting = lighting || material.lighting
+            receiveShadow = receiveShadow || material.receiveShadow
+        }
 
-        if !lighting.isEmpty, let lightBuffer = lightDataBuffer {
+        if lighting, let lightBuffer = lightDataBuffer {
             renderEncoder.setFragmentBuffer(
                 lightBuffer.buffer,
                 offset: lightBuffer.offset,
@@ -505,7 +508,7 @@ open class Renderer {
             )
         }
 
-        if !receiveShadow.isEmpty {
+        if receiveShadow {
             if let shadowBuffer = shadowMatricesBuffer {
                 renderEncoder.setVertexBuffer(
                     shadowBuffer.buffer,
@@ -524,6 +527,7 @@ open class Renderer {
         }
 
         renderable.update(camera: camera, viewport: _viewport)
+        renderable.preDraw?(renderEncoder)
 
         if renderable.doubleSided, renderable.cullMode == .none, renderable.opaque == false {
             renderable.cullMode = .front

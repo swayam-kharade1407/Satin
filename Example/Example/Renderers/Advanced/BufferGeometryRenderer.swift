@@ -35,6 +35,8 @@ class BufferGeometryMesh: Object, Renderable {
         material != nil && !geometry.vertexBuffers.isEmpty
     }
 
+    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
+
     var cullMode: MTLCullMode = .back
 
     var doubleSided: Bool = false
@@ -308,11 +310,11 @@ class BufferGeometryRenderer: BaseRenderer {
             }
 
             var offset = 0
-            geometry.addAttribute(Float4InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Position)
+            geometry.addAttribute(Float4InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Position)
             offset += MemoryLayout<Float>.size * 4
-            geometry.addAttribute(Float3InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Normal)
+            geometry.addAttribute(Float3InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Normal)
             offset += MemoryLayout<Float>.size * 4
-            geometry.addAttribute(Float2InterleavedBufferAttribute(buffer: interleavedBuffer, offset: offset), for: .Texcoord)
+            geometry.addAttribute(Float2InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Texcoord)
         }
     }
 

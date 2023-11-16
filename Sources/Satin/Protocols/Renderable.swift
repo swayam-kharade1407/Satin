@@ -27,6 +27,8 @@ public protocol Renderable {
     var material: Material? { get set }
     var materials: [Material] { get }
 
+    var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)? { get }
+
     func update(camera: Camera, viewport: simd_float4)
     func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool)
 }

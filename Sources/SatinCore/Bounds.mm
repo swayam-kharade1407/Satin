@@ -14,6 +14,10 @@ Bounds createBounds(void)
     return (Bounds) { .min = { INFINITY, INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY, -INFINITY } };
 }
 
+inline bool isBoundsInfinite(const Bounds &a) {
+    return a.min.x == INFINITY || a.min.y == INFINITY || a.min.z == INFINITY || a.max.x == -INFINITY || a.max.y == -INFINITY || a.max.z == -INFINITY;
+}
+
 Bounds computeBoundsFromFloatData(const void *data, int stride, int count)
 {
     if (count > 0) {
@@ -68,6 +72,10 @@ Bounds expandBounds(Bounds bounds, simd_float3 pt)
 
 Bounds transformBounds(Bounds a, simd_float4x4 transform)
 {
+    if(isBoundsInfinite(a)) {
+        return a;
+    }
+
     Bounds result = createBounds();
     for (int i = 0; i < 8; ++i) {
         result = expandBounds(result, simd_mul(transform, boundsCorner(a, i)).xyz);

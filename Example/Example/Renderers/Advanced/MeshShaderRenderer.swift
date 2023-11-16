@@ -207,6 +207,8 @@ private class CustomMaterial: SourceMaterial {
 }
 
 private class CustomMesh: Object, Renderable {
+    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
+    
     var opaque: Bool {
         material?.blending == .disabled
     }

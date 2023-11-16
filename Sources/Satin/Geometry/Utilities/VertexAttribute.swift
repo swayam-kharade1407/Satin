@@ -20,7 +20,7 @@ public protocol VertexAttribute: Equatable, AnyObject {
     var stride: Int { get }
     var alignment: Int { get }
     var components: Int { get }
-
+    
     var stepRate: Int { get }
     var stepFunction: MTLVertexStepFunction { get }
 }

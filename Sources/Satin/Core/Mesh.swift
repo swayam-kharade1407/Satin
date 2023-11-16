@@ -221,7 +221,6 @@ open class Mesh: Object, Renderable {
     }
 
     open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        preDraw?(renderEncoder)
         bind(renderEncoder, shadow: shadow)
 
         if !submeshes.isEmpty {

@@ -16,7 +16,7 @@ public class ElementBuffer: Equatable {
     public let id: String = UUID().uuidString
 
     public private(set) var type: MTLIndexType
-    public private(set) var data: UnsafeRawPointer
+    public private(set) var data: UnsafeMutableRawPointer?
     public var size: Int {
         type == .uint32 ? MemoryLayout<UInt32>.stride : MemoryLayout<UInt16>.stride
     }
@@ -26,23 +26,36 @@ public class ElementBuffer: Equatable {
 
     var source: Any?
 
-    public var needsUpdate: Bool = true
+    public private(set) var needsUpdate: Bool = true
+    public private(set) var buffer: MTLBuffer?
 
     public weak var delegate: ElementBufferDelegate?
 
-    public init(type: MTLIndexType, data: UnsafeRawPointer, count: Int, source: Any) {
+    public init(type: MTLIndexType, data: UnsafeMutableRawPointer?, count: Int, source: Any) {
         self.type = type
         self.data = data
         self.count = count
         self.source = source
     }
 
-    public func updateData(data: UnsafeRawPointer, count: Int, source: Any) {
+    public func updateData(data: UnsafeMutableRawPointer?, count: Int, source: Any) {
         self.data = data
         self.count = count
         self.source = source
         needsUpdate = true
         delegate?.updated(buffer: self)
+    }
+
+    func getBuffer(device: MTLDevice) -> MTLBuffer? {
+        guard count > 0, let data else { return nil }
+
+        if needsUpdate {
+            buffer = device.makeBuffer(bytesNoCopy: data, length: length, options: [])
+            buffer?.label = "Indices"
+            needsUpdate = false
+        }
+
+        return buffer
     }
 
     deinit {

@@ -170,9 +170,7 @@ class ObjectShadowRenderer {
             camera: camera
         )
 
-        if let renderTexture = renderTexture,
-           var texture = texture
-        {
+        if let renderTexture = renderTexture, let texture = texture {
             let srpd = MTLRenderPassDescriptor()
             srpd.renderTargetWidth = resolution
             srpd.renderTargetHeight = resolution

@@ -8,9 +8,13 @@
 
 import Foundation
 import Metal
+import simd
+
 import Satin
 
 class TessellatedMesh: Object, Renderable {
+    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
+    
     var opaque: Bool {
         material?.blending == .disabled
     }

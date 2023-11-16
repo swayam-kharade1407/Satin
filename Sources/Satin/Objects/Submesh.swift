@@ -83,23 +83,8 @@ open class Submesh {
     }
 
     private func setupIndexBuffer() {
-        guard let device = context?.device, let elementBuffer = elementBuffer, elementBuffer.needsUpdate else { return }
-
-        if elementBuffer.count > 0 {
-            indexBuffer = device.makeBuffer(
-                bytes: elementBuffer.data,
-                length: elementBuffer.length,
-                options: []
-            )
-            if let indexBuffer = indexBuffer {
-                indexBuffer.label = "\(label) Indices"
-                elementBuffer.needsUpdate = false
-            }
-        }
-        else {
-            indexBuffer = nil
-            elementBuffer.needsUpdate = false
-        }
+        guard let device = context?.device, let elementBuffer = elementBuffer else { return }
+        indexBuffer = elementBuffer.getBuffer(device: device)
     }
 
     private func updateBuffer() {

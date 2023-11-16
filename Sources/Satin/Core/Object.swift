@@ -145,7 +145,7 @@ open class Object: Codable, ObservableObject {
             if updateLocalMatrix {
                 parent?.updateBounds = true
 
-                _updateLocalBounds = true
+                updateLocalBounds = true
 
                 _normalMatrix.clear()
                 _worldMatrix.clear()
@@ -187,7 +187,7 @@ open class Object: Codable, ObservableObject {
     var updateWorldMatrix = true {
         didSet {
             if updateWorldMatrix {
-                _updateWorldBounds = true
+                updateWorldBounds = true
 
                 _normalMatrix.clear()
                 _worldMatrix.clear()
