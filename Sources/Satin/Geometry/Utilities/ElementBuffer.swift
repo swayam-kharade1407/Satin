@@ -31,14 +31,14 @@ public class ElementBuffer: Equatable {
 
     public weak var delegate: ElementBufferDelegate?
 
-    public init(type: MTLIndexType, data: UnsafeMutableRawPointer?, count: Int, source: Any) {
+    public init(type: MTLIndexType, data: UnsafeMutableRawPointer?, count: Int, source: Any?) {
         self.type = type
         self.data = data
         self.count = count
         self.source = source
     }
 
-    public func updateData(data: UnsafeMutableRawPointer?, count: Int, source: Any) {
+    public func updateData(data: UnsafeMutableRawPointer?, count: Int, source: Any?) {
         self.data = data
         self.count = count
         self.source = source
