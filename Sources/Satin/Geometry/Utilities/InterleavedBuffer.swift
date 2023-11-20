@@ -37,7 +37,7 @@ public class InterleavedBuffer: Equatable {
 
     public weak var delegate: InterleavedBufferDelegate?
 
-    public init(index: VertexBufferIndex, data: UnsafeMutableRawPointer?, stride: Int, count: Int, source: Any, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
+    public init(index: VertexBufferIndex, data: UnsafeMutableRawPointer?, stride: Int, count: Int, source: Any?, stepRate: Int = 1, stepFunction: MTLVertexStepFunction = .perVertex) {
         self.index = index
         self.data = data
         self.stride = stride
@@ -47,7 +47,7 @@ public class InterleavedBuffer: Equatable {
         self.stepFunction = stepFunction
     }
 
-    public func updateData(data: UnsafeMutableRawPointer, stride: Int, count: Int, source: Any) {
+    public func updateData(data: UnsafeMutableRawPointer, stride: Int, count: Int, source: Any?) {
         self.stride = stride
         self.count = count
         self.source = source
@@ -60,11 +60,7 @@ public class InterleavedBuffer: Equatable {
         guard length > 0, var data else { return nil }
 
         if needsUpdate {
-#if targetEnvironment(simulator)
             buffer = device.makeBuffer(bytes: data, length: length)
-#else
-            buffer = device.makeBuffer(bytesNoCopy: data, length: length)
-#endif
             needsUpdate = false
         }
 

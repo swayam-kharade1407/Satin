@@ -140,12 +140,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         guard length > 0 else { return nil }
 
         if needsUpdate {
-
-#if targetEnvironment(simulator)
             buffer = device.makeBuffer(bytes: data, length: length)
-#else
-            buffer = device.makeBuffer(bytesNoCopy: &data, length: length)
-#endif
             needsUpdate = false
         }
 

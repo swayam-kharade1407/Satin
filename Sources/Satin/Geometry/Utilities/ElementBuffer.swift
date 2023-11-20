@@ -50,11 +50,7 @@ public class ElementBuffer: Equatable {
         guard count > 0, let data else { return nil }
 
         if needsUpdate {
-#if targetEnvironment(simulator)
             buffer = device.makeBuffer(bytes: data, length: length)
-#else
-            buffer = device.makeBuffer(bytesNoCopy: data, length: length, options: [])
-#endif
             buffer?.label = "Indices"
             needsUpdate = false
         }
