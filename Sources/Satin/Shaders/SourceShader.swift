@@ -61,6 +61,8 @@ open class SourceShader: Shader {
                 self.parametersNeedsUpdate = true
 
                 print("Updating Shader: \(self.label) at: \(self.pipelineURL.path)")
+
+                self.update()
             }
         }
     }
