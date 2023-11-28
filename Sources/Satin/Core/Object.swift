@@ -510,7 +510,7 @@ open class Object: Codable, ObservableObject {
     public func traverseVisible(_ fn: (_ object: Object) -> Void) {
         for child in children where child.visible {
             fn(child)
-            child.traverse(fn)
+            child.traverseVisible(fn)
         }
     }
 
