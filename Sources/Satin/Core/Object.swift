@@ -219,6 +219,8 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateBounds {
                 _updateBounds = true
+                parent?.updateBounds = true
+                updateBounds = false
             }
         }
     }
@@ -274,6 +276,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateWorldBounds {
                 _updateWorldBounds = true
+                parent?.updateWorldBounds = true
                 updateWorldBounds = false
             }
         }
@@ -312,7 +315,7 @@ open class Object: Codable, ObservableObject {
 
     @Published open var children: [Object] = [] {
         didSet {
-            _updateWorldBounds = true
+            updateLocalBounds = true
         }
     }
 
