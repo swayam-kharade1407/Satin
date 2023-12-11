@@ -8,12 +8,12 @@ float calculateShadow(float4 shadowCoord, depth2d<float> shadowTex, ShadowData d
     bool frustumTest = inFrustum && shadowCoord.z < 1.0;
     if(frustumTest) {
         shadowCoord.z += data.bias;
-        const int radius = int(data.radius);
+        const float radius = data.radius + 0.5;
         const float2 texelSize = 1.0/float2(shadowTex.get_width(), shadowTex.get_height());
         float shadow = 0.0;
         float samples = 0.0;
-        for (int y = -radius; y <= radius; y++) {
-            for (int x = -radius; x <= radius; x++) {
+        for (float y = -radius; y <= radius; y += 1.0) {
+            for (float x = -radius; x <= radius; x += 1.0) {
                 const float2 offset = float2(x, y) * texelSize;
                 shadow += shadowTex.sample_compare(shadowSampler, shadowCoord.xy + offset, shadowCoord.z);
                 samples += 1.0;

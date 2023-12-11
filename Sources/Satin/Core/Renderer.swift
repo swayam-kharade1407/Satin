@@ -383,6 +383,7 @@ open class Renderer {
                 shadowList.append(light.shadow)
             }
         }
+
         if let renderable = object as? Renderable {
             if let renderPassList = renderLists[renderable.renderPass] {
                 renderPassList.append(renderable)

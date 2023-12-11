@@ -494,11 +494,11 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Recursive Scene Graph Functions
 
-    public func apply(_ fn: (_ object: Object) -> Void, _ recursive: Bool = true) {
+    public func apply(recursive: Bool = true, _ fn: (_ object: Object) -> Void) {
         fn(self)
         if recursive {
             for child in children {
-                child.apply(fn, recursive)
+                child.apply(recursive: recursive, fn)
             }
         }
     }
