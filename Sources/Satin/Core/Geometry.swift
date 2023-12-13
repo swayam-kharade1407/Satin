@@ -117,9 +117,34 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
     
+    // MARK: - Bind
+    
     open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         for (index, buffer) in vertexBuffers {
             renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
+        }
+    }
+
+    // MARK: - Draw
+
+    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int) {
+        let renderEncoder = renderEncoderState.renderEncoder
+        if let indexBuffer = indexBuffer, let indexType = indexType {
+            renderEncoder.drawIndexedPrimitives(
+                type: primitiveType,
+                indexCount: indexCount,
+                indexType: indexType,
+                indexBuffer: indexBuffer,
+                indexBufferOffset: 0,
+                instanceCount: instanceCount
+            )
+        } else {
+            renderEncoder.drawPrimitives(
+                type: primitiveType,
+                vertexStart: 0,
+                vertexCount: vertexCount,
+                instanceCount: instanceCount
+            )
         }
     }
 

@@ -230,23 +230,7 @@ open class Mesh: Object, Renderable {
             }
         } else {
             material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            if let indexBuffer = geometry.indexBuffer, let indexType = geometry.indexType {
-                renderEncoder.drawIndexedPrimitives(
-                    type: geometry.primitiveType,
-                    indexCount: geometry.indexCount,
-                    indexType: indexType,
-                    indexBuffer: indexBuffer,
-                    indexBufferOffset: 0,
-                    instanceCount: instanceCount
-                )
-            } else {
-                renderEncoder.drawPrimitives(
-                    type: geometry.primitiveType,
-                    vertexStart: 0,
-                    vertexCount: geometry.vertexCount,
-                    instanceCount: instanceCount
-                )
-            }
+            geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
         }
     }
 

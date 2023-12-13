@@ -50,4 +50,32 @@ class TessellatedGeometry: Geometry {
         descriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepFunction = .perPatchControlPoint
         return descriptor
     }
+
+    override func draw(renderEncoderState: RenderEncoderState, instanceCount: Int) {
+        let renderEncoder = renderEncoderState.renderEncoder
+        if let indexBuffer = indexBuffer {
+            renderEncoder.drawIndexedPatches(
+                numberOfPatchControlPoints: controlPointsPerPatch,
+                patchStart: 0,
+                patchCount: patchCount,
+                patchIndexBuffer: nil,
+                patchIndexBufferOffset: 0,
+                controlPointIndexBuffer: indexBuffer,
+                controlPointIndexBufferOffset: 0,
+                instanceCount: instanceCount,
+                baseInstance: 0
+            )
+        } else {
+            renderEncoder.drawPatches(
+                numberOfPatchControlPoints: controlPointsPerPatch,
+                patchStart: 0,
+                patchCount: patchCount,
+                patchIndexBuffer: nil,
+                patchIndexBufferOffset: 0,
+                instanceCount: instanceCount,
+                baseInstance: 0
+            )
+        }
+    }
 }
+

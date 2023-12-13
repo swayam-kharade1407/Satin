@@ -127,29 +127,7 @@ class TessellatedMesh: Object, Renderable {
             instanceStride: 0
         )
 
-        if let indexBuffer = geometry.indexBuffer {
-            renderEncoder.drawIndexedPatches(
-                numberOfPatchControlPoints: geometry.controlPointsPerPatch,
-                patchStart: 0,
-                patchCount: geometry.patchCount,
-                patchIndexBuffer: nil,
-                patchIndexBufferOffset: 0,
-                controlPointIndexBuffer: indexBuffer,
-                controlPointIndexBufferOffset: 0,
-                instanceCount: instanceCount,
-                baseInstance: 0
-            )
-        } else {
-            renderEncoder.drawPatches(
-                numberOfPatchControlPoints: geometry.controlPointsPerPatch,
-                patchStart: 0,
-                patchCount: geometry.patchCount,
-                patchIndexBuffer: nil,
-                patchIndexBufferOffset: 0,
-                instanceCount: instanceCount,
-                baseInstance: 0
-            )
-        }
+        geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
     }
 
     func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
