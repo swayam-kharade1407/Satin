@@ -14,7 +14,7 @@ public protocol MaterialDelegate: AnyObject {
     func updated(material: Material)
 }
 
-public struct DepthBias: Codable {
+public struct DepthBias: Codable, Equatable {
     var bias: Float
     var slope: Float
     var clamp: Float
@@ -217,6 +217,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
+    public var depthClipMode: MTLDepthClipMode = .clip
     public var depthStencilState: MTLDepthStencilState?
     public var depthCompareFunction: MTLCompareFunction = .greaterEqual {
         didSet {
@@ -405,31 +406,27 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
-    open func bindPipeline(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
+    open func bindPipeline(renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard let pipeline = shadow ? shadowPipeline : pipeline else { return }
-        renderEncoder.setRenderPipelineState(pipeline)
+        renderEncoderState.pipeline = pipeline
     }
 
-    open func bindUniforms(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        guard let uniforms = uniforms else { return }
-        // TO DO: Should only bind this if it actually uses it, likewise for the Fragment
-        renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.MaterialUniforms.rawValue)
-        if !shadow {
-            renderEncoder.setFragmentBuffer(uniforms.buffer, offset: uniforms.offset, index: FragmentBufferIndex.MaterialUniforms.rawValue)
-        }
+    open func bindUniforms(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        renderEncoderState.vertexMaterialUniforms = uniforms
+        if !shadow { renderEncoderState.fragmentMaterialUniforms = uniforms }
     }
 
-    open func bindDepthStencilState(_ renderEncoder: MTLRenderCommandEncoder) {
-        if let depthStencilState = depthStencilState { renderEncoder.setDepthStencilState(depthStencilState) }
-        if let depthBias = depthBias { renderEncoder.setDepthBias(depthBias.bias, slopeScale: depthBias.slope, clamp: depthBias.clamp) }
-        else { renderEncoder.setDepthBias(0.0, slopeScale: 0.0, clamp: 0.0) }
+    open func bindDepthStates(renderEncoderState: RenderEncoderState) {
+        renderEncoderState.depthStencilState = depthStencilState
+        renderEncoderState.depthBias = depthBias
+        renderEncoderState.depthClipMode = depthClipMode
     }
 
-    open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        bindPipeline(renderEncoder, shadow: shadow)
-        bindUniforms(renderEncoder, shadow: shadow)
-        bindDepthStencilState(renderEncoder)
-        onBind?(renderEncoder)
+    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        bindUniforms(renderEncoderState: renderEncoderState, shadow: shadow)
+        bindDepthStates(renderEncoderState: renderEncoderState)
+        bindPipeline(renderEncoderState: renderEncoderState, shadow: shadow)
+        onBind?(renderEncoderState.renderEncoder)
     }
 
     public func set(_ name: String, _ value: [Float]) {

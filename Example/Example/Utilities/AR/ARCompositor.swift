@@ -20,8 +20,9 @@ class ARCompositor: ARPostProcessor {
         public var alphaTexture: MTLTexture?
         public var dilatedDepthTexture: MTLTexture?
 
-        override func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-            super.bind(renderEncoder, shadow: shadow)
+        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+            let renderEncoder = renderEncoderState.renderEncoder
             renderEncoder.setFragmentTexture(depthTexture, index: FragmentTextureIndex.Custom2.rawValue)
             renderEncoder.setFragmentTexture(backgroundTexture, index: FragmentTextureIndex.Custom3.rawValue)
             renderEncoder.setFragmentTexture(alphaTexture, index: FragmentTextureIndex.Custom4.rawValue)

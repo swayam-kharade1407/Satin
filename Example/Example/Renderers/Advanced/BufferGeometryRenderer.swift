@@ -14,11 +14,6 @@ import Satin
 import SatinCore
 
 class BufferGeometryMesh: Object, Renderable {
-    var renderOrder: Int = 0
-    var renderPass: Int = 0
-
-    var triangleFillMode: MTLTriangleFillMode = .fill
-
     var geometry: Geometry {
         didSet {
             if geometry != oldValue {
@@ -28,20 +23,25 @@ class BufferGeometryMesh: Object, Renderable {
         }
     }
 
-    var receiveShadow: Bool = false
-    var castShadow: Bool = false
-
-    var drawable: Bool {
-        material != nil && !geometry.vertexBuffers.isEmpty
-    }
-
-    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
+    var doubleSided: Bool = false
+    var opaque: Bool { material?.blending == .disabled }
 
     var cullMode: MTLCullMode = .back
+    var windingOrder: MTLWinding { geometry.windingOrder }
+    var triangleFillMode: MTLTriangleFillMode = .fill
 
-    var doubleSided: Bool = false
+    var renderOrder: Int = 0
+    var renderPass: Int = 0
 
-    var opaque: Bool { material!.blending == .disabled }
+    var lighting: Bool { material?.lighting ?? false }
+    var receiveShadow: Bool { material?.receiveShadow ?? false }
+    var castShadow: Bool { material?.castShadow ?? false }
+
+    var instanceCount: Int = 1
+
+    var drawable: Bool { material != nil && !geometry.vertexBuffers.isEmpty && instanceCount > 0 }
+
+    var preDraw: ((MTLRenderCommandEncoder) -> Void)?
 
     var material: Material?
     var materials: [Material] = []
@@ -100,26 +100,13 @@ class BufferGeometryMesh: Object, Renderable {
         super.update(camera: camera, viewport: viewport)
     }
 
-    func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        draw(renderEncoder: renderEncoder, instanceCount: 1, shadow: shadow)
-    }
+    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        renderEncoderState.vertexUniforms = uniforms
 
-    open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0 else { return }
+        material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
-        material?.bind(renderEncoder, shadow: shadow)
-
-        renderEncoder.setCullMode(cullMode)
-        renderEncoder.setTriangleFillMode(triangleFillMode)
-
-        renderEncoder.setFrontFacing(geometry.windingOrder)
-        for (index, buffer) in geometry.vertexBuffers {
-            renderEncoder.setVertexBuffer(buffer, offset: 0, index: index.rawValue)
-        }
-
-        if let uniforms = uniforms {
-            renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.VertexUniforms.rawValue)
-        }
+        let renderEncoder = renderEncoderState.renderEncoder
 
         if let indexBuffer = geometry.indexBuffer, let indexType = geometry.indexType {
             renderEncoder.drawIndexedPrimitives(

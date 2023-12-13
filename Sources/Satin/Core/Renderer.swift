@@ -10,31 +10,6 @@ import Combine
 import Metal
 import simd
 
-class RenderList {
-    public var isEmpty: Bool {
-        renderables.isEmpty
-    }
-
-    private var renderables: [Renderable]
-    private var sortedRenderables: [Renderable] { renderables.sorted { $0.renderOrder < $1.renderOrder } }
-
-    public init(_ renderable: Renderable) {
-        self.renderables = [renderable]
-    }
-
-    public func append(_ renderable: Renderable) {
-        renderables.append(renderable)
-    }
-
-    public func removeAll(keepingCapacity: Bool = true) {
-        renderables.removeAll(keepingCapacity: keepingCapacity)
-    }
-
-    public func getRenderables(sorted: Bool) -> [Renderable] {
-        sorted ? sortedRenderables : renderables
-    }
-}
-
 open class Renderer {
     public var label = "Satin Renderer"
 
@@ -121,6 +96,7 @@ open class Renderer {
     private var renderLists = [Int: RenderList]()
 
     private var lightList = [Light]()
+    private var lightReceivers = [Renderable]()
     private var _updateLightDataBuffer = false
     private var lightDataBuffer: StructBuffer<LightData>?
     private var lightDataSubscriptions = Set<AnyCancellable>()
@@ -327,12 +303,7 @@ open class Renderer {
 #endif
                     renderEncoder.setViewport(viewport)
 
-                    encode(
-                        renderEncoder: renderEncoder,
-                        pass: pass,
-                        renderables: renderables,
-                        camera: camera
-                    )
+                    encode(renderEncoder: renderEncoder, pass: pass, renderables: renderables, camera: camera)
 
 #if DEBUG
                     renderEncoder.popDebugGroup()
@@ -354,7 +325,9 @@ open class Renderer {
 
         objectList.removeAll(keepingCapacity: true)
         renderLists.removeAll(keepingCapacity: true)
+
         lightList.removeAll(keepingCapacity: true)
+        lightReceivers.removeAll(keepingCapacity: true)
 
         shadowList.removeAll(keepingCapacity: true)
         shadowCasters.removeAll(keepingCapacity: true)
@@ -391,9 +364,14 @@ open class Renderer {
                 renderLists[renderable.renderPass] = RenderList(renderable)
             }
 
+            if renderable.lighting {
+                lightReceivers.append(renderable)
+            }
+
             if renderable.receiveShadow {
                 shadowReceivers.append(renderable)
             }
+            
             if renderable.castShadow {
                 shadowCasters.append(renderable)
             }
@@ -474,42 +452,30 @@ open class Renderer {
     // MARK: - Internal Encoding
 
     private func encode(renderEncoder: MTLRenderCommandEncoder, pass: Int, renderables: [Renderable], camera: Camera) {
-        for shadow in shadowList {
-            if let shadowTexture = shadow.texture {
-                renderEncoder.useResource(shadowTexture, usage: .read, stages: .fragment)
+
+        let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
+
+        if !lightReceivers.isEmpty {
+            if let lightBuffer = lightDataBuffer {
+                renderEncoder.setFragmentBuffer(
+                    lightBuffer.buffer,
+                    offset: lightBuffer.offset,
+                    index: FragmentBufferIndex.Lighting.rawValue
+                )
             }
         }
 
-        if let shadowDataBuffer = shadowDataBuffer {
-            renderEncoder.useResource(shadowDataBuffer.buffer, usage: .read, stages: .fragment)
-        }
+        if !shadowReceivers.isEmpty {
+            for shadow in shadowList {
+                if let shadowTexture = shadow.texture {
+                    renderEncoder.useResource(shadowTexture, usage: .read, stages: .fragment)
+                }
+            }
 
-        for var renderable in renderables where renderable.drawable {
-            _encode(renderEncoder: renderEncoder, renderable: &renderable, camera: camera)
-        }
-    }
+            if let shadowDataBuffer = shadowDataBuffer {
+                renderEncoder.useResource(shadowDataBuffer.buffer, usage: .read, stages: .fragment)
+            }
 
-    private func _encode(renderEncoder: MTLRenderCommandEncoder, renderable: inout Renderable, camera: Camera) {
-#if DEBUG
-        renderEncoder.pushDebugGroup(renderable.label)
-#endif
-
-        var lighting = false
-        var receiveShadow = false
-        for material in renderable.materials {
-            lighting = lighting || material.lighting
-            receiveShadow = receiveShadow || material.receiveShadow
-        }
-
-        if lighting, let lightBuffer = lightDataBuffer {
-            renderEncoder.setFragmentBuffer(
-                lightBuffer.buffer,
-                offset: lightBuffer.offset,
-                index: FragmentBufferIndex.Lighting.rawValue
-            )
-        }
-
-        if receiveShadow {
             if let shadowBuffer = shadowMatricesBuffer {
                 renderEncoder.setVertexBuffer(
                     shadowBuffer.buffer,
@@ -527,19 +493,36 @@ open class Renderer {
             }
         }
 
+        for renderable in renderables where renderable.drawable {
+            _encode(
+                renderEncoder: renderEncoder,
+                renderEncoderState: renderEncoderState,
+                renderable: renderable,
+                camera: camera
+            )
+        }
+    }
+
+    private func _encode(renderEncoder: MTLRenderCommandEncoder, renderEncoderState: RenderEncoderState, renderable: Renderable, camera: Camera) {
+#if DEBUG
+        renderEncoder.pushDebugGroup(renderable.label)
+#endif
+
         renderable.update(camera: camera, viewport: _viewport)
         renderable.preDraw?(renderEncoder)
 
+        renderEncoderState.windingOrder = renderable.windingOrder
+        renderEncoderState.triangleFillMode = renderable.triangleFillMode
+
         if renderable.doubleSided, renderable.cullMode == .none, renderable.opaque == false {
-            renderable.cullMode = .front
-            renderable.draw(renderEncoder: renderEncoder, shadow: false)
+            renderEncoderState.cullMode = .front
+            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
 
-            renderable.cullMode = .back
-            renderable.draw(renderEncoder: renderEncoder, shadow: false)
-
-            renderable.cullMode = .none
+            renderEncoderState.cullMode = .back
+            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
         } else {
-            renderable.draw(renderEncoder: renderEncoder, shadow: false)
+            renderEncoderState.cullMode = renderable.cullMode
+            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
         }
 
 #if DEBUG

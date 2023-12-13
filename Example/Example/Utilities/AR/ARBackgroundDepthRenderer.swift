@@ -38,8 +38,10 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
             fatalError("init(from:) has not been implemented")
         }
 
-        override func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-            super.bind(renderEncoder, shadow: shadow)
+
+        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+            let renderEncoder = renderEncoderState.renderEncoder
             if let upscaledSceneDepthTexture = upscaledSceneDepthTexture {
                 renderEncoder.setFragmentTexture(upscaledSceneDepthTexture, index: FragmentTextureIndex.Custom0.rawValue)
             }

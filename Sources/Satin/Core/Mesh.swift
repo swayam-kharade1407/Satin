@@ -12,14 +12,13 @@ import SatinCore
 import simd
 
 open class Mesh: Object, Renderable {
-    public var opaque: Bool {
-        material!.blending == .disabled
-    }
-
+    public var opaque: Bool { material!.blending == .disabled }
     public var doubleSided: Bool = false
 
     public var renderOrder = 0
     public var renderPass = 0
+
+    public var lighting: Bool { material?.lighting ?? false }
 
     public var receiveShadow = false {
         didSet {
@@ -43,8 +42,16 @@ open class Mesh: Object, Renderable {
         }
     }
 
-    public var triangleFillMode: MTLTriangleFillMode = .fill
     public var cullMode: MTLCullMode = .back
+    public var triangleFillMode: MTLTriangleFillMode = .fill
+    public var windingOrder: MTLWinding {
+        get {
+            geometry.windingOrder
+        }
+        set {
+            geometry.windingOrder = newValue
+        }
+    }
 
     open var drawable: Bool {
         guard instanceCount > 0, !geometry.vertexBuffers.isEmpty, uniforms != nil else { return false }
@@ -159,35 +166,17 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Binding
 
-    open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        bindDrawingStates(renderEncoder, shadow: shadow)
-        bindGeometry(renderEncoder)
-        bindUniforms(renderEncoder)
+    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        bindUniforms(renderEncoderState: renderEncoderState)
+        bindGeometry(renderEncoderState: renderEncoderState, shadow: shadow)
     }
 
-    open func bindUniforms(_ renderEncoder: MTLRenderCommandEncoder) {
-        guard let uniforms = uniforms else { return }
-        renderEncoder.setVertexBuffer(
-            uniforms.buffer,
-            offset: uniforms.offset,
-            index: VertexBufferIndex.VertexUniforms.rawValue
-        )
+    open func bindUniforms(renderEncoderState: RenderEncoderState) {
+        renderEncoderState.vertexUniforms = uniforms
     }
 
-    open func bindGeometry(_ renderEncoder: MTLRenderCommandEncoder) {
-        for (index, buffer) in geometry.vertexBuffers {
-            renderEncoder.setVertexBuffer(buffer, offset: 0, index: index.rawValue)
-        }
-    }
-
-    open func bindMaterial(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        material?.bind(renderEncoder, shadow: shadow)
-    }
-
-    open func bindDrawingStates(_ renderEncoder: MTLRenderCommandEncoder, shadow _: Bool) {
-        renderEncoder.setFrontFacing(geometry.windingOrder)
-        renderEncoder.setCullMode(cullMode)
-        renderEncoder.setTriangleFillMode(triangleFillMode)
+    open func bindGeometry(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
     }
 
     // MARK: - Update
@@ -216,19 +205,19 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool = false) {
-        draw(renderEncoder: renderEncoder, instanceCount: instanceCount, shadow: shadow)
+    open func draw(renderEncoderState: RenderEncoderState, shadow: Bool = false) {
+        draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount, shadow: shadow)
     }
 
-    open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        bind(renderEncoder, shadow: shadow)
+    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+        bind(renderEncoderState: renderEncoderState, shadow: shadow)
+
+        let renderEncoder = renderEncoderState.renderEncoder
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {
                 if let indexBuffer = submesh.indexBuffer, let indexType = submesh.indexType {
-                    if let material = submesh.material {
-                        material.bind(renderEncoder, shadow: shadow)
-                    }
+                    submesh.material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
                     renderEncoder.drawIndexedPrimitives(
                         type: geometry.primitiveType,
                         indexCount: submesh.indexCount,
@@ -240,7 +229,7 @@ open class Mesh: Object, Renderable {
                 }
             }
         } else {
-            bindMaterial(renderEncoder, shadow: shadow)
+            material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
             if let indexBuffer = geometry.indexBuffer, let indexType = geometry.indexType {
                 renderEncoder.drawIndexedPrimitives(
                     type: geometry.primitiveType,

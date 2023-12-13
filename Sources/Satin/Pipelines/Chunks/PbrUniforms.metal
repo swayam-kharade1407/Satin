@@ -21,9 +21,9 @@
     float3x3 roughnessTexcoordTransform;
     float3x3 metallicTexcoordTransform;
     float3x3 specularTexcoordTransform;
+    float3x3 specularTintTexcoordTransform;
     float3x3 normalTexcoordTransform;
     float3x3 ambientOcclusionTexcoordTransform;
-    float3x3 specularTintTexcoordTransform;
     float3x3 anisotropicTexcoordTransform;
     float3x3 anisotropicAngleTexcoordTransform;
     float3x3 clearcoatTexcoordTransform;
@@ -35,3 +35,6 @@
     float3x3 iorTexcoordTransform;
     float3x3 reflectionTexcoordTransform;
     float3x3 irradianceTexcoordTransform;
+    float3x3 bumpTexcoordTransform;
+    float3x3 displacementTexcoordTransform;
+    float3x3 alphaTexcoordTransform;

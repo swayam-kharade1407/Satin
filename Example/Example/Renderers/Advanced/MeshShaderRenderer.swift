@@ -92,7 +92,8 @@ private class CustomShader: SourceShader {
                let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
                let objectFunction = library.makeFunction(name: objectFunctionName),
                let meshFunction = library.makeFunction(name: meshFunctionName),
-               let fragmentFunction = library.makeFunction(name: fragmentFunctionName) {
+               let fragmentFunction = library.makeFunction(name: fragmentFunctionName)
+            {
                 var descriptor = MTLMeshRenderPipelineDescriptor()
                 descriptor.label = label + " Mesh"
 
@@ -108,8 +109,7 @@ private class CustomShader: SourceShader {
                 setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
 
                 return try context.device.makeRenderPipelineState(descriptor: descriptor, options: []).0
-             }
-            else {
+            } else {
                 return nil
             }
         } else {
@@ -159,7 +159,6 @@ private class CustomShader: SourceShader {
 }
 
 private class CustomMaterial: SourceMaterial {
-
     init(pipelinesURL: URL) {
         super.init(pipelinesURL: pipelinesURL)
 //        set("Time", 0.0)
@@ -179,22 +178,22 @@ private class CustomMaterial: SourceMaterial {
         return shader
     }
 
-    override func bindUniforms(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        guard let uniforms = uniforms else { return }
-        if #available(macOS 13.0, iOS 16.0, *) {
-            
-            renderEncoder.setObjectBuffer(
-                uniforms.buffer,
-                offset: uniforms.offset,
-                index: ObjectBufferIndex.MaterialUniforms.rawValue
-            )
+    override func bindUniforms(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        guard #available(macOS 13.0, iOS 16.0, *), let uniforms = uniforms else { return }
 
-            renderEncoder.setMeshBuffer(
-                uniforms.buffer,
-                offset: uniforms.offset,
-                index: MeshBufferIndex.MaterialUniforms.rawValue
-            )
-        }
+        let renderEncoder = renderEncoderState.renderEncoder
+
+        renderEncoder.setObjectBuffer(
+            uniforms.buffer,
+            offset: uniforms.offset,
+            index: ObjectBufferIndex.MaterialUniforms.rawValue
+        )
+
+        renderEncoder.setMeshBuffer(
+            uniforms.buffer,
+            offset: uniforms.offset,
+            index: MeshBufferIndex.MaterialUniforms.rawValue
+        )
 
         if !shadow {
             renderEncoder.setFragmentBuffer(
@@ -208,12 +207,10 @@ private class CustomMaterial: SourceMaterial {
 
 private class CustomMesh: Object, Renderable {
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
-    
-    var opaque: Bool {
-        material?.blending == .disabled
-    }
 
+    var opaque: Bool { material?.blending == .disabled }
     var doubleSided: Bool = false
+
     var cullMode: MTLCullMode = .back
     var windingOrder: MTLWinding = .counterClockwise
     var triangleFillMode: MTLTriangleFillMode = .fill
@@ -221,8 +218,9 @@ private class CustomMesh: Object, Renderable {
     var renderOrder = 0
     var renderPass = 0
 
-    var receiveShadow = false
-    var castShadow = false
+    var lighting: Bool { material?.lighting ?? false }
+    var receiveShadow: Bool { material?.receiveShadow ?? false }
+    var castShadow: Bool { material?.castShadow ?? false }
 
     private var vertexUniforms: VertexUniformBuffer?
 
@@ -300,18 +298,16 @@ private class CustomMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        guard #available(macOS 13.0, iOS 16.0, *), instanceCount > 0,
-                let vertexUniforms = vertexUniforms,
-                let material = material,
-                let vertexBuffer = geometry.vertexBuffers[VertexBufferIndex.Vertices]
+    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        guard #available(macOS 13.0, iOS 16.0, *),
+              let vertexUniforms = vertexUniforms,
+              let material = material,
+              let vertexBuffer = geometry.vertexBuffers[VertexBufferIndex.Vertices]
         else { return }
 
-        material.bind(renderEncoder, shadow: shadow)
+        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
-        renderEncoder.setFrontFacing(windingOrder)
-        renderEncoder.setCullMode(cullMode)
-        renderEncoder.setTriangleFillMode(triangleFillMode)
+        let renderEncoder = renderEncoderState.renderEncoder
 
         renderEncoder.setObjectBuffer(
             vertexBuffer,
@@ -338,9 +334,5 @@ private class CustomMesh: Object, Renderable {
             threadsPerObjectThreadgroup: MTLSizeMake(1, 1, 1),
             threadsPerMeshThreadgroup: MTLSizeMake(36, 1, 1)
         )
-    }
-
-    func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        draw(renderEncoder: renderEncoder, instanceCount: 1, shadow: shadow)
     }
 }

@@ -29,15 +29,14 @@ func ARLidarMeshVertexDescriptor() -> MTLVertexDescriptor {
 
 class ARLidarMesh: Object, Renderable {
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
-    
-    var opaque: Bool {
-        material?.blending == .disabled
-    }
 
+    var opaque: Bool { material?.blending == .disabled }
+    var doubleSided: Bool = false
+
+    var lighting: Bool { material?.lighting ?? false }
     var receiveShadow: Bool { false }
     var castShadow: Bool { false }
 
-    var doubleSided: Bool = false
     var renderOrder = 0
     var renderPass = 0
 
@@ -123,24 +122,18 @@ class ARLidarMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        draw(renderEncoder: renderEncoder, instanceCount: 1, shadow: shadow)
-    }
-
-    open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0,
-              let uniforms = uniforms,
+    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        guard let uniforms = uniforms,
               let vertexBuffer = vertexBuffer,
               let material = material,
               let _ = material.pipeline
         else { return }
 
-        material.bind(renderEncoder, shadow: shadow)
-        renderEncoder.setFrontFacing(windingOrder)
-        renderEncoder.setCullMode(cullMode)
-        renderEncoder.setTriangleFillMode(triangleFillMode)
-        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: VertexBufferIndex.Vertices.rawValue)
-        renderEncoder.setVertexBuffer(uniforms.buffer, offset: uniforms.offset, index: VertexBufferIndex.VertexUniforms.rawValue)
+        renderEncoderState.vertexUniforms = uniforms
+        renderEncoderState.setVertexBuffer(vertexBuffer, offset: 0, index: .Vertices)
+        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+
+        let renderEncoder = renderEncoderState.renderEncoder
 
         if let indexBuffer = indexBuffer {
             renderEncoder.drawIndexedPrimitives(
@@ -149,14 +142,14 @@ class ARLidarMesh: Object, Renderable {
                 indexType: .uint32,
                 indexBuffer: indexBuffer,
                 indexBufferOffset: 0,
-                instanceCount: instanceCount
+                instanceCount: 1
             )
         } else {
             renderEncoder.drawPrimitives(
                 type: .triangle,
                 vertexStart: 0,
                 vertexCount: vertexCount,
-                instanceCount: instanceCount
+                instanceCount: 1
             )
         }
     }

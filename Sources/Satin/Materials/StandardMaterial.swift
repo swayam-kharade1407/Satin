@@ -214,11 +214,9 @@ open class StandardMaterial: Material {
         StandardShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
-    override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        super.bind(renderEncoder, shadow: shadow)
-        if !shadow {
-            bindMaps(renderEncoder)
-        }
+    override open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        if !shadow { bindMaps(renderEncoderState.renderEncoder) }
     }
 
     func bindMaps(_ renderEncoder: MTLRenderCommandEncoder) {

@@ -46,7 +46,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     public let onUpdate = PassthroughSubject<Geometry, Never>()
     
     public var vertexCount: Int { vertexAttributes[.Position]?.count ?? 0 }
-    public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer?] = [:]
+    public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer] = [:]
     
     private var _updateVertexBuffers = true {
         didSet {
@@ -117,6 +117,12 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
     
+    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        for (index, buffer) in vertexBuffers {
+            renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
+        }
+    }
+
     // MARK: - Elements
     
     public func setElements(_ elementBuffer: ElementBuffer?) {

@@ -42,8 +42,10 @@ class ARBackgroundRenderer: PostProcessor {
             fatalError("init() has not been implemented")
         }
 
-        override func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-            super.bind(renderEncoder, shadow: shadow)
+        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+            
+            let renderEncoder = renderEncoderState.renderEncoder
             if let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr {
                 renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: FragmentTextureIndex.Custom0.rawValue)
                 renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: FragmentTextureIndex.Custom1.rawValue)

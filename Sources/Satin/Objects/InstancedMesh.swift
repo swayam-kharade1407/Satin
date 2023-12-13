@@ -14,6 +14,8 @@ import SatinCore
 public class InstancedMesh: Mesh {
 
     public override var drawable: Bool {
+        guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return false }
+
         if let drawCount = drawCount {
             if drawCount > 0 {
                 return super.drawable
@@ -123,14 +125,9 @@ public class InstancedMesh: Mesh {
         super.update()
     }
 
-    override open func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        super.bind(renderEncoder, shadow: shadow)
-        bindInstanceMatrixBuffer(renderEncoder)
-    }
-
-    func bindInstanceMatrixBuffer(_ renderEncoder: MTLRenderCommandEncoder) {
-        guard let instanceMatrixBuffer = instanceMatrixBuffer else { return }
-        renderEncoder.setVertexBuffer(instanceMatrixBuffer.buffer, offset: instanceMatrixBuffer.offset, index: VertexBufferIndex.InstanceMatrixUniforms.rawValue)
+    public override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        renderEncoderState.vertexInstanceUniforms = instanceMatrixBuffer
     }
 
     // MARK: - Private Instancing
@@ -162,17 +159,12 @@ public class InstancedMesh: Mesh {
         _updateInstanceMatrixBuffer = true
     }
 
-    override public func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool = false) {
-        guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return }
-        super.draw(renderEncoder: renderEncoder, shadow: shadow)
-    }
-
-    override public func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
+    override public func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         if let drawCount = drawCount {
-            super.draw(renderEncoder: renderEncoder, instanceCount: min(drawCount, instanceCount), shadow: shadow)
+            super.draw(renderEncoderState: renderEncoderState, instanceCount: min(drawCount, instanceCount), shadow: shadow)
         }
         else {
-            super.draw(renderEncoder: renderEncoder, instanceCount: instanceCount, shadow: shadow)
+            super.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount, shadow: shadow)
         }
     }
 

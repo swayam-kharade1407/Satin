@@ -46,8 +46,9 @@ class ARPostProcessor: PostProcessor {
             fatalError("init(from:) has not been implemented")
         }
 
-        override func bind(_ renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-            super.bind(renderEncoder, shadow: shadow)
+        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+            let renderEncoder = renderEncoderState.renderEncoder
             renderEncoder.setFragmentTexture(contentTexture, index: FragmentTextureIndex.Custom0.rawValue)
             renderEncoder.setFragmentTexture(cameraGrainTexture, index: FragmentTextureIndex.Custom1.rawValue)
         }

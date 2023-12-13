@@ -14,11 +14,11 @@ import Satin
 import SatinCore
 
 class Renderer3D: BaseRenderer {
-//    var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
-    var mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicDiffuseMaterial(0.7))
+    var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
+//    var mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1
         mesh.visible = false
@@ -42,7 +42,7 @@ class Renderer3D: BaseRenderer {
         renderer.compile(scene: scene, camera: camera)
     }
 
-   deinit {
+    deinit {
         cameraController.disable()
     }
 

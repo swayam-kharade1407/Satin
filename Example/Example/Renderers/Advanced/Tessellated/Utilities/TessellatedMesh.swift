@@ -20,14 +20,17 @@ class TessellatedMesh: Object, Renderable {
     }
 
     var doubleSided: Bool = false
+
     var cullMode: MTLCullMode = .back
     var windingOrder: MTLWinding = .counterClockwise
     var triangleFillMode: MTLTriangleFillMode = .fill
 
     var renderOrder = 0
     var renderPass = 0
-    var receiveShadow = false
-    var castShadow = false
+
+    var lighting: Bool { material?.lighting ?? false }
+    var receiveShadow: Bool { material?.receiveShadow ?? false }
+    var castShadow: Bool { material?.castShadow ?? false }
 
     private var vertexUniforms: VertexUniformBuffer?
 
@@ -109,23 +112,14 @@ class TessellatedMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoder: MTLRenderCommandEncoder, instanceCount: Int, shadow: Bool) {
+    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material, !geometry.vertexBuffers.isEmpty else { return }
 
-        material.bind(renderEncoder, shadow: shadow)
-        renderEncoder.setFrontFacing(windingOrder)
-        renderEncoder.setCullMode(cullMode)
-        renderEncoder.setTriangleFillMode(triangleFillMode)
+        renderEncoderState.vertexUniforms = vertexUniforms
+        geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
-        renderEncoder.setVertexBuffer(
-            vertexUniforms.buffer,
-            offset: vertexUniforms.offset,
-            index: VertexBufferIndex.VertexUniforms.rawValue
-        )
-
-        for (index, buffer) in geometry.vertexBuffers {
-            renderEncoder.setVertexBuffer(buffer, offset: 0, index: index.rawValue )
-        }
+        let renderEncoder = renderEncoderState.renderEncoder
 
         renderEncoder.setTessellationFactorBuffer(
             tessellator.buffer,
@@ -158,7 +152,7 @@ class TessellatedMesh: Object, Renderable {
         }
     }
 
-    func draw(renderEncoder: MTLRenderCommandEncoder, shadow: Bool) {
-        draw(renderEncoder: renderEncoder, instanceCount: 1, shadow: shadow)
+    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+        draw(renderEncoderState: renderEncoderState, instanceCount: 1, shadow: shadow)
     }
 }
