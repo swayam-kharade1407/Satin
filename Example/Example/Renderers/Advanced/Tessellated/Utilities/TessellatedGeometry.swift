@@ -51,7 +51,7 @@ class TessellatedGeometry: Geometry {
         return descriptor
     }
 
-    override func draw(renderEncoderState: RenderEncoderState, instanceCount: Int) {
+    override func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, indexBufferOffset: Int = 0, vertexStart: Int = 0) {
         let renderEncoder = renderEncoderState.renderEncoder
         if let indexBuffer = indexBuffer {
             renderEncoder.drawIndexedPatches(

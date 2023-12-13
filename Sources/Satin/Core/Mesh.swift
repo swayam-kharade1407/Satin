@@ -216,17 +216,8 @@ open class Mesh: Object, Renderable {
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {
-                if let indexBuffer = submesh.indexBuffer, let indexType = submesh.indexType {
-                    submesh.material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-                    renderEncoder.drawIndexedPrimitives(
-                        type: geometry.primitiveType,
-                        indexCount: submesh.indexCount,
-                        indexType: indexType,
-                        indexBuffer: indexBuffer,
-                        indexBufferOffset: submesh.offset,
-                        instanceCount: instanceCount
-                    )
-                }
+                submesh.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+                submesh.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
             }
         } else {
             material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
