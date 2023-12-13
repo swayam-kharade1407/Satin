@@ -205,14 +205,12 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoderState: RenderEncoderState, shadow: Bool = false) {
+    open func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
         draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount, shadow: shadow)
     }
 
     open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         bind(renderEncoderState: renderEncoderState, shadow: shadow)
-
-        let renderEncoder = renderEncoderState.renderEncoder
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {
