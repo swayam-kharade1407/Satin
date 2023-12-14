@@ -129,7 +129,7 @@ open class PhysicalMaterial: StandardMaterial {
         transmission: Float = .zero,
         thickness: Float = 0.0,
         ior: Float = 1.5,
-        maps: [PBRTextureIndex: MTLTexture?] = [:]
+        maps: [PBRTextureType: MTLTexture?] = [:]
     ) {
         super.init(baseColor: baseColor, metallic: metallic, roughness: roughness, specular: specular, emissiveColor: emissiveColor, maps: maps)
 
@@ -144,7 +144,7 @@ open class PhysicalMaterial: StandardMaterial {
         self.sheenTint = sheenTint
         self.transmission = transmission
         self.thickness = thickness
-        self.indexOfRefraction = ior
+        indexOfRefraction = ior
     }
 
     public required init(from decoder: Decoder) throws {
@@ -159,7 +159,7 @@ open class PhysicalMaterial: StandardMaterial {
         PhysicalShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
-    override internal func setTextureMultiplierUniformToOne(type: PBRTextureIndex) {
+    override internal func setTextureMultiplierUniformToOne(type: PBRTextureType) {
         switch type {
             case .baseColor:
                 baseColor = .one
@@ -214,18 +214,18 @@ open class PhysicalMaterial: StandardMaterial {
 }
 
 public extension PhysicalMaterial {
-    convenience init(material: MDLMaterial, textureLoader: MTKTextureLoader) {
-        self.init()
-
+    func setPropertiesFrom(material: MDLMaterial, textureLoader: MTKTextureLoader? = nil) {
         // MARK: - BaseColor
 
         if let property = material.property(with: .baseColor) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .baseColor)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .baseColor)
+                }
             } else if property.type == .color, let color = property.color, let rgba = color.components {
                 baseColor = simd_make_float4(Float(rgba[0]), Float(rgba[1]), Float(rgba[2]), Float(rgba[3]))
             } else if property.type == .float4 {
@@ -243,11 +243,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .subsurface) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .subsurface)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .subsurface)
+                }
             } else if property.type == .float {
                 subsurface = property.floatValue
             } else {
@@ -259,11 +261,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .metallic) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .metallic)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .metallic)
+                }
             } else if property.type == .float {
                 metallic = property.floatValue
             } else {
@@ -275,11 +279,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .specular) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .specular)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .specular)
+                }
             } else if property.type == .float {
                 specular = property.floatValue
             } else {
@@ -291,11 +297,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .specularTint) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .specularTint)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .specularTint)
+                }
             } else if property.type == .float {
                 specularTint = property.floatValue
             } else {
@@ -307,11 +315,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .roughness) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .roughness)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .roughness)
+                }
             } else if property.type == .float {
                 roughness = property.floatValue
             } else {
@@ -323,11 +333,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .anisotropic) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .anisotropic)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .anisotropic)
+                }
             } else if property.type == .float {
                 anisotropic = property.floatValue
             } else {
@@ -339,11 +351,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .anisotropicRotation) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .anisotropicAngle)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .anisotropicAngle)
+                }
             } else if property.type == .float {
                 anisotropicAngle = property.floatValue
             } else {
@@ -355,11 +369,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .sheen) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .sheen)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .sheen)
+                }
             } else if property.type == .float {
                 sheen = property.floatValue
             } else {
@@ -371,11 +387,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .sheenTint) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .sheenTint)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .sheenTint)
+                }
             } else if property.type == .float {
                 sheenTint = property.floatValue
             } else {
@@ -387,11 +405,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .clearcoat) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .clearcoat)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .clearcoat)
+                }
             } else if property.type == .float {
                 clearcoat = property.floatValue
             } else {
@@ -403,11 +423,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .clearcoatGloss) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .clearcoatGloss)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .clearcoatGloss)
+                }
             } else if property.type == .float {
                 clearcoatRoughness = 1.0 - property.floatValue
             } else {
@@ -419,11 +441,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .emission) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .emissive)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .emissive)
+                }
             } else if property.type == .color, let color = property.color, let rgba = color.components {
                 emissiveColor = simd_make_float4(Float(rgba[0]), Float(rgba[1]), Float(rgba[2]), Float(rgba[3]))
             } else if property.type == .float4 {
@@ -441,11 +465,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .bump) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .bump)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: mdlTexture.mipLevelCount > 1 ? true : false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .bump)
+                }
             } else {
                 print("Unsupported MDLMaterial Property: \(property.name)")
             }
@@ -455,11 +481,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .opacity) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .alpha)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .alpha)
+                }
             } else if property.type == .float {
                 baseColor.w = property.floatValue
                 if property.floatValue < 1.0 {
@@ -474,11 +502,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .interfaceIndexOfRefraction) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ior)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ior)
+                }
             } else if property.type == .float {
                 indexOfRefraction = property.floatValue
             } else {
@@ -491,11 +521,13 @@ public extension PhysicalMaterial {
         if let property = material.property(with: .objectSpaceNormal) {
             print("loading object space normal")
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .normal)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .normal)
+                }
             } else {
                 print("objectSpaceNormal not supported")
                 print("Unsupported MDLMaterial Property: \(property.name)")
@@ -506,11 +538,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .tangentSpaceNormal) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .normal)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .normal)
+                }
             } else if property.type == .color, let color = property.color, let rgba = color.components {
                 print(simd_make_float4(Float(rgba[0]), Float(rgba[1]), Float(rgba[2]), Float(rgba[3])))
             } else if property.type == .float4 {
@@ -529,11 +563,13 @@ public extension PhysicalMaterial {
 
         if let property = material.property(with: .displacement) {
             if property.type == .texture, let mdlTexture = property.textureSamplerValue?.texture {
-                let options: [MTKTextureLoader.Option: Any] = [
-                    .generateMipmaps: false,
-                    .origin: MTKTextureLoader.Origin.flippedVertically,
-                ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .displacement)
+                if let textureLoader {
+                    let options: [MTKTextureLoader.Option: Any] = [
+                        .generateMipmaps: false,
+                        .origin: MTKTextureLoader.Origin.flippedVertically,
+                    ]
+                    loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .displacement)
+                }
             } else {
                 print("Unsupported MDLMaterial Property: \(property.name)")
             }
@@ -541,15 +577,15 @@ public extension PhysicalMaterial {
 
         // MARK: - AmbientOcclusion
 
-        if let property = material.property(with: .ambientOcclusion),
-           property.type == .texture,
-           let mdlTexture = property.textureSamplerValue?.texture
-        {
-            let options: [MTKTextureLoader.Option: Any] = [
-                .generateMipmaps: false,
-                .origin: MTKTextureLoader.Origin.flippedVertically,
-            ]
-            loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ambientOcclusion)
+        if let property = material.property(with: .ambientOcclusion), property.type == .texture,
+           let mdlTexture = property.textureSamplerValue?.texture {
+            if let textureLoader {
+                let options: [MTKTextureLoader.Option: Any] = [
+                    .generateMipmaps: false,
+                    .origin: MTKTextureLoader.Origin.flippedVertically,
+                ]
+                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ambientOcclusion)
+            }
         }
     }
 
@@ -572,7 +608,7 @@ public extension PhysicalMaterial {
         loader: MTKTextureLoader,
         mdlTexture: MDLTexture,
         options: [MTKTextureLoader.Option: Any],
-        target: PBRTextureIndex
+        target: PBRTextureType
     ) {
         do {
             let texture = try loader.newTexture(texture: mdlTexture, options: options)

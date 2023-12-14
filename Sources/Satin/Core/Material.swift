@@ -641,6 +641,12 @@ public extension Material {
     }
 }
 
+//extension Material: Hashable {
+//    public func hash(into hasher: inout Hasher) {
+//        hasher.combine(id)
+//    }
+//}
+
 extension Material: Equatable {
     public static func == (lhs: Material, rhs: Material) -> Bool {
         return lhs === rhs

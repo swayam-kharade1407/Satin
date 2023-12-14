@@ -7,31 +7,84 @@
 
 import Foundation
 
-public enum PBRTextureIndex: Int, CaseIterable {
-    case baseColor = 0
-    case subsurface = 1
-    case metallic = 2
-    case roughness = 3
-    case normal = 4
-    case emissive = 5
-    case specular = 6
-    case specularTint = 7
-    case sheen = 8
-    case sheenTint = 9
-    case clearcoat = 10
-    case clearcoatRoughness = 11
-    case clearcoatGloss = 12
-    case anisotropic = 13
-    case anisotropicAngle = 14
-    case bump = 15
-    case displacement = 16
-    case alpha = 17
-    case ior = 18
-    case transmission = 19
-    case ambientOcclusion = 20
-    case reflection = 21
-    case irradiance = 22
-    case brdf = 23
+public enum PBRTextureType: String, CaseIterable, Codable {
+    case baseColor
+    case subsurface
+    case metallic
+    case roughness
+    case normal
+    case emissive
+    case specular
+    case specularTint
+    case sheen
+    case sheenTint
+    case clearcoat
+    case clearcoatRoughness
+    case clearcoatGloss
+    case anisotropic
+    case anisotropicAngle
+    case bump
+    case displacement
+    case alpha
+    case ior
+    case transmission
+    case ambientOcclusion
+    case reflection
+    case irradiance
+    case brdf
+
+    public var index: Int {
+        switch self {
+            case .baseColor:
+                0
+            case .subsurface:
+                1
+            case .metallic:
+                2
+            case .roughness:
+                3
+            case .normal:
+                4
+            case .emissive:
+                5
+            case .specular:
+                6
+            case .specularTint:
+                7
+            case .sheen:
+                8
+            case .sheenTint:
+                9
+            case .clearcoat:
+                10
+            case .clearcoatRoughness:
+                11
+            case .clearcoatGloss:
+                12
+            case .anisotropic:
+                13
+            case .anisotropicAngle:
+                14
+            case .bump:
+                15
+            case .displacement:
+                16
+            case .alpha:
+                17
+            case .ior:
+                18
+            case .transmission:
+                19
+            case .ambientOcclusion:
+                20
+            case .reflection:
+                21
+            case .irradiance:
+                22
+            case .brdf:
+                23
+        }
+    }
 
     public var shaderDefine: String {
         return description.titleCase.uppercased().replacingOccurrences(of: " ", with: "_") + "_MAP"
@@ -61,7 +114,7 @@ public enum PBRTextureIndex: Int, CaseIterable {
     public var texcoordName: String {
         switch self {
             case .clearcoatGloss:
-                return PBRTextureIndex.clearcoatRoughness.texcoordName
+                return PBRTextureType.clearcoatRoughness.texcoordName
             default:
                 return description + "TexcoordTransform"
         }
@@ -71,7 +124,7 @@ public enum PBRTextureIndex: Int, CaseIterable {
         return "PBRTexture" + Substring(description.prefix(1).uppercased()) + Substring(description.dropFirst())
     }
 
-    public static var allTexcoordCases: [PBRTextureIndex] {
+    public static var allTexcoordCases: [PBRTextureType] {
         return [
             .baseColor,
             .subsurface,

@@ -16,25 +16,3 @@
     float ior;                  // slider,1.0,3.0,1.5,Index of Refraction
     float environmentIntensity; // slider,0.0,1.0,1.0
     float gammaCorrection;      // slider,0.0,1.0,1.0
-    float3x3 baseColorTexcoordTransform;
-    float3x3 emissiveTexcoordTransform;
-    float3x3 roughnessTexcoordTransform;
-    float3x3 metallicTexcoordTransform;
-    float3x3 specularTexcoordTransform;
-    float3x3 specularTintTexcoordTransform;
-    float3x3 normalTexcoordTransform;
-    float3x3 ambientOcclusionTexcoordTransform;
-    float3x3 anisotropicTexcoordTransform;
-    float3x3 anisotropicAngleTexcoordTransform;
-    float3x3 clearcoatTexcoordTransform;
-    float3x3 clearcoatRoughnessTexcoordTransform;
-    float3x3 subsurfaceTexcoordTransform;
-    float3x3 sheenTexcoordTransform;
-    float3x3 sheenTintTexcoordTransform;
-    float3x3 transmissionTexcoordTransform;
-    float3x3 iorTexcoordTransform;
-    float3x3 reflectionTexcoordTransform;
-    float3x3 irradianceTexcoordTransform;
-    float3x3 bumpTexcoordTransform;
-    float3x3 displacementTexcoordTransform;
-    float3x3 alphaTexcoordTransform;

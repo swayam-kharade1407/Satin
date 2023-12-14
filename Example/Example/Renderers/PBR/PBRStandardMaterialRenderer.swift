@@ -151,7 +151,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         material.setTexture(tmpTexture, type: .roughness)
 
         let baseURL = modelsURL.appendingPathComponent("Suzanne")
-        let maps: [PBRTextureIndex: URL] = [
+        let maps: [PBRTextureType: URL] = [
             .baseColor: baseURL.appendingPathComponent("albedo.png"),
             .ambientOcclusion: baseURL.appendingPathComponent("ao.png"),
             .metallic: baseURL.appendingPathComponent("metallic.png"),
@@ -164,8 +164,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
             for (type, url) in maps {
                 let texture = try loader.newTexture(URL: url, options: [
                     MTKTextureLoader.Option.SRGB: false,
-                    MTKTextureLoader.Option.origin: MTKTextureLoader.Origin.flippedVertically,
-                    MTKTextureLoader.Option.textureStorageMode: NSNumber(value: MTLStorageMode.private.rawValue),
+                    MTKTextureLoader.Option.origin: MTKTextureLoader.Origin.flippedVertically
                 ])
                 material.setTexture(texture, type: type)
             }

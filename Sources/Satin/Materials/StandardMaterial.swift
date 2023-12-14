@@ -76,7 +76,7 @@ open class StandardMaterial: Material {
         }
     }
 
-    private var maps: [PBRTextureIndex: MTLTexture?] = [:] {
+    private var maps: [PBRTextureType: MTLTexture?] = [:] {
         didSet {
             if oldValue.keys != maps.keys, let shader = shader as? PBRShader {
                 shader.maps = maps
@@ -84,7 +84,7 @@ open class StandardMaterial: Material {
         }
     }
 
-    private var samplers: [PBRTextureIndex: MTLSamplerDescriptor?] = [:] {
+    private var samplers: [PBRTextureType: MTLSamplerDescriptor?] = [:] {
         didSet {
             if oldValue.keys != samplers.keys, let shader = shader as? PBRShader {
                 shader.samplers = samplers
@@ -100,7 +100,7 @@ open class StandardMaterial: Material {
         }
     }
 
-    public func setTexture(_ texture: MTLTexture?, type: PBRTextureIndex) {
+    public func setTexture(_ texture: MTLTexture?, type: PBRTextureType) {
         if let texture = texture {
             maps[type] = texture
             setTextureMultiplierUniformToOne(type: type)
@@ -117,7 +117,7 @@ open class StandardMaterial: Material {
         }
     }
 
-    public func setSampler(_ sampler: MTLSamplerDescriptor?, type: PBRTextureIndex) {
+    public func setSampler(_ sampler: MTLSamplerDescriptor?, type: PBRTextureType) {
         if let sampler = sampler {
             samplers[type] = sampler
         } else {
@@ -125,11 +125,11 @@ open class StandardMaterial: Material {
         }
     }
 
-    public func setTexcoordTransform(_ transform: simd_float3x3, type: PBRTextureIndex) {
+    public func setTexcoordTransform(_ transform: simd_float3x3, type: PBRTextureType) {
         set(type.texcoordName.titleCase, transform)
     }
 
-    public func setTexcoordTransform(offset: simd_float2, scale: simd_float2, rotation: Float, type: PBRTextureIndex) {
+    public func setTexcoordTransform(offset: simd_float2, scale: simd_float2, rotation: Float, type: PBRTextureType) {
         let ct = cos(rotation)
         let st = sin(rotation)
 
@@ -160,7 +160,7 @@ open class StandardMaterial: Material {
                 roughness: Float = 0.2,
                 specular: Float = 0.5,
                 emissiveColor: simd_float4 = .zero,
-                maps: [PBRTextureIndex: MTLTexture?] = [:])
+                maps: [PBRTextureType: MTLTexture?] = [:])
     {
         super.init()
         self.baseColor = baseColor
@@ -179,7 +179,7 @@ open class StandardMaterial: Material {
     }
 
     func initalizeTexcoordParameters() {
-        for type in PBRTextureIndex.allTexcoordCases {
+        for type in PBRTextureType.allTexcoordCases {
             set(type.texcoordName.titleCase, matrix_identity_float3x3)
         }
     }
@@ -216,12 +216,10 @@ open class StandardMaterial: Material {
 
     override open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-        if !shadow { bindMaps(renderEncoderState.renderEncoder) }
-    }
-
-    func bindMaps(_ renderEncoder: MTLRenderCommandEncoder) {
-        for (index, texture) in maps where texture != nil {
-            renderEncoder.setFragmentTexture(texture, index: index.rawValue)
+        if !shadow {
+            for (type, texture) in maps {
+                renderEncoderState.setFragmentPBRTexture(texture, type: type)
+            }
         }
     }
 
@@ -229,7 +227,7 @@ open class StandardMaterial: Material {
     /// This allows users to scale the texture values by the uniform values.
     /// When this function is called, the value is set to one to ensure
     /// the texture values value aren't scaled to zero by the uniform
-    internal func setTextureMultiplierUniformToOne(type: PBRTextureIndex) {
+    internal func setTextureMultiplierUniformToOne(type: PBRTextureType) {
         switch type {
             case .baseColor:
                 baseColor = .one

@@ -8,7 +8,7 @@
 import Metal
 
 extension MTLSamplerDescriptor {
-    func shaderInjection(index: PBRTextureIndex) -> String {
+    func shaderInjection(index: PBRTextureType) -> String {
         var minfilter = ""
         switch self.minFilter {
             case .nearest:

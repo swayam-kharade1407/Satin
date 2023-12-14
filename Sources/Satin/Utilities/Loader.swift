@@ -169,7 +169,9 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
 
                         var material: Material?
                         if let mdlMaterial = mdlSubmesh.material, let textureLoader = textureLoader {
-                            material = PhysicalMaterial(material: mdlMaterial, textureLoader: textureLoader)
+                            let mat = PhysicalMaterial()
+                            mat.setPropertiesFrom(material: mdlMaterial, textureLoader: textureLoader)
+                            material = mat
                         }
 
                         stnMesh.addSubmesh(
@@ -192,7 +194,9 @@ func loadMesh(mdlMesh: MDLMesh, textureLoader: MTKTextureLoader?) -> Mesh {
         else {
             if let mdlSubmesh = submeshes.object(at: 0) as? MDLSubmesh {
                 if let mdlMaterial = mdlSubmesh.material, let textureLoader = textureLoader {
-                    stnMesh.material = PhysicalMaterial(material: mdlMaterial, textureLoader: textureLoader)
+                    let mat = PhysicalMaterial()
+                    mat.setPropertiesFrom(material: mdlMaterial, textureLoader: textureLoader)
+                    stnMesh.material = mat
                 }
                 let indexBuffer = mdlSubmesh.indexBuffer(asIndexType: .uInt32)
                 geometry.setElements(

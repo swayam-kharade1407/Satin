@@ -132,6 +132,18 @@ public class RenderEncoderState {
         }
     }
 
+    private var fragmentPBRTextures = [PBRTextureType: MTLTexture?]()
+
+    public func setFragmentPBRTexture(_ texture: MTLTexture?, type: PBRTextureType) {
+        if let existingTexture = fragmentPBRTextures[type], existingTexture === texture {
+            return
+        }
+        else {
+            renderEncoder.setFragmentTexture(texture, index: type.index)
+            fragmentPBRTextures[type] = texture
+        }
+    }
+
     init(renderEncoder: MTLRenderCommandEncoder) {
         self.renderEncoder = renderEncoder
     }

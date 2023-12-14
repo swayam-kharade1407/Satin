@@ -10,7 +10,7 @@ import Foundation
 import Metal
 
 open class PBRShader: SourceShader {
-    open var maps: [PBRTextureIndex: MTLTexture?] = [:] {
+    open var maps: [PBRTextureType: MTLTexture?] = [:] {
         didSet {
             if oldValue.keys != maps.keys {
                 definesNeedsUpdate = true
@@ -18,7 +18,7 @@ open class PBRShader: SourceShader {
         }
     }
 
-    open var samplers: [PBRTextureIndex: MTLSamplerDescriptor?] = [:] {
+    open var samplers: [PBRTextureType: MTLSamplerDescriptor?] = [:] {
         didSet {
             if oldValue.keys != samplers.keys {
                 constantsNeedsUpdate = true
@@ -36,12 +36,10 @@ open class PBRShader: SourceShader {
 
     open override func getConstants() -> [String] {
         var results = super.getConstants()
-        for pbrTexIndex in PBRTextureIndex.allCases {
-
-            if let sampler = samplers[pbrTexIndex], let descriptor = sampler {
-                results.append(descriptor.shaderInjection(index: pbrTexIndex))
+        for pbrTexType in PBRTextureType.allCases {
+            if let sampler = samplers[pbrTexType], let descriptor = sampler {
+                results.append(descriptor.shaderInjection(index: pbrTexType))
             }
-
         }
         return results
     }
@@ -51,8 +49,8 @@ open class PBRShader: SourceShader {
 
         if !maps.isEmpty { results.append(ShaderDefine(key: "HAS_MAPS", value: NSString(string: "true"))) }
 
-        for pbrTexIndex in PBRTextureIndex.allCases where maps[pbrTexIndex] != nil {
-            results.append(ShaderDefine(key: pbrTexIndex.shaderDefine, value: NSString(string: "true")))
+        for pbrTexType in PBRTextureType.allCases where maps[pbrTexType] != nil {
+            results.append(ShaderDefine(key: pbrTexType.shaderDefine, value: NSString(string: "true")))
         }
 
         results.append(ShaderDefine(key: tonemapping.shaderDefine, value: NSString(string: "true")))
