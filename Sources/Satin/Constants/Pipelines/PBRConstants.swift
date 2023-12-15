@@ -134,7 +134,7 @@ public enum PBRTextureType: String, CaseIterable, Codable {
             .emissive,
             .specular,
             .specularTint,
-            .sheen,
+            .sheen, 
             .sheenTint,
             .clearcoat,
             .clearcoatRoughness,
