@@ -36,58 +36,58 @@ public enum PBRTextureType: String, CaseIterable, Codable {
     public var index: Int {
         switch self {
             case .baseColor:
-                0
+                return 0
             case .subsurface:
-                1
+                return 1
             case .metallic:
-                2
+                return 2
             case .roughness:
-                3
+                return 3
             case .normal:
-                4
+                return 4
             case .emissive:
-                5
+                return 5
             case .specular:
-                6
+                return 6
             case .specularTint:
-                7
+                return 7
             case .sheen:
-                8
+                return 8
             case .sheenTint:
-                9
+                return 9
             case .clearcoat:
-                10
+                return 10
             case .clearcoatRoughness:
-                11
+                return 11
             case .clearcoatGloss:
-                12
+                return 12
             case .anisotropic:
-                13
+                return 13
             case .anisotropicAngle:
-                14
+                return 14
             case .bump:
-                15
+                return 15
             case .displacement:
-                16
+                return 16
             case .alpha:
-                17
+                return 17
             case .ior:
-                18
+                return 18
             case .transmission:
-                19
+                return 19
             case .ambientOcclusion:
-                20
+                return 20
             case .reflection:
-                21
+                return 21
             case .irradiance:
-                22
+                return 22
             case .brdf:
-                23
+                return 23
         }
     }
 
     public var shaderDefine: String {
-        return description.titleCase.uppercased().replacingOccurrences(of: " ", with: "_") + "_MAP"
+        description.titleCase.uppercased().replacingOccurrences(of: " ", with: "_") + "_MAP"
     }
 
     public var textureType: String {
@@ -100,15 +100,15 @@ public enum PBRTextureType: String, CaseIterable, Codable {
     }
 
     public var description: String {
-        return String(describing: self)
+        String(describing: self)
     }
 
     public var samplerName: String {
-        return description + "Sampler"
+        description + "Sampler"
     }
 
     public var textureName: String {
-        return description + "Map"
+        description + "Map"
     }
 
     public var texcoordName: String {
@@ -121,11 +121,11 @@ public enum PBRTextureType: String, CaseIterable, Codable {
     }
 
     public var textureIndex: String {
-        return "PBRTexture" + Substring(description.prefix(1).uppercased()) + Substring(description.dropFirst())
+        "PBRTexture" + Substring(description.prefix(1).uppercased()) + Substring(description.dropFirst())
     }
 
     public static var allTexcoordCases: [PBRTextureType] {
-        return [
+        [
             .baseColor,
             .subsurface,
             .metallic,

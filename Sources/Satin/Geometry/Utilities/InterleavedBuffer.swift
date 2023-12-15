@@ -57,7 +57,7 @@ public class InterleavedBuffer: Equatable {
     }
 
     public func getBuffer(device: MTLDevice) -> MTLBuffer? {
-        guard length > 0, var data else { return nil }
+        guard length > 0, let data else { return nil }
 
         if needsUpdate {
             buffer = device.makeBuffer(bytes: data, length: length)
