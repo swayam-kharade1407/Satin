@@ -171,10 +171,7 @@ public func injectShadowCoords(source: inout String, receiveShadow: Bool, shadow
     var injection = ""
     if receiveShadow {
         for i in 0 ..< shadowCount {
-            if i > 0 {
-                injection += "\t"
-            }
-            injection += "float4 shadowCoord\(i);\n"
+            injection += "\tfloat4 shadowCoord\(i);\n"
         }
     }
     source = source.replacingOccurrences(of: "// inject shadow coords\n", with: injection)
