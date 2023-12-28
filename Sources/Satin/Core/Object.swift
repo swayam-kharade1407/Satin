@@ -246,6 +246,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateLocalBounds {
                 _updateLocalBounds = true
+                localBoundsPublisher.send(self)
                 parent?.updateLocalBounds = true
                 updateLocalBounds = false
             }
@@ -275,6 +276,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateWorldBounds {
                 _updateWorldBounds = true
+                worldBoundsPublisher.send(self)
                 parent?.updateWorldBounds = true
                 updateWorldBounds = false
             }
@@ -323,7 +325,11 @@ open class Object: Codable, ObservableObject {
     public var onUpdate: (() -> Void)?
 
     // MARK: - Publishers
+
     public let boundsPublisher = PassthroughSubject<Object, Never>()
+    public let localBoundsPublisher = PassthroughSubject<Object, Never>()
+    public let worldBoundsPublisher = PassthroughSubject<Object, Never>()
+
     public let transformPublisher = PassthroughSubject<Object, Never>()
 
     public let childAddedPublisher = PassthroughSubject<Object, Never>()
