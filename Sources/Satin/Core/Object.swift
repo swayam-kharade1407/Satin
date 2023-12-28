@@ -143,8 +143,6 @@ open class Object: Codable, ObservableObject {
     var updateLocalMatrix = true {
         didSet {
             if updateLocalMatrix {
-                parent?.updateBounds = true
-
                 updateLocalBounds = true
 
                 _normalMatrix.clear()
@@ -219,6 +217,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if updateBounds {
                 _updateBounds = true
+                boundsPublisher.send(self)
                 parent?.updateBounds = true
                 updateBounds = false
             }
@@ -324,8 +323,9 @@ open class Object: Codable, ObservableObject {
     public var onUpdate: (() -> Void)?
 
     // MARK: - Publishers
-
+    public let boundsPublisher = PassthroughSubject<Object, Never>()
     public let transformPublisher = PassthroughSubject<Object, Never>()
+
     public let childAddedPublisher = PassthroughSubject<Object, Never>()
     public let childRemovedPublisher = PassthroughSubject<Object, Never>()
 
