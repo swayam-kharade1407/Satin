@@ -76,6 +76,21 @@ struct ContentView: View {
                         }
                     }
 
+                    Section(header: Text("Text")) {
+                        NavigationLink(destination: SDFTextRendererView()) {
+                            Label("SDF Text", systemImage: "f.cursive")
+                        }
+
+                        NavigationLink(destination: TextRendererView()) {
+                            Label("Text Geometry", systemImage: "textformat")
+                        }
+
+                        NavigationLink(destination: ExtrudedTextRendererView()) {
+                            Label("Extruded Text", systemImage: "square.3.layers.3d.down.right")
+                        }
+
+                    }
+
                     Section(header: Text("Materials")) {
                         NavigationLink(destination: CubemapRendererView()) {
                             Label("Skybox Material", systemImage: "map")
@@ -99,14 +114,6 @@ struct ContentView: View {
                     }
 
                     Section(header: Text("Geometry")) {
-                        NavigationLink(destination: TextRendererView()) {
-                            Label("Text", systemImage: "textformat")
-                        }
-
-                        NavigationLink(destination: ExtrudedTextRendererView()) {
-                            Label("Extruded Text", systemImage: "square.3.layers.3d.down.right")
-                        }
-
                         NavigationLink(destination: SuperShapesRendererView()) {
                             Label("Super Shapes", systemImage: "seal")
                         }
@@ -232,6 +239,7 @@ struct ContentView: View {
             }
             .navigationTitle("Satin Examples")
 
+            SDFTextRendererView()
 //            MeshShaderRendererView()
 //            BufferGeometryRendererView()
 //            MatcapRendererView()

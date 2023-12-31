@@ -44,11 +44,10 @@ class ARBackgroundRenderer: PostProcessor {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            
-            let renderEncoder = renderEncoderState.renderEncoder
+
             if let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr {
-                renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: FragmentTextureIndex.Custom0.rawValue)
-                renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: FragmentTextureIndex.Custom1.rawValue)
+                renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: .Custom0)
+                renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: .Custom1)
             }
         }
     }

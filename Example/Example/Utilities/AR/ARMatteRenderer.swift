@@ -41,9 +41,8 @@ class ARMatteRenderer {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
-            renderEncoder.setFragmentTexture(alphaTexture, index: FragmentTextureIndex.Custom0.rawValue)
-            renderEncoder.setFragmentTexture(dilatedDepthTexture, index: FragmentTextureIndex.Custom1.rawValue)
+            renderEncoderState.setFragmentTexture(alphaTexture, index: .Custom0)
+            renderEncoderState.setFragmentTexture(dilatedDepthTexture, index: .Custom1)
         }
     }
 

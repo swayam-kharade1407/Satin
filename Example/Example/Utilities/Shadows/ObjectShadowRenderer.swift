@@ -32,9 +32,8 @@ class ShadowPostProcessor: PostProcessor {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
-            renderEncoder.setFragmentTexture(colorTexture, index: FragmentTextureIndex.Custom0.rawValue)
-            renderEncoder.setFragmentTexture(depthTexture, index: FragmentTextureIndex.Custom1.rawValue)
+            renderEncoderState.setFragmentTexture(colorTexture, index: .Custom0)
+            renderEncoderState.setFragmentTexture(depthTexture, index: .Custom1)
         }
     }
 

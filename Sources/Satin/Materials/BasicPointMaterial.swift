@@ -9,7 +9,25 @@ import Metal
 import simd
 
 public final class BasicPointMaterial: Material {
-    public init(_ color: simd_float4 = simd_float4(repeating: 1.0), _ size: Float = 2.0, _ blending: Blending = .alpha) {
+    public var color: simd_float4 {
+        get {
+            (get("Color") as! Float4Parameter).value
+        }
+        set {
+            set("Color", newValue)
+        }
+    }
+
+    public var pointSize: Float {
+        get {
+            (get("Point Size") as! FloatParameter).value
+        }
+        set {
+            set("Point Size", newValue)
+        }
+    }
+
+    public init(color: simd_float4 = simd_float4(repeating: 1.0), size: Float = 2.0, blending: Blending = .alpha) {
         super.init()
         self.blending = blending
         set("Color", color)

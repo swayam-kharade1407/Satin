@@ -135,6 +135,9 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
+    public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture?] = [:]
+    public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture?] = [:]
+
     public internal(set) var isClone = false
     public weak var delegate: MaterialDelegate?
 
@@ -422,11 +425,39 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         renderEncoderState.depthClipMode = depthClipMode
     }
 
+    open func bindTextures(renderEncoderState: RenderEncoderState) {
+        for (index, texture) in vertexTextures {
+            renderEncoderState.setVertexTexture(texture, index: index)
+        }
+
+        for (index, texture) in fragmentTextures {
+            renderEncoderState.setFragmentTexture(texture, index: index)
+        }
+    }
+
     open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         bindUniforms(renderEncoderState: renderEncoderState, shadow: shadow)
         bindDepthStates(renderEncoderState: renderEncoderState)
+        bindTextures(renderEncoderState: renderEncoderState)
         bindPipeline(renderEncoderState: renderEncoderState, shadow: shadow)
         onBind?(renderEncoderState.renderEncoder)
+    }
+
+
+    public func set(_ texture: MTLTexture?, index: VertexTextureIndex) {
+        if let texture = texture {
+            vertexTextures[index] = texture
+        } else {
+            vertexTextures.removeValue(forKey: index)
+        }
+    }
+
+    public func set(_ texture: MTLTexture?, index: FragmentTextureIndex) {
+        if let texture = texture {
+            fragmentTextures[index] = texture
+        } else {
+            fragmentTextures.removeValue(forKey: index)
+        }
     }
 
     public func set(_ name: String, _ value: [Float]) {

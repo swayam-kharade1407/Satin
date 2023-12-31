@@ -10,7 +10,7 @@ import CoreText
 import SatinCore
 import simd
 
-public final class ExtrudedTextGeometry: TextGeometry {
+public final class ExtrudedTextGeometry: TesselatedTextGeometry {
     public var distance: Float {
         didSet {
             if oldValue != distance {

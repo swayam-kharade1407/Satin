@@ -48,9 +48,8 @@ class ARPostProcessor: PostProcessor {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
-            renderEncoder.setFragmentTexture(contentTexture, index: FragmentTextureIndex.Custom0.rawValue)
-            renderEncoder.setFragmentTexture(cameraGrainTexture, index: FragmentTextureIndex.Custom1.rawValue)
+            renderEncoderState.setFragmentTexture(contentTexture, index: .Custom0)
+            renderEncoderState.setFragmentTexture(cameraGrainTexture, index: .Custom1)
         }
     }
 

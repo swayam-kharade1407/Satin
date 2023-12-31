@@ -76,6 +76,8 @@
 		E1BBE46529E4D1AB00A21F3A /* ARLidarMeshRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46429E4D1AB00A21F3A /* ARLidarMeshRendererView.swift */; };
 		E1BBE46729E4D5B000A21F3A /* ARLidarMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBE46629E4D5B000A21F3A /* ARLidarMesh.swift */; };
 		E1BCF34029DA3C210076C163 /* TessellationRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF33F29DA3C210076C163 /* TessellationRendererView.swift */; };
+		E1C967752B409E1E00271541 /* SDFTextRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C967742B409E1E00271541 /* SDFTextRenderer.swift */; };
+		E1C967782B409E7E00271541 /* SDFTextRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C967772B409E7E00271541 /* SDFTextRendererView.swift */; };
 		E1CB1F2029E656A6006FBDE8 /* ARBackgroundDepthRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CB1F1F29E656A6006FBDE8 /* ARBackgroundDepthRenderer.swift */; };
 		E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D328A6BADA00B517B6 /* ExampleApp.swift */; };
 		E1D714D628A6BADA00B517B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D528A6BADA00B517B6 /* ContentView.swift */; };
@@ -217,6 +219,8 @@
 		E1BCF34429DA3EB60076C163 /* TessellatedMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellatedMesh.swift; sourceTree = "<group>"; };
 		E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellationComputeSystem.swift; sourceTree = "<group>"; };
 		E1BCF34729DA3EB60076C163 /* TessellatedGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellatedGeometry.swift; sourceTree = "<group>"; };
+		E1C967742B409E1E00271541 /* SDFTextRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDFTextRenderer.swift; sourceTree = "<group>"; };
+		E1C967772B409E7E00271541 /* SDFTextRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDFTextRendererView.swift; sourceTree = "<group>"; };
 		E1CB1F1F29E656A6006FBDE8 /* ARBackgroundDepthRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBackgroundDepthRenderer.swift; sourceTree = "<group>"; };
 		E1CC09892489751A00B92285 /* CustomGeometryRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGeometryRenderer.swift; sourceTree = "<group>"; };
 		E1CC099D2489797300B92285 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -237,7 +241,7 @@
 		E1E767C528A6D41B005D75AB /* CameraControllerRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraControllerRendererView.swift; sourceTree = "<group>"; };
 		E1E767C628A6D41B005D75AB /* DepthRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthRendererView.swift; sourceTree = "<group>"; };
 		E1E767C728A6D41B005D75AB /* ExportGeometryRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportGeometryRendererView.swift; sourceTree = "<group>"; };
-		E1E767C828A6D41B005D75AB /* TextRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextRendererView.swift; sourceTree = "<group>"; };
+		E1E767C828A6D41B005D75AB /* TextRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextRendererView.swift; path = ../Geometry/TextRendererView.swift; sourceTree = "<group>"; };
 		E1E767C928A6D41B005D75AB /* OctasphereRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OctasphereRendererView.swift; sourceTree = "<group>"; };
 		E1E767D528A6D7D9005D75AB /* BufferComputeRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferComputeRendererView.swift; sourceTree = "<group>"; };
 		E1E767D828A6D808005D75AB /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
@@ -313,6 +317,7 @@
 		66E678CD243EE2190070B294 /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
+				E1C967732B409E0E00271541 /* Text */,
 				E19D4C4029F9C23900DF993D /* Advanced */,
 				E152372029CBA8DA00D96D46 /* AR */,
 				E19D4C4129F9C23F00DF993D /* Basics */,
@@ -465,8 +470,6 @@
 				E1E767C728A6D41B005D75AB /* ExportGeometryRendererView.swift */,
 				E1E767ED28A6EC44005D75AB /* LoadObjRendererView.swift */,
 				E11325D128AEB0770049CACC /* SuperShapesRendererView.swift */,
-				E1E767C328A6D41B005D75AB /* ExtrudedTextRendererView.swift */,
-				E1E767C828A6D41B005D75AB /* TextRendererView.swift */,
 				E1E767C928A6D41B005D75AB /* OctasphereRendererView.swift */,
 			);
 			path = Geometry;
@@ -584,9 +587,7 @@
 			children = (
 				E11325CC28AEADAA0049CACC /* SuperShapesRenderer.swift */,
 				E17B2FD7247A4E8900BD2BF9 /* LoadObjRenderer.swift */,
-				E1F1B32324BAA91F00563923 /* TextRenderer.swift */,
 				E180FD7127E13A85002D6DF5 /* OctasphereRenderer.swift */,
-				E182809B24C52061000810D1 /* ExtrudedTextRenderer.swift */,
 				E1FABFFC2527E698008569F7 /* ExportGeometryRenderer.swift */,
 			);
 			path = Geometry;
@@ -633,6 +634,26 @@
 			path = PBR;
 			sourceTree = "<group>";
 		};
+		E1C967732B409E0E00271541 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				E1C967742B409E1E00271541 /* SDFTextRenderer.swift */,
+				E1F1B32324BAA91F00563923 /* TextRenderer.swift */,
+				E182809B24C52061000810D1 /* ExtrudedTextRenderer.swift */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
+		E1C967762B409E7300271541 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				E1E767C328A6D41B005D75AB /* ExtrudedTextRendererView.swift */,
+				E1E767C828A6D41B005D75AB /* TextRendererView.swift */,
+				E1C967772B409E7E00271541 /* SDFTextRendererView.swift */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
 		E1D714D228A6BADA00B517B6 /* Example */ = {
 			isa = PBXGroup;
 			children = (
@@ -661,6 +682,7 @@
 		E1E767C028A6D313005D75AB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E1C967762B409E7300271541 /* Text */,
 				E19D4C3E29F9C1D800DF993D /* Advanced */,
 				E152372129CBBA4600D96D46 /* AR */,
 				E19D4C3829F9C10400DF993D /* Basics */,
@@ -777,6 +799,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1C967782B409E7E00271541 /* SDFTextRendererView.swift in Sources */,
 				E1E767F328A6F7F7005D75AB /* RayMarchingRenderer.swift in Sources */,
 				E19D4C3629F9C02A00DF993D /* ARBloomRendererView.swift in Sources */,
 				E1E767FB28A6FB83005D75AB /* SatinSceneKitRendererView.swift in Sources */,
@@ -890,6 +913,7 @@
 				E19A7EC42A60984E00D28E89 /* BufferGeometryRendererView.swift in Sources */,
 				E17A55B328A6C394008F1DDB /* ExtrudedTextRenderer.swift in Sources */,
 				E135B12D29E61D5000073A85 /* ARMatteRenderer.swift in Sources */,
+				E1C967752B409E1E00271541 /* SDFTextRenderer.swift in Sources */,
 				E1E767CF28A6D41B005D75AB /* ExportGeometryRendererView.swift in Sources */,
 				E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */,
 				E1F22D1D29BD71FA0011CEAB /* Timing.swift in Sources */,

@@ -62,7 +62,7 @@ class TextRenderer: BaseRenderer {
          SFProRounded-Heavy
          */
 
-        let geo = TextGeometry(text: input, fontName: "SFProRounded-Heavy", fontSize: 8)
+        let geo = TesselatedTextGeometry(text: input, fontName: "SFProRounded-Heavy", fontSize: 8)
 
         let mat = BasicColorMaterial([1.0, 1.0, 1.0, 0.125], .additive)
         mat.depthWriteEnabled = false

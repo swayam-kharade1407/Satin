@@ -121,6 +121,10 @@ public class RenderEncoderState {
     }
 
     private var vertexBuffers = [VertexBufferIndex: MTLBuffer]()
+    private var vertexTextures = [VertexTextureIndex: MTLTexture?]()
+
+    private var fragmentPBRTextures = [PBRTextureType: MTLTexture?]()
+    private var fragmentTextures = [FragmentTextureIndex: MTLTexture?]()
 
     public func setVertexBuffer(_ buffer: MTLBuffer, offset: Int, index: VertexBufferIndex) {
         if let existingBuffer = vertexBuffers[index], existingBuffer === buffer {
@@ -132,8 +136,6 @@ public class RenderEncoderState {
         }
     }
 
-    private var fragmentPBRTextures = [PBRTextureType: MTLTexture?]()
-
     public func setFragmentPBRTexture(_ texture: MTLTexture?, type: PBRTextureType) {
         if let existingTexture = fragmentPBRTextures[type], existingTexture === texture {
             return
@@ -141,6 +143,26 @@ public class RenderEncoderState {
         else {
             renderEncoder.setFragmentTexture(texture, index: type.index)
             fragmentPBRTextures[type] = texture
+        }
+    }
+
+    public func setVertexTexture(_ texture: MTLTexture?, index: VertexTextureIndex) {
+        if let existingTexture = vertexTextures[index], existingTexture === texture {
+            return
+        }
+        else {
+            renderEncoder.setVertexTexture(texture, index: index.rawValue)
+            vertexTextures[index] = texture
+        }
+    }
+
+    public func setFragmentTexture(_ texture: MTLTexture?, index: FragmentTextureIndex) {
+        if let existingTexture = fragmentTextures[index], existingTexture === texture {
+            return
+        }
+        else {
+            renderEncoder.setFragmentTexture(texture, index: index.rawValue)
+            fragmentTextures[index] = texture
         }
     }
 

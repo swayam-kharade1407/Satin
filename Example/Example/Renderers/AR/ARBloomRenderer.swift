@@ -40,11 +40,10 @@ class ARBloomRenderer: BaseRenderer {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
-            renderEncoder.setFragmentTexture(backgroundTexture, index: FragmentTextureIndex.Custom0.rawValue)
-            renderEncoder.setFragmentTexture(contentTexture, index: FragmentTextureIndex.Custom1.rawValue)
-            renderEncoder.setFragmentTexture(bloomTexture, index: FragmentTextureIndex.Custom2.rawValue)
-            renderEncoder.setFragmentTexture(grainTexture, index: FragmentTextureIndex.Custom3.rawValue)
+            renderEncoderState.setFragmentTexture(backgroundTexture, index: .Custom0)
+            renderEncoderState.setFragmentTexture(contentTexture, index: .Custom1)
+            renderEncoderState.setFragmentTexture(bloomTexture, index: .Custom2)
+            renderEncoderState.setFragmentTexture(grainTexture, index: .Custom3)
         }
     }
 

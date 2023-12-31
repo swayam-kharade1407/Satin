@@ -41,12 +41,12 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
+
             if let upscaledSceneDepthTexture = upscaledSceneDepthTexture {
-                renderEncoder.setFragmentTexture(upscaledSceneDepthTexture, index: FragmentTextureIndex.Custom0.rawValue)
+                renderEncoderState.setFragmentTexture(upscaledSceneDepthTexture, index: .Custom0)
             }
             else if let sceneDepthTexture = sceneDepthTexture {
-                renderEncoder.setFragmentTexture(CVMetalTextureGetTexture(sceneDepthTexture), index: FragmentTextureIndex.Custom0.rawValue)
+                renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(sceneDepthTexture), index: .Custom0)
             }
         }
     }

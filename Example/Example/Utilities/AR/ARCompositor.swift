@@ -22,11 +22,10 @@ class ARCompositor: ARPostProcessor {
 
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            let renderEncoder = renderEncoderState.renderEncoder
-            renderEncoder.setFragmentTexture(depthTexture, index: FragmentTextureIndex.Custom2.rawValue)
-            renderEncoder.setFragmentTexture(backgroundTexture, index: FragmentTextureIndex.Custom3.rawValue)
-            renderEncoder.setFragmentTexture(alphaTexture, index: FragmentTextureIndex.Custom4.rawValue)
-            renderEncoder.setFragmentTexture(dilatedDepthTexture, index: FragmentTextureIndex.Custom5.rawValue)
+            renderEncoderState.setFragmentTexture(depthTexture, index: .Custom2)
+            renderEncoderState.setFragmentTexture(backgroundTexture, index: .Custom3)
+            renderEncoderState.setFragmentTexture(alphaTexture, index: .Custom4)
+            renderEncoderState.setFragmentTexture(dilatedDepthTexture, index: .Custom5)
         }
     }
 

@@ -13,7 +13,7 @@ struct TextRendererView: View {
     var body: some View {
         ForgeView(renderer: TextRenderer())
             .ignoresSafeArea()
-            .navigationTitle("Text")
+            .navigationTitle("Text Geometry")
     }
 }
 

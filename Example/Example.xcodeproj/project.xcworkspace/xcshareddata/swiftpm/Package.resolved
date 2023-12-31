@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "satinpro",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Hi-Rez/SatinPro",
+      "state" : {
+        "branch" : "main",
+        "revision" : "30ef7cbe0b3f53ed9df3a37be2242027ce4c2781"
+      }
+    },
+    {
       "identity" : "spectra",
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:Hi-Rez/Spectra.git",
