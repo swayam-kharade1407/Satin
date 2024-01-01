@@ -253,7 +253,7 @@ open class Mesh: Object, Renderable {
 
         var geometryIntersections = [IntersectionResult]()
         geometry.intersect(
-            ray: worldMatrix.inverse.act(ray),
+            ray: worldMatrixInverse.act(ray),
             intersections: &geometryIntersections
         )
 
@@ -296,7 +296,5 @@ open class Mesh: Object, Renderable {
                 )
             }
         }
-
-        intersections.sort { $0.distance < $1.distance }
     }
 }

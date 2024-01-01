@@ -40,7 +40,7 @@ open class Object: Codable, ObservableObject {
         }
         set {
             if let parent = parent {
-                position = simd_make_float3(parent.worldMatrix.inverse * simd_make_float4(newValue, 1.0))
+                position = simd_make_float3(parent.worldMatrixInverse * simd_make_float4(newValue, 1.0))
             } else {
                 position = newValue
             }
@@ -140,6 +140,15 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    var _localMatrixInverse = ValueCache<matrix_float4x4>()
+    public var localMatrixInverse: matrix_float4x4 {
+        get {
+            _localMatrixInverse.get {
+                localMatrix.inverse
+            }
+        }
+    }
+
     var updateLocalMatrix = true {
         didSet {
             if updateLocalMatrix {
@@ -147,7 +156,9 @@ open class Object: Codable, ObservableObject {
 
                 _normalMatrix.clear()
                 _worldMatrix.clear()
+                _worldMatrixInverse.clear()
                 _localMatrix.clear()
+                _localMatrixInverse.clear()
 
                 transformPublisher.send(self)
 
@@ -175,9 +186,18 @@ open class Object: Codable, ObservableObject {
         }
         set {
             if let parent = parent {
-                localMatrix = parent.worldMatrix.inverse * newValue
+                localMatrix = parent.worldMatrixInverse * newValue
             } else {
                 localMatrix = newValue
+            }
+        }
+    }
+
+    var _worldMatrixInverse = ValueCache<matrix_float4x4>()
+    public var worldMatrixInverse: matrix_float4x4 {
+        get {
+            _worldMatrixInverse.get {
+                worldMatrix.inverse
             }
         }
     }
@@ -189,6 +209,7 @@ open class Object: Codable, ObservableObject {
 
                 _normalMatrix.clear()
                 _worldMatrix.clear()
+                _worldMatrixInverse.clear()
 
                 transformPublisher.send(self)
 
@@ -201,12 +222,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+
+
     // MARK: - Normal Bounds
 
     var _normalMatrix = ValueCache<matrix_float3x3>()
     public var normalMatrix: matrix_float3x3 {
         _normalMatrix.get {
-            let n = worldMatrix.inverse.transpose
+            let n = worldMatrixInverse.transpose
             return simd_matrix(simd_make_float3(n.columns.0), simd_make_float3(n.columns.1), simd_make_float3(n.columns.2))
         }
     }
@@ -645,7 +668,7 @@ open class Object: Codable, ObservableObject {
     public func convert(position: simd_float3, to referenceObject: Object?) -> simd_float3 {
         let worldSpacePosition = simd_make_float3((worldMatrix * translationMatrix3f(position)).columns.3)
         if let referenceObject = referenceObject {
-            return simd_make_float3((referenceObject.worldMatrix.inverse * translationMatrix3f(worldSpacePosition)).columns.3)
+            return simd_make_float3((referenceObject.worldMatrixInverse * translationMatrix3f(worldSpacePosition)).columns.3)
         } else {
             return worldSpacePosition
         }
@@ -661,7 +684,7 @@ open class Object: Codable, ObservableObject {
         if let referenceObject = referenceObject {
             worldSpacePosition = simd_make_float3((referenceObject.worldMatrix * translationMatrix3f(position)).columns.3)
         }
-        return simd_make_float3((worldMatrix.inverse * translationMatrix3f(worldSpacePosition)).columns.3)
+        return simd_make_float3((worldMatrixInverse * translationMatrix3f(worldSpacePosition)).columns.3)
     }
 
     /// Converts a direction vector from the local space of the Object on which you called this method to the local space of a reference Object.

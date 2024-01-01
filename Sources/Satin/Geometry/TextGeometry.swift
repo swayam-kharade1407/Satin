@@ -9,13 +9,13 @@ import Foundation
 import simd
 
 public final class TextGeometry: Geometry {
-    var font: FontAtlas {
+    public var font: FontAtlas {
         didSet {
             _updateData = true
         }
     }
 
-    var text: String {
+    public var text: String {
         didSet {
             if text != oldValue {
                 _updateData = true

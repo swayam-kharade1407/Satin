@@ -71,7 +71,7 @@ open class OrthographicCamera: Camera {
     override public var viewMatrix: matrix_float4x4 {
         get {
             if updateViewMatrix {
-                _viewMatrix = worldMatrix.inverse
+                _viewMatrix = worldMatrixInverse
                 updateViewMatrix = false
             }
             return _viewMatrix
