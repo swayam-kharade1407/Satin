@@ -1,0 +1,4 @@
+float Plane(float3 pos, float3 normal, float offset)
+{
+    return dot(pos, normal) + offset;
+}
