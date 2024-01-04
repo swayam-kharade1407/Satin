@@ -208,7 +208,7 @@ class Model: Object {
         Task {
             guard let device = MTLCreateSystemDefaultDevice() else { return }
             let baseURL = modelsURL.appendingPathComponent("Suzanne")
-            let maps: [PBRTextureIndex: URL] = [
+            let maps: [PBRTextureType: URL] = [
                 .baseColor: baseURL.appendingPathComponent("albedo.png"),
                 .ambientOcclusion: baseURL.appendingPathComponent("ao.png"),
                 .metallic: baseURL.appendingPathComponent("metallic.png"),

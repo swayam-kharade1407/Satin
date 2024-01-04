@@ -21,16 +21,23 @@ class SDFTextRenderer: BaseRenderer {
                 MTKTextureLoader.Option.SRGB: false,
                 MTKTextureLoader.Option.generateMipmaps: false
             ]
-            return try loader.newTexture(URL: sharedAssetsURL.appendingPathComponent("Fonts/SFProRounded/SFProRounded128.png"), options: options)
+            return try loader.newTexture(URL: sharedAssetsURL.appendingPathComponent("Fonts/SFProRounded/SFProRoundedBold64.png"), options: options)
         } catch {
             print(error.localizedDescription)
             return nil
         }
     }()
 
-    lazy var scene = Object("Scene")
+    lazy var mesh = {
+        let mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicColorMaterial([1, 0, 0, 0.5], .alpha))
+        mesh.scale.x = 8.0
+        mesh.material?.depthWriteEnabled = false
+        return mesh
+    }()
+
+    lazy var scene = Object("Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
+    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 60)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)
 
@@ -41,14 +48,14 @@ class SDFTextRenderer: BaseRenderer {
     }
 
     lazy var textMesh: TextMesh = {
-        let fontAtlas = try! FontAtlas.load(url: sharedAssetsURL.appendingPathComponent("Fonts/SFProRounded/SFProRounded128.json"))
+        let fontAtlas = try! FontAtlas.load(url: sharedAssetsURL.appendingPathComponent("Fonts/SFProRounded/SFProRoundedBold64.json"))
         return TextMesh(geometry: TextGeometry(text: "Hello World", font: fontAtlas), material: TextMaterial(color: .one, fontTexture: fontTexture))
     }()
 
     override func setup() {
-        textMesh.scale = .init(repeating: 0.15/128.0)
+        textMesh.scale = .init(repeating: 1.0/64.0)
+        textMesh.position.y = 9.5/64.0
         scene.add(textMesh)
-
         renderer.compile(scene: scene, camera: camera)
     }
 
@@ -58,8 +65,8 @@ class SDFTextRenderer: BaseRenderer {
 
     var frame: Float = 0
     override func update() {
-        textMesh.text = "hello world \(frame)"
-        frame += 1
+        textMesh.text = "\(frame)"
+        frame -= 1
         cameraController.update()
         camera.update()
         scene.update()

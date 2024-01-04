@@ -5,6 +5,7 @@
 //  Created by Reza Ali on 12/30/23.
 //
 
+import CoreText
 import Foundation
 import simd
 
@@ -32,7 +33,7 @@ public final class TextGeometry: Geometry {
     private let texcoordBuffer = Float2BufferAttribute(defaultValue: .zero, data: [])
 
     private var indices: [UInt32] = []
-    private let indexElementBuffer =  ElementBuffer(type: .uint32, data: nil, count: 0, source: nil)
+    private let indexElementBuffer = ElementBuffer(type: .uint32, data: nil, count: 0, source: nil)
 
     public init(text: String, font: FontAtlas) {
         self.text = text
@@ -47,20 +48,22 @@ public final class TextGeometry: Geometry {
     }
 
     public func updateData() {
-        var totalAdvance: Float = 0
+        let fontSize = Float(font.size)
+        let fontWidth = Float(font.width)
+        let fontHeight = Float(font.height)
 
+        var totalAdvance: Float = 0
+        var maxHeight: Float = fontSize
         for char in text {
             if let character = font.characters[String(char)] {
                 totalAdvance += character.advance
+                maxHeight = max(maxHeight, character.height)
             }
         }
 
         // Center the text at the origin
-        var x = -totalAdvance / 2.0
-        let y: Float = -Float(font.size) / 2.0
-
-        let fontWidth = Float(font.width)
-        let fontHeight = Float(font.height)
+        var x = -totalAdvance * 0.5
+        let y = -fontSize * 0.5
 
         indices.removeAll(keepingCapacity: true)
         texcoords.removeAll(keepingCapacity: true)
@@ -81,45 +84,28 @@ public final class TextGeometry: Geometry {
                 // p2 --- p3
 
                 let leftX = x - c.originX
-                let rightX = leftX + c.width
+                let rightX = x - c.originX + c.width
 
-                let botY = y
-                let topY = botY + c.height
+                let botY = y + c.originY
+                let topY = y + c.originY - c.height
 
                 let leftU = c.x / fontWidth
                 let rightU = leftU + (c.width / fontWidth)
 
-                let topV = c.y / fontHeight
-                let botV = topV + (c.height / fontHeight)
+                let botV = c.y / fontHeight
+                let topV = botV + (c.height / fontHeight)
 
-                let x0 = leftX
-                let y0 = topY
-                let u0 = leftU
-                let v0 = topV
+                let p0 = simd_make_float3(leftX, topY, 0.0)
+                let t0 = simd_make_float2(leftU, topV)
 
-                let x1 = rightX
-                let y1 = topY
-                let u1 = rightU
-                let v1 = topV
+                let p1 = simd_make_float3(rightX, topY, 0.0)
+                let t1 = simd_make_float2(rightU, topV)
 
-                let x2 = leftX
-                let y2 = botY
-                let u2 = leftU
-                let v2 = botV
+                let p2 = simd_make_float3(leftX, botY, 0.0)
+                let t2 = simd_make_float2(leftU, botV)
 
-                let x3 = rightX
-                let y3 = botY
-                let u3 = rightU
-                let v3 = botV
-
-                let p0 = simd_make_float3(x0, y0, 0.0);
-                let t0 = simd_make_float2(u0, v0);
-                let p1 = simd_make_float3(x1, y1, 0.0);
-                let t1 = simd_make_float2(u1, v1);
-                let p2 = simd_make_float3(x2, y2, 0.0);
-                let t2 = simd_make_float2(u2, v2);
-                let p3 = simd_make_float3(x3, y3, 0.0);
-                let t3 = simd_make_float2(u3, v3);
+                let p3 = simd_make_float3(rightX, botY, 0.0)
+                let t3 = simd_make_float2(rightU, botV)
 
                 positions.append(contentsOf: [p0, p1, p2, p3])
                 texcoords.append(contentsOf: [t0, t1, t2, t3])
@@ -129,7 +115,7 @@ public final class TextGeometry: Geometry {
                 let i2 = index + 2
                 let i3 = index + 3
 
-                indices.append(contentsOf: [i0, i2, i3, i0, i3, i1])
+                indices.append(contentsOf: [i0, i3, i2, i0, i1, i3])
 
                 index += 4
 
