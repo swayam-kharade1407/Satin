@@ -235,7 +235,7 @@ open class Mesh: Object, Renderable {
     }
 
     override open func computeLocalBounds() -> Bounds {
-        return transformBounds(bounds, localMatrix)
+        transformBounds(bounds, localMatrix)
     }
 
     override open func computeWorldBounds() -> Bounds {
