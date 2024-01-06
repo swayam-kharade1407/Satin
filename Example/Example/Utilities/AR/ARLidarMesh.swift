@@ -84,7 +84,7 @@ class ARLidarMesh: Object, Renderable {
         self.meshAnchor = meshAnchor
         self.material = material
         material.vertexDescriptor = ARLidarMeshVertexDescriptor()
-        super.init("Lidar Mesh \(meshAnchor.identifier)")
+        super.init(label: "Lidar Mesh \(meshAnchor.identifier)")
     }
 
     override func setup() {

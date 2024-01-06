@@ -45,7 +45,7 @@ class SatinSceneKitRenderer: BaseRenderer {
     }()
 
     lazy var scene: Object = {
-        let scene = Object("Scene", [mesh])
+        let scene = Object(label: "Scene", [mesh])
         mesh.position = [0, 12, 0]
         return scene
     }()

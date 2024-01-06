@@ -14,7 +14,7 @@ import Satin
 
 class OctasphereRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, resolution: 3), material: BasicDiffuseMaterial(0.75))
-    lazy var scene = Object("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
     lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 
     var camera = PerspectiveCamera(position: simd_make_float3(0.0, 0.0, 5.0), near: 0.01, far: 100.0, fov: 30)

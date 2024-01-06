@@ -19,8 +19,8 @@ class InstancedMeshRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     var camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
-    var scene = Object("Scene")
-    var container = Object("Container")
+    var scene = Object(label: "Scene")
+    var container = Object(label: "Container")
     var instancedMesh: InstancedMesh?
     lazy var renderer = Satin.Renderer(context: context)
 

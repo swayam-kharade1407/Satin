@@ -22,7 +22,7 @@ class ARRenderer: BaseRenderer, ARSessionDelegate {
     let boxMaterial = UvColorMaterial()
     var meshAnchorMap: [UUID: Mesh] = [:]
     
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)

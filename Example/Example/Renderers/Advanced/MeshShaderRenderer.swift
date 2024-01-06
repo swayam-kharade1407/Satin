@@ -17,7 +17,7 @@ class MeshShaderRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
     fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
-    lazy var scene = Object("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(0.0, 0.0, 8.0), near: 0.01, far: 100.0, fov: 45)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
@@ -251,7 +251,7 @@ private class CustomMesh: Object, Renderable {
     init(geometry: Geometry, material: Material?) {
         self.geometry = geometry
         self.material = material
-        super.init("Custom Mesh")
+        super.init(label: "Custom Mesh")
     }
 
     override func setup() {

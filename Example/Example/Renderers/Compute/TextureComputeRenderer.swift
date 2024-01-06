@@ -31,7 +31,7 @@ class TextureComputeRenderer: BaseRenderer {
 
     var mesh = Mesh(geometry: BoxGeometry(), material: nil)
 
-    lazy var scene = Object("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)

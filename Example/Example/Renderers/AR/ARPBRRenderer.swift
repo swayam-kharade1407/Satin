@@ -37,9 +37,9 @@ fileprivate class ARScene: Object, Environment {
 
     unowned var session: ARSession
 
-    public init(_ label: String, _ children: [Object] = [], session: ARSession) {
+    public init(label: String, _ children: [Object] = [], session: ARSession) {
         self.session = session
-        super.init(label, children)
+        super.init(label: label, children)
         Task(priority: .background) {
             if let device = MTLCreateSystemDefaultDevice() {
                 self.generateBRDFLUT(device: device)
@@ -127,7 +127,7 @@ fileprivate class ARObject: Object {
 
     init(label: String, children: [Object] = [], session: ARSession) {
         self.session = session
-        super.init(label, children)
+        super.init(label: label, children)
         self.visible = false
     }
 
@@ -155,7 +155,7 @@ class Model: Object {
     var material = PhysicalMaterial()
 
     override init() {
-        super.init("Suzanne")
+        super.init(label: "Suzanne")
         Task(priority: .background) {
             self.setupModel()
             await self.setupTextures()
@@ -310,7 +310,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         color: [0.0, 0.0, 0.0, 0.9]
     )
 
-    fileprivate lazy var scene = ARScene("Scene", [modelContainer], session: session)
+    fileprivate lazy var scene = ARScene(label: "Scene", [modelContainer], session: session)
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)

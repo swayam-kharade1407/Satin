@@ -79,7 +79,7 @@ class ARBloomRenderer: BaseRenderer {
     }()
 
     var objectAnchorMap: [UUID: Object] = [:]
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
@@ -89,7 +89,7 @@ class ARBloomRenderer: BaseRenderer {
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
     lazy var bloomRenderer = Satin.Renderer(context: context)
-    var bloomedScene = Object("Bloomed Objects")
+    var bloomedScene = Object(label: "Bloomed Objects")
 
     var contentTexture: MTLTexture?
     var bloomTexture: MTLTexture?
@@ -281,7 +281,7 @@ class ARBloomRenderer: BaseRenderer {
             mesh.cullMode = .none
             mesh.scale = .init(repeating: .random(in: 0.25 ... 1.0))
 
-            let object = Object(anchor.identifier.uuidString, [mesh])
+            let object = Object(label: anchor.identifier.uuidString, [mesh])
 
             scene.attach(object)
             object.worldMatrix = anchor.transform

@@ -53,7 +53,7 @@ class ARSatinSceneKitRenderer: BaseRenderer, ARSessionDelegate {
     let boxGeometry = BoxGeometry(size: 0.1)
     let boxMaterial = BasicDiffuseMaterial(0.7)
 
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.001, far: 100.0)
 

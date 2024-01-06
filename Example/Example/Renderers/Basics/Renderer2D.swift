@@ -18,7 +18,7 @@ class Renderer2D: BaseRenderer {
     var camera = OrthographicCamera()
     lazy var cameraController = OrthographicCameraController(camera: camera, view: mtkView)
 
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
     var renderer: Satin.Renderer!
 
     override func setupMtkView(_ metalKitView: MTKView) {

@@ -110,14 +110,14 @@ class ContactShadowRenderer: BaseRenderer {
             }
         }
 
-        let spheres = Object("Spheres", [sphere0, sphere1, sphere2, sphere3, sphere4, sphere5])
+        let spheres = Object(label: "Spheres", [sphere0, sphere1, sphere2, sphere3, sphere4, sphere5])
         spheres.position.y += geometrySize.y
         return spheres
     }()
 
-    lazy var spheresContainer = Object("Spheres Container", [spheres, floorMesh])
+    lazy var spheresContainer = Object(label: "Spheres Container", [spheres, floorMesh])
 
-    lazy var scene = Object("Scene", [spheresContainer])
+    lazy var scene = Object(label: "Scene", [spheresContainer])
     lazy var floorMesh = Mesh(geometry: PlaneGeometry(size: 1.0, orientation: .zx), material: BasicTextureMaterial())
 
     lazy var camera: PerspectiveCamera = {

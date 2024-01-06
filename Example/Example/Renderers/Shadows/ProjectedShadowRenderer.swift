@@ -15,7 +15,7 @@ import Satin
 class ProjectedShadowRenderer: BaseRenderer {
     // MARK: - 3D Scene
 
-    lazy var scene = Object("Scene", [shadowPlaneMesh, mesh])
+    lazy var scene = Object(label: "Scene", [shadowPlaneMesh, mesh])
     lazy var mesh: Mesh = {
         let mesh = Mesh(geometry: TorusGeometry(minorRadius: 0.1, majorRadius: 0.5), material: NormalColorMaterial(true))
         mesh.label = "Box"

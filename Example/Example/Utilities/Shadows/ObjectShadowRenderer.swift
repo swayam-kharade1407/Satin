@@ -146,7 +146,7 @@ class ObjectShadowRenderer {
     public func update(commandBuffer: MTLCommandBuffer) {
         update()
 
-        let finalScene = Object("Shadow Scene")
+        let finalScene = Object(label: "Shadow Scene")
         let renderables = getRenderables(object, true, false)
         materialCache.removeAll(keepingCapacity: true)
 

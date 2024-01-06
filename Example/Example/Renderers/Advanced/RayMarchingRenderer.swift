@@ -44,7 +44,7 @@ class RayMarchingRenderer: BaseRenderer {
 
     lazy var rayMarchedMaterial = RayMarchedMaterial(pipelinesURL: pipelinesURL, camera: camera)
     lazy var rayMarchedMesh = Mesh(geometry: QuadGeometry(), material: rayMarchedMaterial)
-    lazy var scene = Object("Scene", [mesh, rayMarchedMesh])
+    lazy var scene = Object(label: "Scene", [mesh, rayMarchedMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)

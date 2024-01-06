@@ -34,7 +34,7 @@ class FlockingRenderer: BaseRenderer {
 
 //    lazy var params = ParameterGroup("Controls", [pauseParam, resetParam, particleCountParam])
 
-    lazy var scene = Object("Scene", [sprite])
+    lazy var scene = Object(label: "Scene", [sprite])
     var camera = OrthographicCamera()
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var renderer = Satin.Renderer(context: context)

@@ -51,7 +51,7 @@ class BufferGeometryMesh: Object, Renderable {
     public init(label: String = "Buffer Geometry Mesh", geometry: Geometry, material: Material) {
         self.geometry = geometry
         self.material = material
-        super.init(label)
+        super.init(label: label)
     }
 
     required init(from decoder: Decoder) throws {
@@ -179,7 +179,7 @@ class BufferGeometryRenderer: BaseRenderer {
         return mesh
     }()
 
-    lazy var scene = Object("Scene", [mesh, intersectionMesh])
+    lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

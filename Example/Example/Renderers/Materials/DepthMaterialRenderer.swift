@@ -91,7 +91,7 @@ class DepthMaterialRenderer: BaseRenderer {
     }()
 
     lazy var scene: Object = {
-        let obj = Object("Scene", [
+        let obj = Object(label: "Scene", [
             container,
             box,
             sphere,

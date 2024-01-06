@@ -16,7 +16,7 @@ class PBRSubmeshRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
-    var scene = Scene("Scene", [Mesh(geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())])
+    var scene = Scene(label: "Scene", [Mesh(geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())])
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera: PerspectiveCamera = {

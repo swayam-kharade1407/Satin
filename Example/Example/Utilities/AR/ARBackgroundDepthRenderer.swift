@@ -54,13 +54,13 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
     private var sessionPublisher: ARSessionPublisher
     private var sessionSubscriptions = Set<AnyCancellable>()
 
-    private lazy var background = Object("AR Background", [depthMesh, mesh])
+    private lazy var background = Object(label: "AR Background", [depthMesh, mesh])
 
     private var depthRenderer: Satin.Renderer
     private var depthAnchorPlaneMeshMap: [UUID: ARPlaneMesh] = [:]
     private var depthAnchorLidarMeshMap: [UUID: ARLidarMesh] = [:]
 
-    private var depthScene = Object("Depth Scene")
+    private var depthScene = Object(label: "Depth Scene")
     private var depthMesh: Mesh
     private var depthCamera: ARPerspectiveCamera
 

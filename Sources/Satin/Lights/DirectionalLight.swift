@@ -56,7 +56,7 @@ public final class DirectionalLight: Object, Light {
     public init(label: String = "Directional Light", color: simd_float3, intensity: Float = 1.0) {
         self.color = color
         self.intensity = intensity
-        super.init(label)
+        super.init(label: label)
     }
 
     public required init(from decoder: Decoder) throws {

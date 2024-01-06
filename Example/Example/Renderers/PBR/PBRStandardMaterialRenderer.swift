@@ -36,7 +36,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
     }
 
     lazy var skybox: Mesh = .init(label: "Skybox", geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())
-    lazy var scene = Scene("Scene", [skybox])
+    lazy var scene = Scene(label: "Scene", [skybox])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.01, far: 1000.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

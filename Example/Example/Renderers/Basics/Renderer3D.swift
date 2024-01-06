@@ -24,7 +24,7 @@ class Renderer3D: BaseRenderer {
         return mesh
     }()
 
-    lazy var scene = Object("Scene", [mesh, intersectionMesh])
+    lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

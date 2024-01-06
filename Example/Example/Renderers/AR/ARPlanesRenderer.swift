@@ -59,7 +59,7 @@ class ARPlaneContainer: Object {
     var planeMesh: Mesh
     var meshWireframe: Mesh
 
-    init(name: String, anchor: ARPlaneAnchor, material: Satin.Material) {
+    init(label: String, anchor: ARPlaneAnchor, material: Satin.Material) {
         self.anchor = anchor
 
         let mat = material.clone()
@@ -70,7 +70,7 @@ class ARPlaneContainer: Object {
         meshWireframe.triangleFillMode = .lines
         planeMesh.add(meshWireframe)
 
-        super.init(name, [planeMesh])
+        super.init(label: label, [planeMesh])
         updateAnchor()
     }
 
@@ -107,7 +107,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
 
     // MARK: - 3D
 
-    lazy var scene = Object("Scene")
+    lazy var scene = Object(label: "Scene")
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
     lazy var renderer = {
@@ -197,7 +197,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
     func session(_: ARSession, didAdd anchors: [ARAnchor]) {
         for anchor in anchors {
             if planesMap[anchor] == nil, let planeAnchor = anchor as? ARPlaneAnchor {
-                let planeContainer = ARPlaneContainer(name: "\(planeAnchor.identifier)", anchor: planeAnchor, material: planeMaterial)
+                let planeContainer = ARPlaneContainer(label: "\(planeAnchor.identifier)", anchor: planeAnchor, material: planeMaterial)
                 planesMap[anchor] = planeContainer
                 scene.add(planeContainer)
             }

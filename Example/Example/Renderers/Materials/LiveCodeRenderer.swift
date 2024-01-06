@@ -35,7 +35,7 @@ class LiveCodeRenderer: BaseRenderer {
     var camera = OrthographicCamera()
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: CustomMaterial(pipelinesURL: pipelinesURL))
-    lazy var scene = Object("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var renderer = Satin.Renderer(context: context)

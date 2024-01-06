@@ -15,7 +15,7 @@ class MatcapRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
 
     lazy var matcapTexture: MTLTexture? = {
         // from https://github.com/nidorx/matcaps

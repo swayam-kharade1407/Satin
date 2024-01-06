@@ -40,7 +40,7 @@ class MeshShadowRenderer {
         shadowMesh = Mesh(geometry: mesh.geometry, material: mat)
         shadowMesh.cullMode = .front
 
-        scene = Object("Scene")
+        scene = Object(label: "Scene")
         scene.add(shadowMesh, false)
 
         renderer = Satin.Renderer(context: Context(device, 1, .bgra8Unorm, .invalid))

@@ -35,7 +35,7 @@ class AudioInputRenderer: BaseRenderer {
 
     var camera = OrthographicCamera()
 
-    lazy var scene = Object("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 //    lazy var cameraController = OrthographicCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)

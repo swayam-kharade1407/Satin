@@ -41,7 +41,7 @@ class DirectionalShadowRenderer: BaseRenderer {
     var light0 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
     var light1 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
 
-    lazy var scene = Scene("Scene", [light0, light1, floorMesh, baseMesh, sphereMesh, torusMesh])
+    lazy var scene = Scene(label: "Scene", [light0, light1, floorMesh, baseMesh, sphereMesh, torusMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 5.0), near: 0.01, far: 500.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

@@ -83,7 +83,7 @@ public final class SpotLight: Object, Light {
         self.radius = radius
         self.angleInner = angleInner
         self.angleOuter = angleOuter
-        super.init(label)
+        super.init(label: label)
     }
 
     public required init(from decoder: Decoder) throws {

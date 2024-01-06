@@ -40,7 +40,7 @@ class PBRRenderer: BaseRenderer {
 
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
-    lazy var scene = Scene("Scene", [mesh, skybox])
+    lazy var scene = Scene(label: "Scene", [mesh, skybox])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 40.0], near: 0.001, far: 1000.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

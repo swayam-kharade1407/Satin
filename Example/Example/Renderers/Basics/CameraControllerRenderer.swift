@@ -49,7 +49,7 @@ class CameraControllerRenderer: BaseRenderer {
     }()
 
     lazy var targetMesh = Mesh(geometry: BoxGeometry(size: 1.0), material: NormalColorMaterial())
-    lazy var scene = Object("Scene", [grid, axisMesh])
+    lazy var scene = Object(label: "Scene", [grid, axisMesh])
     lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 
     lazy var camera: PerspectiveCamera = {

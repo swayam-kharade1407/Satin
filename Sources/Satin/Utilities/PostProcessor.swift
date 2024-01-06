@@ -29,7 +29,7 @@ open class PostProcessor {
         renderer.label = label + " Processor"
 
         mesh = Mesh(geometry: QuadGeometry(), material: material)
-        scene = Object("Scene", [mesh])
+        scene = Object(label: "Scene", [mesh])
         renderer.compile(scene: scene, camera: camera)
     }
 

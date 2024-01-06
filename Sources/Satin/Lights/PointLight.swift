@@ -63,7 +63,7 @@ public final class PointLight: Object, Light {
         self.color = color
         self.intensity = intensity
         self.radius = radius
-        super.init(label)
+        super.init(label: label)
     }
 
     public required init(from decoder: Decoder) throws {

@@ -17,7 +17,7 @@ public func loadAsset(url: URL, textureLoader: MTKTextureLoader? = nil) -> Objec
     if textureLoader != nil { asset.loadTextures() }
 
     let fileName = url.lastPathComponent.replacingOccurrences(of: url.pathExtension, with: "")
-    let container = Object(fileName)
+    let container = Object(label: fileName)
 
     for i in 0 ..< asset.count {
         let mdlObject = asset.object(at: i)
@@ -26,7 +26,7 @@ public func loadAsset(url: URL, textureLoader: MTKTextureLoader? = nil) -> Objec
             stnObject = loadMesh(mdlMesh: mdlMesh, textureLoader: textureLoader)
         }
         else {
-            stnObject = Object(mdlObject.name)
+            stnObject = Object(label: mdlObject.name)
         }
         container.add(stnObject)
 
@@ -221,7 +221,7 @@ func loadAssetChildren(parent: Object, children: [MDLObject], textureLoader: MTK
             stnObject = loadMesh(mdlMesh: mdlMesh, textureLoader: textureLoader)
         }
         else {
-            stnObject = Object(child.name)
+            stnObject = Object(label: child.name)
         }
 
         if let transform = child.transform {

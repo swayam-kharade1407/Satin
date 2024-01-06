@@ -16,7 +16,7 @@ import Satin
 class LoadObjRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
     var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)

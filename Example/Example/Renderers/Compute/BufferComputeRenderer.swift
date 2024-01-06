@@ -40,7 +40,7 @@ class BufferComputeRenderer: BaseRenderer {
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 100.0], near: 0.001, far: 1000.0)
 
-    lazy var scene: Object = .init("Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, .invalid, .invalid)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)

@@ -25,8 +25,8 @@ fileprivate class ARObject: Object {
         }
     }
 
-    override init(_ name: String, _ children: [Object] = []) {
-        super.init(name, children)
+    override init(label: String, _ children: [Object] = []) {
+        super.init(label: label, children)
         self.visible = false
     }
 
@@ -38,10 +38,10 @@ fileprivate class ARObject: Object {
 fileprivate class Invader: Object {
     let voxelScale: Float = 0.025
 
-    let voxels = Object("Voxels")
+    let voxels = Object(label: "Voxels")
 
     override public init() {
-        super.init("Invader", [voxels])
+        super.init(label: "Invader", [voxels])
         let geometry = BoxGeometry(size: voxelScale)
 
         let BDY: simd_float4 = [0.0, 1.0, 0.0, 1.0]
@@ -99,7 +99,7 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
         material: BasicTextureMaterial(texture: nil, flipped: false)
     )
 
-    fileprivate lazy var invaderContainer = ARObject("Invader Container", [invader, shadowPlaneMesh])
+    fileprivate lazy var invaderContainer = ARObject(label: "Invader Container", [invader, shadowPlaneMesh])
     fileprivate var invader = Invader()
 
     lazy var shadowRenderer = ObjectShadowRenderer(
@@ -113,7 +113,7 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
         color: [0.0, 0.0, 0.0, 0.66]
     )
 
-    lazy var scene = Object("Scene", [invaderContainer])
+    lazy var scene = Object(label: "Scene", [invaderContainer])
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)

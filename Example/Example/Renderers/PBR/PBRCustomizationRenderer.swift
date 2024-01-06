@@ -21,7 +21,7 @@ class PBRCustomizationRenderer: BaseRenderer {
 
     var material = PhysicalMaterial()
     lazy var mesh = Mesh(geometry: BoxGeometry(size: 4.0), material: material)
-    lazy var scene = Scene("Scene", [skybox, mesh])
+    lazy var scene = Scene(label: "Scene", [skybox, mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 10.0), near: 0.001, far: 1000.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)

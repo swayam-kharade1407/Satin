@@ -24,7 +24,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
 
     var meshAnchorMap: [UUID: Mesh] = [:]
 
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
 
     lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.001, far: 100.0)
     lazy var renderer: Satin.Renderer = {

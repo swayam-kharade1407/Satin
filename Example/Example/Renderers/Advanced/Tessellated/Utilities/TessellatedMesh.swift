@@ -63,7 +63,7 @@ class TessellatedMesh: Object, Renderable {
         self.geometry = geometry
         self.material = material
         self.tessellator = tessellator
-        super.init("Tessellated Mesh")
+        super.init(label: "Tessellated Mesh")
     }
 
     override func setup() {

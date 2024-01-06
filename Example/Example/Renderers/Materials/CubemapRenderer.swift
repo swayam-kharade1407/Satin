@@ -19,7 +19,7 @@ class CubemapRenderer: BaseRenderer {
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 200.0, fov: 45.0)
 
-    lazy var scene = Object("Scene", [skybox, mesh])
+    lazy var scene = Object(label: "Scene", [skybox, mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)

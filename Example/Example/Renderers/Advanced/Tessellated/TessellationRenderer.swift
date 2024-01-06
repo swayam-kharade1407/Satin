@@ -25,7 +25,7 @@ class TessellationRenderer: BaseRenderer {
 
     lazy var tessWireMaterial = TessellatedMaterial(pipelinesURL: pipelinesURL, geometry: tessGeometry)
     lazy var tessWireMesh = TessellatedMesh(geometry: tessGeometry, material: tessWireMaterial, tessellator: tessellator)
-    lazy var scene = Object("Scene", [tessMesh, tessWireMesh])
+    lazy var scene = Object(label: "Scene", [tessMesh, tessWireMesh])
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 4.0), near: 0.01, far: 50.0, fov: 30)

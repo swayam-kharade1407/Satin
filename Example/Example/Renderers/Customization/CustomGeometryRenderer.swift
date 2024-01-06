@@ -30,7 +30,7 @@ open class IcosahedronGeometry: SatinGeometry {
 }
 
 class CustomGeometryRenderer: BaseRenderer {
-    var scene = Object("Scene")
+    var scene = Object(label: "Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 100.0)

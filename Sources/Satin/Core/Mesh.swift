@@ -109,7 +109,7 @@ open class Mesh: Object, Renderable {
     public init(label: String = "Mesh", geometry: Geometry, material: Material?) {
         self.geometry = geometry
         self.material = material
-        super.init(label)
+        super.init(label: label)
     }
 
     // MARK: - Decode
