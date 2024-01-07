@@ -9,8 +9,8 @@
 import Combine
 import Foundation
 import Metal
-import simd
 import SatinCore
+import simd
 
 open class Object: Codable, ObservableObject {
     @Published open var id: String = UUID().uuidString
@@ -34,9 +34,12 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    var _worldPosition = ValueCache<simd_float3>()
     public var worldPosition: simd_float3 {
         get {
-            simd_make_float3(worldMatrix.columns.3)
+            _worldPosition.get {
+                simd_make_float3(worldMatrix.columns.3)
+            }
         }
         set {
             if let parent = parent {
@@ -57,21 +60,29 @@ open class Object: Codable, ObservableObject {
     @Published open var orientation = simd_quatf(matrix_identity_float4x4) {
         didSet {
             _rotationMatrix.clear()
+
+            _rightDirection.clear()
+            _upDirection.clear()
+            _forwardDirection.clear()
+
             updateLocalMatrix = true
         }
     }
 
+    var _worldOrientation = ValueCache<simd_quatf>()
     public var worldOrientation: simd_quatf {
         get {
-            let ws = worldScale
-            let wm = worldMatrix
-            let c0 = wm.columns.0
-            let c1 = wm.columns.1
-            let c2 = wm.columns.2
-            let x = simd_make_float3(c0.x, c0.y, c0.z) / ws.x
-            let y = simd_make_float3(c1.x, c1.y, c1.z) / ws.y
-            let z = simd_make_float3(c2.x, c2.y, c2.z) / ws.z
-            return simd_quatf(simd_float3x3(columns: (x, y, z)))
+            _worldOrientation.get {
+                let ws = worldScale
+                let wm = worldMatrix
+                let c0 = wm.columns.0
+                let c1 = wm.columns.1
+                let c2 = wm.columns.2
+                let x = simd_make_float3(c0.x, c0.y, c0.z) / ws.x
+                let y = simd_make_float3(c1.x, c1.y, c1.z) / ws.y
+                let z = simd_make_float3(c2.x, c2.y, c2.z) / ws.z
+                return simd_quatf(simd_float3x3(columns: (x, y, z)))
+            }
         }
         set {
             if let parent = parent {
@@ -96,13 +107,16 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    var _worldScale = ValueCache<simd_float3>()
     public var worldScale: simd_float3 {
         get {
-            let wm = worldMatrix
-            let sx = wm.columns.0
-            let sy = wm.columns.1
-            let sz = wm.columns.2
-            return simd_make_float3(length(sx), length(sy), length(sz))
+            _worldScale.get {
+                let wm = worldMatrix
+                let sx = wm.columns.0
+                let sy = wm.columns.1
+                let sz = wm.columns.2
+                return simd_make_float3(length(sx), length(sy), length(sz))
+            }
         }
         set {
             if let parent = parent {
@@ -115,7 +129,9 @@ open class Object: Codable, ObservableObject {
 
     var _scaleMatrix = ValueCache<matrix_float4x4>()
     public var scaleMatrix: matrix_float4x4 {
-        _scaleMatrix.get { scaleMatrix3f(scale) }
+        _scaleMatrix.get {
+            scaleMatrix3f(scale)
+        }
     }
 
     // MARK: - Local Matrix
@@ -142,10 +158,8 @@ open class Object: Codable, ObservableObject {
 
     var _localMatrixInverse = ValueCache<matrix_float4x4>()
     public var localMatrixInverse: matrix_float4x4 {
-        get {
-            _localMatrixInverse.get {
-                localMatrix.inverse
-            }
+        _localMatrixInverse.get {
+            localMatrix.inverse
         }
     }
 
@@ -154,11 +168,20 @@ open class Object: Codable, ObservableObject {
             if updateLocalMatrix {
                 updateLocalBounds = true
 
+                _localMatrix.clear()
+                _localMatrixInverse.clear()
+
                 _normalMatrix.clear()
                 _worldMatrix.clear()
                 _worldMatrixInverse.clear()
-                _localMatrix.clear()
-                _localMatrixInverse.clear()
+
+                _worldPosition.clear()
+                _worldOrientation.clear()
+                _worldScale.clear()
+
+                _worldRightDirection.clear()
+                _worldUpDirection.clear()
+                _worldForwardDirection.clear()
 
                 transformPublisher.send(self)
 
@@ -195,10 +218,8 @@ open class Object: Codable, ObservableObject {
 
     var _worldMatrixInverse = ValueCache<matrix_float4x4>()
     public var worldMatrixInverse: matrix_float4x4 {
-        get {
-            _worldMatrixInverse.get {
-                worldMatrix.inverse
-            }
+        _worldMatrixInverse.get {
+            worldMatrix.inverse
         }
     }
 
@@ -211,6 +232,14 @@ open class Object: Codable, ObservableObject {
                 _worldMatrix.clear()
                 _worldMatrixInverse.clear()
 
+                _worldPosition.clear()
+                _worldOrientation.clear()
+                _worldScale.clear()
+
+                _worldRightDirection.clear()
+                _worldUpDirection.clear()
+                _worldForwardDirection.clear()
+
                 transformPublisher.send(self)
 
                 updateWorldMatrix = false
@@ -221,8 +250,6 @@ open class Object: Codable, ObservableObject {
             }
         }
     }
-
-
 
     // MARK: - Normal Bounds
 
@@ -235,7 +262,7 @@ open class Object: Codable, ObservableObject {
     }
 
     // MARK: - Bounds
-    
+
     open var updateBounds = true {
         didSet {
             if updateBounds {
@@ -246,7 +273,7 @@ open class Object: Codable, ObservableObject {
             }
         }
     }
-    
+
     internal var _updateBounds = true {
         didSet {
             updateLocalBounds = true
@@ -261,7 +288,6 @@ open class Object: Codable, ObservableObject {
         }
         return _bounds
     }
-
 
     // MARK: - Local Bounds
 
@@ -319,15 +345,49 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Directions
 
-    public var forwardDirection: simd_float3 { simd_normalize(orientation.act(Satin.worldForwardDirection)) }
-    public var upDirection: simd_float3 { simd_normalize(orientation.act(Satin.worldUpDirection)) }
-    public var rightDirection: simd_float3 { simd_normalize(orientation.act(Satin.worldRightDirection)) }
+    var _forwardDirection = ValueCache<simd_float3>()
+    public var forwardDirection: simd_float3 {
+        _forwardDirection.get {
+            simd_normalize(orientation.act(Satin.worldForwardDirection))
+        }
+    }
+
+    var _upDirection = ValueCache<simd_float3>()
+    public var upDirection: simd_float3 {
+        _upDirection.get {
+            simd_normalize(orientation.act(Satin.worldUpDirection))
+        }
+    }
+
+    var _rightDirection = ValueCache<simd_float3>()
+    public var rightDirection: simd_float3 {
+        _rightDirection.get {
+            simd_normalize(orientation.act(Satin.worldRightDirection))
+        }
+    }
 
     // MARK: - World Directions
 
-    public var worldForwardDirection: simd_float3 { simd_normalize(worldOrientation.act(Satin.worldForwardDirection)) }
-    public var worldUpDirection: simd_float3 { simd_normalize(worldOrientation.act(Satin.worldUpDirection)) }
-    public var worldRightDirection: simd_float3 { simd_normalize(worldOrientation.act(Satin.worldRightDirection)) }
+    var _worldForwardDirection = ValueCache<simd_float3>()
+    public var worldForwardDirection: simd_float3 {
+        _worldForwardDirection.get {
+            simd_normalize(worldOrientation.act(Satin.worldForwardDirection))
+        }
+    }
+
+    var _worldUpDirection = ValueCache<simd_float3>()
+    public var worldUpDirection: simd_float3 {
+        _worldUpDirection.get {
+            simd_normalize(worldOrientation.act(Satin.worldUpDirection))
+        }
+    }
+
+    var _worldRightDirection = ValueCache<simd_float3>()
+    public var worldRightDirection: simd_float3 {
+        _worldRightDirection.get {
+            simd_normalize(worldOrientation.act(Satin.worldRightDirection))
+        }
+    }
 
     // MARK: - Parent & Children
 
