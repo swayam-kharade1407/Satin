@@ -1,7 +1,7 @@
 # Satin - A 3D Graphics Framework built on Apple's Metal
 
 ![build status](https://github.com/Hi-Rez/SatinPro/actions/workflows/build.yml/badge.svg)
-<img src="https://img.shields.io/badge/SPM-5.7-blue.svg?style=flat"
+<img src="https://img.shields.io/badge/SPM-5.9-blue.svg?style=flat"
      alt="Swift Package Manager (SPM) compatible" />
 
 # About :wave:
