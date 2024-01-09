@@ -99,7 +99,7 @@ public final class ShaderPipelineCache {
     }
 
     public class func getPipelineReflection(configuration: ShaderConfiguration) -> MTLRenderPipelineReflection? {
-        return pipelineReflectionCache[configuration]
+        pipelineReflectionCache[configuration]
     }
 
     public class func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {

@@ -153,7 +153,7 @@ open class ComputeShader {
 
                 self.update()
 
-                delegate?.updated(shader: self)
+                self.delegate?.updated(shader: self)
             }
         }
     }

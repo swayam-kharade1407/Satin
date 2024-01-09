@@ -55,10 +55,10 @@ public final class ComputeShaderPipelineCache {
 
     public class func getResetPipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
         if let pipeline = resetPipelineCache[configuration] {
-            pipeline
+            return pipeline
         }
         else {
-            try getPipeline(
+            return try getPipeline(
                 functionName: configuration.resetFunctionName,
                 configuration: configuration,
                 pipelineCache: &resetPipelineCache,
@@ -69,10 +69,10 @@ public final class ComputeShaderPipelineCache {
 
     public class func getUpdatePipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
         if let pipeline = updatePipelineCache[configuration] {
-            pipeline
+            return pipeline
         }
         else {
-            try getPipeline(
+            return try getPipeline(
                 functionName: configuration.updateFunctionName,
                 configuration: configuration,
                 pipelineCache: &updatePipelineCache,
