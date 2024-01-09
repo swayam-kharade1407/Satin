@@ -44,7 +44,7 @@ public struct ShaderConfiguration {
     }
 
     public func getLibraryConfiguration() -> ShaderLibraryConfiguration {
-        return ShaderLibraryConfiguration(
+        ShaderLibraryConfiguration(
             label: label,
             libraryURL: libraryURL,
             pipelineURL: pipelineURL,

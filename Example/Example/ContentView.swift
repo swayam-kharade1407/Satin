@@ -239,7 +239,8 @@ struct ContentView: View {
             }
             .navigationTitle("Satin Examples")
 
-            SDFTextRendererView()
+            BufferComputeRendererView()
+//            SDFTextRendererView()
 //            MeshShaderRendererView()
 //            BufferGeometryRendererView()
 //            MatcapRendererView()

@@ -57,8 +57,8 @@ public final class ShaderPipelineCache {
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = fragmentFunction
 
-        setupPipelineDescriptorContext(context: context, descriptor: &descriptor)
-        setupPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
+        setupRenderPipelineDescriptorContext(context: context, descriptor: &descriptor)
+        setupRenderPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
         if configuration.libraryURL != nil {
             var pipelineReflection: MTLRenderPipelineReflection?

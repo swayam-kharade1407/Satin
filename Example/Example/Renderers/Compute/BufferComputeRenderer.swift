@@ -13,7 +13,7 @@ import Forge
 import Satin
 
 class BufferComputeRenderer: BaseRenderer {
-    class ParticleComputeSystem: LiveBufferComputeSystem {}
+    class ParticleComputeSystem: BufferComputeSystem {}
 
     class SpriteMaterial: SourceMaterial {}
     class ChromaMaterial: SourceMaterial {}

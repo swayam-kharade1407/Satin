@@ -202,12 +202,15 @@ open class TextureComputeSystem {
     }
 
     open func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
-        return setTextures(computeEncoder)
+        setTextures(computeEncoder)
     }
 
     public func update(_ commandBuffer: MTLCommandBuffer) {
         update()
-        if textureDescriptors.count > 0, resetPipeline != nil || updatePipeline != nil, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
+        if textureDescriptors.count > 0,
+           resetPipeline != nil || updatePipeline != nil,
+           let computeEncoder = commandBuffer.makeComputeCommandEncoder()
+        {
             computeEncoder.label = label
             encode(computeEncoder)
             computeEncoder.endEncoding()
@@ -216,13 +219,15 @@ open class TextureComputeSystem {
 
     public func update(_ computeEncoder: MTLComputeCommandEncoder) {
         update()
-        if textureDescriptors.count > 0, resetPipeline != nil || updatePipeline != nil {
+        if textureDescriptors.count > 0,
+           resetPipeline != nil || updatePipeline != nil
+        {
             encode(computeEncoder)
         }
     }
 
     open func getThreadsPerGrid(_ texture: MTLTexture) -> MTLSize {
-        return MTLSize(width: texture.width, height: texture.height, depth: texture.depth)
+        MTLSize(width: texture.width, height: texture.height, depth: texture.depth)
     }
 
     open func getThreadGroupsPerGrid(_ texture: MTLTexture, _ pipeline: MTLComputePipelineState) -> MTLSize {
@@ -345,11 +350,11 @@ open class TextureComputeSystem {
     }
 
     private func ping() -> Int {
-        return _index
+        _index
     }
 
     private func pong() -> Int {
-        return ((_index + 1) % count)
+        ((_index + 1) % count)
     }
 
     private func pingPong() {

@@ -46,21 +46,13 @@ open class Shader {
     }
 
     open var constants: [String] {
-        get {
-            configuration.rendering.constants
-        }
-        set {
-            configuration.rendering.constants = newValue
-        }
+        get { configuration.rendering.constants }
+        set { configuration.rendering.constants = newValue }
     }
 
     open var defines: [ShaderDefine] {
-        get {
-            configuration.rendering.defines
-        }
-        set {
-            configuration.rendering.defines = newValue
-        }
+        get { configuration.rendering.defines }
+        set { configuration.rendering.defines = newValue }
     }
 
     // MARK: - Blending

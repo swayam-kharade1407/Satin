@@ -1,16 +1,14 @@
 //
-//  SourceShader.swift
-//  Satin
+//  SourceComputeShader.swift
 //
-//  Created by Reza Ali on 12/9/22.
-//  Copyright © 2022 Reza Ali. All rights reserved.
+//
+//  Created by Reza Ali on 1/8/24.
 //
 
-import Combine
 import Foundation
-import Metal
+import Combine
 
-open class SourceShader: Shader {
+open class SourceComputeShader: ComputeShader {
     public var pipelineURL: URL {
         get { configuration.pipelineURL! }
         set { configuration.pipelineURL = newValue }
@@ -18,10 +16,10 @@ open class SourceShader: Shader {
 
     public var source: String? {
         do {
-            return try ShaderLibrarySourceCache.getLibrarySource(configuration: configuration.getLibraryConfiguration())
+            return try ComputeShaderLibrarySourceCache.getLibrarySource(configuration: configuration.getLibraryConfiguration())
         }
         catch {
-            print("\(label) Shader Source: \(error.localizedDescription)")
+            print("\(label) Compute Shader Source: \(error.localizedDescription)")
         }
         return nil
     }
@@ -40,35 +38,35 @@ open class SourceShader: Shader {
 
                 ShaderSourceCache.removeSource(url: self.pipelineURL)
 
-                ShaderLibrarySourceCache.invalidateLibrarySource(
+                ComputeShaderLibrarySourceCache.invalidateLibrarySource(
                     configuration: self.configuration.getLibraryConfiguration()
                 )
 
-                ShaderLibraryCache.invalidateLibrary(
+                ComputeShaderLibraryCache.invalidateLibrary(
                     configuration: self.configuration.getLibraryConfiguration()
                 )
 
-                ShaderPipelineCache.invalidate(configuration: self.configuration)
+                ComputeShaderPipelineCache.invalidate(configuration: self.configuration)
 
                 // invalidate caches to recompile shader
 
-                self.shadowPipelineNeedsUpdate = true
-                self.pipelineNeedsUpdate = true
+                self.resetPipelineNeedsUpdate = true
+                self.updatePipelineNeedsUpdate = true
                 self.parametersNeedsUpdate = true
 
-                print("Updating Shader: \(self.label) at: \(self.pipelineURL.path)")
+                print("Updating Compute Shader: \(self.label) at: \(self.pipelineURL.path)")
 
                 self.update()
             }
         }
     }
 
-    public init(label: String, pipelineURL: URL, pipelineDescriptor: MTLRenderPipelineDescriptor? = nil) {
+    public init(label: String, pipelineURL: URL) {
         super.init(label: label, pipelineURL: pipelineURL)
         setupShaderCompiler()
     }
 
-    public required init(configuration: ShaderConfiguration) {
+    public required init(configuration: ComputeShaderConfiguration) {
         super.init(configuration: configuration)
         setupShaderCompiler()
     }

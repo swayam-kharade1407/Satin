@@ -49,14 +49,14 @@ extension ShaderBlending: CustomStringConvertible {
     }
 }
 
-public func setupPipelineDescriptorContext(context: Context, descriptor: inout MTLRenderPipelineDescriptor) {
+public func setupRenderPipelineDescriptorContext(context: Context, descriptor: inout MTLRenderPipelineDescriptor) {
     descriptor.rasterSampleCount = context.sampleCount
     descriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
     descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
     descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 }
 
-public func setupPipelineDescriptorBlending(blending: ShaderBlending, descriptor: inout MTLRenderPipelineDescriptor) {
+public func setupRenderPipelineDescriptorBlending(blending: ShaderBlending, descriptor: inout MTLRenderPipelineDescriptor) {
     guard blending.type != .disabled, let colorAttachment = descriptor.colorAttachments[0] else { return }
 
     colorAttachment.isBlendingEnabled = true

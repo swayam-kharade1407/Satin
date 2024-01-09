@@ -40,8 +40,8 @@ class TessellatedShader: SourceShader {
         descriptor.tessellationOutputWindingOrder = geometry.windingOrder
         descriptor.tessellationControlPointIndexType = geometry.controlPointIndexType
 
-        setupPipelineDescriptorContext(context: context, descriptor: &descriptor)
-        setupPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
+        setupRenderPipelineDescriptorContext(context: context, descriptor: &descriptor)
+        setupRenderPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
 
         return try context.device.makeRenderPipelineState(descriptor: descriptor)
     }

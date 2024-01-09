@@ -41,12 +41,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public lazy var label: String = prefix
 
     public var vertexDescriptor: MTLVertexDescriptor {
-        get {
-            configuration.vertexDescriptor
-        }
-        set {
-            configuration.vertexDescriptor = newValue
-        }
+        get { configuration.vertexDescriptor }
+        set { configuration.vertexDescriptor = newValue }
     }
 
     private var parametersSubscription: AnyCancellable?
@@ -61,57 +57,33 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     public var sourceRGBBlendFactor: MTLBlendFactor {
-        get {
-            configuration.blending.sourceRGBBlendFactor
-        }
-        set {
-            configuration.blending.sourceRGBBlendFactor = newValue
-        }
+        get { configuration.blending.sourceRGBBlendFactor }
+        set { configuration.blending.sourceRGBBlendFactor = newValue }
     }
 
     public var sourceAlphaBlendFactor: MTLBlendFactor {
-        get {
-            configuration.blending.sourceAlphaBlendFactor
-        }
-        set {
-            configuration.blending.sourceAlphaBlendFactor = newValue
-        }
+        get { configuration.blending.sourceAlphaBlendFactor }
+        set { configuration.blending.sourceAlphaBlendFactor = newValue }
     }
 
     public var destinationRGBBlendFactor: MTLBlendFactor {
-        get {
-            configuration.blending.destinationRGBBlendFactor
-        }
-        set {
-            configuration.blending.destinationRGBBlendFactor = newValue
-        }
+        get { configuration.blending.destinationRGBBlendFactor }
+        set { configuration.blending.destinationRGBBlendFactor = newValue }
     }
 
     public var destinationAlphaBlendFactor: MTLBlendFactor {
-        get {
-            configuration.blending.destinationAlphaBlendFactor
-        }
-        set {
-            configuration.blending.destinationAlphaBlendFactor = newValue
-        }
+        get { configuration.blending.destinationAlphaBlendFactor }
+        set { configuration.blending.destinationAlphaBlendFactor = newValue }
     }
 
     public var rgbBlendOperation: MTLBlendOperation {
-        get {
-            configuration.blending.rgbBlendOperation
-        }
-        set {
-            configuration.blending.rgbBlendOperation = newValue
-        }
+        get { configuration.blending.rgbBlendOperation }
+        set { configuration.blending.rgbBlendOperation = newValue }
     }
 
     public var alphaBlendOperation: MTLBlendOperation {
-        get {
-            configuration.blending.alphaBlendOperation
-        }
-        set {
-            configuration.blending.alphaBlendOperation = newValue
-        }
+        get { configuration.blending.alphaBlendOperation }
+        set { configuration.blending.alphaBlendOperation = newValue }
     }
 
     private var configuration = RenderingConfiguration() {
@@ -142,11 +114,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public weak var delegate: MaterialDelegate?
 
     public var pipeline: MTLRenderPipelineState? {
-        return shader?.pipeline
+        shader?.pipeline
     }
 
     public var shadowPipeline: MTLRenderPipelineState? {
-        return shader?.shadowPipeline
+        shader?.shadowPipeline
     }
 
     public var context: Context? {
@@ -158,66 +130,38 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     public var instancing: Bool {
-        get {
-            configuration.instancing
-        }
-        set {
-            configuration.instancing = newValue
-        }
+        get { configuration.instancing }
+        set { configuration.instancing = newValue }
     }
 
     public var castShadow: Bool {
-        get {
-            configuration.castShadow
-        }
-        set {
-            configuration.castShadow = newValue
-        }
+        get { configuration.castShadow }
+        set { configuration.castShadow = newValue }
     }
 
     public var receiveShadow: Bool {
-        get {
-            configuration.receiveShadow
-        }
-        set {
-            configuration.receiveShadow = newValue
-        }
+        get { configuration.receiveShadow }
+        set { configuration.receiveShadow = newValue }
     }
 
     public var lighting: Bool {
-        get {
-            configuration.lighting
-        }
-        set {
-            configuration.lighting = newValue
-        }
+        get { configuration.lighting }
+        set { configuration.lighting = newValue }
     }
 
     public var shadowCount: Int {
-        get {
-            configuration.shadowCount
-        }
-        set {
-            configuration.shadowCount = newValue
-        }
+        get { configuration.shadowCount }
+        set { configuration.shadowCount = newValue }
     }
 
     public var lightCount: Int {
-        get {
-            configuration.lightCount
-        }
-        set {
-            configuration.lightCount = newValue
-        }
+        get { configuration.lightCount }
+        set { configuration.lightCount = newValue }
     }
 
     public var blending: Blending {
-        get {
-            configuration.blending.type
-        }
-        set {
-            configuration.blending.type = newValue
-        }
+        get { configuration.blending.type }
+        set { configuration.blending.type = newValue }
     }
 
     public var depthClipMode: MTLDepthClipMode = .clip

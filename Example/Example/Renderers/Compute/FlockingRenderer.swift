@@ -14,7 +14,7 @@ import Forge
 import Satin
 
 class FlockingRenderer: BaseRenderer {
-    class FlockingComputeSystem: LiveBufferComputeSystem {}
+    class FlockingComputeSystem: BufferComputeSystem {}
     class InstanceMaterial: SourceMaterial {}
     class SpriteMaterial: SourceMaterial {}
 
