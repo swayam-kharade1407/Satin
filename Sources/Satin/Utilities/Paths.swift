@@ -71,3 +71,7 @@ public func getPipelinesMaterialsURL(_ path: String) -> URL? {
 public func getPipelinesComputeURL() -> URL? {
     return getPipelinesURL("Compute")
 }
+
+public func getPipelinesComputeURL(_ path: String) -> URL? {
+    return getPipelinesComputeURL()?.appendingPathComponent(path)
+}

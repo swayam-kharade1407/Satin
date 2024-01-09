@@ -112,33 +112,4 @@ class FXAARenderer: BaseRenderer {
         }
         return nil
     }
-
-    #if os(macOS)
-    func openEditor() {
-        if let editorPath = UserDefaults.standard.string(forKey: "Editor") {
-            NSWorkspace.shared.openFile(assetsURL.path, withApplication: editorPath)
-        } else {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseFiles = true
-            openPanel.allowsMultipleSelection = false
-            openPanel.canCreateDirectories = false
-            openPanel.begin(completionHandler: { [unowned self] (result: NSApplication.ModalResponse) in
-                if result == .OK {
-                    if let editorUrl = openPanel.url {
-                        let editorPath = editorUrl.path
-                        UserDefaults.standard.set(editorPath, forKey: "Editor")
-                        NSWorkspace.shared.openFile(self.assetsURL.path, withApplication: editorPath)
-                    }
-                }
-                openPanel.close()
-            })
-        }
-    }
-
-    override func keyDown(with event: NSEvent) {
-        if event.characters == "e" {
-            openEditor()
-        }
-    }
-    #endif
 }

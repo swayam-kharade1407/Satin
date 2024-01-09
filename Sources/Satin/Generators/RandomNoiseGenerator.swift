@@ -10,12 +10,12 @@ import Foundation
 import Metal
 
 public final class RandomNoiseGenerator {
-    class RandomNoiseComputeSystem: LiveTextureComputeSystem {
+    class RandomNoiseComputeSystem: TextureComputeSystem {
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,
-                textureDescriptors: [textureDescriptor],
-                pipelinesURL: getPipelinesComputeURL()!
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: [textureDescriptor]
             )
         }
     }

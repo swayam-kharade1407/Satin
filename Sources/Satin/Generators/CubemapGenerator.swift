@@ -11,12 +11,12 @@ import Metal
 import MetalPerformanceShaders
 
 public final class CubemapGenerator {
-    class CubemapComputeSystem: LiveTextureComputeSystem {
+    class CubemapComputeSystem: TextureComputeSystem {
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?
 
         init(device: MTLDevice) {
-            super.init(device: device, textureDescriptors: [], pipelinesURL: getPipelinesComputeURL()!)
+            super.init(device: device, pipelinesURL: getPipelinesComputeURL()!, textureDescriptors: [])
         }
 
         override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {

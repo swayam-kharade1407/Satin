@@ -2,7 +2,7 @@
 #include "Library/Pbr/Pbr.metal"
 
 typedef struct {
-#include "Chunks/PbrUniforms.metal"
+#include "Chunks/PhysicalUniforms.metal"
 } CustomUniforms;
 
 typedef struct {

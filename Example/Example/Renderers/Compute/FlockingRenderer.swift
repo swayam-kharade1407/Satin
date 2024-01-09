@@ -38,7 +38,7 @@ class FlockingRenderer: BaseRenderer {
     var camera = OrthographicCamera()
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var renderer = Satin.Renderer(context: context)
-    lazy var particleSystem = FlockingComputeSystem(device: device, pipelinesURL: pipelinesURL, count: particleCountParam.value, feedback: true)
+    lazy var particleSystem = FlockingComputeSystem(device: device, pipelinesURL: pipelinesURL, count: particleCountParam.value, feedback: true, live: true)
 
     lazy var spriteMaterial: SpriteMaterial = {
         let material = SpriteMaterial(pipelinesURL: pipelinesURL)

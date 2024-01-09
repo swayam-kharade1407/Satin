@@ -18,23 +18,17 @@ import SwiftUI
 
 class ARPointCloudRenderer: BaseRenderer {
     class PointMaterial: SourceMaterial {}
-    class PointComputeSystem: LiveBufferComputeSystem {}
-
-    lazy var pointCloud: PointComputeSystem = {
-        let pcs = PointComputeSystem(
-            device: device,
-            pipelineURL: pipelinesURL.appendingPathComponent("Point/Compute.metal"),
-            count: 256 * 192
-        )
-
-        pcs.preCompute = { (ce: MTLComputeCommandEncoder, offset: Int) in
-            if let depthTexture = self.backgroundRenderer.sceneDepthTexture {
-                ce.setTexture(CVMetalTextureGetTexture(depthTexture), index: ComputeTextureIndex.Custom0.rawValue)
+    class PointComputeSystem: BufferComputeSystem {
+        var depthTexture: CVMetalTexture?
+        override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
+            if let depthTexture {
+                computeEncoder.setTexture(CVMetalTextureGetTexture(depthTexture), index: ComputeTextureIndex.Custom0.rawValue)
             }
+            return super.bind(computeEncoder)
         }
+    }
 
-        return pcs
-    }()
+    lazy var pointCloud: PointComputeSystem = PointComputeSystem(device: device, pipelineURL: pipelinesURL.appendingPathComponent("Point/Compute.metal"), count: 256 * 192)
 
     // MARK: - UI
 
@@ -142,6 +136,7 @@ class ARPointCloudRenderer: BaseRenderer {
 
         if updateComputeParam.value {
             if let currentFrame = session.currentFrame {
+                pointCloud.depthTexture = self.backgroundRenderer.sceneDepthTexture
                 pointCloud.set("Local To World", camera.localToWorld)
                 pointCloud.set("Intrinsics Inversed", camera.intrinsics.inverse)
                 pointCloud.set("Resolution", simd_make_float2(

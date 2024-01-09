@@ -18,7 +18,7 @@ class BufferComputeRenderer: BaseRenderer {
     class SpriteMaterial: SourceMaterial {}
     class ChromaMaterial: SourceMaterial {}
 
-    lazy var particleSystem = ParticleComputeSystem(device: device, pipelinesURL: pipelinesURL, count: 8192)
+    lazy var particleSystem = ParticleComputeSystem(device: device, pipelinesURL: pipelinesURL, count: 8192, live: true)
 
     lazy var spriteMaterial: SpriteMaterial = {
         let material = SpriteMaterial(pipelinesURL: pipelinesURL)
@@ -117,35 +117,6 @@ class BufferComputeRenderer: BaseRenderer {
         chromaticProcessor.resize(size)
         updateRenderTexture = true
     }
-
-    #if os(macOS)
-    func openEditor() {
-        if let editorPath = UserDefaults.standard.string(forKey: "Editor") {
-            NSWorkspace.shared.openFile(assetsURL.path, withApplication: editorPath)
-        } else {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseFiles = true
-            openPanel.allowsMultipleSelection = false
-            openPanel.canCreateDirectories = false
-            openPanel.begin(completionHandler: { [unowned self] (result: NSApplication.ModalResponse) in
-                if result == .OK {
-                    if let editorUrl = openPanel.url {
-                        let editorPath = editorUrl.path
-                        UserDefaults.standard.set(editorPath, forKey: "Editor")
-                        NSWorkspace.shared.openFile(self.assetsURL.path, withApplication: editorPath)
-                    }
-                }
-                openPanel.close()
-            })
-        }
-    }
-
-    override func keyDown(with event: NSEvent) {
-        if event.characters == "e" {
-            openEditor()
-        }
-    }
-    #endif
 
     func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat) -> MTLTexture? {
         if mtkView.drawableSize.width > 0, mtkView.drawableSize.height > 0 {

@@ -10,12 +10,12 @@ import Foundation
 import Metal
 
 public final class BrdfGenerator {
-    class BrdfComputeSystem: LiveTextureComputeSystem {
+    class BrdfComputeSystem: TextureComputeSystem {
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,
-                textureDescriptors: [textureDescriptor],
-                pipelinesURL: getPipelinesComputeURL()!
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: [textureDescriptor]
             )
         }
     }

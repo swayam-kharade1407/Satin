@@ -6,11 +6,15 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Foundation
 import Forge
+import Foundation
 import Metal
 import Satin
 import Youi
+
+#if os(macOS)
+import AppKit
+#endif
 
 class BaseRenderer: Forge.Renderer {
     // MARK: - Paths
@@ -54,6 +58,34 @@ class BaseRenderer: Forge.Renderer {
     deinit {
         print("deinit: \(String(describing: type(of: self)))")
     }
+
+#if os(macOS)
+    func openEditor() {
+        if let editorUrl = UserDefaults.standard.url(forKey: "Editor") {
+            NSWorkspace.shared.open([assetsURL], withApplicationAt: editorUrl, configuration: .init(), completionHandler: nil)
+        } else {
+            let openPanel = NSOpenPanel()
+            openPanel.canChooseFiles = true
+            openPanel.allowsMultipleSelection = false
+            openPanel.canCreateDirectories = false
+            openPanel.begin { [unowned self] (result: NSApplication.ModalResponse) in
+                if result == .OK {
+                    if let editorUrl = openPanel.url {
+                        UserDefaults.standard.set(editorUrl, forKey: "Editor")
+                        self.openEditor()
+                    }
+                }
+                openPanel.close()
+            }
+        }
+    }
+
+    override func keyDown(with event: NSEvent) {
+        if event.characters == "e" {
+            openEditor()
+        }
+    }
+#endif
 }
 
 import Foundation
@@ -65,7 +97,7 @@ extension BaseRenderer {
         guard !paramKeys.isEmpty else { return }
 
         var panelOpenStates: [String: Bool] = [:]
-        if let inspectorWindow = self.inspectorWindow, let inspector = inspectorWindow.inspectorViewController {
+        if let inspectorWindow = inspectorWindow, let inspector = inspectorWindow.inspectorViewController {
             let panels = inspector.getPanels()
             for panel in panels {
                 if let label = panel.title {
@@ -85,7 +117,7 @@ extension BaseRenderer {
             self.inspectorWindow = inspectorWindow
         }
 
-        if let inspectorWindow = self.inspectorWindow, let inspectorViewController = inspectorWindow.inspectorViewController {
+        if let inspectorWindow = inspectorWindow, let inspectorViewController = inspectorWindow.inspectorViewController {
             if inspectorViewController.getPanels().count > 0 {
                 inspectorViewController.removeAllPanels()
             }

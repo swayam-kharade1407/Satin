@@ -10,13 +10,17 @@ import Foundation
 import Metal
 
 public final class SpecularIBLGenerator {
-    class SpecularIBLComputeSystem: LiveTextureComputeSystem {
+    class SpecularIBLComputeSystem: TextureComputeSystem {
         var roughness: Float = 0.0
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?
 
         init(device: MTLDevice) {
-            super.init(device: device, textureDescriptors: [], pipelinesURL: getPipelinesComputeURL()!)
+            super.init(
+                device: device,
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: []
+            )
         }
 
         override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {

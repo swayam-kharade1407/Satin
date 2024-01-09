@@ -9,6 +9,10 @@ import Combine
 import Foundation
 import Metal
 
+internal protocol ComputeShaderDelegate: AnyObject {
+    func updated(shader: ComputeShader)
+}
+
 open class ComputeShader {
     // MARK: - Reset Pipeline
 
@@ -40,6 +44,11 @@ open class ComputeShader {
     var libraryURL: URL? {
         get { configuration.libraryURL }
         set { configuration.libraryURL = newValue }
+    }
+
+    public var pipelineURL: URL? {
+        get { configuration.pipelineURL }
+        set { configuration.pipelineURL = newValue }
     }
 
     open var constants: [String] {
@@ -100,8 +109,60 @@ open class ComputeShader {
         didSet { buffersPublisher.send(buffers) }
     }
 
+    public var source: String? {
+        do {
+            return try ComputeShaderLibrarySourceCache.getLibrarySource(configuration: configuration.getLibraryConfiguration())
+        } catch {
+            print("\(label) Compute Shader Source: \(error.localizedDescription)")
+        }
+        return nil
+    }
+
+    public var live: Bool = false {
+        didSet {
+            compiler.watch = live
+        }
+    }
+
+    var compilerSubscription: AnyCancellable?
+    private lazy var compiler: MetalFileCompiler = .init(watch: live) {
+        didSet {
+            compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] _ in
+                guard let self = self, let pipelineURL = self.pipelineURL else { return }
+
+                ShaderSourceCache.removeSource(url: pipelineURL)
+
+                ComputeShaderLibrarySourceCache.invalidateLibrarySource(
+                    configuration: self.configuration.getLibraryConfiguration()
+                )
+
+                ComputeShaderLibraryCache.invalidateLibrary(
+                    configuration: self.configuration.getLibraryConfiguration()
+                )
+
+                ComputeShaderPipelineCache.invalidate(configuration: self.configuration)
+
+                // invalidate caches to recompile shader
+
+                self.resetPipelineNeedsUpdate = true
+                self.updatePipelineNeedsUpdate = true
+                self.parametersNeedsUpdate = true
+                self.buffersNeedsUpdate = true
+
+                print("Updating Compute Shader: \(self.label) at: \(pipelineURL.path)\n")
+
+                self.update()
+
+                delegate?.updated(shader: self)
+            }
+        }
+    }
+
+    internal weak var delegate: ComputeShaderDelegate?
+
     public required init(configuration: ComputeShaderConfiguration) {
         self.configuration = configuration
+        setupShaderCompiler()
     }
 
     public init(
@@ -109,8 +170,10 @@ open class ComputeShader {
         resetFunctionName: String? = nil,
         updateFunctionName: String? = nil,
         libraryURL: URL? = nil,
-        pipelineURL: URL? = nil
+        pipelineURL: URL? = nil,
+        live: Bool = false
     ) {
+        self.live = live
         configuration = ComputeShaderConfiguration(
             label: label,
             resetFunctionName: resetFunctionName ?? label.camelCase + "Reset",
@@ -118,6 +181,7 @@ open class ComputeShader {
             libraryURL: libraryURL,
             pipelineURL: pipelineURL
         )
+        setupShaderCompiler()
     }
 
     func setup() {
@@ -144,6 +208,8 @@ open class ComputeShader {
         updateBuffers()
     }
 
+    // MARK: - Defines
+
     open func getDefines() -> [ShaderDefine] {
         return []
     }
@@ -156,6 +222,8 @@ open class ComputeShader {
     func updateDefines() {
         if definesNeedsUpdate { setupDefines() }
     }
+
+    // MARK: - Constants
 
     open func getConstants() -> [String] {
         []
@@ -170,29 +238,7 @@ open class ComputeShader {
         if constantsNeedsUpdate { setupConstants() }
     }
 
-    func updateResetPipeline() {
-        if resetPipelineNeedsUpdate { setupResetPipeline() }
-    }
-
-    func updateUpdatePipeline() {
-        if updatePipelineNeedsUpdate { setupUpdatePipeline() }
-    }
-
-    func updateParameters() {
-        if parametersNeedsUpdate { setupParameters() }
-    }
-
-    func updateBuffers() {
-        if buffersNeedsUpdate { setupBuffers() }
-    }
-
-    deinit {
-        resetPipeline = nil
-        resetPipelineError = nil
-
-        updatePipeline = nil
-        updatePipelineError = nil
-    }
+    // MARK: - Reset Pipeline
 
     open func makeResetPipeline() throws -> MTLComputePipelineState? {
         try ComputeShaderPipelineCache.getResetPipeline(configuration: configuration)
@@ -211,6 +257,12 @@ open class ComputeShader {
         resetPipelineNeedsUpdate = false
     }
 
+    func updateResetPipeline() {
+        if resetPipelineNeedsUpdate { setupResetPipeline() }
+    }
+
+    // MARK: - Update Pipeline
+
     open func makeUpdatePipeline() throws -> MTLComputePipelineState? {
         try ComputeShaderPipelineCache.getUpdatePipeline(configuration: configuration)
     }
@@ -228,6 +280,12 @@ open class ComputeShader {
         updatePipelineNeedsUpdate = false
     }
 
+    func updateUpdatePipeline() {
+        if updatePipelineNeedsUpdate { setupUpdatePipeline() }
+    }
+
+    // MARK: - Parameters
+
     func setupParameters() {
         do {
             if let pipelineParameters = try ComputeShaderPipelineCache.getPipelineParameters(configuration: configuration) {
@@ -240,6 +298,12 @@ open class ComputeShader {
         parametersNeedsUpdate = false
     }
 
+    func updateParameters() {
+        if parametersNeedsUpdate { setupParameters() }
+    }
+
+    // MARK: - Update Buffers
+
     func setupBuffers() {
         do {
             if let buffers = try ComputeShaderPipelineCache.getPipelineBuffers(configuration: configuration) {
@@ -251,6 +315,31 @@ open class ComputeShader {
 
         buffersNeedsUpdate = false
     }
+
+    func updateBuffers() {
+        if buffersNeedsUpdate { setupBuffers() }
+    }
+
+
+    // MARK: - Live / Compiler
+
+    open func setupShaderCompiler() {
+        guard let pipelineURL = pipelineURL else { return }
+        compiler = ShaderSourceCache.getCompiler(url: pipelineURL)
+        compiler.watch = live
+    }
+
+    // MARK: - Deinit
+
+    deinit {
+        resetPipeline = nil
+        resetPipelineError = nil
+
+        updatePipeline = nil
+        updatePipelineError = nil
+    }
+
+    // MARK: - Clone
 
     public func clone() -> ComputeShader {
         print("Cloning Compute Shader: \(label)")

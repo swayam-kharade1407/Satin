@@ -10,12 +10,16 @@ import Foundation
 import Metal
 
 public final class DiffuseIBLGenerator {
-    class DiffuseIBLComputeSystem: LiveTextureComputeSystem {
+    class DiffuseIBLComputeSystem: TextureComputeSystem {
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?
 
         init(device: MTLDevice) {
-            super.init(device: device, textureDescriptors: [], pipelinesURL: getPipelinesComputeURL()!)
+            super.init(
+                device: device,
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: []
+            )
         }
 
         override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {

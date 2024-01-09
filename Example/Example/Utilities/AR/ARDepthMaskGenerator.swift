@@ -12,18 +12,18 @@ import Metal
 import Satin
 
 public class ARDepthMaskGenerator {
-    class DepthMaskComputeSystem: LiveTextureComputeSystem {
+    class DepthMaskComputeSystem: TextureComputeSystem {
         var realDepthTexture: MTLTexture?
         var virtualDepthTexture: MTLTexture?
 
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,
-                textureDescriptors: [textureDescriptor],
                 pipelinesURL: Bundle.main.resourceURL!
                     .appendingPathComponent("Assets")
                     .appendingPathComponent("Shared")
-                    .appendingPathComponent("Pipelines")
+                    .appendingPathComponent("Pipelines"),
+                textureDescriptors: [textureDescriptor]
             )
         }
 

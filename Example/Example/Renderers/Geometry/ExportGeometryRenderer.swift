@@ -149,7 +149,9 @@ class ExportGeometryRenderer: BaseRenderer {
     }
 
     #if os(macOS)
+
     override func keyDown(with event: NSEvent) {
+        super.keyDown(with: event)
         if event.characters == "s" {
             exportObj()
         }
@@ -167,5 +169,6 @@ class ExportGeometryRenderer: BaseRenderer {
             }
         }
     }
+
     #endif
 }

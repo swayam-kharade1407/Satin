@@ -9,15 +9,15 @@ import Foundation
 import Metal
 
 public final class YCbCrToRGBConverter {
-    class YCbCrToRGBComputeSystem: LiveTextureComputeSystem {
+    class YCbCrToRGBComputeSystem: TextureComputeSystem {
         var yTexture: MTLTexture?
         var cbcrTexture: MTLTexture?
 
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,
-                textureDescriptors: [textureDescriptor],
-                pipelinesURL: getPipelinesComputeURL()!
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: [textureDescriptor]
             )
         }
 

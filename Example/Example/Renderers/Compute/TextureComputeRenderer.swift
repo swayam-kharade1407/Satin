@@ -13,7 +13,7 @@ import Forge
 import Satin
 
 class TextureComputeRenderer: BaseRenderer {
-    class BasicTextureComputeSystem: LiveTextureComputeSystem {}
+    class BasicTextureComputeSystem: TextureComputeSystem {}
 
     lazy var textureCompute: BasicTextureComputeSystem = {
         let textureDescriptor = MTLTextureDescriptor()
@@ -25,11 +25,16 @@ class TextureComputeRenderer: BaseRenderer {
         textureDescriptor.sampleCount = 1
         textureDescriptor.textureType = .type2D
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        let textureCompute = BasicTextureComputeSystem(device: device, textureDescriptors: [textureDescriptor], pipelinesURL: pipelinesURL)
-        return textureCompute
+        return BasicTextureComputeSystem(
+            device: device,
+            pipelinesURL: pipelinesURL,
+            textureDescriptors: [textureDescriptor],
+            live: true
+        )
     }()
 
-    var mesh = Mesh(geometry: BoxGeometry(), material: nil)
+    var material = BasicTextureMaterial(texture: nil)
+    lazy var mesh = Mesh(geometry: BoxGeometry(), material: material)
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
@@ -37,10 +42,6 @@ class TextureComputeRenderer: BaseRenderer {
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)
-
-//    #if os(macOS) || os(iOS)
-//    lazy var raycaster = Raycaster(device: device)
-//    #endif
 
     override func setupMtkView(_ metalKitView: MTKView) {
         metalKitView.sampleCount = 1
@@ -51,7 +52,7 @@ class TextureComputeRenderer: BaseRenderer {
     lazy var startTime: CFAbsoluteTime = getTime()
 
     override func setup() {
-        mesh.material = BasicTextureMaterial(texture: textureCompute.texture.first)
+        material.texture = textureCompute.texture[0]
     }
 
     deinit {
@@ -59,6 +60,7 @@ class TextureComputeRenderer: BaseRenderer {
     }
     
     override func update() {
+        material.texture = textureCompute.texture[0]
         cameraController.update()
         textureCompute.set("Time", Float(getTime() - startTime))
         camera.update()
@@ -80,35 +82,6 @@ class TextureComputeRenderer: BaseRenderer {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
-
-    #if os(macOS)
-    func openEditor() {
-        if let editorPath = UserDefaults.standard.string(forKey: "Editor") {
-            NSWorkspace.shared.openFile(assetsURL.path, withApplication: editorPath)
-        } else {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseFiles = true
-            openPanel.allowsMultipleSelection = false
-            openPanel.canCreateDirectories = false
-            openPanel.begin(completionHandler: { [unowned self] (result: NSApplication.ModalResponse) in
-                if result == .OK {
-                    if let editorUrl = openPanel.url {
-                        let editorPath = editorUrl.path
-                        UserDefaults.standard.set(editorPath, forKey: "Editor")
-                        NSWorkspace.shared.openFile(self.assetsURL.path, withApplication: editorPath)
-                    }
-                }
-                openPanel.close()
-            })
-        }
-    }
-
-    override func keyDown(with event: NSEvent) {
-        if event.characters == "e" {
-            openEditor()
-        }
-    }
-    #endif
 
     func getTime() -> CFAbsoluteTime {
         return CFAbsoluteTimeGetCurrent()
