@@ -46,8 +46,8 @@ public final class YCbCrToRGBConverter {
         compute.yTexture = yTexture
         compute.cbcrTexture = cbcrTexture
         compute.update(commandBuffer)
-        let texture = compute.texture[0]
-        texture.label = "\(compute.label) Texture"
+        let texture = compute.dstTexture
+        texture?.label = "\(compute.label) Texture"
         return texture
     }
 }

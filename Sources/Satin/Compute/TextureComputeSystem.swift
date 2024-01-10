@@ -24,17 +24,35 @@ open class TextureComputeSystem: ComputeSystem {
         }
     }
 
-    public var texture: [MTLTexture] {
+    public var srcTexture: MTLTexture? {
+        textures[srcIndex]
+    }
+
+    public var dstTexture: MTLTexture? {
+        textures[dstIndex]
+    }
+
+    public var srcTextures: [MTLTexture] {
         var results: [MTLTexture] = []
         var textureIndex = 0
         for _ in textureDescriptors {
-            results.append(textures[textureIndex + pong()])
+            results.append(textures[textureIndex + srcIndex])
             textureIndex += feedbackCount
         }
         return results
     }
 
-    private var textures: [MTLTexture] = []
+    public var dstTextures: [MTLTexture] {
+        var results: [MTLTexture] = []
+        var textureIndex = 0
+        for _ in textureDescriptors {
+            results.append(textures[textureIndex + dstIndex])
+            textureIndex += feedbackCount
+        }
+        return results
+    }
+
+    public var textures: [MTLTexture] = []
     private var _setupSize = true
     private var _setupTextures = true
     private var _setupDescriptors = true
@@ -49,14 +67,14 @@ open class TextureComputeSystem: ComputeSystem {
         super.init(device: device, pipelinesURL: pipelinesURL, feedback: feedback, live: live)
     }
 
-    override func setup() {
+    override open func setup() {
         super.setup()
         setupDescriptor()
         setupTextures()
         setupSize()
     }
 
-    override func update() {
+    override open func update() {
         super.update()
         updateDescriptor()
         updateTextures()
@@ -86,7 +104,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Textures
 
-    private func setupTextures() {
+    open func setupTextures() {
         textures = []
 
         for textureDescriptor in textureDescriptors {
@@ -132,7 +150,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override public func update(_ commandBuffer: MTLCommandBuffer) {
+    override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
 
         if textures.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
@@ -142,7 +160,7 @@ open class TextureComputeSystem: ComputeSystem {
         }
     }
 
-    override public func update(_ computeEncoder: MTLComputeCommandEncoder) {
+    override open func update(_ computeEncoder: MTLComputeCommandEncoder) {
         super.update(computeEncoder)
 
         if textures.count > 0 {
@@ -167,11 +185,7 @@ open class TextureComputeSystem: ComputeSystem {
                 preReset?(computeEncoder, &offset)
                 preCompute?(computeEncoder, &offset)
                 dispatch(computeEncoder, pipeline)
-                pingPong()
-            }
-
-            if !feedback {
-                pingPong()
+                swapSrdDstIndex()
             }
 
             _reset = false
@@ -183,7 +197,7 @@ open class TextureComputeSystem: ComputeSystem {
             preUpdate?(computeEncoder, &offset)
             preCompute?(computeEncoder, &offset)
             dispatch(computeEncoder, pipeline)
-            pingPong()
+            swapSrdDstIndex()
         }
     }
 
@@ -193,9 +207,9 @@ open class TextureComputeSystem: ComputeSystem {
 
         if feedback {
             for _ in textureDescriptors {
-                computeEncoder.setTexture(textures[textureIndex + ping()], index: index)
+                computeEncoder.setTexture(textures[textureIndex + srcIndex], index: index)
                 index += 1
-                computeEncoder.setTexture(textures[textureIndex + pong()], index: index)
+                computeEncoder.setTexture(textures[textureIndex + dstIndex], index: index)
                 index += 1
                 textureIndex += 2
             }
@@ -263,7 +277,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     #if os(iOS) || os(macOS)
     override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
-        guard let texture = texture.first else { return }
+        guard let texture = textures.first else { return }
 
         let threadPerGrid = getThreadsPerGrid(texture)
         let threadsPerThreadgroup = getThreadsPerThreadgroup(texture, pipeline)
@@ -273,7 +287,7 @@ open class TextureComputeSystem: ComputeSystem {
     #endif
 
     override open func dispatchThreadgroups(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
-        guard let texture = texture.first else { return }
+        guard let texture = textures.first else { return }
 
         let threadsPerThreadGroup = getThreadsPerThreadgroup(texture, pipeline)
         let threadGroupsPerGrid = getThreadGroupsPerGrid(texture, pipeline)
@@ -283,7 +297,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override public func reset() {
+    override open func reset() {
         super.reset()
         _setupDescriptors = true
         _setupTextures = true

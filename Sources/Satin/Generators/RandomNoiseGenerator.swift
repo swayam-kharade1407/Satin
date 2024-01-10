@@ -62,8 +62,8 @@ public final class RandomNoiseGenerator {
         compute.set("Range", [range.lowerBound, range.upperBound])
         compute.set("Seed", seed)
         compute.update(commandBuffer)
-        let texture = compute.texture[0]
-        texture.label = "Random Noise"
+        let texture = compute.dstTexture
+        texture?.label = "Random Noise"
         return texture
     }
 }

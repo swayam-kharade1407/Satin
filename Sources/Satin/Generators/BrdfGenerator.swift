@@ -35,7 +35,7 @@ public final class BrdfGenerator {
     public func encode(commandBuffer: MTLCommandBuffer) -> MTLTexture? {
         commandBuffer.label = "\(compute.label) Compute Command Buffer"
         compute.update(commandBuffer)
-        let texture = compute.texture[0]
+        let texture = compute.dstTextures[0]
         texture.label = "BRDF LUT"
         return texture
     }

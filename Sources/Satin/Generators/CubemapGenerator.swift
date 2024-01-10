@@ -79,9 +79,9 @@ public final class CubemapGenerator {
                 compute.update(commandBuffer)
 
                 commandBuffer.label = "\(compute.label) Blit Command Buffer"
-                if let blitEncoder = commandBuffer.makeBlitCommandEncoder() {
+                if let blitEncoder = commandBuffer.makeBlitCommandEncoder(), let fromTexture = compute.dstTexture {
                     blitEncoder.copy(
-                        from: compute.texture[0],
+                        from: fromTexture,
                         sourceSlice: 0,
                         sourceLevel: 0,
                         to: destinationTexture,

@@ -29,7 +29,9 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     public weak var delegate: ComputeSystemDelegate?
 
-    public var index: Int { pong() }
+    public var index: Int { _index }
+    public var srcIndex: Int { _index }
+    public var dstIndex: Int { (_index + 1) % feedbackCount }
     public var feedbackCount: Int { feedback ? 2 : 1 }
 
     public var preUpdate: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
@@ -109,13 +111,13 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         setup()
     }
 
-    internal func setup() {
+    open func setup() {
         setupFeatures()
         setupShader()
         setupUniforms()
     }
 
-    internal func update() {
+    open func update() {
         updateShader()
         updateUniforms()
     }
@@ -176,18 +178,23 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Update
 
-    public func update(_ commandBuffer: MTLCommandBuffer) {
+    open func update(_ commandBuffer: MTLCommandBuffer) {
         update()
     }
 
-    public func update(_ computeEncoder: MTLComputeCommandEncoder) {
+    open func update(_ computeEncoder: MTLComputeCommandEncoder) {
         update()
     }
 
     // MARK: - Reset
 
-    public func reset() {
+    open func reset() {
         _reset = true
+        resetIndex()
+    }
+
+    open func resetIndex() {
+        _index = 0
     }
 
     // MARK: - Dispatch
@@ -212,24 +219,8 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Ping / Pong
 
-    internal func ping() -> Int {
-        return _index
-    }
-
-    internal func pong() -> Int {
-        return ((_index + 1) % feedbackCount)
-    }
-
-    internal func pingPong() {
+    internal func swapSrdDstIndex() {
         _index = (_index + 1) % feedbackCount
-    }
-
-    internal func ping(_ index: Int) -> Int {
-        return (index % feedbackCount)
-    }
-
-    internal func pong(_ index: Int) -> Int {
-        return ((index + 1) % feedbackCount)
     }
 
     // MARK: - Uniforms

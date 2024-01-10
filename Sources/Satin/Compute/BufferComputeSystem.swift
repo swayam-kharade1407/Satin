@@ -69,7 +69,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Setup
 
-    override func setup() {
+    override open func setup() {
         super.setup()
         setupBuffers()
         setupSize()
@@ -77,13 +77,13 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Update
 
-    override func update() {
+    override open func update() {
         super.update()
         updateBuffers()
         updateSize()
     }
 
-    override public func update(_ commandBuffer: MTLCommandBuffer) {
+    override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
         if bufferMap.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
@@ -92,7 +92,7 @@ open class BufferComputeSystem: ComputeSystem {
         }
     }
 
-    override public func update(_ computeEncoder: MTLComputeCommandEncoder) {
+    override open func update(_ computeEncoder: MTLComputeCommandEncoder) {
         super.update(computeEncoder)
         if bufferMap.count > 0 {
             encode(computeEncoder)
@@ -114,11 +114,7 @@ open class BufferComputeSystem: ComputeSystem {
                 preReset?(computeEncoder, &offset)
                 preCompute?(computeEncoder, &offset)
                 dispatch(computeEncoder, pipeline)
-                pingPong()
-            }
-
-            if !feedback {
-                pingPong()
+                swapSrdDstIndex()
             }
 
             _reset = false
@@ -130,7 +126,7 @@ open class BufferComputeSystem: ComputeSystem {
             preUpdate?(computeEncoder, &offset)
             preCompute?(computeEncoder, &offset)
             dispatch(computeEncoder, pipeline)
-            pingPong()
+            swapSrdDstIndex()
         }
     }
 
@@ -157,7 +153,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     public func getBuffer(_ label: String) -> MTLBuffer? {
         if let buffers = bufferMap[label] {
-            return buffers[pong()]
+            return buffers[dstIndex]
         }
         return nil
     }
@@ -206,8 +202,8 @@ open class BufferComputeSystem: ComputeSystem {
         if feedback {
             for key in bufferOrder {
                 if let buffers = bufferMap[key] {
-                    let inBuffer = buffers[ping()]
-                    let outBuffer = buffers[pong()]
+                    let inBuffer = buffers[srcIndex]
+                    let outBuffer = buffers[dstIndex]
                     computeEncoder.setBuffer(inBuffer, offset: 0, index: indexOffset)
                     indexOffset += 1
                     computeEncoder.setBuffer(outBuffer, offset: 0, index: indexOffset)
@@ -217,7 +213,7 @@ open class BufferComputeSystem: ComputeSystem {
         } else {
             for key in bufferOrder {
                 if let buffers = bufferMap[key] {
-                    computeEncoder.setBuffer(buffers[ping()], offset: 0, index: indexOffset)
+                    computeEncoder.setBuffer(buffers[srcIndex], offset: 0, index: indexOffset)
                     indexOffset += 1
                 }
             }
@@ -227,7 +223,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override public func reset() {
+    override open func reset() {
         super.reset()
         _setupBuffers = true
         _setupSize = true

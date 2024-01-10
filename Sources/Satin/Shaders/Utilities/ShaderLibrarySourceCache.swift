@@ -110,8 +110,6 @@ public final class ShaderLibrarySourceCache {
             lighting: configuration.lighting
         )
 
-        //        modifyShaderSource(source: &source) // PBR
-
         ShaderLibrarySourceCache.cache[configuration] = source
 
         return source
