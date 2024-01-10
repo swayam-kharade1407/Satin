@@ -56,8 +56,8 @@ public class ARDepthMaskGenerator {
         compute.realDepthTexture = realDepthTexture
         compute.virtualDepthTexture = virtualDepthTexture
         compute.update(commandBuffer)
-        let texture = compute.texture[0]
-        texture.label = "\(compute.label) Texture"
+        let texture = compute.dstTexture
+        texture?.label = "\(compute.label) Texture"
         return texture
     }
 

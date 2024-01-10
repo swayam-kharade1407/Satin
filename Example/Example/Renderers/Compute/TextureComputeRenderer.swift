@@ -52,7 +52,7 @@ class TextureComputeRenderer: BaseRenderer {
     lazy var startTime: CFAbsoluteTime = getTime()
 
     override func setup() {
-        material.texture = textureCompute.texture[0]
+        material.texture = textureCompute.dstTexture
     }
 
     deinit {
@@ -60,7 +60,7 @@ class TextureComputeRenderer: BaseRenderer {
     }
     
     override func update() {
-        material.texture = textureCompute.texture[0]
+        material.texture = textureCompute.dstTexture
         cameraController.update()
         textureCompute.set("Time", Float(getTime() - startTime))
         camera.update()
