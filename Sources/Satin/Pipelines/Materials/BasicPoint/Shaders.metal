@@ -2,6 +2,7 @@
 
 typedef struct {
     float4 color;    // color
+    float contentScale; // slider,1,3,1
     float pointSize; // slider,0,64,2
 } BasicPointUniforms;
 
@@ -24,7 +25,7 @@ vertex CustomVertexData basicPointVertex(Vertex in [[stage_in]],
 #else
     out.position = vertexUniforms.modelViewProjectionMatrix * position;
 #endif
-    out.pointSize = uniforms.pointSize;
+    out.pointSize = uniforms.pointSize * uniforms.contentScale;
     return out;
 }
 

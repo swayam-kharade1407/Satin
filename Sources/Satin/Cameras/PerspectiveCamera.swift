@@ -6,17 +6,18 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+import Combine
 import simd
 import SatinCore
 
 open class PerspectiveCamera: Camera {
-    public var fov: Float = 45 {
+    @Published public var fov: Float = 45 {
         didSet {
             updateProjectionMatrix = true
         }
     }
 
-    public var aspect: Float = 1 {
+    @Published public var aspect: Float = 1 {
         didSet {
             updateProjectionMatrix = true
         }

@@ -6,12 +6,16 @@
 //  Copyright © 2022 Reza Ali. All rights reserved.
 //
 
+import Combine
 import simd
 
 open class Camera: Object {
+    private var _viewDirection = ValueCache<simd_float3>()
     public var viewDirection: simd_float3 {
-        let q = simd_quatf(worldMatrix)
-        return simd_normalize(simd_matrix3x3(q) * simd_make_float3(0.0, 0.0, -1.0))
+        _viewDirection.get {
+            let q = simd_quatf(worldMatrix)
+            return simd_normalize(simd_matrix3x3(q) * simd_make_float3(0.0, 0.0, -1.0))
+        }
     }
 
     public var viewProjectionMatrix: matrix_float4x4 {
@@ -48,13 +52,13 @@ open class Camera: Object {
         }
     }
 
-    public var near: Float = 0.01 {
+    @Published public var near: Float = 0.01 {
         didSet {
             updateProjectionMatrix = true
         }
     }
 
-    public var far: Float = 100.0 {
+    @Published public var far: Float = 100.0 {
         didSet {
             updateProjectionMatrix = true
         }
@@ -74,6 +78,7 @@ open class Camera: Object {
         didSet {
             if updateViewMatrix {
                 _updateViewProjectionMatrix = true
+                _viewDirection.clear()
             }
         }
     }

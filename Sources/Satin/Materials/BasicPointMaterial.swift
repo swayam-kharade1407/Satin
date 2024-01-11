@@ -8,7 +8,7 @@
 import Metal
 import simd
 
-public final class BasicPointMaterial: Material {
+open class BasicPointMaterial: Material {
     public var color: simd_float4 {
         get {
             (get("Color") as! Float4Parameter).value
@@ -27,18 +27,28 @@ public final class BasicPointMaterial: Material {
         }
     }
 
-    public init(color: simd_float4 = simd_float4(repeating: 1.0), size: Float = 2.0, blending: Blending = .alpha) {
+    public var contentScale: Float = 1.0 {
+        didSet {
+            if contentScale != oldValue {
+                set("Content Scale", contentScale)
+            }
+        }
+    }
+
+    public init(color: simd_float4, size: Float, blending: Blending = .alpha) {
         super.init()
         self.blending = blending
         set("Color", color)
         set("Point Size", size)
+        set("Content Scale", contentScale)
     }
 
     public required init() {
         super.init()
         blending = .alpha
-        set("Color", [1, 1, 1, 1])
+        set("Color", simd_float4.one)
         set("Point Size", 2.0)
+        set("Content Scale", contentScale)
     }
 
     public required init(from decoder: Decoder) throws {

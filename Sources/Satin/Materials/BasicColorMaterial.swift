@@ -12,24 +12,23 @@ import simd
 open class BasicColorMaterial: Material {
     public var color: simd_float4 {
         set {
-            set("Color", newValue)
+            (get("Color") as! Float4Parameter).value = newValue
         }
         get {
-            let param = parameters.get("Color") as! Float4Parameter
-            return param.value
+            (get("Color") as! Float4Parameter).value
         }
     }
 
-    public init(_ color: simd_float4 = simd_float4(repeating: 1.0), _ blending: Blending = .alpha) {
+    public init(color: simd_float4 = simd_float4(repeating: 1.0), blending: Blending = .alpha) {
         super.init()
-        self.blending = blending
         set("Color", color)
+        self.blending = blending
     }
 
     public required init() {
         super.init()
+        set("Color", simd_float4.one)
         blending = .alpha
-        set("Color", [1.0, 1.0, 1.0, 1.0])
     }
 
     public required init(from decoder: Decoder) throws {
