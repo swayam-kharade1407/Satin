@@ -70,7 +70,7 @@ open class SatinGeometry: Geometry {
         }
 
         var offset = 0
-        addAttribute(Float4InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Position)
+        addAttribute(Float3InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Position)
         offset += MemoryLayout<Float>.size * 4
         addAttribute(Float3InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Normal)
         offset += MemoryLayout<Float>.size * 4

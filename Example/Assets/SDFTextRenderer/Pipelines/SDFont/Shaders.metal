@@ -16,9 +16,9 @@ vertex CustomVertexData sdfontVertex
     CustomVertexData out;
 
 #if INSTANCING
-    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position.xyz, 1.0);
+    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * float4(in.position.xyz, 1.0);
+    out.position = vertexUniforms.modelViewProjectionMatrix * float4(in.position, 1.0);
 #endif
 
     out.texcoord = in.texcoord;

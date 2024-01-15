@@ -20,7 +20,7 @@ vertex CustomVertexData pointVertex
 {
     const Point point = points[instanceID];
 
-    float4 position = in.position;
+    float4 position = float4(in.position, 1.0);
     position.xyz += point.position.xyz;
 
     CustomVertexData out;

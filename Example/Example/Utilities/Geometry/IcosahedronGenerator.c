@@ -25,20 +25,20 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
     SatinVertex *vtx = (SatinVertex *)malloc(sizeof(SatinVertex) * vertices);
     TriangleIndices *ind = (TriangleIndices *)malloc(sizeof(TriangleIndices) * triangles);
 
-    vtx[0].position = simd_make_float4(0.0, h, w, 1.0);
-    vtx[1].position = simd_make_float4(0.0, h, -w, 1.0);
-    vtx[2].position = simd_make_float4(0.0, -h, w, 1.0);
-    vtx[3].position = simd_make_float4(0.0, -h, -w, 1.0);
+    vtx[0].position = simd_make_float3(0.0, h, w);
+    vtx[1].position = simd_make_float3(0.0, h, -w);
+    vtx[2].position = simd_make_float3(0.0, -h, w);
+    vtx[3].position = simd_make_float3(0.0, -h, -w);
 
-    vtx[4].position = simd_make_float4(h, -w, 0.0, 1.0);
-    vtx[5].position = simd_make_float4(h, w, 0.0, 1.0);
-    vtx[6].position = simd_make_float4(-h, -w, 0.0, 1.0);
-    vtx[7].position = simd_make_float4(-h, w, 0.0, 1.0);
+    vtx[4].position = simd_make_float3(h, -w, 0.0);
+    vtx[5].position = simd_make_float3(h, w, 0.0);
+    vtx[6].position = simd_make_float3(-h, -w, 0.0);
+    vtx[7].position = simd_make_float3(-h, w, 0.0);
 
-    vtx[8].position = simd_make_float4(-w, 0.0, -h, 1.0);
-    vtx[9].position = simd_make_float4(w, 0.0, -h, 1.0);
-    vtx[10].position = simd_make_float4(-w, 0.0, h, 1.0);
-    vtx[11].position = simd_make_float4(w, 0.0, h, 1.0);
+    vtx[8].position = simd_make_float3(-w, 0.0, -h);
+    vtx[9].position = simd_make_float3(w, 0.0, -h);
+    vtx[10].position = simd_make_float3(-w, 0.0, h);
+    vtx[11].position = simd_make_float3(w, 0.0, h);
 
     ind[0] = (TriangleIndices) { 0, 11, 5 };
     ind[1] = (TriangleIndices) { 0, 5, 1 };
@@ -83,16 +83,16 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
             const SatinVertex v2 = vtx[i2];
 
             // a
-            vtx[j].position = simd_make_float4(v0.position + v1.position) * 0.5;
+            vtx[j].position = (v0.position + v1.position) * 0.5;
             uint32_t a = (uint32_t)j;
             j++;
 
             // b
-            vtx[j].position = simd_make_float4(v1.position + v2.position) * 0.5;
+            vtx[j].position = (v1.position + v2.position) * 0.5;
             uint32_t b = (uint32_t)j;
             j++;
             // c
-            vtx[j].position = simd_make_float4(v2.position + v0.position) * 0.5;
+            vtx[j].position = (v2.position + v0.position) * 0.5;
             uint32_t c = (uint32_t)j;
             j++;
 
@@ -113,9 +113,9 @@ GeometryData generateIcosahedronGeometryData(float radius, int res)
     }
 
     for (int i = 0; i < vertices; i++) {
-        const simd_float4 p = vtx[i].position;
-        vtx[i].normal = simd_normalize(simd_make_float3(p.x, p.y, p.z));
-        vtx[i].uv = simd_make_float2((atan2(p.x, p.z) + M_PI) / (2.0 * M_PI), acos(p.y) / M_PI);
+        const simd_float3 n = simd_normalize(vtx[i].position);
+        vtx[i].normal = n;
+        vtx[i].uv = simd_make_float2((atan2(n.x, n.z) + M_PI) / (2.0 * M_PI), acos(n.y) / M_PI);
     }
 
     return (GeometryData) {

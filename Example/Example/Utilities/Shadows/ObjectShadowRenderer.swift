@@ -101,7 +101,7 @@ class ObjectShadowRenderer {
 
     var materialCache: [Object: Material] = [:]
 
-    var material = BasicColorMaterial(.one, .disabled)
+    var material = BasicColorMaterial(color: .one, blending: .disabled)
 
     init(context: Context,
          object: Object,

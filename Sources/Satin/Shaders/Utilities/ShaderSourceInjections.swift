@@ -50,6 +50,8 @@ public func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescri
     var vertexSource: String?
     if vertexDescriptor == SatinVertexDescriptor() {
         vertexSource = VertexSource.get()
+        print(vertexSource)
+
     } else {
         var attributeDataType: [String] = []
         var attributeName: [String] = []
@@ -103,7 +105,7 @@ public func injectPassThroughVertex(label: String, source: inout String) {
 // MARK: - Instancing
 
 public func injectInstanceMatrixUniforms(source: inout String) {
-    source = source.replacingOccurrences(of: "// inject instance matrix uniforms\n", with: (InstanceMatrixUniformsSource.get() ?? "\n"))
+    source = source.replacingOccurrences(of: "// inject instance matrix uniforms\n", with: InstanceMatrixUniformsSource.get() ?? "\n")
 }
 
 public func injectInstancingArgs(source: inout String, instancing: Bool) {
@@ -198,14 +200,14 @@ public func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, sh
             if i > 0 {
                 injection += "\t"
             }
-            injection += 
-            """
-            #if defined(INSTANCING)
-            out.shadowCoord\(i) = shadowMatrices[\(i)] * instanceUniforms[instanceID].modelMatrix * float4(in.position.xyz, 1.0);\n
-            #else
-            out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms.modelMatrix * float4(in.position.xyz, 1.0);\n
-            #endif\n\n
-            """
+            injection +=
+                """
+                #if defined(INSTANCING)
+                out.shadowCoord\(i) = shadowMatrices[\(i)] * instanceUniforms[instanceID].modelMatrix * float4(in.position.xyz, 1.0);\n
+                #else
+                out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms.modelMatrix * float4(in.position.xyz, 1.0);\n
+                #endif\n\n
+                """
         }
     }
     source = source.replacingOccurrences(of: "// inject shadow vertex calc\n", with: injection)

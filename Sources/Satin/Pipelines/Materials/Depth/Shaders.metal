@@ -23,9 +23,9 @@ vertex DepthVertexData depthVertex
 )
 {
 #if INSTANCING
-    const float4 position = vertexUniforms.viewMatrix * instanceUniforms[instanceID].modelMatrix * v.position;
+    const float4 position = vertexUniforms.viewMatrix * instanceUniforms[instanceID].modelMatrix * float4(v.position, 1.0);
 #else
-    const float4 position = vertexUniforms.modelViewMatrix * v.position;
+    const float4 position = vertexUniforms.modelViewMatrix * float4(v.position, 1.0);
 #endif
     const float z = position.z;
 

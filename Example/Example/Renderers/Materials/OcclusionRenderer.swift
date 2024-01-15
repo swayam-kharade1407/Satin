@@ -16,7 +16,7 @@ class OcclusionRenderer: BaseRenderer {
     var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
         mesh.visible = false
         return mesh
@@ -25,14 +25,14 @@ class OcclusionRenderer: BaseRenderer {
     let occlusionGeometry = BoxGeometry(width: 4.0, height: 1.0, depth: 4.0)
 
     lazy var occlusionMesh: Mesh = {
-        let meshMaterial = BasicColorMaterial(.zero, .disabled)
+        let meshMaterial = BasicColorMaterial(color: .zero, blending: .disabled)
         let mesh = Mesh(
             geometry: occlusionGeometry,
             material: meshMaterial
         )
         mesh.position.y = -0.5
 
-        let wireframeMaterial = BasicColorMaterial(.init(1.0, 1.0, 1.0, 0.5), .additive)
+        let wireframeMaterial = BasicColorMaterial(color: .init(1.0, 1.0, 1.0, 0.5), blending: .additive)
         wireframeMaterial.depthBias = DepthBias(bias: 1.0, slope: 1.0, clamp: 1.0)
         wireframeMaterial.depthWriteEnabled = false
 

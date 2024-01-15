@@ -64,7 +64,7 @@ class TextRenderer: BaseRenderer {
 
         let geo = TesselatedTextGeometry(text: input, fontName: "SFProRounded-Heavy", fontSize: 8)
 
-        let mat = BasicColorMaterial([1.0, 1.0, 1.0, 0.125], .additive)
+        let mat = BasicColorMaterial(color: [1.0, 1.0, 1.0, 0.125], blending: .additive)
         mat.depthWriteEnabled = false
         let mesh = Mesh(geometry: geo, material: mat)
         scene.add(mesh)
@@ -78,7 +78,7 @@ class TextRenderer: BaseRenderer {
 //        let pmesh = Mesh(geometry: pGeo, material: pmat)
 //        scene.add(pmesh)
 
-        let fmat = BasicColorMaterial([1, 1, 1, 0.025], .additive)
+        let fmat = BasicColorMaterial(color: [1, 1, 1, 0.025], blending: .additive)
         fmat.depthWriteEnabled = false
         let fmesh = Mesh(geometry: geo, material: fmat)
         fmesh.triangleFillMode = .lines

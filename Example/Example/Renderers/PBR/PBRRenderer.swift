@@ -96,7 +96,7 @@ class PBRRenderer: BaseRenderer {
         ]
 
         let sphereLightGeo = mesh.geometry
-        let sphereLightMat = BasicColorMaterial(.one, .disabled)
+        let sphereLightMat = BasicColorMaterial(color: .one, blending: .disabled)
         for (index, position) in positions.enumerated() {
             let light = PointLight(color: .one, intensity: 250, radius: 150.0)
             light.position = position

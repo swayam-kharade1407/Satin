@@ -172,7 +172,7 @@ class BufferGeometryRenderer: BaseRenderer {
     lazy var mesh = BufferGeometryMesh(geometry: geometry, material: NormalColorMaterial())
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1
         mesh.visible = false
@@ -275,7 +275,7 @@ class BufferGeometryRenderer: BaseRenderer {
             }
 
             var offset = 0
-            geometry.addAttribute(Float4InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Position)
+            geometry.addAttribute(Float3InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Position)
             offset += MemoryLayout<Float>.size * 4
             geometry.addAttribute(Float3InterleavedBufferAttribute(parent: interleavedBuffer, offset: offset), for: .Normal)
             offset += MemoryLayout<Float>.size * 4

@@ -59,7 +59,7 @@ vertex CustomVertexData instanceVertex(
 
     const float xOffset = ( ( xLimit - 1.0 ) * 0.5 ) * ( w + s );
     const float yOffset = ( yLimit * 0.5 ) * ( h + s );
-    float4 position = in.position;
+    float4 position = float4(in.position, 1.0);
 
     position.xy *= 0.0;
     position.xy += float2( x * ( w + s ) - xOffset, -y * ( h + s ) + yOffset );

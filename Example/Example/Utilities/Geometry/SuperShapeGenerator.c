@@ -65,7 +65,7 @@ GeometryData generateSuperShapeGeometryData(float r1, float a1, float b1, float 
             //            const float y = 2.0 * v - 1.0;
             //            const float z = 0.0;
 
-            vtx[index].position = simd_make_float4(x, y, z, 1.0);
+            vtx[index].position = simd_make_float3(x, y, z);
             vtx[index].uv = simd_make_float2(u, v);
             vtx[index].normal = simd_make_float3(0.0, 0.0, 0.0);
 

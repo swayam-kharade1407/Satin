@@ -35,7 +35,7 @@ class MeshShadowRenderer {
     init(device: MTLDevice, mesh: Mesh, size: (width: Float, height: Float)) {
         self.device = device
 
-        let mat = BasicColorMaterial([0, 0, 0, 0.75], .alpha)
+        let mat = BasicColorMaterial(color: [0, 0, 0, 0.75], blending: .alpha)
 
         shadowMesh = Mesh(geometry: mesh.geometry, material: mat)
         shadowMesh.cullMode = .front

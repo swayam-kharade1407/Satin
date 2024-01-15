@@ -47,7 +47,7 @@ vertex CustomVertexData physicalVertex
     const float4x4 modelMatrix = vertexUniforms.modelMatrix;
 #endif
 
-    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 position = float4(in.position, 1.0);
     const float4 worldPosition = modelMatrix * position;
     CustomVertexData out;
     out.position = vertexUniforms.viewProjectionMatrix * worldPosition;

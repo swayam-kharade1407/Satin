@@ -24,15 +24,39 @@ GeometryData generateLineGeometryData() {
     SatinVertex *vtx = (SatinVertex *)malloc(vertices * sizeof(SatinVertex));
     TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
 
-    vtx[0] = (SatinVertex) { .position = simd_make_float4(-1.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 1.0) };
-    vtx[1] = (SatinVertex) { .position = simd_make_float4(1.0, 1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 1.0) };
-    vtx[2] = (SatinVertex) { .position = simd_make_float4(-1.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(0.0, 0.0) };
-    vtx[3] = (SatinVertex) { .position = simd_make_float4(1.0, -1.0, 0.0, 1.0), .normal = simd_make_float3(0.0, 0.0, 0.0), .uv = simd_make_float2(1.0, 0.0) };
+    vtx[0] = (SatinVertex) {
+        .position = simd_make_float3(-1.0, 1.0, 0.0),
+        .normal = simd_make_float3(0.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[1] = (SatinVertex) {
+        .position = simd_make_float3(1.0, 1.0, 0.0),
+        .normal = simd_make_float3(0.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[2] = (SatinVertex) {
+        .position = simd_make_float3(-1.0, -1.0, 0.0),
+        .normal = simd_make_float3(0.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[3] = (SatinVertex) {
+        .position = simd_make_float3(1.0, -1.0, 0.0),
+        .normal = simd_make_float3(0.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
 
     ind[0] = (TriangleIndices) { .i0 = 2, .i1 = 3, .i2 = 1 };
     ind[1] = (TriangleIndices) { .i0 = 2, .i1 = 1, .i2 = 0 };
 
-    return (GeometryData) { .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind };
+    return (GeometryData) {
+        .vertexCount = vertices,
+        .vertexData = vtx,
+        .indexCount = triangles,
+        .indexData = ind
+    };
 }
 
 GeometryData generateBoxGeometryData(float width, float height, float depth, float centerX,
@@ -71,10 +95,10 @@ GeometryData generateBoxGeometryData(float width, float height, float depth, flo
     const int trianglesPerFaceDepthHeight = resDepth * resHeight * 2;
 
     const int vertices =
-        (verticesPerFaceWidthHeight + verticesPerFaceWidthDepth + verticesPerFaceDepthHeight) * 2;
+    (verticesPerFaceWidthHeight + verticesPerFaceWidthDepth + verticesPerFaceDepthHeight) * 2;
     const int triangles =
-        (trianglesPerFaceWidthHeight + trianglesPerFaceWidthDepth + trianglesPerFaceDepthHeight) *
-        2;
+    (trianglesPerFaceWidthHeight + trianglesPerFaceWidthDepth + trianglesPerFaceDepthHeight) *
+    2;
 
     SatinVertex *vtx = (SatinVertex *)malloc(vertices * sizeof(SatinVertex));
     TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
@@ -97,17 +121,17 @@ GeometryData generateBoxGeometryData(float width, float height, float depth, flo
             const float xPos = fx * widthInc;
             uv.x = fx / resWidthf;
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(-halfWidth + xPos + centerX, yPos + centerY,
-                                                        halfDepth + centerZ, 1.0),
-                           .normal = normal0,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(-halfWidth + xPos + centerX, yPos + centerY, halfDepth + centerZ),
+                .normal = normal0,
+                .uv = uv
+            };
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(halfWidth - xPos + centerX, yPos + centerY,
-                                                        -halfDepth + centerZ, 1.0),
-                           .normal = normal1,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(halfWidth - xPos + centerX, yPos + centerY, -halfDepth + centerZ),
+                .normal = normal1,
+                .uv = uv
+            };
 
             if (x != resWidth && y != resHeight) {
                 const uint32_t findex = vertexOffset + x * 2 + y * perRowWidth * 2;
@@ -146,17 +170,17 @@ GeometryData generateBoxGeometryData(float width, float height, float depth, flo
             const float xPos = -halfWidth + fx * widthInc;
             uv.x = fx / resWidthf;
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(xPos + centerX, halfHeight + centerY,
-                                                        halfDepth - zPos + centerZ, 1.0),
-                           .normal = normal0,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(xPos + centerX, halfHeight + centerY, halfDepth - zPos + centerZ),
+                .normal = normal0,
+                .uv = uv
+            };
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(xPos + centerX, -halfHeight + centerY,
-                                                        -halfDepth + zPos + centerZ, 1.0),
-                           .normal = normal1,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(xPos + centerX, -halfHeight + centerY, -halfDepth + zPos + centerZ),
+                .normal = normal1,
+                .uv = uv
+            };
 
             if (x != resWidth && z != resDepth) {
                 const uint32_t findex = vertexOffset + x * 2 + z * perRowWidth * 2;
@@ -195,17 +219,17 @@ GeometryData generateBoxGeometryData(float width, float height, float depth, flo
             const float zPos = fz * depthInc;
             uv.x = fz / resDepthf;
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(halfWidth + centerX, yPos + centerY,
-                                                        halfDepth - zPos + centerZ, 1.0),
-                           .normal = normal0,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(halfWidth + centerX, yPos + centerY, halfDepth - zPos + centerZ),
+                .normal = normal0,
+                .uv = uv
+            };
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(-halfWidth + centerX, yPos + centerY,
-                                                        -halfDepth + zPos + centerZ, 1.0),
-                           .normal = normal1,
-                           .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(-halfWidth + centerX, yPos + centerY, -halfDepth + zPos + centerZ),
+                .normal = normal1,
+                .uv = uv
+            };
 
             if (y != resHeight && z != resDepth) {
                 const uint32_t findex = vertexOffset + z * 2 + y * perRowDepth * 2;
@@ -267,10 +291,11 @@ GeometryData generateCylinderWallGeometryData(float radius, float height, int an
             const float x = cos(angle);
             const float z = sin(angle);
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(radius * x, y, radius * z, 1.0),
-                           .normal = simd_normalize(simd_make_float3(x, 0.0, z)),
-                           .uv = simd_make_float2(af / angularf, vf / verticalf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(radius * x, y, radius * z),
+                .normal = simd_normalize(simd_make_float3(x, 0.0, z)),
+                .uv = simd_make_float2(af / angularf, vf / verticalf)
+            };
 
             if (v != vertical && a != angular) {
                 const uint32_t index = a + v * perLoop;
@@ -346,27 +371,25 @@ GeometryData generateCapsuleGeometryData(float radius, float height, int angular
             const float z = sinPhi * sinTheta;
             const float y = cosTheta;
 
-            simd_float4 position =
-                simd_make_float4(radius * y + halfHeight, radius * z, radius * x, 1.0);
+            simd_float3 position = simd_make_float3(radius * y + halfHeight, radius * z, radius * x);
             simd_float3 normal = simd_make_float3(y, z, x);
             switch (axis) {
                 case 1:
-                    position =
-                        simd_make_float4(radius * x, radius * y + halfHeight, radius * z, 1.0);
+                    position = simd_make_float3(radius * x, radius * y + halfHeight, radius * z);
                     normal = simd_make_float3(x, y, z);
                     break;
                 case 2:
-                    position =
-                        simd_make_float4(radius * z, radius * x, radius * y + halfHeight, 1.0);
+                    position = simd_make_float3(radius * z, radius * x, radius * y + halfHeight);
                     normal = simd_make_float3(z, x, y);
                     break;
                 default: break;
             }
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = position,
-                           .normal = normal,
-                           .uv = simd_make_float2(pf / phif, remap(y, 0.0, radius, vPerCap + vPerCyl, 1.0)) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = position,
+                .normal = normal,
+                .uv = simd_make_float2(pf / phif, remap(y, 0.0, radius, vPerCap + vPerCyl, 1.0))
+            };
 
             if (p != phi && t != theta) {
 
@@ -399,27 +422,25 @@ GeometryData generateCapsuleGeometryData(float radius, float height, int angular
             const float z = sinPhi * sinTheta;
             const float y = -cosTheta;
 
-            simd_float4 position =
-                simd_make_float4(radius * y - halfHeight, radius * z, radius * x, 1.0);
+            simd_float3 position = simd_make_float3(radius * y - halfHeight, radius * z, radius * x);
             simd_float3 normal = simd_make_float3(y, z, x);
             switch (axis) {
                 case 1:
-                    position =
-                        simd_make_float4(radius * x, radius * y - halfHeight, radius * z, 1.0);
+                    position = simd_make_float3(radius * x, radius * y - halfHeight, radius * z);
                     normal = simd_make_float3(x, y, z);
                     break;
                 case 2:
-                    position =
-                        simd_make_float4(radius * z, radius * x, radius * y - halfHeight, 1.0);
+                    position = simd_make_float3(radius * z, radius * x, radius * y - halfHeight);
                     normal = simd_make_float3(z, x, y);
                     break;
                 default: break;
             }
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = position,
-                           .normal = normal,
-                           .uv = simd_make_float2(pf / phif, remap(y, -radius, 0, 0.0, vPerCap)) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = position,
+                .normal = normal,
+                .uv = simd_make_float2(pf / phif, remap(y, -radius, 0, 0.0, vPerCap))
+            };
 
             if (p != phi && t != theta) {
                 const int index = verticesPerCap + p + t * perLoop;
@@ -448,15 +469,15 @@ GeometryData generateCapsuleGeometryData(float radius, float height, int angular
             const float x = cosPhi;
             const float z = sinPhi;
 
-            simd_float4 position = simd_make_float4(y - halfHeight, radius * z, radius * x, 1.0);
+            simd_float3 position = simd_make_float3(y - halfHeight, radius * z, radius * x);
             simd_float3 normal = simd_make_float3(0, z, x);
             switch (axis) {
                 case 1:
-                    position = simd_make_float4(radius * x, y - halfHeight, radius * z, 1.0);
+                    position = simd_make_float3(radius * x, y - halfHeight, radius * z);
                     normal = simd_make_float3(x, 0, z);
                     break;
                 case 2:
-                    position = simd_make_float4(radius * z, radius * x, y - halfHeight, 1.0);
+                    position = simd_make_float3(radius * z, radius * x, y - halfHeight);
                     normal = simd_make_float3(z, x, 0);
                     break;
                 default: break;
@@ -548,10 +569,11 @@ GeometryData generateConeGeometryData(float radius, float height, int angularRes
             normal = simd_act(quatTilt, normal);
             normal = simd_act(quatRot, normal);
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(x, y, z, 1.0),
-                           .normal = simd_normalize(normal),
-                           .uv = simd_make_float2(af / angularf, 1.0 - vf / verticalf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(x, y, z),
+                .normal = simd_normalize(normal),
+                .uv = simd_make_float2(af / angularf, 1.0 - vf / verticalf)
+            };
 
             if (v != vertical && a != angular) {
                 const uint32_t index = a + v * perLoop;
@@ -576,9 +598,11 @@ GeometryData generateConeGeometryData(float radius, float height, int angularRes
             const float x = rad * cos(angle);
             const float y = rad * sin(angle);
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(x, -height * 0.5, y, 1.0),
-                                            .normal = simd_make_float3(0.0, -1.0, 0.0),
-                                            .uv = simd_make_float2(af / angularf, rf / radialf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(x, -height * 0.5, y),
+                .normal = simd_make_float3(0.0, -1.0, 0.0),
+                .uv = simd_make_float2(af / angularf, rf / radialf)
+            };
 
             if (r != radial && a != angular) {
                 const uint32_t index = verticesPerWall + a + r * perLoop;
@@ -614,7 +638,7 @@ GeometryData generateCylinderGeometryData(float radius, float height, int angula
     const int perLoop = angular + 1;
 
     GeometryData geometry =
-        generateCylinderWallGeometryData(radius, height, angularResolution, verticalResolution);
+    generateCylinderWallGeometryData(radius, height, angularResolution, verticalResolution);
 
     const int verticesPerCircle = perLoop * (radial + 1);
     const int trianglesPerCircle = angular * 2 * radial;
@@ -623,7 +647,7 @@ GeometryData generateCylinderGeometryData(float radius, float height, int angula
 
     SatinVertex *vtx = (SatinVertex *)realloc(geometry.vertexData, vertices * sizeof(SatinVertex));
     TriangleIndices *ind =
-        (TriangleIndices *)realloc(geometry.indexData, triangles * sizeof(TriangleIndices));
+    (TriangleIndices *)realloc(geometry.indexData, triangles * sizeof(TriangleIndices));
 
     int vertexOffset = geometry.vertexCount;
     int vertexIndex = geometry.vertexCount;
@@ -642,11 +666,11 @@ GeometryData generateCylinderGeometryData(float radius, float height, int angula
                 const float x = rad * cos(angle);
                 const float y = rad * sin(angle);
 
-                vtx[vertexIndex++] =
-                    (SatinVertex) { .position = simd_make_float4(x, direction * height * 0.5, y, 1.0),
-                               .normal = simd_make_float3(0.0, direction, 0.0),
-                               .uv = flip ? simd_make_float2(af / angularf, rf / radialf)
-                                          : simd_make_float2(af / angularf, 1.0 - rf / radialf) };
+                vtx[vertexIndex++] = (SatinVertex) {
+                    .position = simd_make_float3(x, direction * height * 0.5, y),
+                    .normal = simd_make_float3(0.0, direction, 0.0),
+                    .uv = flip ? simd_make_float2(af / angularf, rf / radialf) : simd_make_float2(af / angularf, 1.0 - rf / radialf)
+                };
 
                 if (r != radial && a != angular) {
                     const uint32_t index = vertexOffset + a + r * perLoop;
@@ -726,7 +750,7 @@ GeometryData generatePlaneGeometryData(float width, float height, int widthResol
             const float xP = centerXOffset + xf * widthInc;
             const float yP = centerYOffset + yf * heightInc;
 
-            simd_float4 position = simd_make_float4(xP, yP, 0.0, 1.0);
+            simd_float3 position = simd_make_float3(xP, yP, 0.0);
             simd_float3 normal = simd_make_float3(0.0, 0.0, 1.0);
             simd_float2 uv = simd_make_float2(xuv, yuv);
 
@@ -738,23 +762,23 @@ GeometryData generatePlaneGeometryData(float width, float height, int widthResol
                     flip = true;
                     break;
                 case xz: // points in -y direction
-                    position = simd_make_float4(xP, 0.0, yP, 1.0);
+                    position = simd_make_float3(xP, 0.0, yP);
                     normal = simd_make_float3(0.0, -1.0, 0.0);
                     break;
                 case zx: // points in +y direction
-                    position = simd_make_float4(xP, 0.0, yP, 1.0);
+                    position = simd_make_float3(xP, 0.0, yP);
                     normal = simd_make_float3(0.0, 1.0, 0.0);
                     uv.y = 1.0 - uv.y;
                     flip = true;
                     break;
                 case yz: // points in +x direction
-                    position = simd_make_float4(0.0, xP, yP, 1.0);
+                    position = simd_make_float3(0.0, xP, yP);
                     normal = simd_make_float3(1.0, 0.0, 0.0);
                     uv.x = 1.0 - yuv;
                     uv.y = xuv;
                     break;
                 case zy: // points in -x direction
-                    position = simd_make_float4(0.0, xP, yP, 1.0);
+                    position = simd_make_float3(0.0, xP, yP);
                     normal = simd_make_float3(-1.0, 0.0, 0.0);
                     uv.x = yuv;
                     uv.y = xuv;
@@ -763,7 +787,11 @@ GeometryData generatePlaneGeometryData(float width, float height, int widthResol
                 default: break;
             }
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = position, .normal = normal, .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = position,
+                .normal = normal,
+                .uv = uv
+            };
 
             if (x != resWidth && y != resHeight) {
                 const uint32_t index = x + y * perRow;
@@ -819,9 +847,11 @@ GeometryData generateArcGeometryData(float innerRadius, float outerRadius, float
             const float x = rad * cos(angle);
             const float y = rad * sin(angle);
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(x, y, 0.0, 1.0),
-                                            .normal = simd_make_float3(0.0, 0.0, 1.0),
-                                            .uv = simd_make_float2(rf / radialf, af / angularf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(x, y, 0.0),
+                .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2(rf / radialf, af / angularf)
+            };
 
             if (r != radial && a != angular) {
                 const uint32_t index = a + r * perArc;
@@ -884,13 +914,14 @@ GeometryData generateTorusGeometryData(float minorRadius, float majorRadius, int
 
             const simd_float3 tangent = simd_make_float3(-sinSlice, cosSlice, 0.0);
             const simd_float3 stangent =
-                simd_make_float3(cosSlice * (-sinAngle), sinSlice * (-sinAngle), cosAngle);
+            simd_make_float3(cosSlice * (-sinAngle), sinSlice * (-sinAngle), cosAngle);
             const simd_float3 normal = simd_cross(tangent, stangent);
 
-            vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(x, z, y, 1.0),
-                           .normal = simd_normalize(simd_make_float3(normal.x, normal.z, normal.y)),
-                           .uv = simd_make_float2(af / angularf, sf / slicesf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(x, z, y),
+                .normal = simd_normalize(simd_make_float3(normal.x, normal.z, normal.y)),
+                .uv = simd_make_float2(af / angularf, sf / slicesf)
+            };
 
             if (s != slices && a != angular) {
                 const uint32_t index = a + s * perLoop;
@@ -921,83 +952,158 @@ GeometryData generateSkyboxGeometryData(float size) {
     TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
 
     // +Y
-    vtx[0] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, -1.0, 0.0),
-                        .uv = simd_make_float2(1.0, 1.0) };
-    vtx[1] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, -1.0, 0.0),
-                        .uv = simd_make_float2(0.0, 1.0) };
-    vtx[2] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, -halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, -1.0, 0.0),
-                        .uv = simd_make_float2(0.0, 0.0) };
-    vtx[3] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, -halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, -1.0, 0.0),
-                        .uv = simd_make_float2(1.0, 0.0) };
+
+    vtx[0] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(0.0, -1.0, 0.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[1] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(0.0, -1.0, 0.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[2] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, -1.0, 0.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[3] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, -1.0, 0.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
+
     // -Y
-    vtx[4] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 1.0, 0.0),
-                        .uv = simd_make_float2(1.0, 1.0) };
-    vtx[5] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 1.0, 0.0),
-                        .uv = simd_make_float2(0.0, 1.0) };
-    vtx[6] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, -halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 1.0, 0.0),
-                        .uv = simd_make_float2(0.0, 0.0) };
-    vtx[7] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, -halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 1.0, 0.0),
-                        .uv = simd_make_float2(1.0, 0.0) };
+
+    vtx[4] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 1.0, 0.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[5] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 1.0, 0.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[6] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 1.0, 0.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[7] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 1.0, 0.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
+
     // +Z
-    vtx[8] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, -1.0),
-                        .uv = simd_make_float2(1.0, 1.0) };
-    vtx[9] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, halfSize, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, -1.0),
-                        .uv = simd_make_float2(0.0, 1.0) };
-    vtx[10] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, -1.0),
-                         .uv = simd_make_float2(0.0, 0.0) };
-    vtx[11] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, -1.0),
-                         .uv = simd_make_float2(1.0, 0.0) };
+
+    vtx[8] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 0.0, -1.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[9] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 0.0, -1.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[10] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 0.0, -1.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[11] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(0.0, 0.0, -1.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
+
     // -Z
-    vtx[12] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                         .uv = simd_make_float2(1.0, 1.0) };
-    vtx[13] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                         .uv = simd_make_float2(0.0, 1.0) };
-    vtx[14] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                         .uv = simd_make_float2(0.0, 0.0) };
-    vtx[15] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                         .uv = simd_make_float2(1.0, 0.0) };
+
+    vtx[12] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[13] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[14] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[15] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
+
     // -X
-    vtx[16] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(1.0, 1.0) };
-    vtx[17] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(0.0, 1.0) };
-    vtx[18] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(0.0, 0.0) };
-    vtx[19] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(1.0, 0.0) };
+    vtx[16] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(1.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[17] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(1.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[18] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(1.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[19] = (SatinVertex) {
+        .position = simd_make_float3(-halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(1.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
+
     // +X
-    vtx[20] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(-1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(1.0, 1.0) };
-    vtx[21] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(-1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(0.0, 1.0) };
-    vtx[22] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, -halfSize, 1.0),
-                         .normal = simd_make_float3(-1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(0.0, 0.0) };
-    vtx[23] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, halfSize, 1.0),
-                         .normal = simd_make_float3(-1.0, 0.0, 0.0),
-                         .uv = simd_make_float2(1.0, 0.0) };
+    vtx[20] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, halfSize),
+        .normal = simd_make_float3(-1.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 1.0)
+    };
+
+    vtx[21] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, -halfSize, -halfSize),
+        .normal = simd_make_float3(-1.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 1.0)
+    };
+
+    vtx[22] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, -halfSize),
+        .normal = simd_make_float3(-1.0, 0.0, 0.0),
+        .uv = simd_make_float2(0.0, 0.0)
+    };
+
+    vtx[23] = (SatinVertex) {
+        .position = simd_make_float3(halfSize, halfSize, halfSize),
+        .normal = simd_make_float3(-1.0, 0.0, 0.0),
+        .uv = simd_make_float2(1.0, 0.0)
+    };
 
     ind[0] = (TriangleIndices) { .i0 = 0, .i1 = 3, .i2 = 2 };
     ind[1] = (TriangleIndices) { .i0 = 2, .i1 = 1, .i2 = 0 };
@@ -1047,9 +1153,11 @@ GeometryData generateCircleGeometryData(float radius, int angularResolution, int
             const float x = rad * cos(angle);
             const float y = rad * sin(angle);
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(x, y, 0.0, 1.0),
-                                            .normal = simd_make_float3(0.0, 0.0, 1.0),
-                                            .uv = simd_make_float2(rf / radialf, af / angularf) };
+            vtx[vertexIndex++] = (SatinVertex) {
+                .position = simd_make_float3(x, y, 0.0),
+                .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2(rf / radialf, af / angularf)
+            };
 
             if (r != radial && a != angular) {
                 const uint32_t index = a + r * perLoop;
@@ -1066,7 +1174,10 @@ GeometryData generateCircleGeometryData(float radius, int angularResolution, int
     }
 
     return (GeometryData) {
-        .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind
+        .vertexCount = vertices,
+        .vertexData = vtx,
+        .indexCount = triangles,
+        .indexData = ind
     };
 }
 
@@ -1080,21 +1191,21 @@ GeometryData generateTriangleGeometryData(float size) {
     const float twoPi = M_PI * 2.0;
     float angle = 0.0;
     vtx[0] =
-        (SatinVertex) { .position = simd_make_float4(size * sin(angle), size * cos(angle), 0.0, 1.0),
-                   .normal = simd_make_float3(0.0, 0.0, 1.0),
-                   .uv = simd_make_float2(0, 0) };
+    (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0, 0) };
 
     angle = twoPi / 3.0;
     vtx[1] =
-        (SatinVertex) { .position = simd_make_float4(size * sin(angle), size * cos(angle), 0.0, 1.0),
-                   .normal = simd_make_float3(0.0, 0.0, 1.0),
-                   .uv = simd_make_float2(0, 1) };
+    (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0, 1) };
 
     angle = 2.0 * twoPi / 3.0;
     vtx[2] =
-        (SatinVertex) { .position = simd_make_float4(size * sin(angle), size * cos(angle), 0.0, 1.0),
-                   .normal = simd_make_float3(0.0, 0.0, 1.0),
-                   .uv = simd_make_float2(1, 0) };
+    (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(1, 0) };
 
     ind[0] = (TriangleIndices) { .i0 = 0, .i1 = 2, .i2 = 1 };
 
@@ -1112,21 +1223,21 @@ GeometryData generateQuadGeometryData(float size) {
     SatinVertex *vtx = (SatinVertex *)malloc(vertices * sizeof(SatinVertex));
     TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
 
-    vtx[0] = (SatinVertex) { .position = simd_make_float4(-halfSize, -halfSize, 0.0, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(0.0, 1.0) };
+    vtx[0] = (SatinVertex) { .position = simd_make_float3(-halfSize, -halfSize, 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0.0, 1.0) };
 
-    vtx[1] = (SatinVertex) { .position = simd_make_float4(halfSize, -halfSize, 0.0, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(1.0, 1.0) };
+    vtx[1] = (SatinVertex) { .position = simd_make_float3(halfSize, -halfSize, 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(1.0, 1.0) };
 
-    vtx[2] = (SatinVertex) { .position = simd_make_float4(halfSize, halfSize, 0.0, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(1.0, 0.0) };
+    vtx[2] = (SatinVertex) { .position = simd_make_float3(halfSize, halfSize, 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(1.0, 0.0) };
 
-    vtx[3] = (SatinVertex) { .position = simd_make_float4(-halfSize, halfSize, 0.0, 1.0),
-                        .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(0.0, 0.0) };
+    vtx[3] = (SatinVertex) { .position = simd_make_float3(-halfSize, halfSize, 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+        .uv = simd_make_float2(0.0, 0.0) };
 
     ind[0] = (TriangleIndices) { .i0 = 0, .i1 = 1, .i2 = 2 };
     ind[1] = (TriangleIndices) { .i0 = 0, .i1 = 2, .i2 = 3 };
@@ -1179,9 +1290,9 @@ GeometryData generateSphereGeometryData(float radius, int angularResolution,
             const float z = radiusTimesSinTheta * sinPhi;
 
             vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(x, y, z, 1.0),
-                           .normal = simd_normalize(simd_make_float3(x, y, z)),
-                           .uv = simd_make_float2(pf / phif, 1.0 - (layerf / layersf)) };
+            (SatinVertex) { .position = simd_make_float3(x, y, z),
+                    .normal = simd_normalize(simd_make_float3(x, y, z)),
+                .uv = simd_make_float2(pf / phif, 1.0 - (layerf / layersf)) };
 
             if (p != phi && layer != layers) {
                 const uint32_t index = p + layer * perLoop;
@@ -1215,20 +1326,20 @@ GeometryData generateIcoSphereGeometryData(float radius, int res) {
     SatinVertex *vtx = (SatinVertex *)malloc(vertices * sizeof(SatinVertex));
     TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
 
-    vtx[0].position = simd_make_float4(0.0, h, w, 1.0);
-    vtx[1].position = simd_make_float4(0.0, h, -w, 1.0);
-    vtx[2].position = simd_make_float4(0.0, -h, w, 1.0);
-    vtx[3].position = simd_make_float4(0.0, -h, -w, 1.0);
+    vtx[0].position = simd_make_float3(0.0, h, w);
+    vtx[1].position = simd_make_float3(0.0, h, -w);
+    vtx[2].position = simd_make_float3(0.0, -h, w);
+    vtx[3].position = simd_make_float3(0.0, -h, -w);
 
-    vtx[4].position = simd_make_float4(h, -w, 0.0, 1.0);
-    vtx[5].position = simd_make_float4(h, w, 0.0, 1.0);
-    vtx[6].position = simd_make_float4(-h, -w, 0.0, 1.0);
-    vtx[7].position = simd_make_float4(-h, w, 0.0, 1.0);
+    vtx[4].position = simd_make_float3(h, -w, 0.0);
+    vtx[5].position = simd_make_float3(h, w, 0.0);
+    vtx[6].position = simd_make_float3(-h, -w, 0.0);
+    vtx[7].position = simd_make_float3(-h, w, 0.0);
 
-    vtx[8].position = simd_make_float4(-w, 0.0, -h, 1.0);
-    vtx[9].position = simd_make_float4(w, 0.0, -h, 1.0);
-    vtx[10].position = simd_make_float4(-w, 0.0, h, 1.0);
-    vtx[11].position = simd_make_float4(w, 0.0, h, 1.0);
+    vtx[8].position = simd_make_float3(-w, 0.0, -h);
+    vtx[9].position = simd_make_float3(w, 0.0, -h);
+    vtx[10].position = simd_make_float3(-w, 0.0, h);
+    vtx[11].position = simd_make_float3(w, 0.0, h);
 
     ind[0] = (TriangleIndices) { 0, 11, 5 };
     ind[1] = (TriangleIndices) { 0, 5, 1 };
@@ -1276,20 +1387,20 @@ GeometryData generateIcoSphereGeometryData(float radius, int res) {
             // a
             pos = simd_make_float3(v0.position + v1.position) * 0.5;
             pos = simd_normalize(pos) * radius;
-            vtx[j].position = simd_make_float4(pos, 1.0);
+            vtx[j].position = pos;
             uint32_t a = (uint32_t)j;
             j++;
 
             // b
             pos = simd_make_float3(v1.position + v2.position) * 0.5;
             pos = simd_normalize(pos) * radius;
-            vtx[j].position = simd_make_float4(pos, 1.0);
+            vtx[j].position = pos;
             uint32_t b = (uint32_t)j;
             j++;
             // c
             pos = simd_make_float3(v2.position + v0.position) * 0.5;
             pos = simd_normalize(pos) * radius;
-            vtx[j].position = simd_make_float4(pos, 1.0);
+            vtx[j].position = pos;
             uint32_t c = (uint32_t)j;
             j++;
 
@@ -1310,8 +1421,7 @@ GeometryData generateIcoSphereGeometryData(float radius, int res) {
     }
 
     for (int i = 0; i < vertices; i++) {
-        const simd_float4 p = vtx[i].position;
-        const simd_float3 n = simd_normalize(simd_make_float3(p));
+        const simd_float3 n = simd_normalize(vtx[i].position);
         vtx[i].normal = n;
         vtx[i].uv = simd_make_float2((atan2(n.x, n.z) + M_PI) / (2.0 * M_PI), acos(n.y) / M_PI);
     }
@@ -1357,7 +1467,7 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
         const int segments = n - 1 - v;
 
         vtx[vertexIndex++] =
-            (SatinVertex) { .position = simd_make_float4(radius * a, 1.0), .normal = normal, .uv = uv };
+        (SatinVertex) { .position = radius * a, .normal = normal, .uv = uv };
 
         if (segments > 0) {
             const float angle = acos(simd_dot(a, b));
@@ -1368,14 +1478,14 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
                 const float sf = (float)s;
                 const simd_quatf quat = simd_quaternion(sf * angleInc, axis);
                 const simd_float3 p = simd_act(quat, a);
-                vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(radius * p, 1.0),
-                                                .normal = normal,
-                                                .uv = uv };
+                vtx[vertexIndex++] = (SatinVertex) { .position = radius * p,
+                        .normal = normal,
+                    .uv = uv };
             }
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(radius * b, 1.0),
-                                            .normal = normal,
-                                            .uv = uv };
+            vtx[vertexIndex++] = (SatinVertex) { .position = radius * b,
+                    .normal = normal,
+                .uv = uv };
         }
     }
 
@@ -1388,9 +1498,9 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
         const int j3 = j0 + col_height + 2;
         for (int row = 0; row < col_height - 1; row++) {
             ind[triangleIndex++] =
-                (TriangleIndices) { .i0 = uint32_t(j0 + row), .i1 = uint32_t(j1 + row), .i2 = uint32_t(j2 + row) };
+            (TriangleIndices) { .i0 = uint32_t(j0 + row), .i1 = uint32_t(j1 + row), .i2 = uint32_t(j2 + row) };
             ind[triangleIndex++] =
-                (TriangleIndices) { .i0 = uint32_t(j2) + row, .i1 = uint32_t(j1 + row), .i2 = uint32_t(j3 + row) };
+            (TriangleIndices) { .i0 = uint32_t(j2) + row, .i1 = uint32_t(j1 + row), .i2 = uint32_t(j3 + row) };
         }
         const int row = col_height - 1;
         ind[triangleIndex++] = (TriangleIndices) { .i0 = uint32_t(j0 + row), .i1 = uint32_t(j1 + row), .i2 = uint32_t(j2 + row) };
@@ -1405,7 +1515,7 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
         GeometryData copied;
         copyGeometryData(&copied, &geoData);
         transformGeometryData(
-            &copied, simd_matrix4x4(simd_quaternion(M_PI_2, simd_make_float3(0.0, 1.0, 0.0))));
+                              &copied, simd_matrix4x4(simd_quaternion(M_PI_2, simd_make_float3(0.0, 1.0, 0.0))));
         combineGeometryData(&geoData, &copied);
         freeGeometryData(&copied);
     }
@@ -1414,7 +1524,7 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
         GeometryData copied;
         copyGeometryData(&copied, &geoData);
         transformGeometryData(
-            &copied, simd_matrix4x4(simd_quaternion(M_PI, simd_make_float3(0.0, 1.0, 0.0))));
+                              &copied, simd_matrix4x4(simd_quaternion(M_PI, simd_make_float3(0.0, 1.0, 0.0))));
         combineGeometryData(&geoData, &copied);
         freeGeometryData(&copied);
     }
@@ -1423,17 +1533,16 @@ GeometryData generateOctaSphereGeometryData(float radius, int res) {
         GeometryData copied;
         copyGeometryData(&copied, &geoData);
         transformGeometryData(
-            &copied, simd_matrix4x4(simd_quaternion(M_PI, simd_make_float3(1.0, 0.0, 0.0))));
+                              &copied, simd_matrix4x4(simd_quaternion(M_PI, simd_make_float3(1.0, 0.0, 0.0))));
         combineGeometryData(&geoData, &copied);
         freeGeometryData(&copied);
     }
 
     for (int i = 0; i < geoData.vertexCount; i++) {
-        const simd_float4 p = geoData.vertexData[i].position;
-        const simd_float3 n = simd_normalize(simd_make_float3(p.x, p.y, p.z));
+        const simd_float3 n = simd_normalize(geoData.vertexData[i].position);
         geoData.vertexData[i].normal = n;
         geoData.vertexData[i].uv =
-            simd_make_float2((atan2(n.x, n.z) + M_PI) / (2.0 * M_PI), acos(n.y) / M_PI);
+        simd_make_float2((atan2(n.x, n.z) + M_PI) / (2.0 * M_PI), acos(n.y) / M_PI);
     }
 
     return geoData;
@@ -1472,9 +1581,9 @@ GeometryData generateSquircleGeometryData(float size, float p, int angularResolu
             const float x = radius * phi * cost;
             const float y = radius * phi * sint;
 
-            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(x, y, 0.0, 1.0),
-                                            .normal = simd_make_float3(0.0, 0.0, 1.0),
-                                            .uv = simd_make_float2(t, k) };
+            vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float3(x, y, 0.0),
+                    .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2(t, k) };
 
             if (r != radial && a != angular) {
                 const uint32_t index = a + r * perLoop;
@@ -1549,7 +1658,7 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float t = (float)i / edgeYMinusOnef;
             const simd_float2 pos = simd_mix(start, end, t);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1567,9 +1676,9 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float x = radius * cos(theta);
             const float y = radius * sin(theta);
             const simd_float2 pos =
-                simd_make_float2(widthHalf - radius + x, heightHalf - radius + y);
+            simd_make_float2(widthHalf - radius + x, heightHalf - radius + y);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1587,7 +1696,7 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float t = (float)i / edgeXMinusOnef;
             const simd_float2 pos = simd_mix(start, end, t);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1605,9 +1714,9 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float x = radius * cos(theta);
             const float y = radius * sin(theta);
             const simd_float2 pos =
-                simd_make_float2(-widthHalf + radius + x, heightHalf - radius + y);
+            simd_make_float2(-widthHalf + radius + x, heightHalf - radius + y);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1625,7 +1734,7 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float t = (float)i / edgeYMinusOnef;
             const simd_float2 pos = simd_mix(start, end, t);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1643,9 +1752,9 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float x = radius * cos(theta);
             const float y = radius * sin(theta);
             const simd_float2 pos =
-                simd_make_float2(-widthHalf + radius + x, -heightHalf + radius + y);
+            simd_make_float2(-widthHalf + radius + x, -heightHalf + radius + y);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1663,7 +1772,7 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float t = (float)i / edgeXMinusOnef;
             const simd_float2 pos = simd_mix(start, end, t);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             const float angle = angle2(pos);
@@ -1681,9 +1790,9 @@ GeometryData generateRoundedRectGeometryData(float width, float height, float ra
             const float x = radius * cos(theta);
             const float y = radius * sin(theta);
             const simd_float2 pos =
-                simd_make_float2(widthHalf - radius + x, -heightHalf + radius + y);
+            simd_make_float2(widthHalf - radius + x, -heightHalf + radius + y);
 
-            vtx[vertexIndex].position = simd_make_float4(n * pos, 0.0, 1.0);
+            vtx[vertexIndex].position = simd_make_float3(n * pos, 0.0);
             vtx[vertexIndex].normal = normal;
 
             float angle = angle2(pos);
@@ -1723,8 +1832,8 @@ GeometryData generateExtrudedRoundedRectGeometryData(float width, float height, 
                                                      int edgeXResolution, int edgeYResolution,
                                                      int edgeZResolution, int radialResolution) {
     GeometryData faceData =
-        generateRoundedRectGeometryData(width, height, radius, angularResolution, edgeXResolution,
-                                        edgeYResolution, radialResolution);
+    generateRoundedRectGeometryData(width, height, radius, angularResolution, edgeXResolution,
+                                    edgeYResolution, radialResolution);
 
     GeometryData result = createGeometryData();
 
@@ -1771,12 +1880,12 @@ GeometryData generateExtrudedRoundedRectGeometryData(float width, float height, 
             int curr = i;
             int next = (i + 1) % perLoop;
 
-            simd_float4 prevPos = edgeData.vertexData[prev].position;
-            simd_float4 currPos = edgeData.vertexData[curr].position;
-            simd_float4 nextPos = edgeData.vertexData[next].position;
+            simd_float3 prevPos = edgeData.vertexData[prev].position;
+            simd_float3 currPos = edgeData.vertexData[curr].position;
+            simd_float3 nextPos = edgeData.vertexData[next].position;
 
-            simd_float4 d0 = prevPos - currPos;
-            simd_float4 d1 = currPos - nextPos;
+            simd_float3 d0 = prevPos - currPos;
+            simd_float3 d1 = currPos - nextPos;
 
             d0 += d1;
             edgeData.vertexData[i].normal = simd_normalize(simd_make_float3(-d0.y, d0.x, 0.0));
@@ -1844,9 +1953,9 @@ GeometryData generateTubeGeometryData(float radius, float height, float startAng
             const float z = sin(angle);
 
             vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(radius * x, y, radius * z, 1.0),
-                           .normal = simd_normalize(simd_make_float3(x, 0.0, z)),
-                           .uv = simd_make_float2(af / angularf, vf / verticalf) };
+            (SatinVertex) { .position = simd_make_float3(radius * x, y, radius * z),
+                    .normal = simd_normalize(simd_make_float3(x, 0.0, z)),
+                .uv = simd_make_float2(af / angularf, vf / verticalf) };
 
             if (v != vertical && a != angular) {
                 const uint32_t index = a + v * perLoop;
@@ -2078,7 +2187,7 @@ GeometryData generateRoundedBoxGeometryData(float width, float height, float dep
         const int segments = n - 1 - v;
 
         vtx[vertexIndex++] =
-            (SatinVertex) { .position = simd_make_float4(r * a, 1.0), .normal = normal, .uv = uv };
+        (SatinVertex) { .position = r * a, .normal = normal, .uv = uv };
 
         if (segments > 0) {
             const float angle = acos(simd_dot(a, b));
@@ -2089,13 +2198,13 @@ GeometryData generateRoundedBoxGeometryData(float width, float height, float dep
                 const float sf = (float)s;
                 const simd_quatf quat = simd_quaternion(sf * angleInc, axis);
                 const simd_float3 p = simd_act(quat, a);
-                vtx[vertexIndex++] = (SatinVertex) { .position = simd_make_float4(r * p, 1.0),
-                                                .normal = normal,
-                                                .uv = uv };
+                vtx[vertexIndex++] = (SatinVertex) { .position = r * p,
+                        .normal = normal,
+                    .uv = uv };
             }
 
             vtx[vertexIndex++] =
-                (SatinVertex) { .position = simd_make_float4(r * b, 1.0), .normal = normal, .uv = uv };
+            (SatinVertex) { .position = r * b, .normal = normal, .uv = uv };
         }
     }
 

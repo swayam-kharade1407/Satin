@@ -1045,14 +1045,14 @@ int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gDa
             const float uv = (float)j / lengthMinusOne;
             // front vertex
             extrudeData.vertexData[j] = (SatinVertex) {
-                .position = simd_make_float4(pt.x, pt.y, 1.0, 1.0),
+                .position = simd_make_float3(pt.x, pt.y, 1.0),
                 .normal = simd_make_float3(0.0, 0.0, 0.0),
                 .uv = simd_make_float2(uv, 0.0)
             };
 
             // rear vertex
             extrudeData.vertexData[j + length] = (SatinVertex) {
-                .position = simd_make_float4(pt.x, pt.y, -1.0, 1.0),
+                .position = simd_make_float3(pt.x, pt.y, -1.0),
                 .normal = simd_make_float3(0.0, 0.0, 0.0),
                 .uv = simd_make_float2(uv, 1.0)
             };

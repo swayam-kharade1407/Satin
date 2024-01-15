@@ -77,7 +77,7 @@ vertex RayMarchedData rayMarchedVertex( Vertex in [[stage_in]],
     const float cameraB = (far * near) / cameraDelta;
 
     RayMarchedData out;
-    out.position = in.position;
+    out.position = float4(in.position, 1.0);
     auto pos = out.position.xy / out.position.w;
     out.far = inverseModelViewProjectionMatrix * float4(pos, +1.0, 1.0);
     out.cameraDepth = float2(cameraA, cameraB);

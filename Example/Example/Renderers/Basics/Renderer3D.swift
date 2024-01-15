@@ -17,7 +17,7 @@ class Renderer3D: BaseRenderer {
     var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial([0.0, 1.0, 0.0, 1.0], .disabled))
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1
         mesh.visible = false

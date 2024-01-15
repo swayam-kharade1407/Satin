@@ -88,7 +88,7 @@ public final class ParametricGeometry: Geometry {
         var offset = 0
 
         addAttribute(
-            Float4InterleavedBufferAttribute(
+            Float3InterleavedBufferAttribute(
                 parent: interleavedBuffer,
                 offset: offset
             ),
@@ -181,7 +181,7 @@ public final class ParametricGeometry: Geometry {
 
                 vertexData.append(
                     SatinVertex(
-                        position: simd_make_float4(pos, 1.0),
+                        position: pos,
                         normal: normal,
                         uv: simd_make_float2(uf / ruf, vf / rvf)
                     )

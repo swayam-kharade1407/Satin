@@ -16,7 +16,7 @@ extension SatinVertex: Codable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let position = try values.decode(simd_float4.self, forKey: .position)
+        let position = try values.decode(simd_float3.self, forKey: .position)
         let normal = try values.decode(simd_float3.self, forKey: .normal)
         let uv = try values.decode(simd_float2.self, forKey: .uv)
         self.init(position: position, normal: normal, uv: uv)

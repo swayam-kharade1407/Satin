@@ -84,8 +84,7 @@ vertex CustomVertexData tessellatedVertex
     Vertex p01 = patch.controlPoints[1];
     Vertex p10 = patch.controlPoints[2];
 
-
-    float4 position = baryinterp(p00.position, p01.position, p10.position, positionInPatch);
+    float3 position = baryinterp(p00.position, p01.position, p10.position, positionInPatch);
     float3 normal = baryinterp(p00.normal, p01.normal, p10.normal, positionInPatch);
     float2 texcoord = baryinterp(p00.texcoord, p01.texcoord, p10.texcoord, positionInPatch);
 
@@ -93,10 +92,10 @@ vertex CustomVertexData tessellatedVertex
     const float sdfy = Line(positionInPatch, float3(0.0, 1.0, 0.0), float3(0.0, 0.0, 0.0));
     const float sdfz = Line(positionInPatch, float3(0.0, 0.0, 1.0), float3(0.0, 0.0, 0.0));
     const float len = 1.0 - (sdfx + sdfy + sdfz);
-    position.xyz += uniforms.amplitude * pow(len, 2.0) * normal;
+    position += uniforms.amplitude * pow(len, 2.0) * normal;
 
     CustomVertexData out;
-    out.position = vertexUniforms.modelViewProjectionMatrix * position;
+    out.position = vertexUniforms.modelViewProjectionMatrix * float4(position, 1.0);
     out.normal = vertexUniforms.normalMatrix * normal;
     out.texcoord = texcoord;
     out.patch = patch_id;

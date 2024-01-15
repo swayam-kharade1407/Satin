@@ -17,7 +17,7 @@ class CameraControllerRenderer: BaseRenderer {
 
     lazy var grid: Object = {
         let object = Object()
-        let material = BasicColorMaterial(simd_make_float4(1.0, 1.0, 1.0, 1.0))
+        let material = BasicColorMaterial(color: simd_make_float4(1.0, 1.0, 1.0, 1.0))
         let intervals = 5
         let intervalsf = Float(intervals)
         let geometryX = CapsuleGeometry(radius: 0.005, height: intervalsf, axis: .x)
@@ -42,9 +42,9 @@ class CameraControllerRenderer: BaseRenderer {
         let intervalsf = Float(intervals)
         let radius = Float(0.005)
         let height = intervalsf
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .x), material: BasicColorMaterial(simd_make_float4(1.0, 0.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(simd_make_float4(0.0, 1.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(simd_make_float4(0.0, 0.0, 1.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .x), material: BasicColorMaterial(color: simd_make_float4(1.0, 0.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(color: simd_make_float4(0.0, 1.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(color: simd_make_float4(0.0, 0.0, 1.0, 1.0))))
         return object
     }()
 

@@ -12,7 +12,7 @@ vertex CustomVertexData customVertex( Vertex v [[stage_in]],
     constant VertexUniforms &uniforms
     [[buffer( VertexBufferVertexUniforms )]] )
 {
-    const float4 position = v.position;
+    const float4 position = float4(v.position, 1.0);
     CustomVertexData out;
     out.position = uniforms.projectionMatrix * uniforms.modelViewMatrix * position;
     out.texcoord = v.texcoord;

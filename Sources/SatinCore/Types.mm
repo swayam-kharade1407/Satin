@@ -132,7 +132,7 @@ void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, Geo
         for(int j = 0; j < pathLength; j++) {
             simd_float2 pt = subpath[j];
             geoData->vertexData[index++] = (SatinVertex) {
-                .position = simd_make_float4(pt.x, pt.y, 0.0, 1.0),
+                .position = simd_make_float3(pt.x, pt.y, 0.0),
                 .normal = simd_make_float3(0.0, 0.0, 1.0),
                 .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
             };
@@ -243,7 +243,7 @@ void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_fl
             memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
                    src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
-                dest->vertexData[i].position += simd_make_float4(offset.x, offset.y, offset.z, 0.0);
+                dest->vertexData[i].position += offset;
             }
             dest->vertexCount += src->vertexCount;
         }
@@ -251,7 +251,7 @@ void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_fl
             dest->vertexData = (SatinVertex *)malloc(src->vertexCount * sizeof(SatinVertex));
             memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = 0; i < src->vertexCount; i++) {
-                dest->vertexData[i].position += simd_make_float4(offset.x, offset.y, offset.z, 0.0);
+                dest->vertexData[i].position += offset;
             }
             dest->vertexCount = src->vertexCount;
         }
@@ -271,7 +271,7 @@ void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_flo
             memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
                    src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
-                dest->vertexData[i].position *= simd_make_float4(scale.x, scale.y, scale.z, 1.0);
+                dest->vertexData[i].position *= scale;
             }
             dest->vertexCount += src->vertexCount;
         }
@@ -279,7 +279,7 @@ void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_flo
             dest->vertexData = (SatinVertex *)malloc(src->vertexCount * sizeof(SatinVertex));
             memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = 0; i < src->vertexCount; i++) {
-                dest->vertexData[i].position *= simd_make_float4(scale.x, scale.y, scale.z, 1.0);
+                dest->vertexData[i].position *= scale;
             }
             dest->vertexCount = src->vertexCount;
         }
@@ -300,8 +300,8 @@ void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src,
             memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
                    src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
-                dest->vertexData[i].position *= simd_make_float4(scale.x, scale.y, scale.z, 1.0);
-                dest->vertexData[i].position += simd_make_float4(offset.x, offset.y, offset.z, 0.0);
+                dest->vertexData[i].position *= scale;
+                dest->vertexData[i].position += offset;
             }
             dest->vertexCount += src->vertexCount;
         }
@@ -309,8 +309,8 @@ void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src,
             dest->vertexData = (SatinVertex *)malloc(src->vertexCount * sizeof(SatinVertex));
             memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = 0; i < src->vertexCount; i++) {
-                dest->vertexData[i].position *= simd_make_float4(scale.x, scale.y, scale.z, 1.0);
-                dest->vertexData[i].position += simd_make_float4(offset.x, offset.y, offset.z, 0.0);
+                dest->vertexData[i].position *= scale;
+                dest->vertexData[i].position += offset;
             }
             dest->vertexCount = src->vertexCount;
         }
@@ -334,7 +334,7 @@ void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src, simd
             memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
                    src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
-                dest->vertexData[i].position = simd_mul(transform, dest->vertexData[i].position);
+                dest->vertexData[i].position = simd_make_float3(simd_mul(transform, simd_make_float4(dest->vertexData[i].position, 1.0)));
                 dest->vertexData[i].normal = simd_mul(rot, dest->vertexData[i].normal);
             }
             dest->vertexCount += src->vertexCount;
@@ -343,7 +343,7 @@ void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src, simd
             dest->vertexData = (SatinVertex *)malloc(src->vertexCount * sizeof(SatinVertex));
             memcpy(dest->vertexData, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = 0; i < src->vertexCount; i++) {
-                dest->vertexData[i].position = simd_mul(transform, dest->vertexData[i].position);
+                dest->vertexData[i].position = simd_make_float3(simd_mul(transform, simd_make_float4(dest->vertexData[i].position, 1.0)));
                 dest->vertexData[i].normal = simd_mul(rot, dest->vertexData[i].normal);
             }
             dest->vertexCount = src->vertexCount;
@@ -468,7 +468,7 @@ void transformVertices(SatinVertex *vertices, int vertexCount, simd_float4x4 tra
                     simd_make_float3(rotation.columns[2]));
     int count = vertexCount;
     for (int i = 0; i < count; i++) {
-        vertices[i].position = simd_mul(transform, vertices[i].position);
+        vertices[i].position = simd_make_float3(simd_mul(transform, simd_make_float4(vertices[i].position, 1.0)));
         vertices[i].normal = simd_mul(rot, vertices[i].normal);
     }
 }

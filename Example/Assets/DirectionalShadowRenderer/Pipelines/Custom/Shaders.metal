@@ -10,7 +10,7 @@ vertex VertexData customVertex
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
 )
 {
-    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 position = float4(in.position, 1.0);
 
     VertexData out;
 #if INSTANCING

@@ -19,7 +19,7 @@ typedef struct {
 
 vertex CustomVertexData fxaaVertex( Vertex in [[stage_in]],
                               constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]) {
-    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 position = float4(in.position, 1.0);
 
     CustomVertexData out;
     out.position = vertexUniforms.modelViewProjectionMatrix * position;

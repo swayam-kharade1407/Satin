@@ -1,4 +1,4 @@
-#include "../../Library/Shapes.metal"
+#include "../../Library/Shapes/Circle.metal"
 
 typedef struct {
     float4 color;    // color
@@ -16,7 +16,7 @@ vertex CustomVertexData basicPointVertex(Vertex in [[stage_in]],
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
     constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]) {
 
-    const float4 position = float4(in.position.xyz, 1.0);
+    const float4 position = float4(in.position, 1.0);
 
     CustomVertexData out;
 #if INSTANCING

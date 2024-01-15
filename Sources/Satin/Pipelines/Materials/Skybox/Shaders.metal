@@ -23,7 +23,7 @@ vertex SkyVertexData skyboxVertex(Vertex v [[stage_in]],
     const float4x4 modelViewProjectionMatrix = vertexUniforms.modelViewProjectionMatrix;
 #endif
 
-    const float4 position = v.position;
+    const float4 position = float4(v.position, 1.0);
     SkyVertexData out;
     out.position = modelViewProjectionMatrix * position;
     out.texcoord = position.xyz;

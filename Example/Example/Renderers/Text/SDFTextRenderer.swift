@@ -29,7 +29,7 @@ class SDFTextRenderer: BaseRenderer {
     }()
 
     lazy var mesh = {
-        let mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicColorMaterial([1, 0, 0, 0.5], .alpha))
+        let mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicColorMaterial(color: [1, 0, 0, 0.5], blending: .alpha))
         mesh.scale.x = 8.0
         mesh.material?.depthWriteEnabled = false
         return mesh

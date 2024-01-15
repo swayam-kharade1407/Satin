@@ -48,7 +48,7 @@ Bounds computeBoundsFromVerticesAndTransform(const SatinVertex *vertices, int co
     if (count > 0) {
         Bounds result = createBounds();
         for (int i = 0; i < count; i++) {
-            result = expandBounds(result, simd_mul(transform, vertices[i].position).xyz);
+            result = expandBounds(result, simd_mul(transform, simd_make_float4(vertices[i].position, 1.0)).xyz);
         }
         return result;
     }

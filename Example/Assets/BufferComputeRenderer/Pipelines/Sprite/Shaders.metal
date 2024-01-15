@@ -17,7 +17,7 @@ vertex CustomVertexData spriteVertex
 {
     Particle particle = particles[instanceID];
 
-    float4 position = float4(in.position.xyz, 1.0);
+    float4 position = float4(in.position, 1.0);
     position.xyz += particle.position;
 
     CustomVertexData out;

@@ -19,7 +19,7 @@ vertex MatCapVertexData matCapVertex(Vertex in [[stage_in]],
 #endif
     
     const float4 screenSpaceNormal = modelViewMatrix * float4(in.normal, 0.0);
-    const float4 worldPosition = modelViewMatrix * float4(in.position.xyz, 1.0);
+    const float4 worldPosition = modelViewMatrix * float4(in.position, 1.0);
     const float3 eye = normalize(worldPosition.xyz);
     
     MatCapVertexData out;
