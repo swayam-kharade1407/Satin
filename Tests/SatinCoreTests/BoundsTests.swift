@@ -21,21 +21,21 @@ class BoundsTests: XCTestCase {
         XCTAssertEqual(computeBoundsFromVertices(&vertices0, 0), createBounds())
 
         var vertices1 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVertices(&vertices1, 1), Bounds(min: .init(0, 0, 0), max: .init(0, 0, 0)))
 
         var vertices2 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(1, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(1, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVertices(&vertices2, 2), Bounds(min: .init(0, 0, 0), max: .init(1, 0, 0)))
 
         var vertices3 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(1, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(0, 1, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(0, 0, 1, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(1, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(0, 1, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVertices(&vertices3, 4), Bounds(min: .init(0, 0, 0), max: .init(1, 1, 1)))
     }
@@ -47,21 +47,21 @@ class BoundsTests: XCTestCase {
         XCTAssertEqual(computeBoundsFromVerticesAndTransform(&vertices0, 0, xform), createBounds())
 
         var vertices1 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVerticesAndTransform(&vertices1, 1, xform), Bounds(min: .init(1, 1, 1), max: .init(1, 1, 1)))
 
         var vertices2 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(1, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(1, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVerticesAndTransform(&vertices2, 2, xform), Bounds(min: .init(1, 1, 1), max: .init(2, 1, 1)))
 
         var vertices3 = [
-            SatinVertex(position: .init(0, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(1, 0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(0, 1, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0)),
-            SatinVertex(position: .init(0, 0, 1, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
+            SatinVertex(position: .init(0, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(1, 0, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(0, 1, 0), normal: .init(0, 0, 0), uv: .init(0, 0)),
+            SatinVertex(position: .init(0, 0, 1), normal: .init(0, 0, 0), uv: .init(0, 0))
         ]
         XCTAssertEqual(computeBoundsFromVerticesAndTransform(&vertices3, 4, xform), Bounds(min: .init(1, 1, 1), max: .init(2, 2, 2)))
     }

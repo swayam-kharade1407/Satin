@@ -18,7 +18,7 @@ class RenderableTests: XCTestCase {
             label: label,
             pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal")
         )
-        
+
         measure {
             shader.context = context
         }
