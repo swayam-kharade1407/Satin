@@ -5,8 +5,7 @@
 
 // https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
 // Karis 2014
-float2 integrate(float NdotV, float roughness)
-{
+float2 integrate(float NdotV, float roughness) {
     float3 V;
     V.x = sqrt(1.0 - NdotV * NdotV); // sin
     V.y = 0.0;
