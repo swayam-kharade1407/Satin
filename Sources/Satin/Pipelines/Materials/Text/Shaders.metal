@@ -7,11 +7,9 @@ typedef struct {
     float2 texcoord;
 } CustomVertexData;
 
-vertex CustomVertexData textVertex
-(
+vertex CustomVertexData textVertex(
     Vertex in [[stage_in]],
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
     CustomVertexData out;
 
@@ -26,20 +24,19 @@ vertex CustomVertexData textVertex
     return out;
 }
 
-fragment float4 textFragment
-(
+fragment float4 textFragment(
     CustomVertexData in [[stage_in]],
-    constant TextUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
-    texture2d<float> fontTexture [[texture( FragmentTextureCustom0 )]] )
+    constant TextUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
+    texture2d<float> fontTexture [[texture(FragmentTextureCustom0)]])
 {
-    constexpr sampler s = sampler( min_filter::linear, mag_filter::linear );
+    constexpr sampler s = sampler(min_filter::linear, mag_filter::linear);
 
-    float sample = fontTexture.sample( s, in.texcoord ).r;
+    float sample = fontTexture.sample(s, in.texcoord).r;
     float sigDist = sample - 0.5;
-    float fsigDist = fwidth( sigDist );
-    float alpha = saturate( smoothstep( -fsigDist, fsigDist, sigDist ) );
+    float fsigDist = fwidth(sigDist);
+    float alpha = saturate(smoothstep(-fsigDist, fsigDist, sigDist));
 
-//    if (alpha < 0.05) { discard_fragment(); }
+    //    if (alpha < 0.05) { discard_fragment(); }
 
     float4 color = uniforms.color;
     color.a *= alpha;
