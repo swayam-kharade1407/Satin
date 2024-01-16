@@ -6,6 +6,7 @@
 build/
 DerivedData/
 .idea/
+.vscode/
 
 ## Swift Package Manager
 /.build

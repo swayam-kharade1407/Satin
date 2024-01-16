@@ -1,13 +1,11 @@
-vertex VertexData satinVertex
-(
+vertex VertexData satinVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
     VertexData out;
-    
+
 #if INSTANCING
     out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
 
