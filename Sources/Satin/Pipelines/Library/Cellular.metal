@@ -201,8 +201,8 @@ float2 cellular(float3 P)
     d32 = min(d32, d33); // 2nd smallest now not in d33
     float3 da = min(d11, d21);
     d21 = max(d11, d21);
-    d11 = min(da, d31); // Smallest now in d11
-    d31 = max(da, d31); // 2nd smallest now not in d31
+    d11 = min(da, d31);                         // Smallest now in d11
+    d31 = max(da, d31);                         // 2nd smallest now not in d31
     d11.xy = (d11.x < d11.y) ? d11.xy : d11.yx;
     d11.xz = (d11.x < d11.z) ? d11.xz : d11.zx; // d11.x now smallest
     d12 = min(d12, d21);                        // 2nd smallest now not in d21

@@ -7,7 +7,8 @@
 #include "Tonemapping/Uncharted2.metal"
 #include "Tonemapping/Unreal.metal"
 
-float3 tonemap(float3 color) {
+float3 tonemap(float3 color)
+{
 #if defined(TONEMAPPING_NONE)
     return color;
 #elif defined(TONEMAPPING_ACES)

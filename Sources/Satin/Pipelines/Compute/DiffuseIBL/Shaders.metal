@@ -35,7 +35,7 @@ kernel void diffuseIBLUpdate(
 
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
-    
+
     float3 irradiance = 0.0;
 
     const float4 rotation = rotations[face];
@@ -61,7 +61,7 @@ kernel void diffuseIBLUpdate(
             sampleCount++;
         }
     }
-    
+
     irradiance = PI * irradiance / float(sampleCount);
     tex.write(float4(irradiance, 1.0), gid);
 }

@@ -4,7 +4,7 @@ float calculateShadow(float4 shadowCoord, depth2d<float> shadowTex, ShadowData d
 
     // SDF Box Calculation to see if we are within the shadow frustrum
     const float3 v = abs(shadowCoord.xyz) - 1.0;
-    const float inFrustum = step(max( max(v.x, v.y), v.z), 0.0);
+    const float inFrustum = step(max(max(v.x, v.y), v.z), 0.0);
 
     shadowCoord.y *= -1.0;
     shadowCoord.xy = 0.5 + shadowCoord.xy * 0.5;

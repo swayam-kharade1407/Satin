@@ -1,4 +1,4 @@
-    texture2d<float> baseColorMap [[texture(PBRTextureBaseColor)]],
+texture2d<float> baseColorMap [[texture(PBRTextureBaseColor)]],
     texture2d<float> subsurfaceMap [[texture(PBRTextureSubsurface)]],
     texture2d<float> metallicMap [[texture(PBRTextureMetallic)]],
     texture2d<float> roughnessMap [[texture(PBRTextureRoughness)]],

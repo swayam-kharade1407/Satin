@@ -5,11 +5,12 @@
 
 // https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
 // Karis 2014
-float2 integrate(float NdotV, float roughness) {
+float2 integrate(float NdotV, float roughness)
+{
     float3 V;
     V.x = sqrt(1.0 - NdotV * NdotV); // sin
     V.y = 0.0;
-    V.z = NdotV; // cos
+    V.z = NdotV;                     // cos
 
     // N points straight upwards for this integration
     const float3 N = float3(0.0, 0.0, 1.0);
@@ -25,7 +26,7 @@ float2 integrate(float NdotV, float roughness) {
         float NdotL = saturate(L.z);
         float NdotH = saturate(H.z);
         float VdotH = saturate(dot(V, H));
-        
+
         if (NdotL > 0.0) {
             float V_pdf = visibilitySmithGGXCorrelated(NdotV, NdotL, roughness) * VdotH * NdotL / NdotH;
             float Fc = pow(1.0 - VdotH, 5.0);

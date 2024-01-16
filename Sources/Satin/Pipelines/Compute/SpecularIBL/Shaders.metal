@@ -35,7 +35,6 @@ kernel void specularIBLUpdate(
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
 
-
     const float4 rotation = rotations[face];
     const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
 
@@ -74,5 +73,4 @@ kernel void specularIBLUpdate(
 
     prefilteredColor = prefilteredColor / totalWeight;
     tex.write(float4(prefilteredColor, 1.0), gid);
-    
 }

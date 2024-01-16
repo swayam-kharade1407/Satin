@@ -4,12 +4,12 @@
 #include "Library/Gamma.metal"
 
 static constant float4 rotations[6] = {
-    float4(0.0, 1.0, 0.0, HALF_PI),         // 0 - X+
-    float4(0.0, 1.0, 0.0, -HALF_PI),        // 1 - X-
-    float4(1.0, 0.0, 0.0, -HALF_PI),        // 2 - Y+
-    float4(1.0, 0.0, 0.0, HALF_PI),         // 3 - Y-
-    float4(0.0, 0.0, 1.0, 0.0),             // 4 - Z+
-    float4(0.0, 1.0, 0.0, PI)               // 5 - Z-
+    float4(0.0, 1.0, 0.0, HALF_PI),  // 0 - X+
+    float4(0.0, 1.0, 0.0, -HALF_PI), // 1 - X-
+    float4(1.0, 0.0, 0.0, -HALF_PI), // 2 - Y+
+    float4(1.0, 0.0, 0.0, HALF_PI),  // 3 - Y-
+    float4(0.0, 0.0, 1.0, 0.0),      // 4 - Z+
+    float4(0.0, 1.0, 0.0, PI)        // 5 - Z-
 };
 
 typedef struct {
@@ -34,11 +34,11 @@ kernel void cubemapUpdate(
 
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
-    
+
     const float4 rotation = rotations[face];
     const float3 dir = normalize(float3(ruv, 1.0)) * rotateAxisAngle(rotation.xyz, rotation.w);
     const float2 tuv = float2((atan2(dir.z, dir.x) / TWO_PI) + 0.5, acos(dir.y) / PI);
-    
+
     float3 color = ref.sample(cubeSampler, tuv).rgb;
 
     // HDR Tonemapping

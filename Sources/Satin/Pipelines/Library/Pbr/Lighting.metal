@@ -27,7 +27,7 @@ float3 getLightInfo(const LightData light, float3 worldPosition, thread float3 &
         const float inverseRadius = light.direction.w;
         const float3 worldToLight = lightPosition - worldPosition;
         const float distanceSquare = dot(worldToLight, worldToLight);
-        
+
         lightRadiance *= getSquareFalloffAttenuation(distanceSquare, inverseRadius);
         lightDistance = sqrt(distanceSquare);
         lightDirection = worldToLight / lightDistance;

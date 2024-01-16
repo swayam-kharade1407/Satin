@@ -1,1 +1,1 @@
-    pbrInit(pixel);
+pbrInit(pixel);

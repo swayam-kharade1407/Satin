@@ -31,11 +31,10 @@ typedef struct {
 #endif
 } CustomVertexData;
 
-vertex CustomVertexData physicalVertex
-(
+vertex CustomVertexData physicalVertex(
     Vertex in [[stage_in]],
-// inject instancing args
-// inject shadow vertex args
+    // inject instancing args
+    // inject shadow vertex args
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
     constant PhysicalUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
 {
@@ -61,7 +60,7 @@ vertex CustomVertexData physicalVertex
 #endif
 
 #if defined(HAS_TANGENT)
-     out.tangent = normalMatrix * in.tangent;
+    out.tangent = normalMatrix * in.tangent;
 #endif
 
 #if defined(HAS_BITANGENT)
@@ -78,8 +77,8 @@ vertex CustomVertexData physicalVertex
     out.thickness = uniforms.thickness * modelScale;
 #endif
 
-// inject shadow vertex calc
-    
+    // inject shadow vertex calc
+
     return out;
 }
 
@@ -97,6 +96,6 @@ fragment float4 physicalFragment(
 #include "Chunks/PbrDirectLighting.metal"
 #include "Chunks/PbrInDirectLighting.metal"
 #include "Chunks/PbrTonemap.metal"
-// inject shadow fragment calc
+    // inject shadow fragment calc
     return outColor;
 }

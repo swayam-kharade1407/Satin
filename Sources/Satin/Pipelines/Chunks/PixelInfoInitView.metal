@@ -1,1 +1,1 @@
-    pixel.view = normalize(in.cameraPosition - in.worldPosition);
+pixel.view = normalize(in.cameraPosition - in.worldPosition);

@@ -1,3 +1,3 @@
 #if defined(MAX_LIGHTS)
-    pbrDirectLighting(pixel, lights);
+pbrDirectLighting(pixel, lights);
 #endif

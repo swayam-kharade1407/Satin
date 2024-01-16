@@ -1,9 +1,9 @@
-    float3x3 baseColorTexcoordTransform;
-    float3x3 emissiveTexcoordTransform;
-    float3x3 roughnessTexcoordTransform;
-    float3x3 metallicTexcoordTransform;
-    float3x3 specularTexcoordTransform;
-    float3x3 normalTexcoordTransform;
-    float3x3 occlusionTexcoordTransform;
-    float3x3 reflectionTexcoordTransform;
-    float3x3 irradianceTexcoordTransform;
+float3x3 baseColorTexcoordTransform;
+float3x3 emissiveTexcoordTransform;
+float3x3 roughnessTexcoordTransform;
+float3x3 metallicTexcoordTransform;
+float3x3 specularTexcoordTransform;
+float3x3 normalTexcoordTransform;
+float3x3 occlusionTexcoordTransform;
+float3x3 reflectionTexcoordTransform;
+float3x3 irradianceTexcoordTransform;

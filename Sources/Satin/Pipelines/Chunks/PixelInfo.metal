@@ -1,1 +1,1 @@
-    PixelInfo pixel;
+PixelInfo pixel;

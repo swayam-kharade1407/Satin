@@ -1,25 +1,24 @@
 #if defined(NORMAL_MAP) && defined(HAS_TEXCOORD)
-    const float2 normalTexcoord = (uniforms.normalTexcoordTransform * float3(in.texcoord, 1.0)).xy;
-    float3 mapNormal = normalMap.sample(normalSampler, normalTexcoord).rgb * 2.0 - 1.0;
+const float2 normalTexcoord = (uniforms.normalTexcoordTransform * float3(in.texcoord, 1.0)).xy;
+float3 mapNormal = normalMap.sample(normalSampler, normalTexcoord).rgb * 2.0 - 1.0;
 
 #if defined(HAS_TANGENT) && defined(HAS_BITANGENT)
-    const float3x3 TBN(in.tangent, in.bitangent, in.normal);
-    pixel.normal = normalize(TBN * mapNormal);
+const float3x3 TBN(in.tangent, in.bitangent, in.normal);
+pixel.normal = normalize(TBN * mapNormal);
 #else
-    const float3 Q1 = dfdx(in.worldPosition);
-    const float3 Q2 = dfdy(in.worldPosition);
-    const float2 st1 = dfdx(in.texcoord);
-    const float2 st2 = dfdy(in.texcoord);
+const float3 Q1 = dfdx(in.worldPosition);
+const float3 Q2 = dfdy(in.worldPosition);
+const float2 st1 = dfdx(in.texcoord);
+const float2 st2 = dfdy(in.texcoord);
 
-    float3 normal = in.normal;
-    float3 tangent = normalize(Q1 * st2.y - Q2 * st1.y);
-    float3 bitangent = -normalize(cross(normal, tangent));
-    const float3x3 TBN = float3x3(tangent, bitangent, normal);
+float3 normal = in.normal;
+float3 tangent = normalize(Q1 * st2.y - Q2 * st1.y);
+float3 bitangent = -normalize(cross(normal, tangent));
+const float3x3 TBN = float3x3(tangent, bitangent, normal);
 
-    pixel.normal = normalize(TBN * mapNormal);
+pixel.normal = normalize(TBN * mapNormal);
 #endif
 
 #else
-    pixel.normal = normalize(in.normal);
+pixel.normal = normalize(in.normal);
 #endif
-

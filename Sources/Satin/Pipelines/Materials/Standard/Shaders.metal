@@ -8,7 +8,7 @@ typedef struct {
 
 typedef struct {
     float4 position [[position]];
-// inject shadow coords
+    // inject shadow coords
     float3 normal;
     float2 texcoord;
 #if defined(HAS_COLOR)
@@ -24,11 +24,10 @@ typedef struct {
     float3 cameraPosition;
 } CustomVertexData;
 
-vertex CustomVertexData standardVertex
-(
+vertex CustomVertexData standardVertex(
     Vertex in [[stage_in]],
-// inject instancing args
-// inject shadow vertex args
+    // inject instancing args
+    // inject shadow vertex args
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
 #if defined(INSTANCING)
@@ -41,7 +40,7 @@ vertex CustomVertexData standardVertex
 
     const float4 position = float4(in.position, 1.0);
     const float4 worldPosition = modelMatrix * position;
-    
+
     CustomVertexData out;
     out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
 
@@ -67,12 +66,11 @@ vertex CustomVertexData standardVertex
     out.cameraPosition = vertexUniforms.worldCameraPosition.xyz;
 
     // inject shadow vertex calc
-    
+
     return out;
 }
 
-fragment float4 standardFragment
-(
+fragment float4 standardFragment(
     CustomVertexData in [[stage_in]],
 // inject lighting args
 // inject shadow fragment args
@@ -85,6 +83,6 @@ fragment float4 standardFragment
 #include "Chunks/PbrDirectLighting.metal"
 #include "Chunks/PbrInDirectLighting.metal"
 #include "Chunks/PbrTonemap.metal"
-// inject shadow fragment calc
+    // inject shadow fragment calc
     return outColor;
 }
