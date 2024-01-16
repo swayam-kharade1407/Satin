@@ -106,10 +106,11 @@
 #endif
     
 #if defined(AMBIENT_OCCLUSION_MAP) && defined(HAS_TEXCOORD)
-    const float2 ambientOcclusionTexcoord = (uniforms.ambientOcclusionTexcoordTransform * float3(in.texcoord, 1.0)).xy;
-    pixel.material.ambientOcclusion = ambientOcclusionMap.sample(ambientOcclusionSampler, ambientOcclusionTexcoord).r;
+    const float2 occlusionTexcoord = (uniforms.occlusionTexcoordTransform * float3(in.texcoord, 1.0)).xy;
+    pixel.material.occlusion = occlusionMap.sample(occlusionSampler, occlusionTexcoord).r;
+    pixel.material.occlusion *= uniforms.occlusion;
 #else
-    pixel.material.ambientOcclusion = 1.0;
+    pixel.material.occlusion = uniforms.occlusion;
 #endif
 
 #if defined(HAS_ANISOTROPIC)

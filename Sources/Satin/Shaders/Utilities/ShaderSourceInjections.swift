@@ -50,8 +50,6 @@ public func injectVertex(source: inout String, vertexDescriptor: MTLVertexDescri
     var vertexSource: String?
     if vertexDescriptor == SatinVertexDescriptor() {
         vertexSource = VertexSource.get()
-        print(vertexSource)
-
     } else {
         var attributeDataType: [String] = []
         var attributeName: [String] = []

@@ -41,8 +41,7 @@ simd_float4x4 scaleMatrix3f(simd_float3 p)
     return result;
 }
 
-simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float top, float near,
-                                  float far)
+simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float top, float near, float far)
 {
     simd_float4x4 result = matrix_identity_float4x4;
 
@@ -59,8 +58,7 @@ simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float t
     return result;
 }
 
-simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, float near,
-                              float far)
+simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, float near, float far)
 {
 
     const float twoTimesNear = 2.0 * near;

@@ -43,7 +43,6 @@ class LoadObjRenderer: BaseRenderer {
         let mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.0))
         mesh.label = "Suzanne"
 
-        let geo = mesh.geometry
         let object0 = asset.object(at: 0)
         if let objMesh = object0 as? MDLMesh {
             objMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)

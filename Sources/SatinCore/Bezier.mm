@@ -35,9 +35,7 @@ void removeFirstPointInPolyline2D(Polyline2D *line)
 {
     if (line->count > 0 || line->data != NULL) {
         line->count--;
-        if (line->count > 0) {
-            memmove(line->data, line->data + 1, line->count * sizeof(simd_float2));
-        }
+        if (line->count > 0) { memmove(line->data, line->data + 1, line->count * sizeof(simd_float2)); }
         else {
             freePolyline2D(line);
         }
@@ -108,10 +106,7 @@ simd_float2 quadraticBezierVelocity2(simd_float2 a, simd_float2 b, simd_float2 c
     return 2.0 * oneMinusT * (b - a) + 2 * t * (c - b);
 }
 
-simd_float2 quadraticBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, float t)
-{
-    return 2.0 * (c - 2.0 * b + a);
-}
+simd_float2 quadraticBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, float t) { return 2.0 * (c - 2.0 * b + a); }
 
 float quadraticBezierCurvature2(simd_float2 a, simd_float2 b, simd_float2 c, float t)
 {
@@ -131,9 +126,8 @@ Polyline2D getQuadraticBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, 
     return (Polyline2D) { .count = res, .capacity = res, .data = data };
 }
 
-void _adaptiveQuadraticBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 aVel,
-                                    simd_float2 bVel, simd_float2 cVel, float angleLimit, int depth,
-                                    Polyline2D *line)
+void _adaptiveQuadraticBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 aVel, simd_float2 bVel, simd_float2 cVel,
+                                    float angleLimit, int depth, Polyline2D *line)
 {
     if (depth > 8) { return; }
 
@@ -161,8 +155,7 @@ void _adaptiveQuadraticBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c,
     }
 }
 
-Polyline2D getAdaptiveQuadraticBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c,
-                                           float angleLimit)
+Polyline2D getAdaptiveQuadraticBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, float angleLimit)
 {
     simd_float2 aVel = simd_normalize(quadraticBezierVelocity2(a, b, c, 0.0));
     simd_float2 bVel = simd_normalize(quadraticBezierVelocity2(a, b, c, 0.5));
@@ -192,16 +185,14 @@ simd_float2 cubicBezier2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float
     return oneMinusT3 * a + 3.0 * oneMinusT2 * t * b + 3.0 * oneMinusT * t * t * c + t * t * t * d;
 }
 
-simd_float2 cubicBezierVelocity2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d,
-                                 float t)
+simd_float2 cubicBezierVelocity2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t)
 {
     float oneMinusT = 1.0 - t;
     float oneMinusT2 = oneMinusT * oneMinusT;
     return 3.0 * oneMinusT2 * (b - a) + 6.0 * oneMinusT * t * (c - b) + 3.0 * t * t * (d - c);
 }
 
-simd_float2 cubicBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d,
-                                     float t)
+simd_float2 cubicBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t)
 {
     return 6.0 * (1.0 - t) * (c - 2.0 * b + a) + 6.0 * t * (d - 2.0 * c + b);
 }
@@ -224,9 +215,8 @@ Polyline2D getCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, simd
     return (Polyline2D) { .count = res, .capacity = res, .data = data };
 }
 
-void _adaptiveCubicBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d,
-                                simd_float2 aVel, simd_float2 bVel, simd_float2 cVel,
-                                float angleLimit, int depth, Polyline2D *line)
+void _adaptiveCubicBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, simd_float2 aVel, simd_float2 bVel,
+                                simd_float2 cVel, float angleLimit, int depth, Polyline2D *line)
 {
     if (depth > 8) { return; }
 
@@ -257,8 +247,7 @@ void _adaptiveCubicBezierCurve2(simd_float2 a, simd_float2 b, simd_float2 c, sim
     }
 }
 
-Polyline2D getAdaptiveCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d,
-                                       float angleLimit)
+Polyline2D getAdaptiveCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float angleLimit)
 {
     simd_float2 aVel = simd_normalize(cubicBezierVelocity2(a, b, c, d, 0.0));
     simd_float2 bVel = simd_normalize(cubicBezierVelocity2(a, b, c, d, 0.5));
@@ -275,8 +264,7 @@ Polyline2D getAdaptiveCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2
 simd_float3 cubicBezier3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float t)
 {
     float oneMinusT = 1.0 - t;
-    return oneMinusT * oneMinusT * oneMinusT * a + 3.0 * oneMinusT * oneMinusT * t * b +
-           3.0 * oneMinusT * t * t * c + t * t * t * d;
+    return oneMinusT * oneMinusT * oneMinusT * a + 3.0 * oneMinusT * oneMinusT * t * b + 3.0 * oneMinusT * t * t * c + t * t * t * d;
 }
 
 simd_float3 quadraticBezier3(simd_float3 a, simd_float3 b, simd_float3 c, float t)

@@ -67,13 +67,13 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
     private var depthUpscaler: ARDepthUpscaler
 
     private var depthMaterial = {
-        let material = BasicColorMaterial([1, 1, 1, 0], .alpha)
+        let material = BasicColorMaterial(color: [1, 1, 1, 0], blending: .alpha)
         material.depthBias = DepthBias(bias: 5, slope: 5, clamp: 5)
         return material
     }()
 
     private var depthLidarMaterial = {
-        let material = BasicColorMaterial([1, 1, 1, 0], .alpha)
+        let material = BasicColorMaterial(color: [1, 1, 1, 0], blending: .alpha)
         material.depthBias = DepthBias(bias: 5, slope: 5, clamp: 5)
         return material
     }()

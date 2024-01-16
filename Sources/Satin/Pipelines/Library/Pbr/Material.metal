@@ -4,7 +4,7 @@ struct Material {
 #if defined(HAS_SUBSURFACE)
     float subsurface;
 #endif
-    float ambientOcclusion;
+    float occlusion;
     float metallic;
     float roughness;
     float specular;

@@ -34,5 +34,5 @@ public let MDLMaterialSemanticToSatinPBRTextureTypeMap: [MDLMaterialSemantic: PB
     .displacement: .displacement,
     .opacity: .alpha,
     .materialIndexOfRefraction: .ior,
-    .ambientOcclusion: .ambientOcclusion,
+    .ambientOcclusion: .occlusion,
 ]

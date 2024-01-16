@@ -3,6 +3,7 @@
     float roughness;            // slider,0.0,1.0,0.0
     float metallic;             // slider,0.0,1.0,0.0
     float specular;             // slider,0.0,1.0,0.5
+    float occlusion;            // slider,0.0,1.0,1.0
     float specularTint;         // slider,0.0,1.0,0.0
     float anisotropic;          // slider,-1.0,1.0,0.0
     float anisotropicAngle;     // slider,-1.0,1.0,0.0
@@ -13,6 +14,6 @@
     float sheenTint;            // slider,0.0,1.0,0.0
     float transmission;         // slider,0.0,1.0,0.0
     float thickness;            // slider,0.0,5.0,0.0
-    float ior;                  // slider,1.0,3.0,1.5,Index of Refraction
+    float ior;                  // slider,1.0,3.0,1.5
     float environmentIntensity; // slider,0.0,1.0,1.0
     float gammaCorrection;      // slider,0.0,1.0,1.0

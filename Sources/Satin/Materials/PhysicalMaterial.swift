@@ -103,12 +103,12 @@ open class PhysicalMaterial: StandardMaterial {
         }
     }
 
-    public var indexOfRefraction: Float {
+    public var ior: Float {
         get {
-            (get("Index of Refraction") as? FloatParameter)!.value
+            (get("Ior") as? FloatParameter)!.value
         }
         set {
-            set("Index of Refraction", newValue)
+            set("Ior", newValue)
         }
     }
 
@@ -127,24 +127,37 @@ open class PhysicalMaterial: StandardMaterial {
         sheen: Float = .zero,
         sheenTint: Float = .zero,
         transmission: Float = .zero,
+        occlusion: Float = 1.0,
         thickness: Float = 0.0,
         ior: Float = 1.5,
         maps: [PBRTextureType: MTLTexture?] = [:]
     ) {
-        super.init(baseColor: baseColor, metallic: metallic, roughness: roughness, specular: specular, emissiveColor: emissiveColor, maps: maps)
+        super.init(
+            baseColor: baseColor,
+            metallic: metallic, 
+            roughness: roughness,
+            specular: specular,
+            occlusion: occlusion,
+            emissiveColor: emissiveColor,
+            maps: maps
+        )
 
         self.subsurface = subsurface
+
         self.anisotropic = anisotropic
         self.anisotropicAngle = anisotropicAngle
+
         self.specularTint = specularTint
-        self.anisotropic = anisotropic
+        
         self.clearcoat = clearcoat
         self.clearcoatRoughness = clearcoatRoughness
+        
         self.sheen = sheen
         self.sheenTint = sheenTint
+
         self.transmission = transmission
         self.thickness = thickness
-        indexOfRefraction = ior
+        self.ior = ior
     }
 
     public required init(from decoder: Decoder) throws {
@@ -198,11 +211,11 @@ open class PhysicalMaterial: StandardMaterial {
             case .alpha:
                 baseColor.w = 1.0
             case .ior:
-                indexOfRefraction = 1.0
+                ior = 1.0
             case .transmission:
                 transmission = 1.0
-            case .ambientOcclusion:
-                break
+            case .occlusion:
+                occlusion = 1.0
             case .reflection:
                 break
             case .irradiance:
@@ -510,7 +523,7 @@ public extension PhysicalMaterial {
                     loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ior)
                 }
             } else if property.type == .float {
-                indexOfRefraction = property.floatValue
+                ior = property.floatValue
             } else {
                 print("Unsupported MDLMaterial Property: \(property.name)")
             }
@@ -578,13 +591,14 @@ public extension PhysicalMaterial {
         // MARK: - AmbientOcclusion
 
         if let property = material.property(with: .ambientOcclusion), property.type == .texture,
-           let mdlTexture = property.textureSamplerValue?.texture {
+           let mdlTexture = property.textureSamplerValue?.texture
+        {
             if let textureLoader {
                 let options: [MTKTextureLoader.Option: Any] = [
                     .generateMipmaps: false,
                     .origin: MTKTextureLoader.Origin.flippedVertically,
                 ]
-                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .ambientOcclusion)
+                loadTexture(loader: textureLoader, mdlTexture: mdlTexture, options: options, target: .occlusion)
             }
         }
     }

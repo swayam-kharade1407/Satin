@@ -60,8 +60,7 @@ float findBestSplitPlane(BVH *bvh, BVHNode *node, int *axis, float *splitPos)
     }
 
     // populate the bins
-    Bin bin[BINS] = { createBin(), createBin(), createBin(), createBin(),
-                      createBin(), createBin(), createBin(), createBin() };
+    Bin bin[BINS] = { createBin(), createBin(), createBin(), createBin(), createBin(), createBin(), createBin(), createBin() };
 
     float scale = (float)BINS / (boundsMax - boundsMin);
     for (uint32_t i = 0; i < node->triCount; i++) {
@@ -177,11 +176,15 @@ void subdivideBVHNode(BVH *bvh, uint32_t nodeIndex)
     subdivideBVHNode(bvh, rightNodeIndex);
 }
 
-BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH) {
-    return createBVHFromFloatData(geometry.vertexData, sizeof(SatinVertex)/sizeof(float), geometry.vertexCount, geometry.indexData, geometry.indexCount * 3, true, useSAH);
+BVH createBVHFromGeometryData(GeometryData geometry, bool useSAH)
+{
+    return createBVHFromFloatData(geometry.vertexData, sizeof(SatinVertex) / sizeof(float), geometry.vertexCount, geometry.indexData,
+                                  geometry.indexCount * 3, true, useSAH);
 }
 
-BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const void *indexData, int indexCount, bool uint32, bool useSAH) {
+BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexCount, const void *indexData, int indexCount, bool uint32,
+                           bool useSAH)
+{
     const bool hasTriangles = indexCount > 0;
     const uint32_t triCount = hasTriangles ? (indexCount / 3) : (vertexCount / 3);
 
@@ -198,8 +201,8 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
         const uint32_t offset = i * 3;
         TriangleIndices tri = (TriangleIndices) { offset, offset + 1, offset + 2 };
 
-        if(hasTriangles) {
-            if(uint32) {
+        if (hasTriangles) {
+            if (uint32) {
                 uint32_t *indicies = (uint32_t *)indexData;
                 tri = (TriangleIndices) { indicies[offset], indicies[offset + 1], indicies[offset + 2] };
             }
@@ -215,9 +218,9 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
         const float *v1 = (float *)vertexData + (tri.i1 * vertexStride);
         const float *v2 = (float *)vertexData + (tri.i2 * vertexStride);
 
-        positions[tri.i0] = simd_make_float3(*v0, *(v0+1), *(v0+2));
-        positions[tri.i1] = simd_make_float3(*v1, *(v1+1), *(v1+2));
-        positions[tri.i2] = simd_make_float3(*v2, *(v2+1), *(v2+2));
+        positions[tri.i0] = simd_make_float3(*v0, *(v0 + 1), *(v0 + 2));
+        positions[tri.i1] = simd_make_float3(*v1, *(v1 + 1), *(v1 + 2));
+        positions[tri.i2] = simd_make_float3(*v2, *(v2 + 1), *(v2 + 2));
 
         expandBoundsInPlace(&aabb, &positions[tri.i0]);
         expandBoundsInPlace(&aabb, &positions[tri.i1]);
@@ -225,15 +228,14 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
 
         centroids[i] = (positions[tri.i0] + positions[tri.i1] + positions[tri.i2]) / 3.0;
     }
-    
-    BVH bvh = (BVH) { 
-            .nodes = nodes,
-            .centroids = centroids,
-            .positions = positions,
-            .triangles = triangles,
-            .triIDs = triIDs,
-            .nodesUsed = 0,
-        .useSAH = useSAH };
+
+    BVH bvh = (BVH) { .nodes = nodes,
+                      .centroids = centroids,
+                      .positions = positions,
+                      .triangles = triangles,
+                      .triIDs = triIDs,
+                      .nodesUsed = 0,
+                      .useSAH = useSAH };
 
     if (triCount > 0) {
         bvh.nodesUsed++;
@@ -246,7 +248,6 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
 
     return bvh;
 }
-
 
 void freeBVH(BVH bvh)
 {

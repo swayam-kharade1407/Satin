@@ -180,7 +180,7 @@ class Model: Object {
         let tmpTexture = device.makeTexture(descriptor: tmpDesc)
         material.setTexture(tmpTexture, type: .brdf)
         material.setTexture(tmpTexture, type: .baseColor)
-        material.setTexture(tmpTexture, type: .ambientOcclusion)
+        material.setTexture(tmpTexture, type: .occlusion)
         material.setTexture(tmpTexture, type: .metallic)
         material.setTexture(tmpTexture, type: .normal)
         material.setTexture(tmpTexture, type: .roughness)
@@ -210,7 +210,7 @@ class Model: Object {
             let baseURL = modelsURL.appendingPathComponent("Suzanne")
             let maps: [PBRTextureType: URL] = [
                 .baseColor: baseURL.appendingPathComponent("albedo.png"),
-                .ambientOcclusion: baseURL.appendingPathComponent("ao.png"),
+                .occlusion: baseURL.appendingPathComponent("ao.png"),
                 .metallic: baseURL.appendingPathComponent("metallic.png"),
                 .normal: baseURL.appendingPathComponent("normal.png"),
                 .roughness: baseURL.appendingPathComponent("roughness.png"),

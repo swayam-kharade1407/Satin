@@ -19,7 +19,7 @@ typedef enum PBRTextureIndex {
     PBRTextureAlpha = 17,
     PBRTextureIor = 18,
     PBRTextureTransmission = 19,
-    PBRTextureAmbientOcclusion = 20,
+    PBRTextureOcclusion = 20,
     PBRTextureReflection = 21,
     PBRTextureIrradiance = 22,
     PBRTextureBrdf = 23
@@ -46,7 +46,7 @@ typedef enum PBRSamplerIndex {
     PBRSamplerAlpha = 17,
     PBRSamplerIor = 18,
     PBRSamplerTransmission = 19,
-    PBRSamplerAmbientOcclusion = 20,
+    PBRSamplerOcclusion = 20,
     PBRSamplerReflection = 21,
     PBRSamplerIrradiance = 22,
     PBRSamplerBrdf = 23,

@@ -56,7 +56,7 @@ fragment float4 customFragment( CustomVertexData in [[stage_in]],
     pixel.material.roughness = in.roughness;
     pixel.material.metallic = in.metallic;
     pixel.material.specular = 0.5;
-    pixel.material.ambientOcclusion = 1.0;
+    pixel.material.occlusion = 1.0;
     pixel.material.emissiveColor = uniforms.emissiveColor.rgb * uniforms.emissiveColor.a;
     pixel.material.environmentIntensity = uniforms.environmentIntensity;
     pixel.material.gammaCorrection = uniforms.gammaCorrection;

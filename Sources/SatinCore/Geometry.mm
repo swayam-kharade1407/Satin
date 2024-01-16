@@ -13,10 +13,7 @@ bool greaterThanZero(float a) { return a > FLT_EPSILON; }
 
 bool isZero(float a) { return a == 0 || fabsf(a) < FLT_EPSILON; }
 
-float area2(simd_float2 a, simd_float2 b, simd_float2 c)
-{
-    return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
-}
+float area2(simd_float2 a, simd_float2 b, simd_float2 c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
 
 float cross2(simd_float2 a, simd_float2 b) { return a.x * b.y - b.x * a.y; }
 
@@ -48,20 +45,20 @@ bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c)
     float bax = b[0] - a[0];
     float bay = b[1] - a[1];
     float baz = b[2] - a[2];
-    return isZero((caz * bay) - (baz * cay)) && isZero((baz * cax) - (bax * caz)) &&
-           isZero((bax * cay) - (bay * cax));
+    return isZero((caz * bay) - (baz * cay)) && isZero((baz * cax) - (bax * caz)) && isZero((bax * cay) - (bay * cax));
 }
 
-bool isConvex(const simd_float2 *path, int length) {
+bool isConvex(const simd_float2 *path, int length)
+{
     int end = (length + 1);
 
     int areaSign = 0;
-    for(int i = 0; i <= end; i++) {
-        simd_float2 a = path[i%length];
-        simd_float2 b = path[(i+1)%length];
-        simd_float2 c = path[(i+2)%length];
+    for (int i = 0; i <= end; i++) {
+        simd_float2 a = path[i % length];
+        simd_float2 b = path[(i + 1) % length];
+        simd_float2 c = path[(i + 2) % length];
         int newSign = simd_sign(area2(a, b, c));
-        if(i > 0 && areaSign != newSign) { return false; }
+        if (i > 0 && areaSign != newSign) { return false; }
         areaSign = newSign;
     }
 
@@ -71,9 +68,7 @@ bool isConvex(const simd_float2 *path, int length) {
 bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c)
 {
     if (!isColinear2(a, b, c)) { return false; }
-    if (a[0] != b[0]) {
-        return ((a[0] <= c[0]) && (c[0] <= b[0])) || ((a[0] >= c[0]) && (c[0] >= b[0]));
-    }
+    if (a[0] != b[0]) { return ((a[0] <= c[0]) && (c[0] <= b[0])) || ((a[0] >= c[0]) && (c[0] >= b[0])); }
     else {
         return ((a[1] <= c[1]) && (c[1] <= b[1])) || ((a[1] >= c[1]) && (c[1] >= b[1]));
     }
@@ -81,10 +76,7 @@ bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c)
 
 bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
 {
-    if (isColinear2(a, b, c) || isColinear2(a, b, d) || isColinear2(c, d, a) ||
-        isColinear2(c, d, b)) {
-        return false;
-    }
+    if (isColinear2(a, b, c) || isColinear2(a, b, d) || isColinear2(c, d, a) || isColinear2(c, d, b)) { return false; }
     return (isLeft(a, b, c) ^ isLeft(a, b, d)) && (isLeft(c, d, a) ^ isLeft(c, d, b));
 }
 
@@ -105,10 +97,7 @@ bool isDiagonalie(simd_float2 a, simd_float2 b, simd_float2 *polygon, int count)
     for (int i = 0; i < count; i++) {
         simd_float2 c = polygon[i];
         simd_float2 c1 = polygon[(i + 1) % count];
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) &&
-            intersects(a, b, c, c1)) {
-            return false;
-        }
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) { return false; }
     }
     return true;
 }
@@ -145,8 +134,7 @@ bool isClockwise(simd_float2 *polygon, int length)
     return !signbit(area);
 }
 
-bool rayRayIntersection2(simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd,
-                         simd_float2 *intersection)
+bool rayRayIntersection2(simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection)
 {
     const float dx = bs.x - as.x;
     const float dy = bs.y - as.y;
@@ -160,8 +148,8 @@ bool rayRayIntersection2(simd_float2 as, simd_float2 ad, simd_float2 bs, simd_fl
     return false;
 }
 
-bool rayPlaneIntersection(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal,
-                          simd_float3 planeOrigin, simd_float3 *intersection)
+bool rayPlaneIntersection(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal, simd_float3 planeOrigin,
+                          simd_float3 *intersection)
 {
     float time = 0.0;
     if (rayPlaneIntersectionTime(origin, direction, planeNormal, planeOrigin, &time)) {
@@ -171,8 +159,7 @@ bool rayPlaneIntersection(simd_float3 origin, simd_float3 direction, simd_float3
     return false;
 }
 
-bool rayPlaneIntersectionTime(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal,
-                              simd_float3 planeOrigin, float *time)
+bool rayPlaneIntersectionTime(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal, simd_float3 planeOrigin, float *time)
 {
     simd_float3 o = planeOrigin - origin;
     const float oProj = simd_dot(o, planeNormal);
@@ -182,8 +169,7 @@ bool rayPlaneIntersectionTime(simd_float3 origin, simd_float3 direction, simd_fl
     return (dProj < 0);
 }
 
-bool rayBoundsIntersection(simd_float3 origin, simd_float3 direction, Bounds bounds,
-                           simd_float2 *times)
+bool rayBoundsIntersection(simd_float3 origin, simd_float3 direction, Bounds bounds, simd_float2 *times)
 {
     simd_float3 dirInv = 1.0 / direction;
     simd_float3 tmin = (bounds.min - origin) * dirInv;
@@ -216,8 +202,7 @@ bool rayBoundsIntersect(Ray ray, Bounds bounds)
     return rayBoundsIntersection(ray.origin, ray.direction, bounds, &times);
 }
 
-bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float3 center,
-                           float radius, simd_float2 *times)
+bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float3 center, float radius, simd_float2 *times)
 {
     const simd_float3 l = center - origin;
     const float tca = simd_dot(l, direction);
@@ -236,9 +221,8 @@ bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float
     return true;
 }
 
-bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_float3 v0,
-                             simd_float3 v1, simd_float3 v2, float *time, simd_float3 *intersection,
-                             simd_float3 *normal)
+bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_float3 v0, simd_float3 v1, simd_float3 v2, float *time,
+                             simd_float3 *intersection, simd_float3 *normal)
 {
     if (isColinear3(v0, v1, v2)) { return false; }
     else {
@@ -246,8 +230,7 @@ bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_flo
         simd_float3 b = v2 - v0;
         *normal = simd_normalize(simd_cross(a, b));
         simd_float3 triangleOrigin = simd_dot(*normal, v0);
-        bool intersected =
-            rayPlaneIntersectionTime(origin, direction, *normal, triangleOrigin, time);
+        bool intersected = rayPlaneIntersectionTime(origin, direction, *normal, triangleOrigin, time);
         if (intersected) {
 
             (*intersection) = origin + direction * (*time);
@@ -271,8 +254,7 @@ bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_flo
     return false;
 }
 
-bool rayTriangleIntersectionTime(Ray ray, simd_float3 p0, simd_float3 p1, simd_float3 p2,
-                                 float *time)
+bool rayTriangleIntersectionTime(Ray ray, simd_float3 p0, simd_float3 p1, simd_float3 p2, float *time)
 {
     const simd_float3 edge1 = p1 - p0;
     const simd_float3 edge2 = p2 - p0;

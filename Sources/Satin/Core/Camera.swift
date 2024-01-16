@@ -93,8 +93,8 @@ open class Camera: Object {
     var _projectionMatrix: matrix_float4x4 = matrix_identity_float4x4
     var _viewProjectionMatrix: matrix_float4x4 = matrix_identity_float4x4
 
-    override public init() {
-        super.init()
+    public init(label: String = "Camera") {
+        super.init(label: label)
     }
 
     public required init(from decoder: Decoder) throws {

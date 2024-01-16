@@ -75,7 +75,7 @@ void pbrIndirectLighting(
     radiance_d = mix(radiance_d, radiance_t, pixel.material.transmission);
 #endif
 
-    pixel.radiance += (radiance_d + radiance_s) * pixel.material.ambientOcclusion;
+    pixel.radiance += (radiance_d + radiance_s) * pixel.material.occlusion;
 
 #if defined(HAS_CLEARCOAT)
     float clearcoat = pixel.material.clearcoat;
@@ -85,7 +85,7 @@ void pbrIndirectLighting(
         float3 Kc = fresnelSchlickRoughness(NdotV, 0.04, clearcoatRoughness);
         float2 brdfClearcoat = brdfMap.sample(brdfSampler, saturate(float2(NdotV, clearcoatRoughness))).rg;
         float3 Fcc = clearcoatLight * (Kc * brdfClearcoat.x + brdfClearcoat.y);
-        pixel.radiance += clearcoat * Fcc * pixel.material.ambientOcclusion;
+        pixel.radiance += clearcoat * Fcc * pixel.material.occlusion;
     }
 #endif
 }

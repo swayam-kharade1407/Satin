@@ -21,13 +21,7 @@ void freeTriangleFaceMap(TriangleFaceMap *map)
     }
 }
 
-TriangleData createTriangleData(void)
-{
-    return (TriangleData) {
-        .count = 0,
-        .indices = NULL
-    };
-}
+TriangleData createTriangleData(void) { return (TriangleData) { .count = 0, .indices = NULL }; }
 
 void freeTriangleData(TriangleData *data)
 {
@@ -37,10 +31,7 @@ void freeTriangleData(TriangleData *data)
     }
 }
 
-GeometryData createGeometryData()
-{
-    return (GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL };
-}
+GeometryData createGeometryData() { return (GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL }; }
 
 void freeGeometryData(GeometryData *data)
 {
@@ -61,8 +52,7 @@ void combineVertexGeometryData(GeometryData *dest, GeometryData *src)
         if (dest->vertexCount > 0) {
             int totalCount = src->vertexCount + dest->vertexCount;
             dest->vertexData = (SatinVertex *)realloc(dest->vertexData, totalCount * sizeof(SatinVertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(SatinVertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             dest->vertexCount += src->vertexCount;
         }
         else {
@@ -118,7 +108,7 @@ void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destDat
 void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *geoData)
 {
     int vertexCount = 0;
-    for(int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
         vertexCount += lengths[i];
     }
 
@@ -126,16 +116,14 @@ void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, Geo
     geoData->vertexData = (SatinVertex *)malloc(sizeof(SatinVertex) * geoData->vertexCount);
 
     int index = 0;
-    for(int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
         int pathLength = lengths[i];
         simd_float2 *subpath = paths[i];
-        for(int j = 0; j < pathLength; j++) {
+        for (int j = 0; j < pathLength; j++) {
             simd_float2 pt = subpath[j];
-            geoData->vertexData[index++] = (SatinVertex) {
-                .position = simd_make_float3(pt.x, pt.y, 0.0),
-                .normal = simd_make_float3(0.0, 0.0, 1.0),
-                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
-            };
+            geoData->vertexData[index++] = (SatinVertex) { .position = simd_make_float3(pt.x, pt.y, 0.0),
+                                                           .normal = simd_make_float3(0.0, 0.0, 1.0),
+                                                           .uv = simd_make_float2((float)j / (float)pathLength, 0.0) };
         }
     }
 }
@@ -145,10 +133,8 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
     if (triangleCount > 0) {
         if (dest->indexCount > 0) {
             int totalCount = triangleCount + dest->indexCount;
-            dest->indexData =
-                (TriangleIndices *)realloc(dest->indexData, totalCount * sizeof(TriangleIndices));
-            memcpy(dest->indexData + dest->indexCount, triangles,
-                   triangleCount * sizeof(TriangleIndices));
+            dest->indexData = (TriangleIndices *)realloc(dest->indexData, totalCount * sizeof(TriangleIndices));
+            memcpy(dest->indexData + dest->indexCount, triangles, triangleCount * sizeof(TriangleIndices));
             dest->indexCount += triangleCount;
         }
         else {
@@ -159,7 +145,8 @@ void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, 
     }
 }
 
-void combineTriangleFaceMap(TriangleFaceMap *dest, const TriangleFaceMap *src) {
+void combineTriangleFaceMap(TriangleFaceMap *dest, const TriangleFaceMap *src)
+{
     if (src->count > 0) {
         size_t srcSize = sizeof(uint32_t) * src->count;
 
@@ -181,7 +168,8 @@ void combineTriangleFaceMap(TriangleFaceMap *dest, const TriangleFaceMap *src) {
     }
 }
 
-void combineTriangleData(TriangleData *dest, TriangleData *src, int offset) {
+void combineTriangleData(TriangleData *dest, TriangleData *src, int offset)
+{
     if (src->count > 0) {
         if (dest->count > 0) {
             int totalCount = src->count + dest->count;
@@ -212,8 +200,7 @@ void combineGeometryData(GeometryData *dest, GeometryData *src)
     combineIndexGeometryData(dest, src, destPreCombineVertexCount);
 }
 
-void combineGeometryDataAndTriangleFaceMap(GeometryData *destGeo, GeometryData *srcGeo,
-                                           TriangleFaceMap *destMap, TriangleFaceMap *srcMap)
+void combineGeometryDataAndTriangleFaceMap(GeometryData *destGeo, GeometryData *srcGeo, TriangleFaceMap *destMap, TriangleFaceMap *srcMap)
 {
     combineGeometryData(destGeo, srcGeo);
 
@@ -240,8 +227,7 @@ void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_fl
         if (dest->vertexCount > 0) {
             int totalCount = src->vertexCount + dest->vertexCount;
             dest->vertexData = (SatinVertex *)realloc(dest->vertexData, totalCount * sizeof(SatinVertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(SatinVertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
                 dest->vertexData[i].position += offset;
             }
@@ -268,8 +254,7 @@ void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_flo
         if (dest->vertexCount > 0) {
             int totalCount = src->vertexCount + dest->vertexCount;
             dest->vertexData = (SatinVertex *)realloc(dest->vertexData, totalCount * sizeof(SatinVertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(SatinVertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
                 dest->vertexData[i].position *= scale;
             }
@@ -288,8 +273,7 @@ void combineAndScaleGeometryData(GeometryData *dest, GeometryData *src, simd_flo
     combineIndexGeometryData(dest, src, destPreCombineVertexCount);
 }
 
-void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale,
-                                          simd_float3 offset)
+void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 scale, simd_float3 offset)
 {
     int destPreCombineVertexCount = dest->vertexCount;
 
@@ -297,8 +281,7 @@ void combineAndScaleAndOffsetGeometryData(GeometryData *dest, GeometryData *src,
         if (dest->vertexCount > 0) {
             int totalCount = src->vertexCount + dest->vertexCount;
             dest->vertexData = (SatinVertex *)realloc(dest->vertexData, totalCount * sizeof(SatinVertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(SatinVertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
                 dest->vertexData[i].position *= scale;
                 dest->vertexData[i].position += offset;
@@ -324,15 +307,13 @@ void combineAndTransformGeometryData(GeometryData *dest, GeometryData *src, simd
     int destPreCombineVertexCount = dest->vertexCount;
     simd_float4x4 rotation = simd_transpose(simd_inverse(transform));
     simd_float3x3 rot =
-        simd_matrix(simd_make_float3(rotation.columns[0]), simd_make_float3(rotation.columns[1]),
-                    simd_make_float3(rotation.columns[2]));
+        simd_matrix(simd_make_float3(rotation.columns[0]), simd_make_float3(rotation.columns[1]), simd_make_float3(rotation.columns[2]));
 
     if (src->vertexCount > 0) {
         if (dest->vertexCount > 0) {
             int totalCount = src->vertexCount + dest->vertexCount;
             dest->vertexData = (SatinVertex *)realloc(dest->vertexData, totalCount * sizeof(SatinVertex));
-            memcpy(dest->vertexData + dest->vertexCount, src->vertexData,
-                   src->vertexCount * sizeof(SatinVertex));
+            memcpy(dest->vertexData + dest->vertexCount, src->vertexData, src->vertexCount * sizeof(SatinVertex));
             for (int i = dest->vertexCount; i < totalCount; i++) {
                 dest->vertexData[i].position = simd_make_float3(simd_mul(transform, simd_make_float4(dest->vertexData[i].position, 1.0)));
                 dest->vertexData[i].normal = simd_mul(rot, dest->vertexData[i].normal);
@@ -377,7 +358,8 @@ void copyGeometryData(GeometryData *dest, GeometryData *src)
     copyGeometryIndexData(dest, src, 0, src->indexCount);
 }
 
-GeometryData duplicateGeometryData(GeometryData *src) {
+GeometryData duplicateGeometryData(GeometryData *src)
+{
     GeometryData dest = createGeometryData();
     copyGeometryData(&dest, src);
     return dest;
@@ -464,8 +446,7 @@ void transformVertices(SatinVertex *vertices, int vertexCount, simd_float4x4 tra
 {
     simd_float4x4 rotation = simd_transpose(simd_inverse(transform));
     simd_float3x3 rot =
-        simd_matrix(simd_make_float3(rotation.columns[0]), simd_make_float3(rotation.columns[1]),
-                    simd_make_float3(rotation.columns[2]));
+        simd_matrix(simd_make_float3(rotation.columns[0]), simd_make_float3(rotation.columns[1]), simd_make_float3(rotation.columns[2]));
     int count = vertexCount;
     for (int i = 0; i < count; i++) {
         vertices[i].position = simd_make_float3(simd_mul(transform, simd_make_float4(vertices[i].position, 1.0)));
@@ -541,12 +522,9 @@ void unrollGeometryData(GeometryData *dest, GeometryData *src)
 
         normal = simd_normalize(simd_cross(p01, p02));
 
-        vertices[vertexIndex++] =
-            (SatinVertex) { .position = v0.position, .normal = normal, .uv = v0.uv };
-        vertices[vertexIndex++] =
-            (SatinVertex) { .position = v1.position, .normal = normal, .uv = v1.uv };
-        vertices[vertexIndex++] =
-            (SatinVertex) { .position = v2.position, .normal = normal, .uv = v2.uv };
+        vertices[vertexIndex++] = (SatinVertex) { .position = v0.position, .normal = normal, .uv = v0.uv };
+        vertices[vertexIndex++] = (SatinVertex) { .position = v1.position, .normal = normal, .uv = v1.uv };
+        vertices[vertexIndex++] = (SatinVertex) { .position = v2.position, .normal = normal, .uv = v2.uv };
     }
 
     dest->indexCount = 0;

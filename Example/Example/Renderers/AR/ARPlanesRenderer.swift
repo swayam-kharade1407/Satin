@@ -98,7 +98,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
     var session = ARSession()
 
     lazy var planeMaterial: Satin.Material = {
-        let material = BasicColorMaterial(.one, .additive)
+        let material = BasicColorMaterial(color: .one, blending: .additive)
         material.depthWriteEnabled = false
         return material
     }()

@@ -28,7 +28,7 @@ public enum PBRTextureType: String, CaseIterable, Codable {
     case alpha
     case ior
     case transmission
-    case ambientOcclusion
+    case occlusion
     case reflection
     case irradiance
     case brdf
@@ -75,7 +75,7 @@ public enum PBRTextureType: String, CaseIterable, Codable {
                 return 18
             case .transmission:
                 return 19
-            case .ambientOcclusion:
+            case .occlusion:
                 return 20
             case .reflection:
                 return 21
@@ -145,7 +145,7 @@ public enum PBRTextureType: String, CaseIterable, Codable {
             .alpha,
             .ior,
             .transmission,
-            .ambientOcclusion,
+            .occlusion,
             .reflection,
             .irradiance
         ]

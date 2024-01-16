@@ -4,6 +4,6 @@
     float3x3 metallicTexcoordTransform;
     float3x3 specularTexcoordTransform;
     float3x3 normalTexcoordTransform;
-    float3x3 ambientOcclusionTexcoordTransform;
+    float3x3 occlusionTexcoordTransform;
     float3x3 reflectionTexcoordTransform;
     float3x3 irradianceTexcoordTransform;

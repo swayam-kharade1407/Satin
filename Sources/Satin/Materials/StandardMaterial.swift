@@ -58,6 +58,15 @@ open class StandardMaterial: Material {
         }
     }
 
+    public var occlusion: Float {
+        get {
+            (get("Occlusion") as? FloatParameter)!.value
+        }
+        set {
+            set("Occlusion", newValue)
+        }
+    }
+
     public var environmentIntensity: Float {
         get {
             (get("Environment Intensity") as? FloatParameter)!.value
@@ -159,6 +168,7 @@ open class StandardMaterial: Material {
                 metallic: Float = 0.0,
                 roughness: Float = 0.2,
                 specular: Float = 0.5,
+                occlusion: Float = 1.0,
                 emissiveColor: simd_float4 = .zero,
                 maps: [PBRTextureType: MTLTexture?] = [:])
     {
@@ -167,6 +177,7 @@ open class StandardMaterial: Material {
         self.metallic = metallic
         self.roughness = roughness
         self.specular = specular
+        self.occlusion = occlusion
         self.emissiveColor = emissiveColor
         self.maps = maps
         lighting = true
@@ -196,6 +207,7 @@ open class StandardMaterial: Material {
         self.metallic = 0.0
         self.roughness = 0.2
         self.specular = 0.5
+        self.occlusion = 1.0
         self.emissiveColor = .zero
         lighting = true
         blending = .disabled
@@ -269,8 +281,8 @@ open class StandardMaterial: Material {
                 break
             case .transmission:
                 break
-            case .ambientOcclusion:
-                break
+            case .occlusion:
+                occlusion = 1.0
             case .reflection:
                 break
             case .irradiance:

@@ -5,7 +5,7 @@
     float3x3 specularTexcoordTransform;
     float3x3 specularTintTexcoordTransform;
     float3x3 normalTexcoordTransform;
-    float3x3 ambientOcclusionTexcoordTransform;
+    float3x3 occlusionTexcoordTransform;
     float3x3 anisotropicTexcoordTransform;
     float3x3 anisotropicAngleTexcoordTransform;
     float3x3 clearcoatTexcoordTransform;

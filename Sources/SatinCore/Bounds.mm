@@ -9,13 +9,12 @@
 
 #include "Bounds.h"
 
-Bounds createBounds(void)
-{
-    return (Bounds) { .min = { INFINITY, INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY, -INFINITY } };
-}
+Bounds createBounds(void) { return (Bounds) { .min = { INFINITY, INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY, -INFINITY } }; }
 
-inline bool isBoundsInfinite(const Bounds &a) {
-    return a.min.x == INFINITY || a.min.y == INFINITY || a.min.z == INFINITY || a.max.x == -INFINITY || a.max.y == -INFINITY || a.max.z == -INFINITY;
+inline bool isBoundsInfinite(const Bounds &a)
+{
+    return a.min.x == INFINITY || a.min.y == INFINITY || a.min.z == INFINITY || a.max.x == -INFINITY || a.max.y == -INFINITY ||
+           a.max.z == -INFINITY;
 }
 
 Bounds computeBoundsFromFloatData(const void *data, int stride, int count)
@@ -24,7 +23,7 @@ Bounds computeBoundsFromFloatData(const void *data, int stride, int count)
         Bounds result = createBounds();
         for (int i = 0; i < count; i++) {
             const float *ptr = (float *)data + i * stride;
-            result = expandBounds(result, simd_make_float3(*ptr, *(ptr+1), *(ptr+2)));
+            result = expandBounds(result, simd_make_float3(*ptr, *(ptr + 1), *(ptr + 2)));
         }
         return result;
     }
@@ -65,16 +64,11 @@ Bounds mergeBounds(Bounds a, Bounds b)
     return (Bounds) { .min = min, .max = max };
 }
 
-Bounds expandBounds(Bounds bounds, simd_float3 pt)
-{
-    return (Bounds) { .min = simd_min(bounds.min, pt), .max = simd_max(bounds.max, pt) };
-}
+Bounds expandBounds(Bounds bounds, simd_float3 pt) { return (Bounds) { .min = simd_min(bounds.min, pt), .max = simd_max(bounds.max, pt) }; }
 
 Bounds transformBounds(Bounds a, simd_float4x4 transform)
 {
-    if(isBoundsInfinite(a)) {
-        return a;
-    }
+    if (isBoundsInfinite(a)) { return a; }
 
     Bounds result = createBounds();
     for (int i = 0; i < 8; ++i) {
@@ -85,8 +79,7 @@ Bounds transformBounds(Bounds a, simd_float4x4 transform)
 
 simd_float4 boundsCorner(Bounds a, int index)
 {
-    return simd_make_float4(index & 1 ? a.min.x : a.max.x, index & 2 ? a.min.y : a.max.y,
-                            index & 4 ? a.min.z : a.max.z, 1.0);
+    return simd_make_float4(index & 1 ? a.min.x : a.max.x, index & 2 ? a.min.y : a.max.y, index & 4 ? a.min.z : a.max.z, 1.0);
 }
 
 void mergeBoundsInPlace(Bounds *a, const Bounds *b)

@@ -82,8 +82,8 @@ open class OrthographicCamera: Camera {
         }
     }
 
-    override public init() {
-        super.init()
+    public override init(label: String = "Orthographic Camera") {
+        super.init(label: label)
         left = -1
         right = 1
         bottom = -1
@@ -92,8 +92,8 @@ open class OrthographicCamera: Camera {
         far = 1
     }
 
-    public init(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {
-        super.init()
+    public init(label: String = "Orthographic Camera", left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {
+        super.init(label: label)
         self.left = left
         self.right = right
         self.bottom = bottom

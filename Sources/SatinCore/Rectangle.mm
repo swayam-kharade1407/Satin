@@ -12,12 +12,10 @@
 #include "Rectangle.h"
 #include "Bounds.h"
 
-Rectangle createRectangle(void)
-{
-    return (Rectangle) { .min = { INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY } };
-}
+Rectangle createRectangle(void) { return (Rectangle) { .min = { INFINITY, INFINITY }, .max = { -INFINITY, -INFINITY } }; }
 
-simd_float2 rectangleCorner(const Rectangle *a, int index) {
+simd_float2 rectangleCorner(const Rectangle *a, int index)
+{
     return simd_make_float2(index & 1 ? a->min.x : a->max.x, index & 2 ? a->min.y : a->max.y);
 }
 
@@ -52,8 +50,7 @@ void expandRectangleInPlace(Rectangle *rect, const simd_float2 *pt)
 
 bool rectangleContainsPoint(Rectangle rect, simd_float2 pt)
 {
-    return (pt.x <= rect.max.x) && (pt.y <= rect.max.y) && (pt.x >= rect.min.x) &&
-           (pt.y >= rect.min.y);
+    return (pt.x <= rect.max.x) && (pt.y <= rect.max.y) && (pt.x >= rect.min.x) && (pt.y >= rect.min.y);
 }
 
 bool rectangleContainsRectangle(Rectangle a, Rectangle b)

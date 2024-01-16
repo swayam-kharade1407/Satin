@@ -73,7 +73,7 @@ class ARBloomRenderer: BaseRenderer {
     let geometry = IcoSphereGeometry(radius: 0.1, resolution: 3)
 
     var occlusionMaterial = {
-        let material = BasicColorMaterial([1, 1, 1, 0], .disabled)
+        let material = BasicColorMaterial(color: [1, 1, 1, 0], blending: .disabled)
         material.depthBias = DepthBias(bias: 10.0, slope: 10.0, clamp: 10.0)
         return material
     }()
@@ -275,7 +275,7 @@ class ARBloomRenderer: BaseRenderer {
 
             let mesh = Mesh(
                 geometry: geometry,
-                material: BasicColorMaterial(simd_float4(.random(in: 0.25 ... 1), 0.8), .alpha)
+                material: BasicColorMaterial(color: simd_float4(.random(in: 0.25 ... 1), 0.8), blending: .alpha)
             )
             mesh.doubleSided = true
             mesh.cullMode = .none

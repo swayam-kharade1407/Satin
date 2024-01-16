@@ -18,7 +18,7 @@
     texture2d<float> alphaMap [[texture(PBRTextureAlpha)]],
     texture2d<float> iorMap [[texture(PBRTextureIor)]],
     texture2d<float> transmissionMap [[texture(PBRTextureTransmission)]],
-    texture2d<float> ambientOcclusionMap [[texture(PBRTextureAmbientOcclusion)]],
+    texture2d<float> occlusionMap [[texture(PBRTextureOcclusion)]],
     texturecube<float> reflectionMap [[texture(PBRTextureReflection)]],
     texturecube<float> irradianceMap [[texture(PBRTextureIrradiance)]],
     texture2d<float> brdfMap [[texture(PBRTextureBrdf)]],

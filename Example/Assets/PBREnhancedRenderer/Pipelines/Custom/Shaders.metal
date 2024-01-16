@@ -118,7 +118,7 @@ fragment float4 customFragment
     material.baseColor = uniforms.baseColor.rgb;
     material.emissiveColor = uniforms.emissiveColor.rgb * uniforms.emissiveColor.a;
     material.subsurface = uniforms.subsurface;
-    material.ambientOcclusion = 1.0;
+    material.occlusion = uniforms.occlusion;
     material.metallic = uniforms.metallic;
     material.roughness = uniforms.roughness;
     material.specular = uniforms.specular;
@@ -227,7 +227,6 @@ fragment float4 customFragment
     } else if (row == 5) { // Sheen
         material.baseColor = float3(0.25, 0.0, 0.20);
         material.subsurface = 0.0;
-        material.ambientOcclusion = 1.0;
         material.metallic = 0.0;
         material.roughness = 0.5;
         material.specular = 0.5;
@@ -242,7 +241,6 @@ fragment float4 customFragment
     } else if (row == 4) { // Sheen Tint
         material.baseColor = float3(0.25, 0.0, 0.20);
         material.subsurface = 0.0;
-        material.ambientOcclusion = 1.0;
         material.metallic = 0.0;
         material.roughness = 0.5;
         material.specular = 0.5;
