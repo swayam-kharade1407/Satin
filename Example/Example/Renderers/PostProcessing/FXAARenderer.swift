@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class FXAARenderer: BaseRenderer {
@@ -50,15 +49,8 @@ class FXAARenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.colorPixelFormat = .bgra8Unorm
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     deinit {
         cameraController.disable()
@@ -75,8 +67,8 @@ class FXAARenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -87,7 +79,7 @@ class FXAARenderer: BaseRenderer {
         fxaaProcessor.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
         fxaaProcessor.resize(size)
@@ -96,11 +88,11 @@ class FXAARenderer: BaseRenderer {
     }
 
     func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat) -> MTLTexture? {
-        if mtkView.drawableSize.width > 0, mtkView.drawableSize.height > 0 {
+        if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat
-            descriptor.width = Int(mtkView.drawableSize.width)
-            descriptor.height = Int(mtkView.drawableSize.height)
+            descriptor.width = Int(metalView.drawableSize.width)
+            descriptor.height = Int(metalView.drawableSize.height)
             descriptor.sampleCount = 1
             descriptor.textureType = .type2D
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]

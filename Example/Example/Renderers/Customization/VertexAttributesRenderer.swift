@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class VertexAttributesRenderer: BaseRenderer {
@@ -27,15 +26,8 @@ class VertexAttributesRenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var scene = Object(label: "Scene", [intersectionMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-        metalKitView.colorPixelFormat = .bgra8Unorm
-    }
 
     override func setup() {
         let url = modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj")
@@ -55,8 +47,8 @@ class VertexAttributesRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -65,7 +57,7 @@ class VertexAttributesRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         let aspect = size.width / size.height
         camera.aspect = aspect
         renderer.resize(size)
@@ -73,7 +65,7 @@ class VertexAttributesRenderer: BaseRenderer {
 
     #if os(macOS)
     override func mouseDown(with event: NSEvent) {
-        let pt = normalizePoint(mtkView.convert(event.locationInWindow, from: nil), mtkView.frame.size)
+        let pt = normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size)
         let results = raycast(camera: camera, coordinate: pt, object: scene)
         for result in results {
             print(result.object.label)
@@ -86,8 +78,8 @@ class VertexAttributesRenderer: BaseRenderer {
     #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            let point = first.location(in: mtkView)
-            let size = mtkView.frame.size
+            let point = first.location(in: metalView)
+            let size = metalView.frame.size
             let pt = normalizePoint(point, size)
             let results = raycast(camera: camera, coordinate: pt, object: scene)
             for result in results {

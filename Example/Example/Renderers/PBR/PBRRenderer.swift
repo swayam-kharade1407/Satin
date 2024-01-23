@@ -11,7 +11,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class PBRRenderer: BaseRenderer {
@@ -40,10 +39,10 @@ class PBRRenderer: BaseRenderer {
 
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
-    lazy var scene = Scene(label: "Scene", [mesh, skybox])
+    lazy var scene = IBLScene(label: "Scene", [mesh, skybox])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 40.0], near: 0.001, far: 1000.0)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer: Satin.Renderer = .init(context: context)
 
     lazy var customMaterial: CustomMaterial = {
@@ -69,13 +68,6 @@ class PBRRenderer: BaseRenderer {
     }()
 
     lazy var skybox = Mesh(geometry: SkyboxGeometry(size: 50), material: SkyboxMaterial())
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-        metalKitView.colorPixelFormat = .bgra8Unorm
-    }
 
     override func setup() {
         loadHdri()
@@ -122,8 +114,8 @@ class PBRRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -132,7 +124,7 @@ class PBRRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

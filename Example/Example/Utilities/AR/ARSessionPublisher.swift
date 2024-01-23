@@ -42,6 +42,10 @@ class ARSessionPublisher: NSObject, ARSessionDelegate {
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         addedFramePublisher.send(frame)
     }
+
+    deinit {
+        session.pause()
+    }
 }
 
 #endif

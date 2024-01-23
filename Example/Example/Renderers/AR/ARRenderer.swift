@@ -7,38 +7,37 @@
 //
 
 #if os(iOS)
-import ARKit
-import Metal
-import MetalKit
 
-import Forge
+import ARKit
+import Combine
+import Metal
+
 import Satin
 import SatinCore
 
-class ARRenderer: BaseRenderer, ARSessionDelegate {
-    var session = ARSession()
+class ARRenderer: BaseRenderer {
+    var session: ARSession { sessionPublisher.session }
+    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private var anchorsSubscription: AnyCancellable?
 
-    let boxGeometry = BoxGeometry(width: 0.1, height: 0.1, depth: 0.1)
-    let boxMaterial = UvColorMaterial()
-    var meshAnchorMap: [UUID: Mesh] = [:]
-    
-    var scene = Object(label: "Scene")
+    private let boxGeometry = BoxGeometry(width: 0.1, height: 0.1, depth: 0.1)
+    private let boxMaterial = UvColorMaterial()
+    private var meshAnchorMap: [UUID: Mesh] = [:]
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    private var scene = Object(label: "Scene")
 
-    var backgroundRenderer: ARBackgroundRenderer!
+    private lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
+    private lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
+    private lazy var renderer = Satin.Renderer(context: context)
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    private var backgroundRenderer: ARBackgroundRenderer!
+
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override init() {
         super.init()
-        session.delegate = self
         session.run(ARWorldTrackingConfiguration())
     }
 
@@ -52,6 +51,15 @@ class ARRenderer: BaseRenderer, ARSessionDelegate {
             context: Context(device, 1, colorPixelFormat),
             session: session
         )
+
+        anchorsSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let mesh = self.meshAnchorMap[anchor.identifier] {
+                    mesh.worldMatrix = anchor.transform
+                }
+            }
+        }
     }
 
     override func update() {
@@ -59,9 +67,7 @@ class ARRenderer: BaseRenderer, ARSessionDelegate {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -75,7 +81,7 @@ class ARRenderer: BaseRenderer, ARSessionDelegate {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
     }
@@ -92,14 +98,6 @@ class ARRenderer: BaseRenderer, ARSessionDelegate {
             mesh.worldMatrix = anchor.transform
             meshAnchorMap[anchor.identifier] = mesh
             scene.add(mesh)
-        }
-    }
-
-    func session(_: ARSession, didUpdate anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if let mesh = meshAnchorMap[anchor.identifier] {
-                mesh.worldMatrix = anchor.transform
-            }
         }
     }
 }

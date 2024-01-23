@@ -11,7 +11,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class CubemapRenderer: BaseRenderer {
@@ -21,7 +20,7 @@ class CubemapRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [skybox, mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
 
     lazy var mesh: Mesh = {
@@ -54,13 +53,6 @@ class CubemapRenderer: BaseRenderer {
     }()
 
     var cubeTexture: MTLTexture!
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-        metalKitView.colorPixelFormat = .bgra8Unorm
-    }
     
     override func setup() {
         let url = texturesURL.appendingPathComponent("Cubemap")
@@ -92,8 +84,8 @@ class CubemapRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -102,7 +94,7 @@ class CubemapRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

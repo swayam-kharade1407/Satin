@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ContactShadowRendererView: View {
     var body: some View {
-        ForgeView(renderer: ContactShadowRenderer())
+        SatinMetalView(renderer:  ContactShadowRenderer())
             .ignoresSafeArea()
             .navigationTitle("Contact Shadow")
             .preferredColorScheme(.light)

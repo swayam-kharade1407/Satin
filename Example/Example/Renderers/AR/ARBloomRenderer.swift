@@ -7,6 +7,7 @@
 //
 
 #if os(iOS)
+
 import ARKit
 
 import Metal
@@ -15,7 +16,6 @@ import MetalPerformanceShaders
 
 import Combine
 
-import Forge
 import Satin
 import SatinCore
 
@@ -82,7 +82,7 @@ class ARBloomRenderer: BaseRenderer {
     var scene = Object(label: "Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)
 
     // handles depth (lidar depth map, lidar mesh & horizontal & vertical planes)
@@ -107,13 +107,6 @@ class ARBloomRenderer: BaseRenderer {
     }()
 
     lazy var postProcessor = PostProcessor(context: Context(device, 1, colorPixelFormat), material: postMaterial)
-
-    override func setupMtkView(_ mtkView: MTKView) {
-        mtkView.sampleCount = 1
-        mtkView.depthStencilPixelFormat = .depth32Float
-        mtkView.colorPixelFormat = .bgra8Unorm
-        mtkView.preferredFramesPerSecond = 120
-    }
 
     override init() {
         super.init()
@@ -148,7 +141,7 @@ class ARBloomRenderer: BaseRenderer {
             context: context,
             session: session,
             sessionPublisher: sessionPublisher,
-            mtkView: mtkView,
+            metalView: metalView,
             near: camera.near,
             far: camera.far
         )
@@ -167,11 +160,8 @@ class ARBloomRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor,
-              let contentTexture,
-              let backgroundTexture,
-              var bloomTexture else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        guard let contentTexture, let backgroundTexture, var bloomTexture else { return }
 
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
@@ -244,7 +234,7 @@ class ARBloomRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
         bloomRenderer.resize(size)
@@ -259,8 +249,8 @@ class ARBloomRenderer: BaseRenderer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
 
-        let location = touch.location(in: mtkView)
-        let coordinate = normalizePoint(location, mtkView.frame.size)
+        let location = touch.location(in: metalView)
+        let coordinate = normalizePoint(location, metalView.frame.size)
 
         let result = raycast(ray: Ray(camera: camera, coordinate: coordinate), object: scene)
         if let first = result.first?.object {
@@ -317,11 +307,11 @@ class ARBloomRenderer: BaseRenderer {
     }
 
     internal func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
-        if mtkView.drawableSize.width > 0, mtkView.drawableSize.height > 0 {
+        if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat
-            descriptor.width = Int(mtkView.drawableSize.width) / textureScale
-            descriptor.height = Int(mtkView.drawableSize.height) / textureScale
+            descriptor.width = Int(metalView.drawableSize.width) / textureScale
+            descriptor.height = Int(metalView.drawableSize.height) / textureScale
             descriptor.sampleCount = 1
             descriptor.textureType = .type2D
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]

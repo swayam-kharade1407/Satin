@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class ProjectedShadowRenderer: BaseRenderer {
@@ -34,16 +33,10 @@ class ProjectedShadowRenderer: BaseRenderer {
     }()
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
 
     var angle: Float = 0
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 120
-    }
 
     override func setup() {
         renderer.setClearColor(.one)
@@ -66,10 +59,10 @@ class ProjectedShadowRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         shadowRenderer.draw(commandBuffer: commandBuffer)
 
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+        
         shadowMaterial.texture = shadowRenderer.texture
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
@@ -79,7 +72,7 @@ class ProjectedShadowRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

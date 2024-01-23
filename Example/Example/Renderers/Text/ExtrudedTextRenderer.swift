@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class ExtrudedTextRenderer: BaseRenderer {
@@ -18,14 +17,8 @@ class ExtrudedTextRenderer: BaseRenderer {
 
     lazy var camera = PerspectiveCamera(position: [15.0, 20.0, 40.0], near: 10.0, far: 60.0, fov: 60)
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     override func setup() {
         setupText()
@@ -63,8 +56,8 @@ class ExtrudedTextRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -73,7 +66,7 @@ class ExtrudedTextRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

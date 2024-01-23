@@ -15,14 +15,14 @@ import simd
 
 class ARPerspectiveCamera: PerspectiveCamera {
     unowned var session: ARSession
-    unowned var mtkView: MTKView
+    unowned var metalView: MetalView
 
     public private(set) var intrinsics: matrix_float3x3 = matrix_identity_float3x3
     public private(set) var localToWorld: matrix_float4x4 = matrix_identity_float4x4
 
-    init(session: ARSession, mtkView: MTKView, near: Float, far: Float) {
+    init(session: ARSession, metalView: MetalView, near: Float, far: Float) {
         self.session = session
-        self.mtkView = mtkView
+        self.metalView = metalView
         super.init()
         label = "AR Perspective Camera"
         self.near = near
@@ -38,7 +38,7 @@ class ARPerspectiveCamera: PerspectiveCamera {
               let orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation else { return }
 
         viewMatrix = frame.camera.viewMatrix(for: orientation)
-        let arkitProjectionMatrix = frame.camera.projectionMatrix(for: orientation, viewportSize: mtkView.drawableSize, zNear: CGFloat(near), zFar: CGFloat(far))
+        let arkitProjectionMatrix = frame.camera.projectionMatrix(for: orientation, viewportSize: metalView.drawableSize, zNear: CGFloat(near), zFar: CGFloat(far))
         setProjectionMatrixFromARKit(arkitProjectionMatrix)
 
         localToWorld = viewMatrix.inverse * orientationCorrection(orientation: orientation)

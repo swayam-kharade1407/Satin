@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct RayMarchingRendererView: View {
     var body: some View {
-        ForgeView(renderer: RayMarchingRenderer())
+        SatinMetalView(renderer: RayMarchingRenderer())
             .ignoresSafeArea()
             .navigationTitle("Ray Marching")
     }

@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct SDFTextRendererView: View {
     var body: some View {
-        ForgeView(renderer: SDFTextRenderer())
+        SatinMetalView(renderer: SDFTextRenderer())
             .ignoresSafeArea()
             .navigationTitle("SDF Text")
     }

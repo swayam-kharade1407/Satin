@@ -9,15 +9,16 @@
 #if os(iOS)
 
 import ARKit
+import Combine
 import Metal
-import MetalKit
 
-import Forge
-import SatinCore
 import Satin
+import SatinCore
 
-class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
-    let session = ARSession()
+class ARPeopleOcclusionRenderer: BaseRenderer {
+    var session: ARSession { sessionPublisher.session }
+    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private var anchorsUpdatedSubscription: AnyCancellable?
 
     let boxGeometry = BoxGeometry(size: 0.1)
     let boxMaterial = UvColorMaterial()
@@ -26,7 +27,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
 
     var scene = Object(label: "Scene")
 
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.001, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.001, far: 100.0)
     lazy var renderer: Satin.Renderer = {
         let renderer = Satin.Renderer(context: Context(device, sampleCount, colorPixelFormat, .depth32Float))
         renderer.setClearColor(.zero)
@@ -43,10 +44,8 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
 
     var compositor: ARCompositor!
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override init() {
@@ -74,6 +73,15 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
             context: Context(device, 1, colorPixelFormat),
             session: session
         )
+
+        anchorsUpdatedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let mesh = self.meshAnchorMap[anchor.identifier] {
+                    mesh.worldMatrix = anchor.transform
+                }
+            }
+        }
     }
 
     override func update() {
@@ -86,9 +94,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         matteRenderer.encode(commandBuffer: commandBuffer)
 
         if let backgroundTexture = backgroundTexture {
@@ -118,7 +124,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
         compositor.resize(size)
@@ -142,20 +148,12 @@ class ARPeopleOcclusionRenderer: BaseRenderer, ARSessionDelegate {
         }
     }
 
-    func session(_: ARSession, didUpdate anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if let mesh = meshAnchorMap[anchor.identifier] {
-                mesh.worldMatrix = anchor.transform
-            }
-        }
-    }
-
     func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat) -> MTLTexture? {
-        if mtkView.drawableSize.width > 0, mtkView.drawableSize.height > 0 {
+        if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat
-            descriptor.width = Int(mtkView.drawableSize.width)
-            descriptor.height = Int(mtkView.drawableSize.height)
+            descriptor.width = Int(metalView.drawableSize.width)
+            descriptor.height = Int(metalView.drawableSize.height)
             descriptor.sampleCount = 1
             descriptor.textureType = .type2D
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]

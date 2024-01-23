@@ -6,19 +6,17 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct BufferGeometryRendererView: View {
     var body: some View {
-        ForgeView(renderer: BufferGeometryRenderer())
+        SatinMetalView(renderer: BufferGeometryRenderer())
             .ignoresSafeArea()
             .navigationTitle("Buffer Geometry")
     }
 }
 
-struct BufferGeometryRendererView_Previews: PreviewProvider {
-    static var previews: some View {
-        BufferGeometryRendererView()
-    }
+#Preview {
+    BufferGeometryRendererView()
 }

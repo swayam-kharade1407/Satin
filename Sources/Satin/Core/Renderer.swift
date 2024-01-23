@@ -119,33 +119,48 @@ open class Renderer {
 
     // MARK: - Init
 
-    public init(label: String = "Satin Renderer", context: Context) {
+    public init(label: String = "Satin Renderer", context: Context, sortObjects: Bool = false, clearColor: simd_float4 = .init(0, 0, 0, 1), clearDepth: Double = 0) {
         self.label = label
         self.context = context
+        self.sortObjects = sortObjects
+        self.clearColor = .init(clearColor)
+        self.clearDepth = clearDepth
     }
 
     public func setClearColor(_ color: simd_float4) {
-        clearColor = .init(red: Double(color.x), green: Double(color.y), blue: Double(color.z), alpha: Double(color.w))
+        clearColor = .init(color)
     }
 
     // MARK: - Drawing
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, renderTarget: MTLTexture)
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil, renderTarget: MTLTexture)
     {
         if context.sampleCount > 1 {
             let resolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
             renderPassDescriptor.colorAttachments[0].resolveTexture = renderTarget
-            draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer, scene: scene, camera: camera)
+            draw(
+                renderPassDescriptor: renderPassDescriptor,
+                commandBuffer: commandBuffer,
+                scene: scene,
+                camera: camera,
+                viewport: viewport
+            )
             renderPassDescriptor.colorAttachments[0].resolveTexture = resolveTexture
         } else {
             let renderTexture = renderPassDescriptor.colorAttachments[0].texture
             renderPassDescriptor.colorAttachments[0].texture = renderTarget
-            draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer, scene: scene, camera: camera)
+            draw(
+                renderPassDescriptor: renderPassDescriptor,
+                commandBuffer: commandBuffer,
+                scene: scene,
+                camera: camera,
+                viewport: viewport
+            )
             renderPassDescriptor.colorAttachments[0].texture = renderTexture
         }
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera)
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil)
     {
         update(commandBuffer: commandBuffer, scene: scene, camera: camera)
 
@@ -283,7 +298,7 @@ open class Renderer {
 #if DEBUG
                 renderEncoder.pushDebugGroup(label + " Empty Pass")
 #endif
-                renderEncoder.setViewport(viewport)
+                renderEncoder.setViewport(viewport ?? self.viewport)
 #if DEBUG
                 renderEncoder.popDebugGroup()
 #endif
@@ -301,7 +316,7 @@ open class Renderer {
                     renderEncoder.label = label + " Pass \(pass)"
                     renderEncoder.pushDebugGroup("Pass \(pass)")
 #endif
-                    renderEncoder.setViewport(viewport)
+                    renderEncoder.setViewport(viewport ?? self.viewport)
 
                     encode(renderEncoder: renderEncoder, pass: pass, renderables: renderables, camera: camera)
 

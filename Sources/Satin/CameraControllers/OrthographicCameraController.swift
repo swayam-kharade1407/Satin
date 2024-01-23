@@ -5,8 +5,6 @@
 //  Created by Reza Ali on 03/26/23.
 //
 
-#if os(macOS) || os(iOS)
-
 import Combine
 import MetalKit
 import simd
@@ -23,7 +21,7 @@ public final class OrthographicCameraController: CameraController, Codable {
         }
     }
 
-    public var view: MTKView? {
+    public var view: MetalView? {
         willSet {
             disable()
         }
@@ -95,7 +93,7 @@ public final class OrthographicCameraController: CameraController, Codable {
 
     private var isSetup = false
 
-    public init(camera: OrthographicCamera, view: MTKView, defaultZoom: Float = 0.5) {
+    public init(camera: OrthographicCamera, view: MetalView, defaultZoom: Float = 0.5) {
         self.camera = camera
         self.view = view
 
@@ -232,7 +230,6 @@ public final class OrthographicCameraController: CameraController, Codable {
         case zoomDelta
         case panDelta
     }
-
 
     // MARK: - Setup & Camera Transform Updates
 
@@ -574,5 +571,3 @@ public final class OrthographicCameraController: CameraController, Codable {
 
     #endif
 }
-
-#endif

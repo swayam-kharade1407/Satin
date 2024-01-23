@@ -9,13 +9,17 @@
 #if os(iOS)
 
 import ARKit
+import Combine
 import Metal
-import MetalKit
 
-import Forge
 import Satin
 
 class ARLidarMeshRenderer: BaseRenderer {
+    var session: ARSession { sessionPublisher.session }
+    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private var anchorsUpdatedSubscription: AnyCancellable?
+    private var anchorsAddedSubscription: AnyCancellable?
+
     class LidarMeshMaterial: SourceMaterial {}
 
     lazy var material: LidarMeshMaterial = {
@@ -28,25 +32,20 @@ class ARLidarMeshRenderer: BaseRenderer {
 
     var lidarMeshes: [UUID: ARLidarMesh] = [:]
 
-    var session = ARSession()
-
     var scene = Object(label: "Scene")
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundRenderer!
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override init() {
         super.init()
-        session.delegate = self
 
         let config = ARWorldTrackingConfiguration()
         config.sceneReconstruction = .mesh
@@ -60,6 +59,31 @@ class ARLidarMeshRenderer: BaseRenderer {
             context: Context(device, 1, colorPixelFormat),
             session: session
         )
+
+        anchorsUpdatedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let meshAnchor = anchor as? ARMeshAnchor {
+                    let id = anchor.identifier
+                    if let lidarMesh = self.lidarMeshes[id] {
+                        lidarMesh.meshAnchor = meshAnchor
+                    }
+                }
+            }
+        }
+
+        anchorsAddedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let meshAnchor = anchor as? ARMeshAnchor {
+                    let id = anchor.identifier
+                    let mesh = ARLidarMesh(meshAnchor: meshAnchor, material: material)
+                    mesh.triangleFillMode = .lines
+                    self.lidarMeshes[id] = mesh
+                    self.scene.add(mesh)
+                }
+            }
+        }
     }
 
     override func update() {
@@ -67,9 +91,7 @@ class ARLidarMeshRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -83,40 +105,13 @@ class ARLidarMeshRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
     }
 
     override func cleanup() {
         session.pause()
-    }
-}
-
-extension ARLidarMeshRenderer: ARSessionDelegate {
-    // MARK: - ARSession Delegate
-
-    func session(_: ARSession, didUpdate anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if let meshAnchor = anchor as? ARMeshAnchor {
-                let id = anchor.identifier
-                if let lidarMesh = lidarMeshes[id] {
-                    lidarMesh.meshAnchor = meshAnchor
-                }
-            }
-        }
-    }
-
-    func session(_: ARSession, didAdd anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if let meshAnchor = anchor as? ARMeshAnchor {
-                let id = anchor.identifier
-                let mesh = ARLidarMesh(meshAnchor: meshAnchor, material: material)
-                mesh.triangleFillMode = .lines
-                lidarMeshes[id] = mesh
-                scene.add(mesh)
-            }
-        }
     }
 }
 

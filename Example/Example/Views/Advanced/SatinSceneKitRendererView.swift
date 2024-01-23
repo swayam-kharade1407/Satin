@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct SatinSceneKitRendererView: View {
     var body: some View {
-        ForgeView(renderer: SatinSceneKitRenderer())
+        SatinMetalView(renderer: SatinSceneKitRenderer())
             .ignoresSafeArea()
             .navigationTitle("Satin + SceneKit")
     }

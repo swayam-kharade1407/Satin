@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 import SatinCore
 
@@ -180,16 +179,13 @@ class BufferGeometryRenderer: BaseRenderer {
     }()
 
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
     lazy var renderer = Satin.Renderer(context: context)
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 120
-    }
+#if !os(visionOS)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+#endif
 
     let interleaved = true
 
@@ -206,22 +202,25 @@ class BufferGeometryRenderer: BaseRenderer {
 
     deinit {
         freeGeometryData(&geometryData)
+#if !os(visionOS)
         cameraController.disable()
+#endif
     }
 
     var theta: Float = 0.0
 
     override func update() {
         setupInterleavedBufferGeometry(size: 1.0 + 0.25 * sin(theta))
+#if !os(visionOS)
         cameraController.update()
+#endif
         theta += 0.1
 
         camera.update()
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -230,7 +229,7 @@ class BufferGeometryRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
@@ -354,13 +353,13 @@ class BufferGeometryRenderer: BaseRenderer {
 
 #if os(macOS)
     override func mouseDown(with event: NSEvent) {
-        intersect(coordinate: normalizePoint(mtkView.convert(event.locationInWindow, from: nil), mtkView.frame.size))
+        intersect(coordinate: normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size))
     }
 
 #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            intersect(coordinate: normalizePoint(first.location(in: mtkView), mtkView.frame.size))
+            intersect(coordinate: normalizePoint(first.location(in: metalView), metalView.frame.size))
         }
     }
 #endif

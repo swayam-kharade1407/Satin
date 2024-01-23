@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct TessellationRendererView: View {
     var body: some View {
-        ForgeView(renderer: TessellationRenderer())
+        SatinMetalView(renderer: TessellationRenderer())
             .ignoresSafeArea()
             .navigationTitle("Tessellation")
     }

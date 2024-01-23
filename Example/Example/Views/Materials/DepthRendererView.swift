@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct DepthMaterialRendererView: View {
     var body: some View {
-        ForgeView(renderer: DepthMaterialRenderer())
+        SatinMetalView(renderer: DepthMaterialRenderer())
             .ignoresSafeArea()
             .navigationTitle("Depth Material")
     }

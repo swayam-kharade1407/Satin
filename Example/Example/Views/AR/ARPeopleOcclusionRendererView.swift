@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARPeopleOcclusionRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARPeopleOcclusionRenderer())
+        SatinMetalView(renderer: ARPeopleOcclusionRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR People Occlusion")
     }
@@ -26,4 +26,3 @@ struct ARPeopleOcclusionRendererView_Previews: PreviewProvider {
 }
 
 #endif
-

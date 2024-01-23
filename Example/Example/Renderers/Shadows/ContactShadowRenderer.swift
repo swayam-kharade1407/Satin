@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 import MetalPerformanceShaders
 
-import Forge
 import Satin
 
 class ContactShadowRenderer: BaseRenderer {
@@ -127,7 +126,7 @@ class ContactShadowRenderer: BaseRenderer {
     }()
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
 
     lazy var shadowRenderer = ObjectShadowRenderer(
@@ -138,12 +137,6 @@ class ContactShadowRenderer: BaseRenderer {
         catcher: floorMesh,
         padding: 0.25
     )
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 120
-    }
 
     override func setup() {
         spheres.position.y = 1.5
@@ -165,9 +158,7 @@ class ContactShadowRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         shadowRenderer.update(commandBuffer: commandBuffer)
 
         renderer.draw(
@@ -178,7 +169,7 @@ class ContactShadowRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

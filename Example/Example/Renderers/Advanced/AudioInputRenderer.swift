@@ -6,10 +6,11 @@
 //  Copyright © 2021 Hi-Rez. All rights reserved.
 //
 
+#if !os(visionOS)
+
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class AudioInputRenderer: BaseRenderer {
@@ -37,13 +38,11 @@ class AudioInputRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-//    lazy var cameraController = OrthographicCameraController(camera: camera, view: mtkView)
+//    lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override func setup() {
@@ -56,8 +55,7 @@ class AudioInputRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -66,8 +64,10 @@ class AudioInputRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
 //        cameraController.resize(size)
         renderer.resize(size)
     }
 }
+
+#endif

@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARPlanesRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARPlanesRenderer())
+        SatinMetalView(renderer: ARPlanesRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR Planes")
     }

@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class OctasphereRenderer: BaseRenderer {
@@ -19,14 +18,8 @@ class OctasphereRenderer: BaseRenderer {
 
     var camera = PerspectiveCamera(position: simd_make_float3(0.0, 0.0, 5.0), near: 0.01, far: 100.0, fov: 30)
 
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     deinit {
         cameraController.disable()
@@ -38,8 +31,8 @@ class OctasphereRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -48,14 +41,14 @@ class OctasphereRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
 
     #if os(macOS)
     override func mouseDown(with event: NSEvent) {
-        let pt = normalizePoint(mtkView.convert(event.locationInWindow, from: nil), mtkView.frame.size)
+        let pt = normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size)
         let results = raycast(camera: camera, coordinate: pt, object: scene)
         for result in results {
             print(result.object.label)
@@ -66,8 +59,8 @@ class OctasphereRenderer: BaseRenderer {
     #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            let point = first.location(in: mtkView)
-            let size = mtkView.frame.size
+            let point = first.location(in: metalView)
+            let size = metalView.frame.size
             let pt = normalizePoint(point, size)
             let results = raycast(camera: camera, coordinate: pt, object: scene)
             for result in results {

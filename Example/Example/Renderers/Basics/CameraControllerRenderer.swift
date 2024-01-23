@@ -9,8 +9,8 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
+import SatinCore
 
 class CameraControllerRenderer: BaseRenderer {
     var gridInterval: Float = 1.0
@@ -68,14 +68,8 @@ class CameraControllerRenderer: BaseRenderer {
         return camera
     }()
 
-    lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: mtkView)
+    lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: metalView)
     lazy var renderer: Satin.Renderer = .init(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 4
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 120
-    }
 
     override func setup() {
         scene.attach(cameraController.target)
@@ -93,8 +87,7 @@ class CameraControllerRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -103,7 +96,7 @@ class CameraControllerRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

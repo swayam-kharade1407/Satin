@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARLidarMeshRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARLidarMeshRenderer())
+        SatinMetalView(renderer: ARLidarMeshRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR Lidar Mesh")
     }

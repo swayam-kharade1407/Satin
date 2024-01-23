@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct LoadObjRendererView: View {
     var body: some View {
-        ForgeView(renderer: LoadObjRenderer())
+        SatinMetalView(renderer: LoadObjRenderer())
             .ignoresSafeArea()
             .navigationTitle("Obj Loading")
     }

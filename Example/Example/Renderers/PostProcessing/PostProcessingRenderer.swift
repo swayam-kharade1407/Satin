@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 import simd
 
-import Forge
 import Satin
 
 class PostProcessingRenderer: BaseRenderer {
@@ -53,23 +52,17 @@ class PostProcessingRenderer: BaseRenderer {
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 10.0], near: 0.001, far: 100.0, fov: 30.0)
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     deinit {
         cameraController.disable()
     }
 
     override func update() {
-        if size.x != Int(mtkView.drawableSize.width) || size.y != Int(mtkView.drawableSize.height) {
-            renderTexture = createTexture("Render Texture", Int(mtkView.drawableSize.width), Int(mtkView.drawableSize.height), colorPixelFormat, context.device)
-            size = simd_make_int2(Int32(Int(mtkView.drawableSize.width)), Int32(mtkView.drawableSize.height))
+        if size.x != Int(metalView.drawableSize.width) || size.y != Int(metalView.drawableSize.height) {
+            renderTexture = createTexture("Render Texture", Int(metalView.drawableSize.width), Int(metalView.drawableSize.height), colorPixelFormat, context.device)
+            size = simd_make_int2(Int32(Int(metalView.drawableSize.width)), Int32(metalView.drawableSize.height))
         }
 
         cameraController.update()
@@ -77,8 +70,8 @@ class PostProcessingRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor, let renderTexture = renderTexture else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        guard let renderTexture = renderTexture else { return }
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -89,7 +82,7 @@ class PostProcessingRenderer: BaseRenderer {
         postProcessor.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
         postProcessor.resize(size)

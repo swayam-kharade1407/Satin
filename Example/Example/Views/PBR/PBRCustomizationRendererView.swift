@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct PBRCustomizationRendererView: View {
     var body: some View {
-        ForgeView(renderer: PBRCustomizationRenderer())
+        SatinMetalView(renderer: PBRCustomizationRenderer())
             .ignoresSafeArea()
             .navigationTitle("PBR Customization")
     }
@@ -22,4 +22,3 @@ struct PBRCustomizationRendererView_Previews: PreviewProvider {
         PBRCustomizationRendererView()
     }
 }
-

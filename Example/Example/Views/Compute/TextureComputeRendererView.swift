@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct TextureComputeRendererView: View {
     var body: some View {
-        ForgeView(renderer: TextureComputeRenderer())
+        SatinMetalView(renderer: TextureComputeRenderer())
             .ignoresSafeArea()
             .navigationTitle("Texture Compute")
     }

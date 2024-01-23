@@ -7,17 +7,16 @@
 //
 
 #if os(iOS)
-import ARKit
-import Metal
-import MetalKit
 
-import Forge
+import ARKit
+import Combine
+import Metal
+
 import Satin
 import SatinCore
 import SwiftUI
 
 class ARPlaneGeometry: Geometry {
-
     let positionBuffer = Float3BufferAttribute(defaultValue: .zero, data: [])
     let texcoodsBuffer = Float2BufferAttribute(defaultValue: .zero, data: [])
     let indicesBuffer = ElementBuffer(type: .uint16, data: nil, count: 0, source: [])
@@ -92,10 +91,11 @@ class ARPlaneContainer: Object {
     }
 }
 
-class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
-    // MARK: - AR
-
-    var session = ARSession()
+class ARPlanesRenderer: BaseRenderer {
+    var session: ARSession { sessionPublisher.session }
+    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private var anchorsAddedSubscription: AnyCancellable?
+    private var anchorsUpdatedSubscription: AnyCancellable?
 
     lazy var planeMaterial: Satin.Material = {
         let material = BasicColorMaterial(color: .one, blending: .additive)
@@ -109,7 +109,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
 
     lazy var scene = Object(label: "Scene")
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
         let renderer = Satin.Renderer(label: "Content Renderer", context: context)
         renderer.colorLoadAction = .load
@@ -120,22 +120,10 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
 
     var backgroundRenderer: ARBackgroundRenderer!
 
-    // MARK: - Setup MTKView
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0)
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.backgroundColor = .black
-        metalKitView.preferredFramesPerSecond = 120
-    }
-
     // MARK: - Init
 
     override init() {
         super.init()
-
-        session.delegate = self
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
         session.run(configuration)
@@ -152,6 +140,26 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
     override func setup() {
         backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
         renderer.compile(scene: scene, camera: camera)
+
+        anchorsAddedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if self.planesMap[anchor] == nil, let planeAnchor = anchor as? ARPlaneAnchor {
+                    let planeContainer = ARPlaneContainer(label: "\(planeAnchor.identifier)", anchor: planeAnchor, material: self.planeMaterial)
+                    self.planesMap[anchor] = planeContainer
+                    self.scene.add(planeContainer)
+                }
+            }
+        }
+
+        anchorsUpdatedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let plane = self.planesMap[anchor], let planeAnchor = anchor as? ARPlaneAnchor {
+                    plane.anchor = planeAnchor
+                }
+            }
+        }
     }
 
     override func update() {
@@ -161,9 +169,7 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
 
     // MARK: - Draw
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -179,29 +185,9 @@ class ARPlanesRenderer: BaseRenderer, ARSessionDelegate {
 
     // MARK: - Resize
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
-    }
-
-    // MARK: - ARSession Delegate
-
-    func session(_: ARSession, didUpdate anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if let plane = planesMap[anchor], let planeAnchor = anchor as? ARPlaneAnchor {
-                plane.anchor = planeAnchor
-            }
-        }
-    }
-
-    func session(_: ARSession, didAdd anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if planesMap[anchor] == nil, let planeAnchor = anchor as? ARPlaneAnchor {
-                let planeContainer = ARPlaneContainer(label: "\(planeAnchor.identifier)", anchor: planeAnchor, material: planeMaterial)
-                planesMap[anchor] = planeContainer
-                scene.add(planeContainer)
-            }
-        }
     }
 }
 #endif

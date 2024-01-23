@@ -54,7 +54,7 @@ public class RenderEncoderState {
     public var depthClipMode: MTLDepthClipMode? {
         didSet {
             if oldValue != depthClipMode, let depthClipMode {
-                #if os(macOS) || os(iOS) || os(tvOS)
+                #if !targetEnvironment(simulator)
                 renderEncoder.setDepthClipMode(depthClipMode)
                 #endif
             }

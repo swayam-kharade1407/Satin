@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class DirectionalShadowRenderer: BaseRenderer {
@@ -41,17 +40,11 @@ class DirectionalShadowRenderer: BaseRenderer {
     var light0 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
     var light1 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
 
-    lazy var scene = Scene(label: "Scene", [light0, light1, floorMesh, baseMesh, sphereMesh, torusMesh])
+    lazy var scene = IBLScene(label: "Scene", [light0, light1, floorMesh, baseMesh, sphereMesh, torusMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 5.0), near: 0.01, far: 500.0, fov: 30)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     override init() {
         super.init()
@@ -137,8 +130,8 @@ class DirectionalShadowRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -147,7 +140,7 @@ class DirectionalShadowRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

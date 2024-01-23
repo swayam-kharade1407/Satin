@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class DepthMaterialRenderer: BaseRenderer {
@@ -107,21 +106,14 @@ class DepthMaterialRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
 
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 13.0], near: 0.001, far: 20.0)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
     lazy var renderer: Satin.Renderer = {
         let renderer = Satin.Renderer(context: context)
         renderer.clearColor = .init(red: 0.137254902, green: 0.09411764706, blue: 0.1058823529, alpha: 1.0)
         return renderer
     }()
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.colorPixelFormat = .bgra8Unorm
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
-
+    
     override func setup() {
 //        // Setup things here
 //        let mat = UvColorMaterial()
@@ -145,8 +137,8 @@ class DepthMaterialRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -155,7 +147,7 @@ class DepthMaterialRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
@@ -163,7 +155,7 @@ class DepthMaterialRenderer: BaseRenderer {
     #if os(macOS)
     override func mouseDown(with event: NSEvent) {
         let m = event.locationInWindow
-        let pt = normalizePoint(m, mtkView.frame.size)
+        let pt = normalizePoint(m, metalView.frame.size)
         let results = raycast(camera: camera, coordinate: pt, object: scene)
         for result in results {
             print(result.object.label)
@@ -174,8 +166,8 @@ class DepthMaterialRenderer: BaseRenderer {
     #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            let point = first.location(in: mtkView)
-            let size = mtkView.frame.size
+            let point = first.location(in: metalView)
+            let size = metalView.frame.size
             let pt = normalizePoint(point, size)
             let results = raycast(camera: camera, coordinate: pt, object: scene)
             for result in results {

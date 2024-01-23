@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct MeshShaderRendererView: View {
     var body: some View {
-        ForgeView(renderer: MeshShaderRenderer())
+        SatinMetalView(renderer: MeshShaderRenderer())
             .ignoresSafeArea()
             .navigationTitle("Mesh Shader")
     }
@@ -22,4 +22,3 @@ struct MeshShaderRendererView_Previews: PreviewProvider {
         MeshShaderRendererView()
     }
 }
-

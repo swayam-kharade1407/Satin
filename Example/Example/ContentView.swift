@@ -6,7 +6,6 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
 import SwiftUI
 
 struct ContentView: View {
@@ -14,49 +13,45 @@ struct ContentView: View {
         NavigationView {
             List {
                 Group {
-#if os(iOS)
-                    Section(header: Text("AR")) {
-                        NavigationLink(destination: ARRendererView()) {
-                            Label("AR Hello World", systemImage: "arkit")
-                        }
+                    #if os(iOS)
+                        Section(header: Text("AR")) {
+                            NavigationLink(destination: ARRendererView()) {
+                                Label("AR Hello World", systemImage: "arkit")
+                            }
 
-                        NavigationLink(destination: ARContactShadowRendererView()) {
-                            Label("AR Contact Shadow", systemImage: "square.2.layers.3d.bottom.filled")
-                        }
+                            NavigationLink(destination: ARContactShadowRendererView()) {
+                                Label("AR Contact Shadow", systemImage: "square.2.layers.3d.bottom.filled")
+                            }
 
-                        NavigationLink(destination: ARDrawingRendererView()) {
-                            Label("AR Drawing", systemImage: "scribble.variable")
-                        }
+                            NavigationLink(destination: ARDrawingRendererView()) {
+                                Label("AR Drawing", systemImage: "scribble.variable")
+                            }
 
-                        NavigationLink(destination: ARBloomRendererView()) {
-                            Label("AR Bloom", systemImage: "sun.max.circle")
-                        }
+                            NavigationLink(destination: ARBloomRendererView()) {
+                                Label("AR Bloom", systemImage: "sun.max.circle")
+                            }
 
-                        NavigationLink(destination: ARLidarMeshRendererView()) {
-                            Label("AR Lidar Mesh", systemImage: "point.3.filled.connected.trianglepath.dotted")
-                        }
+                            NavigationLink(destination: ARLidarMeshRendererView()) {
+                                Label("AR Lidar Mesh", systemImage: "point.3.filled.connected.trianglepath.dotted")
+                            }
 
-                        NavigationLink(destination: ARPBRRendererView()) {
-                            Label("AR PBR", systemImage: "party.popper")
-                        }
+                            NavigationLink(destination: ARPBRRendererView()) {
+                                Label("AR PBR", systemImage: "party.popper")
+                            }
 
-                        NavigationLink(destination: ARPeopleOcclusionRendererView()) {
-                            Label("AR People Occlusion", systemImage: "person.2.fill")
-                        }
+                            NavigationLink(destination: ARPeopleOcclusionRendererView()) {
+                                Label("AR People Occlusion", systemImage: "person.2.fill")
+                            }
 
-                        NavigationLink(destination: ARPlanesRendererView()) {
-                            Label("AR Planes", systemImage: "squareshape")
-                        }
+                            NavigationLink(destination: ARPlanesRendererView()) {
+                                Label("AR Planes", systemImage: "squareshape")
+                            }
 
-                        NavigationLink(destination: ARPointCloudRendererView()) {
-                            Label("AR Point Cloud", systemImage: "cloud")
+                            NavigationLink(destination: ARPointCloudRendererView()) {
+                                Label("AR Point Cloud", systemImage: "cloud")
+                            }
                         }
-
-                        NavigationLink(destination: ARSatinSceneKitRendererView()) {
-                            Label("AR + Satin + SceneKit", systemImage: "arkit")
-                        }
-                    }
-#endif
+                    #endif
 
                     Section(header: Text("Basics")) {
                         NavigationLink(destination: Renderer2DView()) {
@@ -88,7 +83,6 @@ struct ContentView: View {
                         NavigationLink(destination: ExtrudedTextRendererView()) {
                             Label("Extruded Text", systemImage: "square.3.layers.3d.down.right")
                         }
-
                     }
 
                     Section(header: Text("Materials")) {
@@ -176,11 +170,11 @@ struct ContentView: View {
 
                 Group {
                     Section(header: Text("Advanced")) {
-#if os(macOS)
-                        NavigationLink(destination: AudioInputRendererView()) {
-                            Label("Audio Input", systemImage: "mic")
-                        }
-#endif
+                        #if os(macOS)
+                            NavigationLink(destination: AudioInputRendererView()) {
+                                Label("Audio Input", systemImage: "mic")
+                            }
+                        #endif
                         if let device = MTLCreateSystemDefaultDevice(), device.supportsFamily(MTLGPUFamily.mac2) || device.supportsFamily(MTLGPUFamily.apple8) {
                             NavigationLink(destination: MeshShaderRendererView()) {
                                 Label("Mesh Shader", systemImage: "circle.hexagongrid.fill")
@@ -238,19 +232,11 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Satin Examples")
-
-            BufferComputeRendererView()
-//            SDFTextRendererView()
-//            MeshShaderRendererView()
-//            BufferGeometryRendererView()
-//            MatcapRendererView()
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .preferredColorScheme(.dark)
-    }
+#Preview {
+    ContentView()
+        .preferredColorScheme(.dark)
 }

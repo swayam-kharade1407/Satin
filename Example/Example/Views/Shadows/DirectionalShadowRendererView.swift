@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct DirectionalShadowRendererView: View {
     var body: some View {
-        ForgeView(renderer: DirectionalShadowRenderer())
+        SatinMetalView(renderer:  DirectionalShadowRenderer())
             .ignoresSafeArea()
             .navigationTitle("Directional Shadows")
     }

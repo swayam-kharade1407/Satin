@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 import ModelIO
 
-import Forge
 import Satin
 
 class LoadObjRenderer: BaseRenderer {
@@ -20,14 +19,8 @@ class LoadObjRenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Satin.Renderer(context: context)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
     override func setup() {
         loadOBJ(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"))
@@ -86,8 +79,8 @@ class LoadObjRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -96,14 +89,14 @@ class LoadObjRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
 
     #if os(macOS)
     override func mouseDown(with event: NSEvent) {
-        let pt = normalizePoint(mtkView.convert(event.locationInWindow, from: nil), mtkView.frame.size)
+        let pt = normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size)
         let results = raycast(camera: camera, coordinate: pt, object: scene)
         for result in results {
             print(result.object.label)
@@ -114,8 +107,8 @@ class LoadObjRenderer: BaseRenderer {
     #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            let point = first.location(in: mtkView)
-            let size = mtkView.frame.size
+            let point = first.location(in: metalView)
+            let size = metalView.frame.size
             let pt = normalizePoint(point, size)
             let results = raycast(camera: camera, coordinate: pt, object: scene)
             for result in results {

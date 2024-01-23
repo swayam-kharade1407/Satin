@@ -78,7 +78,6 @@ Satin helps to draw things with Metal. To get up and running quickly without ton
 import SwiftUI
 import MetalKit
 
-import Forge
 import Satin
 
 // Subclass Forge's Renderer to get triple buffered rendering and
@@ -136,8 +135,8 @@ class SimpleRenderer: Forge.Renderer {
     }
 
     // Forge calls draw when a new frame is ready to be encoded for drawing
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
 
         // To render a scene into a render pass, just call draw and pass in the render pass descriptor
         // You can also specify a render target and render to a texture instead
@@ -150,7 +149,7 @@ class SimpleRenderer: Forge.Renderer {
     }
 
     // Forge calls resize whenever the view is resized
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         // our camera's aspect ratio is set
         camera.aspect = size.width / size.height
 
@@ -164,7 +163,7 @@ class SimpleRenderer: Forge.Renderer {
 // Using SwiftUI you can use a ForgeView to easily create a MTKView and pass in a Forge.Renderer
 struct ContentView: View {
     var body: some View {
-        ForgeView(renderer: SimpleRenderer())
+        SatinMetalView(renderer:  SimpleRenderer())
     }
 }
 ```

@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARBloomRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARBloomRenderer())
+        SatinMetalView(renderer: ARBloomRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR Bloom")
     }
@@ -26,4 +26,3 @@ struct ARBloomRendererView_Previews: PreviewProvider {
 }
 
 #endif
-

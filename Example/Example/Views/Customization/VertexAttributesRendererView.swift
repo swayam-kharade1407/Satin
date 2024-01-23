@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct VertexAttributesRendererView: View {
     var body: some View {
-        ForgeView(renderer: VertexAttributesRenderer())
+        SatinMetalView(renderer: VertexAttributesRenderer())
             .ignoresSafeArea()
             .navigationTitle("Custom Vertex Attributes")
     }

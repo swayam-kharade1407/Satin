@@ -8,14 +8,14 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARDrawingRendererView: View {
     @State var clear = false
 
     var body: some View {
-        ForgeView(renderer: ARDrawingRenderer(clear: $clear))
+        SatinMetalView(renderer: ARDrawingRenderer(clear: $clear))
             .ignoresSafeArea()
             .navigationTitle("AR Drawing")
             .overlay {

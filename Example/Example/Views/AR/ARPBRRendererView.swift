@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARPBRRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARPBRRenderer())
+        SatinMetalView(renderer: ARPBRRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR PBR")
     }

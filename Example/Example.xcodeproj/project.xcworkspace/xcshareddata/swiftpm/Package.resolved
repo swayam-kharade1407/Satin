@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "forgepro",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:Hi-Rez/ForgePro.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "da69ad31c5fcb61ac73d16f4bc12d2a89d0e5939"
-      }
-    },
-    {
       "identity" : "spectra",
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:Hi-Rez/Spectra.git",

@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct TextRendererView: View {
     var body: some View {
-        ForgeView(renderer: TextRenderer())
+        SatinMetalView(renderer: TextRenderer())
             .ignoresSafeArea()
             .navigationTitle("Text Geometry")
     }

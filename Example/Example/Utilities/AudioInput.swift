@@ -6,6 +6,8 @@
 //  Copyright © 2021 Hi-Rez. All rights reserved.
 //
 
+#if !os(visionOS)
+
 import Accelerate
 import AVFoundation
 
@@ -418,3 +420,5 @@ class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
         }
     }
 }
+
+#endif

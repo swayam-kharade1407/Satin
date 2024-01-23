@@ -9,37 +9,24 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class Renderer2D: BaseRenderer {
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    public override var label: String {
+        "Renderer2D"
+    }
+
+    let mesh = Mesh(label: "Quad", geometry: PlaneGeometry(size: 700), material: UvColorMaterial())
+
+    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
 
     var camera = OrthographicCamera()
-    lazy var cameraController = OrthographicCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
+    lazy var scene = Object(label: "Scene", [mesh])
+    lazy var renderer = Satin.Renderer(context: context)
 
-    var scene = Object(label: "Scene")
-    var renderer: Satin.Renderer!
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 120
-    }
-
-    override func setup() {
-        setupScene()
-        setupRenderer()
-    }
-
-    func setupScene() {
-        let mesh = Mesh(geometry: PlaneGeometry(size: 700), material: UvColorMaterial())
-        mesh.label = "Quad"
-        scene.add(mesh)
-    }
-
-    func setupRenderer() {
-        renderer = Satin.Renderer(context: context)
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override func update() {
@@ -48,8 +35,8 @@ class Renderer2D: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        print("draw - Renderer2D")
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -58,22 +45,22 @@ class Renderer2D: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         cameraController.resize(size)
         renderer.resize(size)
     }
 
     #if os(macOS)
     override func mouseDown(with event: NSEvent) {
-        let pt = normalizePoint(mtkView.convert(event.locationInWindow, from: nil), mtkView.frame.size)
+        let pt = normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size)
         intersect(coordinate: pt)
     }
 
     #elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
-            let point = first.location(in: mtkView)
-            let size = mtkView.frame.size
+            let point = first.location(in: metalView)
+            let size = metalView.frame.size
             let pt = normalizePoint(point, size)
             intersect(coordinate: pt)
         }

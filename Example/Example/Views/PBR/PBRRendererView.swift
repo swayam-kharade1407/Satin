@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct PBRRendererView: View {
     var body: some View {
-        ForgeView(renderer: PBRRenderer())
+        SatinMetalView(renderer: PBRRenderer())
             .ignoresSafeArea()
             .navigationTitle("Physically Based Rendering")
     }

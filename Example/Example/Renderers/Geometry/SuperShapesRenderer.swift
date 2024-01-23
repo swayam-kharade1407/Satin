@@ -10,7 +10,6 @@ import Combine
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 import SatinCore
 
@@ -155,7 +154,25 @@ class SuperShapesRenderer: BaseRenderer {
     var n32Param = FloatParameter("N32", 0.651718, 0.0, 100.0, .slider)
     var resParam = IntParameter("Resolution", 300, 3, 300, .slider)
 
-    var parameters: ParameterGroup!
+    lazy var parameters: ParameterGroup = {
+        ParameterGroup("Shape Controls", [
+            resParam,
+            r1Param,
+            a1Param,
+            b1Param,
+            m1Param,
+            n11Param,
+            n21Param,
+            n31Param,
+            r2Param,
+            a2Param,
+            b2Param,
+            m2Param,
+            n12Param,
+            n22Param,
+            n32Param,
+        ])
+    }()
 
     lazy var geometry = SuperShapeGeometry(
         r1: r1Param.value,
@@ -176,53 +193,19 @@ class SuperShapesRenderer: BaseRenderer {
     )
 
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
-
-    lazy var camera: PerspectiveCamera = {
-        let camera = PerspectiveCamera(position: simd_make_float3(2.0, 1.0, 4.0), near: 0.001, far: 200.0)
-        camera.lookAt(target: .zero)
-        return camera
-    }()
-
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var renderer = Satin.Renderer(context: context)
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.isPaused = false
-        metalKitView.sampleCount = 4
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-    }
 
-    override init() {
-        super.init()
-        setupParameters()
-        setupObservers()
-    }
+    var camera = PerspectiveCamera(position: simd_make_float3(2.0, 1.0, 4.0), near: 0.001, far: 200.0)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+
 
     override func setup() {
+        setupObservers()
         mesh.cullMode = .none
-    }
-
-    func setupParameters() {
-        parameters = ParameterGroup("Shape Controls", [
-            resParam,
-            r1Param,
-            a1Param,
-            b1Param,
-            m1Param,
-            n11Param,
-            n21Param,
-            n31Param,
-            r2Param,
-            a2Param,
-            b2Param,
-            m2Param,
-            n12Param,
-            n22Param,
-            n32Param,
-        ])
+        camera.lookAt(target: .zero)
     }
 
     func setupGeometry() {
@@ -262,13 +245,13 @@ class SuperShapesRenderer: BaseRenderer {
             setupGeometry()
             updateGeometry = false
         }
+
         cameraController.update()
         camera.update()
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -277,7 +260,7 @@ class SuperShapesRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct FXAARendererView: View {
     var body: some View {
-        ForgeView(renderer: FXAARenderer())
+        SatinMetalView(renderer: FXAARenderer())
             .ignoresSafeArea()
             .navigationTitle("FXAA")
     }

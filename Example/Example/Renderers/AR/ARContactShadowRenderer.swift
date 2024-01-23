@@ -7,13 +7,13 @@
 //
 
 #if os(iOS)
-import ARKit
-import Metal
-import MetalKit
 
-import Forge
-import SatinCore
+import ARKit
+import Combine
+import Metal
+
 import Satin
+import SatinCore
 
 fileprivate class ARObject: Object {
     var anchor: ARAnchor? {
@@ -50,17 +50,17 @@ fileprivate class Invader: Object {
         var materialMap = [simd_float4: Material]()
 
         let fills: [[simd_float4?]] =
-        [
-            [nil, nil, BDY, nil, nil, nil, nil, nil, BDY, nil, nil],
-            [nil, nil, nil, BDY, nil, nil, nil, BDY, nil, nil, nil],
-            [nil, nil, BDY, BDY, BDY, BDY, BDY, BDY, BDY, nil, nil],
-            [nil, BDY, BDY, _E_, BDY, BDY, BDY, _E_, BDY, BDY, nil],
-            [BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY],
-            [BDY, nil, BDY, BDY, BDY, BDY, BDY, BDY, BDY, nil, BDY],
-            [BDY, nil, BDY, nil, nil, nil, nil, nil, BDY, nil, BDY],
-            [nil, nil, nil, BDY, BDY, nil, BDY, BDY, nil, nil, nil],
-            [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
-        ]
+            [
+                [nil, nil, BDY, nil, nil, nil, nil, nil, BDY, nil, nil],
+                [nil, nil, nil, BDY, nil, nil, nil, BDY, nil, nil, nil],
+                [nil, nil, BDY, BDY, BDY, BDY, BDY, BDY, BDY, nil, nil],
+                [nil, BDY, BDY, _E_, BDY, BDY, BDY, _E_, BDY, BDY, nil],
+                [BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY, BDY],
+                [BDY, nil, BDY, BDY, BDY, BDY, BDY, BDY, BDY, nil, BDY],
+                [BDY, nil, BDY, nil, nil, nil, nil, nil, BDY, nil, BDY],
+                [nil, nil, nil, BDY, BDY, nil, BDY, BDY, nil, nil, nil],
+                [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
+            ]
 
         for y in (0 ..< 9).reversed() {
             let row = fills[y]
@@ -85,14 +85,15 @@ fileprivate class Invader: Object {
         voxels.position.y = (9.0 * voxelScale) * 0.5 // move the voxels so they are above the ground plane
     }
 
-
     required init(from decoder: Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
 }
 
-class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
-    var session = ARSession()
+class ARContactShadowRenderer: BaseRenderer {
+    var session: ARSession { sessionPublisher.session }
+    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private var anchorsSubscription: AnyCancellable?
 
     var shadowPlaneMesh = Mesh(
         geometry: PlaneGeometry(size: 1.0, orientation: .zx),
@@ -115,24 +116,19 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
 
     lazy var scene = Object(label: "Scene", [invaderContainer])
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundRenderer!
 
     lazy var startTime = getTime()
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override init() {
         super.init()
-
-        session.delegate = self
-
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal]
         session.run(configuration)
@@ -140,8 +136,8 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
 
     lazy var lights: [PointLight] = {
         var lights = [PointLight]()
-        var positions: [simd_float3] = [ [1, 1, 1], [-1, 1, 1], [-1, 1, -1], [1, 1, -1] ]
-        for position in positions  {
+        var positions: [simd_float3] = [[1, 1, 1], [-1, 1, 1], [-1, 1, -1], [1, 1, -1]]
+        for position in positions {
             let l = PointLight(color: .one, intensity: 3.0)
             l.position = position
             lights.append(l)
@@ -159,6 +155,16 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
             context: Context(device, 1, colorPixelFormat),
             session: session
         )
+
+        sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if self.invaderContainer.anchor?.identifier == anchor.identifier {
+                    self.invaderContainer.anchor = anchor
+                    break
+                }
+            }
+        }
     }
 
     override func update() {
@@ -170,20 +176,17 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
         }
 
         if let currentFrame = session.currentFrame, let lightEstimate = currentFrame.lightEstimate {
-            let ambient = lightEstimate.ambientIntensity/500.0
+            let ambient = lightEstimate.ambientIntensity / 500.0
             for light in lights {
                 light.intensity = Float(ambient)
             }
         }
 
-
         camera.update()
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         if invaderContainer.visible {
             shadowRenderer.update(commandBuffer: commandBuffer)
         }
@@ -201,7 +204,7 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
     }
@@ -212,14 +215,13 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        let location = touch.location(in: mtkView)
-        let coordinate = normalizePoint(location, mtkView.frame.size)
+        let location = touch.location(in: metalView)
+        let coordinate = normalizePoint(location, metalView.frame.size)
 
         let ray = Ray(camera: camera, coordinate: coordinate)
         let query = ARRaycastQuery(origin: ray.origin, direction: ray.direction, allowing: .estimatedPlane, alignment: .horizontal)
 
         if let result = session.raycast(query).first {
-
             let anchor = ARAnchor(transform: result.worldTransform)
             session.add(anchor: anchor)
 
@@ -237,17 +239,6 @@ class ARContactShadowRenderer: BaseRenderer, ARSessionDelegate {
 #else
         return 2.0 * simd_make_float2(Float(point.x / size.width), 1.0 - Float(point.y / size.height)) - 1.0
 #endif
-    }
-
-    // MARK: - ARSession Delegate
-
-    func session(_: ARSession, didUpdate anchors: [ARAnchor]) {
-        for anchor in anchors {
-            if invaderContainer.anchor?.identifier == anchor.identifier {
-                invaderContainer.anchor = anchor
-                break
-            }
-        }
     }
 }
 

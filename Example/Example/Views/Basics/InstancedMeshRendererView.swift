@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct InstancedMeshRendererView: View {
     var body: some View {
-        ForgeView(renderer: InstancedMeshRenderer())
+        SatinMetalView(renderer: InstancedMeshRenderer())
             .ignoresSafeArea()
             .navigationTitle("Instanced Mesh")
     }

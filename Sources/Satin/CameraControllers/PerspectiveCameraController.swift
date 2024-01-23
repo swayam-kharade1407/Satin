@@ -5,8 +5,6 @@
 //  Created by Reza Ali on 03/26/23.
 //
 
-#if os(macOS) || os(iOS)
-
 import Combine
 import MetalKit
 import simd
@@ -24,7 +22,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         }
     }
 
-    public var view: MTKView? {
+    public var view: MetalView? {
         willSet {
             disable()
         }
@@ -136,7 +134,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
     // MARK: - Init
 
-    public init(camera: PerspectiveCamera, view: MTKView) {
+    public init(camera: PerspectiveCamera, view: MetalView) {
         self.camera = camera
         self.view = view
 
@@ -824,4 +822,3 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 }
 
-#endif

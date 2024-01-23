@@ -12,7 +12,6 @@ import ARKit
 import Metal
 import MetalKit
 
-import Forge
 import SatinCore
 import Satin
 
@@ -31,7 +30,7 @@ class ARDrawingRenderer: BaseRenderer {
     lazy var mesh = InstancedMesh(geometry: IcoSphereGeometry(radius: 0.03, resolution: 3), material: material, count: 20000)
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
         let renderer = Satin.Renderer(context: context)
         renderer.label = "Content Renderer"
@@ -51,16 +50,6 @@ class ARDrawingRenderer: BaseRenderer {
     // MARK: - Background
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
-
-    // MARK: - Setup MTKView
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0)
-        metalKitView.backgroundColor = .black
-        metalKitView.preferredFramesPerSecond = 120
-        metalKitView.depthStencilPixelFormat = .depth32Float
-    }
 
     // MARK: - Init
 
@@ -89,7 +78,7 @@ class ARDrawingRenderer: BaseRenderer {
             context: context,
             session: session,
             sessionPublisher: ARSessionPublisher(session: session),
-            mtkView: mtkView,
+            metalView: metalView,
             near: camera.near,
             far: camera.far
         )
@@ -108,8 +97,8 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - Draw
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
 
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
@@ -126,7 +115,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - Resize
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
     }

@@ -6,12 +6,14 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+#if !os(visionOS)
+
+import Satin
 import SwiftUI
 
 struct AudioInputRendererView: View {
     var body: some View {
-        ForgeView(renderer: AudioInputRenderer())
+        SatinMetalView(renderer: AudioInputRenderer())
             .ignoresSafeArea()
             .navigationTitle("Audio Input")
     }
@@ -22,3 +24,5 @@ struct AudioInputRendererView_Previews: PreviewProvider {
         AudioInputRendererView()
     }
 }
+
+#endif

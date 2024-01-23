@@ -108,7 +108,7 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         context: Context,
         session: ARSession,
         sessionPublisher: ARSessionPublisher,
-        mtkView: MTKView,
+        metalView: MetalView,
         near: Float,
         far: Float,
         upscaleDepth: Bool = true,
@@ -128,7 +128,7 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         depthRenderer.depthLoadAction = .clear
         depthRenderer.depthStoreAction = .store
 
-        depthCamera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: near, far: far)
+        depthCamera = ARPerspectiveCamera(session: session, metalView: metalView, near: near, far: far)
 
         self.sessionPublisher = sessionPublisher
 

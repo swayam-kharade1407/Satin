@@ -11,7 +11,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class PBRCustomizationRenderer: BaseRenderer {
@@ -21,21 +20,14 @@ class PBRCustomizationRenderer: BaseRenderer {
 
     var material = PhysicalMaterial()
     lazy var mesh = Mesh(geometry: BoxGeometry(size: 4.0), material: material)
-    lazy var scene = Scene(label: "Scene", [skybox, mesh])
+    lazy var scene = IBLScene(label: "Scene", [skybox, mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 10.0), near: 0.001, far: 1000.0)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: mtkView)
+    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer: Satin.Renderer = .init(context: context)
 
     lazy var skyboxMaterial = SkyboxMaterial()
     lazy var skybox = Mesh(geometry: SkyboxGeometry(size: 50), material: skyboxMaterial)
-
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .depth32Float
-        metalKitView.preferredFramesPerSecond = 60
-        metalKitView.colorPixelFormat = .bgra8Unorm
-    }
 
     override func setup() {
         camera.lookAt(target: .zero)
@@ -67,8 +59,8 @@ class PBRCustomizationRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -77,7 +69,7 @@ class PBRCustomizationRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

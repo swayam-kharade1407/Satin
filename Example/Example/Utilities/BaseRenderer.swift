@@ -6,7 +6,6 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
 import Foundation
 import Metal
 import Satin
@@ -16,7 +15,7 @@ import Youi
 import AppKit
 #endif
 
-class BaseRenderer: Forge.Renderer {
+class BaseRenderer: MetalViewRenderer {
     // MARK: - Paths
 
     var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }
@@ -29,8 +28,10 @@ class BaseRenderer: Forge.Renderer {
 
     // MARK: - UI
 
+#if !os(visionOS)
     var inspectorWindow: InspectorWindow?
     var _updateInspector: Bool = true
+#endif
 
     // MARK: - Parameters
 
@@ -41,12 +42,13 @@ class BaseRenderer: Forge.Renderer {
     var params: [String: ParameterGroup?] {
         return [:]
     }
-
+#if !os(visionOS)
     override func preDraw() -> MTLCommandBuffer? {
         updateInspector()
         return super.preDraw()
     }
-
+#endif
+    
     override func cleanup() {
         super.cleanup()
         print("cleanup: \(String(describing: type(of: self)))")
@@ -56,7 +58,7 @@ class BaseRenderer: Forge.Renderer {
     }
 
     deinit {
-        print("deinit: \(String(describing: type(of: self)))")
+        print("\ndeinit: \(String(describing: type(of: self)))\n")
     }
 
 #if os(macOS)
@@ -88,6 +90,8 @@ class BaseRenderer: Forge.Renderer {
 #endif
 }
 
+#if !os(visionOS)
+
 import Foundation
 import Satin
 import Youi
@@ -112,7 +116,7 @@ extension BaseRenderer {
             inspectorWindow.setIsVisible(true)
 #elseif os(iOS)
             let inspectorWindow = InspectorWindow("Inspector", edge: .right)
-            mtkView.addSubview(inspectorWindow.view)
+            metalView.addSubview(inspectorWindow.view)
 #endif
             self.inspectorWindow = inspectorWindow
         }
@@ -154,3 +158,5 @@ extension BaseRenderer {
         }
     }
 }
+
+#endif

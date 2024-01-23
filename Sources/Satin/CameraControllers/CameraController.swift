@@ -5,9 +5,7 @@
 //  Created by Reza Ali on 03/25/23.
 //
 
-#if os(macOS) || os(iOS)
-
-import MetalKit
+import Foundation
 import Combine
 
 public enum CameraControllerState {
@@ -23,7 +21,7 @@ public enum CameraControllerState {
 public protocol CameraController {
     var isEnabled: Bool { get }
 
-    var view: MTKView? { get set }
+    var view: MetalView? { get set }
 
     var state: CameraControllerState { get }
 
@@ -36,5 +34,3 @@ public protocol CameraController {
     func save(url: URL)
     func load(url: URL)
 }
-
-#endif

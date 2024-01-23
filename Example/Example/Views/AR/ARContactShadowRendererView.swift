@@ -8,12 +8,12 @@
 
 #if os(iOS)
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ARContactShadowRendererView: View {
     var body: some View {
-        ForgeView(renderer: ARContactShadowRenderer())
+        SatinMetalView(renderer: ARContactShadowRenderer())
             .ignoresSafeArea()
             .navigationTitle("AR Contact Shadow")
     }

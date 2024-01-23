@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class CustomInstancingRenderer: BaseRenderer {
@@ -32,14 +31,11 @@ class CustomInstancingRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: instanceMaterial)
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var cameraController = OrthographicCameraController(camera: camera, view: mtkView, defaultZoom: 2.0)
+    lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView, defaultZoom: 2.0)
     lazy var renderer = Satin.Renderer(context: context)
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.isPaused = false
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override func setup() {
@@ -84,8 +80,8 @@ class CustomInstancingRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -94,7 +90,7 @@ class CustomInstancingRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         cameraController.resize(size)
         renderer.resize(size)
         instanceMaterial.set("Resolution", [size.width, size.height, size.width / size.height])

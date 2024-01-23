@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct PostProcessingRendererView: View {
     var body: some View {
-        ForgeView(renderer: PostProcessingRenderer())
+        SatinMetalView(renderer: PostProcessingRenderer())
             .ignoresSafeArea()
             .navigationTitle("Post Processing")
     }

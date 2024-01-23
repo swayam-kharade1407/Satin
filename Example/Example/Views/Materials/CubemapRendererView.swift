@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct CubemapRendererView: View {
     var body: some View {
-        ForgeView(renderer: CubemapRenderer())
+        SatinMetalView(renderer: CubemapRenderer())
             .ignoresSafeArea()
             .navigationTitle("Cubemap")
     }

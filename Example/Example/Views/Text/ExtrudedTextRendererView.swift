@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct ExtrudedTextRendererView: View {
     var body: some View {
-        ForgeView(renderer: ExtrudedTextRenderer())
+        SatinMetalView(renderer: ExtrudedTextRenderer())
             .ignoresSafeArea()
             .navigationTitle("Extruded Text")
     }

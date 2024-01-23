@@ -7,12 +7,12 @@
 //
 
 #if os(iOS)
+
 import ARKit
 import Metal
 import MetalKit
 import MetalPerformanceShaders
 
-import Forge
 import Satin
 import SatinCore
 import Youi
@@ -312,7 +312,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     fileprivate lazy var scene = ARScene(label: "Scene", [modelContainer], session: session)
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
-    lazy var camera = ARPerspectiveCamera(session: session, mtkView: mtkView, near: 0.01, far: 100.0)
+    lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = Satin.Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
@@ -329,18 +329,15 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     lazy var startTime = getTime()
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
-        metalKitView.colorPixelFormat = .bgra8Unorm_srgb
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override init() {
         super.init()
 
         let config = ARWorldTrackingConfiguration()
-        config.environmentTexturing = .manual
+        config.environmentTexturing = .automatic
         config.wantsHDREnvironmentTextures = true
         config.planeDetection = [.horizontal]
         config.frameSemantics = [.sceneDepth]
@@ -358,7 +355,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
             context: context,
             session: session,
             sessionPublisher: ARSessionPublisher(session: session),
-            mtkView: mtkView,
+            metalView: metalView,
             near: camera.near,
             far: camera.far,
             upscaleDepth: true,
@@ -382,8 +379,8 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        
 
         backgroundRenderer.draw(
             renderPassDescriptor: MTLRenderPassDescriptor(),
@@ -428,7 +425,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size)
         postProcessor.resize(size)
@@ -441,8 +438,8 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        let location = touch.location(in: mtkView)
-        let coordinate = normalizePoint(location, mtkView.frame.size)
+        let location = touch.location(in: metalView)
+        let coordinate = normalizePoint(location, metalView.frame.size)
 
         let ray = Ray(camera: camera, coordinate: coordinate)
         let query = ARRaycastQuery(origin: ray.origin, direction: ray.direction, allowing: .estimatedPlane, alignment: .horizontal)
@@ -473,11 +470,11 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     }
 
     internal func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
-        if mtkView.drawableSize.width > 0, mtkView.drawableSize.height > 0 {
+        if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat
-            descriptor.width = Int(mtkView.drawableSize.width) / textureScale
-            descriptor.height = Int(mtkView.drawableSize.height) / textureScale
+            descriptor.width = Int(metalView.drawableSize.width) / textureScale
+            descriptor.height = Int(metalView.drawableSize.height) / textureScale
             descriptor.sampleCount = 1
             descriptor.textureType = .type2D
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]

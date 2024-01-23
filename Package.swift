@@ -1,10 +1,10 @@
-// swift-tools-version:5.7
+// swift-tools-version: 5.9
 
 import PackageDescription
 
 let package = Package(
     name: "Satin",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13)],
+    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .visionOS(.v1)],
     products: [
         .library(
             name: "SatinCore",

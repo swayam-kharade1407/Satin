@@ -10,7 +10,6 @@ import Combine
 import Metal
 import MetalKit
 
-import Forge
 import Satin
 
 class FlockingRenderer: BaseRenderer {
@@ -25,7 +24,7 @@ class FlockingRenderer: BaseRenderer {
     var cancellables = Set<AnyCancellable>()
     #if os(macOS)
     var particleCountParam = IntParameter("Particle Count", 16384, .inputfield)
-    #elseif os(iOS)
+    #else
     var particleCountParam = IntParameter("Particle Count", 4096, .inputfield)
     #endif
 
@@ -70,11 +69,8 @@ class FlockingRenderer: BaseRenderer {
         return mesh
     }()
 
-    override func setupMtkView(_ metalKitView: MTKView) {
-        metalKitView.isPaused = false
-        metalKitView.sampleCount = 1
-        metalKitView.depthStencilPixelFormat = .invalid
-        metalKitView.preferredFramesPerSecond = 60
+    override var depthPixelFormat: MTLPixelFormat {
+        .invalid
     }
 
     override func setup() {
@@ -104,12 +100,12 @@ class FlockingRenderer: BaseRenderer {
         scene.update()
     }
 
-    override func draw(_ view: MTKView, _ commandBuffer: MTLCommandBuffer) {
+    override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         if !pauseParam.value {
             particleSystem.update(commandBuffer)
         }
 
-        guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
+        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -118,7 +114,7 @@ class FlockingRenderer: BaseRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         let hw = size.width
         let hh = size.height
         camera.update(left: -hw, right: hw, bottom: -hh, top: hh, near: -100.0, far: 100.0)

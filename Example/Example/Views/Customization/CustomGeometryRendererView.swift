@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct CustomGeometryRendererView: View {
     var body: some View {
-        ForgeView(renderer: CustomGeometryRenderer())
+        SatinMetalView(renderer: CustomGeometryRenderer())
             .ignoresSafeArea()
             .navigationTitle("Custom Geometry")
     }

@@ -6,12 +6,11 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
 import Satin
 import SwiftUI
 
 struct SuperShapesRendererView: View {
-    var renderer = SuperShapesRenderer()
+    let renderer = SuperShapesRenderer()
     @ObservedObject var parameters: ParameterGroup
     @State var dragLocation: CGPoint?
 
@@ -21,15 +20,16 @@ struct SuperShapesRendererView: View {
 
     var body: some View {
         ZStack {
-            ForgeView(renderer: renderer)
+            SatinMetalView(renderer:  renderer)
                 .ignoresSafeArea()
                 .navigationTitle("Super Shapes")
 
             VStack(alignment: .leading, spacing: 4) {
-                ForEach(renderer.parameters.params, id: \.label) { param in
+                ForEach(renderer.parameters.params, id: \.id) { param in
                     if let floatParam = param as? FloatParameter {
                         Text("\(param.label): \(floatParam.value)")
                             .multilineTextAlignment(.leading)
+                            .foregroundColor(.white)
                             .padding(4)
                             .background(Color.black.opacity(0.25))
                             .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))

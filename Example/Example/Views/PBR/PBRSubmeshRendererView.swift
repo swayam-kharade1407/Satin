@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct PBRSubmeshRendererView: View {
     var body: some View {
-        ForgeView(renderer: PBRSubmeshRenderer())
+        SatinMetalView(renderer: PBRSubmeshRenderer())
             .ignoresSafeArea()
             .navigationTitle("Submeshes")
     }

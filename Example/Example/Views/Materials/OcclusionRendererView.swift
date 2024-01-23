@@ -6,12 +6,12 @@
 //  Copyright © 2023 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct OcclusionRendererView: View {
     var body: some View {
-        ForgeView(renderer: OcclusionRenderer())
+        SatinMetalView(renderer: OcclusionRenderer())
             .ignoresSafeArea()
             .navigationTitle("Occlusion Material")
     }

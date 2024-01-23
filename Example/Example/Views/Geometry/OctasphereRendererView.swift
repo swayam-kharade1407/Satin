@@ -6,12 +6,12 @@
 //  Copyright © 2022 Hi-Rez. All rights reserved.
 //
 
-import Forge
+import Satin
 import SwiftUI
 
 struct OctasphereRendererView: View {
     var body: some View {
-        ForgeView(renderer: OctasphereRenderer())
+        SatinMetalView(renderer: OctasphereRenderer())
             .ignoresSafeArea()
             .navigationTitle("Octasphere")
     }
