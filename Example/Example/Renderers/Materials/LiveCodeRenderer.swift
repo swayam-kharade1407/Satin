@@ -37,7 +37,7 @@ class LiveCodeRenderer: BaseRenderer {
     lazy var scene = Object(label: "Scene", [mesh])
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid

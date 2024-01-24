@@ -27,7 +27,7 @@ class ARPointCloudRenderer: BaseRenderer {
         }
     }
 
-    lazy var pointCloud: PointComputeSystem = PointComputeSystem(device: device, pipelineURL: pipelinesURL.appendingPathComponent("Point/Compute.metal"), count: 256 * 192)
+    lazy var pointCloud = PointComputeSystem(device: device, pipelineURL: pipelinesURL.appendingPathComponent("Point/Compute.metal"), count: 256 * 192)
 
     // MARK: - UI
 
@@ -54,7 +54,7 @@ class ARPointCloudRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Satin.Renderer(context: context)
+        let renderer = Renderer(context: context)
         renderer.label = "Content Renderer"
         renderer.setClearColor(.zero)
         renderer.colorLoadAction = .load
@@ -69,20 +69,18 @@ class ARPointCloudRenderer: BaseRenderer {
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    // MARK: - Deinit
+    override init() {
+        super.init()
 
-    override func cleanup() {
-        session.pause()
+        let config = ARWorldTrackingConfiguration()
+        config.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
+        session.run(config)
     }
 
     // MARK: - Setup
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-
-        let config = ARWorldTrackingConfiguration()
-        config.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
-        session.run(config)
 
         mesh.instanceCount = 256 * 192
         mesh.material?.onBind = { [weak self] re in
@@ -109,11 +107,10 @@ class ARPointCloudRenderer: BaseRenderer {
         camera.update()
         scene.update()
     }
+
     // MARK: - Draw
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
-
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -121,7 +118,7 @@ class ARPointCloudRenderer: BaseRenderer {
 
         if updateComputeParam.value {
             if let currentFrame = session.currentFrame {
-                pointCloud.depthTexture = self.backgroundRenderer.sceneDepthTexture
+                pointCloud.depthTexture = backgroundRenderer.sceneDepthTexture
                 pointCloud.set("Local To World", camera.localToWorld)
                 pointCloud.set("Intrinsics Inversed", camera.intrinsics.inverse)
                 pointCloud.set("Resolution", simd_make_float2(
@@ -145,6 +142,12 @@ class ARPointCloudRenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
         backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
+    }
+
+    // MARK: - Deinit
+
+    override func cleanup() {
+        session.pause()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

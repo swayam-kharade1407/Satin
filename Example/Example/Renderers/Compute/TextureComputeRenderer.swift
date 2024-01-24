@@ -40,7 +40,7 @@ class TextureComputeRenderer: BaseRenderer {
 
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     lazy var startTime: CFAbsoluteTime = getTime()
 

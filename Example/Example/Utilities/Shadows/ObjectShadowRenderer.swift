@@ -89,7 +89,7 @@ class ObjectShadowRenderer {
     var color: simd_float4
 
     private var camera: OrthographicCamera
-    private var renderer: Satin.Renderer
+    private var renderer: Renderer
     private var processor: ShadowPostProcessor
 
     public private(set) var texture: MTLTexture?
@@ -127,7 +127,7 @@ class ObjectShadowRenderer {
         self.far = far
         self.color = color
 
-        renderer = Satin.Renderer(context: context)
+        renderer = Renderer(context: context)
         renderer.label = "Object Shadow Renderer"
 
         processor = ShadowPostProcessor(context: Context(context.device, 1, .rgba16Float))

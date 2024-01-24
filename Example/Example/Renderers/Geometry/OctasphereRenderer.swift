@@ -19,7 +19,7 @@ class OctasphereRenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: simd_make_float3(0.0, 0.0, 5.0), near: 0.01, far: 100.0, fov: 30)
 
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     deinit {
         cameraController.disable()

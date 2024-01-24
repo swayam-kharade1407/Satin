@@ -29,8 +29,8 @@ class TextRenderer: BaseRenderer {
 
     lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: metalView)
 
-    lazy var renderer: Satin.Renderer = {
-        let renderer = Satin.Renderer(context: context)
+    lazy var renderer: Renderer = {
+        let renderer = Renderer(context: context)
         renderer.clearColor = .init(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         return renderer
     }()

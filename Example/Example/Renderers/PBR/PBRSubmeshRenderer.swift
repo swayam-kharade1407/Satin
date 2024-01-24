@@ -33,7 +33,7 @@ class PBRSubmeshRenderer: BaseRenderer {
     }()
 
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
     lazy var textureLoader = MTKTextureLoader(device: device)
 
     override func setup() {

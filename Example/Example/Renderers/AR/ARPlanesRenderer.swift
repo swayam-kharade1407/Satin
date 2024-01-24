@@ -111,7 +111,7 @@ class ARPlanesRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Satin.Renderer(label: "Content Renderer", context: context)
+        let renderer = Renderer(label: "Content Renderer", context: context)
         renderer.colorLoadAction = .load
         return renderer
     }()
@@ -120,10 +120,14 @@ class ARPlanesRenderer: BaseRenderer {
 
     var backgroundRenderer: ARBackgroundRenderer!
 
-    // MARK: - Deinit
+    // MARK: - Init
 
-    override func cleanup() {
-        session.pause()
+    override init() {
+        super.init()
+
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
+        session.run(configuration)
     }
 
     // MARK: - Setup
@@ -131,10 +135,6 @@ class ARPlanesRenderer: BaseRenderer {
     override func setup() {
         metalView.preferredFramesPerSecond = 60
 
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
-        session.run(configuration)
-        
         backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
         renderer.compile(scene: scene, camera: camera)
 
@@ -178,6 +178,12 @@ class ARPlanesRenderer: BaseRenderer {
             scene: scene,
             camera: camera
         )
+    }
+
+    // MARK: - Cleanup
+
+    override func cleanup() {
+        session.pause()
     }
 
     // MARK: - Resize

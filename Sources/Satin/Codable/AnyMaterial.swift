@@ -37,7 +37,7 @@ public enum MaterialType: String, Codable {
         case .standard:
             return StandardMaterial.self
         case .uvcolor:
-            return UvColorMaterial.self
+            return UVColorMaterial.self
 
         }
     }
@@ -72,7 +72,7 @@ open class AnyMaterial: Codable {
             type = .physical
         } else if material is StandardMaterial {
             type = .standard
-        }  else if material is UvColorMaterial {
+        }  else if material is UVColorMaterial {
             type = .uvcolor
         } else if material is ShadowMaterial {
             type = .shadow

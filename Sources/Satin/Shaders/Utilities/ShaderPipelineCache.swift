@@ -40,7 +40,7 @@ public final class ShaderPipelineCache {
     public class func getPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
         if let pipeline = pipelineCache[configuration] { return pipeline }
 
-//        print("Creating Shader Pipeline: \(configuration.label)")
+//        print("Creating Shader Pipeline: \(configuration)")
 
         guard let context = configuration.context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device)

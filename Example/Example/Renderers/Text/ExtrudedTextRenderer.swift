@@ -18,7 +18,7 @@ class ExtrudedTextRenderer: BaseRenderer {
     lazy var camera = PerspectiveCamera(position: [15.0, 20.0, 40.0], near: 10.0, far: 60.0, fov: 60)
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     override func setup() {
         setupText()

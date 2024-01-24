@@ -69,7 +69,7 @@ class CameraControllerRenderer: BaseRenderer {
     }()
 
     lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: metalView)
-    lazy var renderer: Satin.Renderer = .init(context: context)
+    lazy var renderer: Renderer = .init(context: context)
 
     override func setup() {
         scene.attach(cameraController.target)

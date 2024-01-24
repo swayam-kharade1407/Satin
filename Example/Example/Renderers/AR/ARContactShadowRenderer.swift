@@ -117,7 +117,7 @@ class ARContactShadowRenderer: BaseRenderer {
     lazy var scene = Object(label: "Scene", [invaderContainer])
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundRenderer!
 
@@ -125,6 +125,14 @@ class ARContactShadowRenderer: BaseRenderer {
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid
+    }
+
+    override init() {
+        super.init()
+
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal]
+        session.run(configuration)
     }
 
     lazy var lights: [PointLight] = {
@@ -140,10 +148,6 @@ class ARContactShadowRenderer: BaseRenderer {
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal]
-        session.run(configuration)
 
         invaderContainer.add(lights)
 

@@ -11,7 +11,7 @@ import Metal
 import ModelIO
 import simd
 
-public final class IBLScene: Object, Environment {
+public final class IBLScene: Object, IBLEnvironment {
     public var environmentIntensity: Float = 1.0
 
     public internal(set) var environment: MTLTexture?

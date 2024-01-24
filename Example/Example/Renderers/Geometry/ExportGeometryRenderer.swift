@@ -41,7 +41,7 @@ class ExportGeometryRenderer: BaseRenderer {
     lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.001, far: 100.0)
     lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: metalView)
-    lazy var renderer: Satin.Renderer = .init(context: context)
+    lazy var renderer: Renderer = .init(context: context)
 
     deinit {
         cameraController.disable()

@@ -21,7 +21,7 @@ class InstancedMeshRenderer: BaseRenderer {
     var scene = Object(label: "Scene")
     var container = Object(label: "Container")
     var instancedMesh: InstancedMesh?
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     // MARK: - Properties
 

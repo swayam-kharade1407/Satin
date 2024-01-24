@@ -13,13 +13,8 @@ import SwiftUI
 struct ExampleApp: App {
     var body: some Scene {
         WindowGroup {
-//            #if os(visionOS)
-//            VisionsView()
-//            #else
             ContentView().preferredColorScheme(.dark)
-//            #endif
         }
-
 
         #if os(visionOS)
         SatinImmersiveSpace(renderer: Immersive3DRenderer())

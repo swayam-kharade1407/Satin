@@ -34,7 +34,7 @@ class CustomGeometryRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var mesh: Mesh!
 

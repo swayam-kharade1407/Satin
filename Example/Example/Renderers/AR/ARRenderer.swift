@@ -21,14 +21,14 @@ class ARRenderer: BaseRenderer {
     private var anchorsSubscription: AnyCancellable?
 
     private let boxGeometry = BoxGeometry(width: 0.1, height: 0.1, depth: 0.1)
-    private let boxMaterial = UvColorMaterial()
+    private let boxMaterial = UVColorMaterial()
     private var meshAnchorMap: [UUID: Mesh] = [:]
 
     private var scene = Object(label: "Scene")
 
     private lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     private lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    private lazy var renderer = Satin.Renderer(context: context)
+    private lazy var renderer = Renderer(context: context)
 
     private var backgroundRenderer: ARBackgroundRenderer!
 
@@ -36,10 +36,14 @@ class ARRenderer: BaseRenderer {
         .invalid
     }
 
+    override init() {
+        super.init()
+
+        session.run(ARWorldTrackingConfiguration())
+    }
+
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-        
-        session.run(ARWorldTrackingConfiguration())
 
         renderer.colorLoadAction = .load
 

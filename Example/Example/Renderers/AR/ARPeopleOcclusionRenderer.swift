@@ -21,15 +21,15 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
     private var anchorsUpdatedSubscription: AnyCancellable?
 
     let boxGeometry = BoxGeometry(size: 0.1)
-    let boxMaterial = UvColorMaterial()
+    let boxMaterial = UVColorMaterial()
 
     var meshAnchorMap: [UUID: Mesh] = [:]
 
     var scene = Object(label: "Scene")
 
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.001, far: 100.0)
-    lazy var renderer: Satin.Renderer = {
-        let renderer = Satin.Renderer(context: Context(device, sampleCount, colorPixelFormat, .depth32Float))
+    lazy var renderer: Renderer = {
+        let renderer = Renderer(context: Context(device, sampleCount, colorPixelFormat, .depth32Float))
         renderer.setClearColor(.zero)
         renderer.colorLoadAction = .clear
         renderer.depthLoadAction = .clear
@@ -48,12 +48,16 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
         .invalid
     }
 
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
+    override init() {
+        super.init()
 
         let config = ARWorldTrackingConfiguration()
         config.frameSemantics = [.personSegmentationWithDepth]
         session.run(config)
+    }
+
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
 
         backgroundRenderer = ARBackgroundRenderer(
             context: Context(device, 1, colorPixelFormat),

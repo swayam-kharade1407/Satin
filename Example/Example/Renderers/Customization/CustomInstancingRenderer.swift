@@ -32,7 +32,7 @@ class CustomInstancingRenderer: BaseRenderer {
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView, defaultZoom: 2.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid

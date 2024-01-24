@@ -20,7 +20,7 @@ class LoadObjRenderer: BaseRenderer {
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     override func setup() {
         loadOBJ(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"))

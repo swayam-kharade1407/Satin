@@ -410,7 +410,7 @@ open class Renderer {
         var irradianceTexcoordTransform = matrix_identity_float3x3
 
         for object in objectList {
-            if let environment = object as? Environment {
+            if let environment = object as? IBLEnvironment {
                 environmentIntensity = environment.environmentIntensity
                 cubemapTexture = environment.cubemapTexture
 

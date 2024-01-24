@@ -48,7 +48,7 @@ class BufferComputeRenderer: BaseRenderer {
 #if !os(visionOS)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 #endif
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var startTime: CFAbsoluteTime = 0.0
 

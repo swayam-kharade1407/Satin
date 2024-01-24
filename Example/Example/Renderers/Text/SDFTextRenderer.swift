@@ -38,7 +38,7 @@ class SDFTextRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 60)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     lazy var textMesh: TextMesh = {
         let fontAtlas = try! FontAtlas.load(url: sharedAssetsURL.appendingPathComponent("Fonts/SFProRounded/SFProRoundedBold64.json"))

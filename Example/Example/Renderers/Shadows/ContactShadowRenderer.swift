@@ -127,7 +127,7 @@ class ContactShadowRenderer: BaseRenderer {
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     lazy var shadowRenderer = ObjectShadowRenderer(
         context: context,

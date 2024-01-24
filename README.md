@@ -82,7 +82,7 @@ import Satin
 
 // Subclass Forge's Renderer to get triple buffered rendering and
 // callbacks for Setup, Update, Draw, Resize and Events
-class SimpleRenderer: Forge.Renderer {
+class SimpleRenderer: MetalViewRenderer {
     // A Context contains important information that is needed to help compile shaders
     // and ensure we are drawing with the right color and depth pixel formats and sample count
 
@@ -94,7 +94,7 @@ class SimpleRenderer: Forge.Renderer {
     // and drawing the scene either to a texture or on screen
 
     // Create a Satin Renderer by passing in a context, scene and camera
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     // A PerspectiveCamera is used to render the scene using perspective projection
     // All Satin Cameras inherit from Object, so it has
@@ -136,8 +136,6 @@ class SimpleRenderer: Forge.Renderer {
 
     // Forge calls draw when a new frame is ready to be encoded for drawing
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
-
         // To render a scene into a render pass, just call draw and pass in the render pass descriptor
         // You can also specify a render target and render to a texture instead
         renderer.draw(
@@ -160,7 +158,6 @@ class SimpleRenderer: Forge.Renderer {
     }
 }
 
-// Using SwiftUI you can use a ForgeView to easily create a MTKView and pass in a Forge.Renderer
 struct ContentView: View {
     var body: some View {
         SatinMetalView(renderer:  SimpleRenderer())

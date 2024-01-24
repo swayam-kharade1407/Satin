@@ -7,4 +7,4 @@
 
 import Metal
 
-public final class UvColorMaterial: Material {}
+public final class UVColorMaterial: Material {}

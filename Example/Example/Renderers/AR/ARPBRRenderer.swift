@@ -260,7 +260,6 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         public var contentTexture: MTLTexture?
         public var depthMaskTexture: MTLTexture?
 
-
         override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
             super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
             renderEncoderState.setFragmentTexture(backgroundTexture, index: .Custom0)
@@ -313,7 +312,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     fileprivate lazy var scene = ARScene(label: "Scene", [modelContainer], session: session)
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
     var featheredDepthMaskGenerator: ARFeatheredDepthMaskGenerator!
@@ -333,8 +332,8 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         .invalid
     }
 
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
+    override init() {
+        super.init()
         
         let config = ARWorldTrackingConfiguration()
         config.environmentTexturing = .manual
@@ -343,6 +342,10 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         config.frameSemantics = [.sceneDepth]
         config.sceneReconstruction = .mesh
         session.run(config)
+    }
+
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
 
         model.material.delegate = self
 
@@ -378,8 +381,6 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
-
         backgroundRenderer.draw(
             renderPassDescriptor: MTLRenderPassDescriptor(),
             commandBuffer: commandBuffer

@@ -12,6 +12,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
+#if os(visionOS)
+                Section(header: Text("AR")) {
+                    NavigationLink(destination: VisionsView()) {
+                        Label("Immersive", systemImage: "visionpro")
+                    }
+                }
+#endif
                 #if os(iOS)
                     Section(header: Text("AR")) {
                         NavigationLink(destination: ARRendererView()) {

@@ -30,7 +30,7 @@ class Renderer3D: BaseRenderer {
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)

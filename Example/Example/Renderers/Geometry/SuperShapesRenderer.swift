@@ -194,7 +194,7 @@ class SuperShapesRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var camera = PerspectiveCamera(position: simd_make_float3(2.0, 1.0, 4.0), near: 0.001, far: 200.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)

@@ -22,7 +22,7 @@ class MeshShadowRenderer {
 
     private var subscription: AnyCancellable?
     private var device: MTLDevice
-    private var renderer: Satin.Renderer
+    private var renderer: Renderer
     private var camera: OrthographicCamera
     private var scene: Object
     private var shadowMesh: Mesh
@@ -43,7 +43,7 @@ class MeshShadowRenderer {
         scene = Object(label: "Scene")
         scene.add(shadowMesh, false)
 
-        renderer = Satin.Renderer(context: Context(device, 1, .bgra8Unorm, .invalid))
+        renderer = Renderer(context: Context(device, 1, .bgra8Unorm, .invalid))
         renderer.label = "Shadow Renderer"
         renderer.setClearColor(.zero)
         renderer.resize(size)

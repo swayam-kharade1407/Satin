@@ -20,15 +20,7 @@ class ARLidarMeshRenderer: BaseRenderer {
     private var anchorsUpdatedSubscription: AnyCancellable?
     private var anchorsAddedSubscription: AnyCancellable?
 
-    class LidarMeshMaterial: SourceMaterial {}
-
-    lazy var material: LidarMeshMaterial = {
-        let material = LidarMeshMaterial(pipelinesURL: pipelinesURL)
-        material.blending = .alpha
-        material.set("Color", [1.0, 1.0, 1.0, 0.25])
-        material.vertexDescriptor = ARLidarMeshVertexDescriptor()
-        return material
-    }()
+    var material = BasicColorMaterial()
 
     var lidarMeshes: [UUID: ARLidarMesh] = [:]
 
@@ -36,7 +28,7 @@ class ARLidarMeshRenderer: BaseRenderer {
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     var backgroundRenderer: ARBackgroundRenderer!
 
@@ -44,12 +36,16 @@ class ARLidarMeshRenderer: BaseRenderer {
         .invalid
     }
 
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
+    override init() {
+        super.init()
 
         let config = ARWorldTrackingConfiguration()
         config.sceneReconstruction = .mesh
         session.run(config)
+    }
+
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
 
         renderer.colorLoadAction = .load
 
@@ -57,6 +53,19 @@ class ARLidarMeshRenderer: BaseRenderer {
             context: Context(device, 1, colorPixelFormat),
             session: session
         )
+
+        anchorsAddedSubscription = sessionPublisher.addedAnchorsPublisher.sink { [weak self] anchors in
+            guard let self else { return }
+            for anchor in anchors {
+                if let meshAnchor = anchor as? ARMeshAnchor {
+                    let id = anchor.identifier
+                    let mesh = ARLidarMesh(meshAnchor: meshAnchor, material: material)
+                    mesh.triangleFillMode = .lines
+                    self.lidarMeshes[id] = mesh
+                    self.scene.add(mesh)
+                }
+            }
+        }
 
         anchorsUpdatedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
             guard let self else { return }
@@ -66,19 +75,6 @@ class ARLidarMeshRenderer: BaseRenderer {
                     if let lidarMesh = self.lidarMeshes[id] {
                         lidarMesh.meshAnchor = meshAnchor
                     }
-                }
-            }
-        }
-
-        anchorsAddedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
-            guard let self else { return }
-            for anchor in anchors {
-                if let meshAnchor = anchor as? ARMeshAnchor {
-                    let id = anchor.identifier
-                    let mesh = ARLidarMesh(meshAnchor: meshAnchor, material: material)
-                    mesh.triangleFillMode = .lines
-                    self.lidarMeshes[id] = mesh
-                    self.scene.add(mesh)
                 }
             }
         }

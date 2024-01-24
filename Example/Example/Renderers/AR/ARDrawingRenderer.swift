@@ -12,8 +12,8 @@ import ARKit
 import Metal
 import MetalKit
 
-import SatinCore
 import Satin
+import SatinCore
 
 import SwiftUI
 
@@ -22,7 +22,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - AR
 
-    lazy var session = ARSession()
+    var session = ARSession()
 
     // MARK: - 3D
 
@@ -32,7 +32,7 @@ class ARDrawingRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Satin.Renderer(context: context)
+        let renderer = Renderer(context: context)
         renderer.label = "Content Renderer"
         renderer.setClearColor(.zero)
         renderer.colorLoadAction = .load
@@ -46,26 +46,29 @@ class ARDrawingRenderer: BaseRenderer {
     // MARK: - Interaction
 
     var touchDown = false
-    var clearDrawing = false
 
     // MARK: - Background
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    // MARK: - Cleanup
+    // MARK: - Init
 
-    override func cleanup() {
-        session.pause()
+    var clear: Binding<Bool>
+
+    init(clear: Binding<Bool>) {
+        self.clear = clear
+
+        super.init()
+
+        let config = ARWorldTrackingConfiguration()
+        config.frameSemantics = [.smoothedSceneDepth]
+        session.run(config)
     }
 
     // MARK: - Setup
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-
-        let config = ARWorldTrackingConfiguration()
-        config.frameSemantics = [.smoothedSceneDepth]
-        session.run(config)
 
         mesh.drawCount = 0
         backgroundRenderer = ARBackgroundDepthRenderer(
@@ -105,6 +108,12 @@ class ARDrawingRenderer: BaseRenderer {
         )
     }
 
+    // MARK: - Cleanup
+
+    override func cleanup() {
+        session.pause()
+    }
+
     // MARK: - Resize
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
@@ -124,14 +133,10 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - Updates
 
-    public func clear() {
-        clearDrawing = true
-    }
-
     private func updateDrawing() {
-        if clearDrawing {
+        if clear.wrappedValue {
             mesh.drawCount = 0
-            clearDrawing = false
+            clear.wrappedValue = false
         } else if touchDown, let currentFrame = session.currentFrame {
             add(simd_mul(currentFrame.camera.transform, translationMatrixf(0, 0, -0.2)))
         }

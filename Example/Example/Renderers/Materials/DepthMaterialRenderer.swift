@@ -108,8 +108,8 @@ class DepthMaterialRenderer: BaseRenderer {
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 13.0], near: 0.001, far: 20.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
-    lazy var renderer: Satin.Renderer = {
-        let renderer = Satin.Renderer(context: context)
+    lazy var renderer: Renderer = {
+        let renderer = Renderer(context: context)
         renderer.clearColor = .init(red: 0.137254902, green: 0.09411764706, blue: 0.1058823529, alpha: 1.0)
         return renderer
     }()

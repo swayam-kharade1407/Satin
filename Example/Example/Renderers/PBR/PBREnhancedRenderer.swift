@@ -46,7 +46,7 @@ class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 40.0], near: 0.001, far: 1000.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer: Satin.Renderer = .init(context: context)
+    lazy var renderer: Renderer = .init(context: context)
 
     lazy var customMaterial: CustomMaterial = {
         let mat = CustomMaterial(pipelinesURL: pipelinesURL)
