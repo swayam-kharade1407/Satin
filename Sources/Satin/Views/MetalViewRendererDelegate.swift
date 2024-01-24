@@ -9,7 +9,7 @@ import Foundation
 import QuartzCore
 
 internal protocol MetalViewRendererDelegate: AnyObject {
-    var label: String { get }
+    var id: String { get }
     func draw(metalLayer: CAMetalLayer)
     func drawableResized(size: CGSize, scaleFactor: CGFloat)
 }

@@ -10,7 +10,7 @@
 import AppKit
 
 public class MetalViewController: NSViewController {
-    public var renderer: MetalViewRenderer?
+    public let renderer: MetalViewRenderer
     public private(set) var metalView = MetalView()
 
     override public var acceptsFirstResponder: Bool { return true }
@@ -25,8 +25,8 @@ public class MetalViewController: NSViewController {
     // MARK: - Init
 
     init(renderer: MetalViewRenderer) {
-        super.init(nibName: nil, bundle: nil)
         self.renderer = renderer
+        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -37,7 +37,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Deinit
 
     deinit {
-        print("deinit - ForgeMetalViewController: \(renderer?.label)")
+        print("deinit - ForgeMetalViewController: \(renderer.id)")
 
         cleanupRenderer()
         removeTracking()
@@ -48,7 +48,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Load View
 
     override public func loadView() {
-        print("loadView - ForgeMetalViewController: \(self.renderer?.label)")
+        print("loadView - ForgeMetalViewController: \(self.renderer.id)")
 
         view = self.metalView
     }
@@ -58,7 +58,7 @@ public class MetalViewController: NSViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        print("viewDidLoad - ForgeMetalViewController: \(self.renderer?.label)")
+        print("viewDidLoad - ForgeMetalViewController: \(self.renderer.id)")
 
         self.setupView()
         self.setupRenderer()
@@ -72,7 +72,7 @@ public class MetalViewController: NSViewController {
     private func setupView() {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
-        print("setupView - ForgeMetalViewController: \(self.renderer?.label)")
+        print("setupView - ForgeMetalViewController: \(self.renderer.id)")
 
         self.metalView.metalLayer.device = device
     }
@@ -80,36 +80,33 @@ public class MetalViewController: NSViewController {
     // MARK: - Renderer
 
     private func setupRenderer() {
-        guard let device = metalView.metalLayer.device,
-              let queue = device.makeCommandQueue(),
-              let renderer = renderer, !renderer.isSetup
-        else { return }
+        guard let device = metalView.metalLayer.device, let queue = device.makeCommandQueue(), !renderer.isSetup else { return }
 
-        print("setupRenderer - ForgeMetalViewController: \(renderer.label)")
+        print("setupRenderer - ForgeMetalViewController: \(self.renderer.id)")
 
-        renderer.metalView = self.metalView
-        renderer.device = device
-        renderer.commandQueue = queue
-        renderer.setup()
-        renderer.isSetup = true
+        self.renderer.metalView = self.metalView
+        self.renderer.device = device
+        self.renderer.commandQueue = queue
+        self.renderer.setup()
+        self.renderer.isSetup = true
 
         self.updateAppearance()
 
-        self.metalView.metalLayer.pixelFormat = renderer.colorPixelFormat
-        self.metalView.delegate = renderer
+        self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
+        self.metalView.delegate = self.renderer
     }
 
     private func cleanupRenderer() {
-        guard let renderer = renderer, renderer.isSetup else { return }
-        print("cleanupRenderer - ForgeMetalViewController: \(renderer.label)")
-        renderer.cleanup()
-        renderer.isSetup = false
+        guard self.renderer.isSetup else { return }
+        print("cleanupRenderer - ForgeMetalViewController: \(self.renderer.id)")
+        self.renderer.cleanup()
+        self.renderer.isSetup = false
     }
 
     // MARK: - Tracking
 
     private func setupTracking() {
-        print("setupTracking - ForgeMetalViewController: \(self.renderer?.label)")
+        print("setupTracking - ForgeMetalViewController: \(self.renderer.id)")
         let area = NSTrackingArea(rect: self.view.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved, .inVisibleRect], owner: self, userInfo: nil)
         self.view.addTrackingArea(area)
         self.trackingArea = area
@@ -117,7 +114,7 @@ public class MetalViewController: NSViewController {
 
     private func removeTracking() {
         guard let trackingArea = trackingArea else { return }
-        print("removeTracking - ForgeMetalViewController: \(self.renderer?.label)")
+        print("removeTracking - ForgeMetalViewController: \(self.renderer.id)")
         self.view.removeTrackingArea(trackingArea)
         self.trackingArea = nil
         NSCursor.setHiddenUntilMouseMoves(false)
@@ -126,7 +123,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Events
 
     private func setupEvents() {
-        print("setupEvents - ForgeMetalViewController: \(self.renderer?.label)")
+        print("setupEvents - ForgeMetalViewController: \(self.renderer.id)")
 
         self.metalView.allowedTouchTypes = .indirect
 
@@ -160,7 +157,7 @@ public class MetalViewController: NSViewController {
     }
 
     private func removeEvents() {
-        print("removeEvents - ForgeMetalViewController: \(self.renderer?.label)")
+        print("removeEvents - ForgeMetalViewController: \(self.renderer.id)")
 
         if let keyDownHandler = self.keyDownHandler {
             NSEvent.removeMonitor(keyDownHandler)
@@ -187,149 +184,146 @@ public class MetalViewController: NSViewController {
     // MARK: - Appearance
 
     @objc private func updateAppearance() {
-        guard let renderer = self.renderer else { return }
-
-        print("updateAppearance - ForgeMetalViewController: \(renderer.label)")
-
-        renderer.appearance = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark" ? .dark : .light
+        print("updateAppearance - ForgeMetalViewController: \(self.renderer.id)")
+        self.renderer.appearance = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark" ? .dark : .light
     }
 
     // MARK: - Events
 
     override public func touchesBegan(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.touchesBegan(with: event)
+        self.renderer.touchesBegan(with: event)
     }
 
     override public func touchesEnded(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.touchesEnded(with: event)
+        self.renderer.touchesEnded(with: event)
     }
 
     override public func touchesMoved(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.touchesMoved(with: event)
+        self.renderer.touchesMoved(with: event)
     }
 
     override public func touchesCancelled(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.touchesCancelled(with: event)
+        self.renderer.touchesCancelled(with: event)
     }
 
     override public func mouseMoved(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseMoved(with: event)
+        self.renderer.mouseMoved(with: event)
     }
 
     override public func mouseDown(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseDown(with: event)
+        self.renderer.mouseDown(with: event)
     }
 
     override public func mouseDragged(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseDragged(with: event)
+        self.renderer.mouseDragged(with: event)
     }
 
     override public func mouseUp(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseUp(with: event)
+        self.renderer.mouseUp(with: event)
     }
 
     override public func rightMouseDown(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.rightMouseDown(with: event)
+        self.renderer.rightMouseDown(with: event)
     }
 
     override public func rightMouseDragged(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.rightMouseDragged(with: event)
+        self.renderer.rightMouseDragged(with: event)
     }
 
     override public func rightMouseUp(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.rightMouseUp(with: event)
+        self.renderer.rightMouseUp(with: event)
     }
 
     override public func otherMouseDown(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.otherMouseDown(with: event)
+        self.renderer.otherMouseDown(with: event)
     }
 
     override public func otherMouseDragged(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.otherMouseDragged(with: event)
+        self.renderer.otherMouseDragged(with: event)
     }
 
     override public func otherMouseUp(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.otherMouseUp(with: event)
+        self.renderer.otherMouseUp(with: event)
     }
 
     override public func mouseEntered(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseEntered(with: event)
+        self.renderer.mouseEntered(with: event)
     }
 
     override public func mouseExited(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.mouseExited(with: event)
+        self.renderer.mouseExited(with: event)
     }
 
     override public func magnify(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.magnify(with: event)
+        self.renderer.magnify(with: event)
     }
 
     override public func rotate(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.rotate(with: event)
+        self.renderer.rotate(with: event)
     }
 
     override public func swipe(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
+        guard event.window == self.view.window else { return }
 
-        renderer.swipe(with: event)
+        self.renderer.swipe(with: event)
     }
 
     override public func scrollWheel(with event: NSEvent) {
-        guard let renderer = self.renderer, event.window == self.view.window else { return }
-        renderer.scrollWheel(with: event)
+        guard event.window == self.view.window else { return }
+        self.renderer.scrollWheel(with: event)
     }
 
     public func keyDown(with event: NSEvent) -> NSEvent? {
-        guard let renderer = self.renderer, event.window == self.view.window else { return event }
-        renderer.keyDown(with: event)
+        guard event.window == self.view.window else { return event }
+        self.renderer.keyDown(with: event)
         return event
     }
 
     public func keyUp(with event: NSEvent) -> NSEvent? {
-        guard let renderer = self.renderer, event.window == self.view.window else { return event }
-        renderer.keyUp(with: event)
+        guard event.window == self.view.window else { return event }
+        self.renderer.keyUp(with: event)
         return event
     }
 
     private func flagsChanged(with event: NSEvent) -> NSEvent? {
-        guard let renderer = self.renderer, event.window == metalView.window else { return event }
-        renderer.flagsChanged(with: event)
+        guard event.window == self.metalView.window else { return event }
+        self.renderer.flagsChanged(with: event)
         return event
     }
 }
@@ -339,16 +333,16 @@ public class MetalViewController: NSViewController {
 import UIKit
 
 public final class MetalViewController: UIViewController {
-    public var renderer: MetalViewRenderer?
+    public let renderer: MetalViewRenderer
     public private(set) var metalView = MetalView()
 
     override public var shouldAutorotate: Bool { return true }
 
     // MARK: - Init
 
-    public init(renderer: MetalViewRenderer?) {
-        super.init(nibName: nil, bundle: nil)
+    public init(renderer: MetalViewRenderer) {
         self.renderer = renderer
+        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -359,7 +353,7 @@ public final class MetalViewController: UIViewController {
     // MARK: - Deinit
 
     deinit {
-        print("deinit - ForgeMetalViewController: \(renderer?.label)")
+        print("deinit - ForgeMetalViewController: \(renderer.id)")
 
         cleanupRenderer()
         removeEvents()
@@ -369,7 +363,7 @@ public final class MetalViewController: UIViewController {
     // MARK: - Load View
 
     override public func loadView() {
-        print("loadView - ForgeMetalViewController: \(self.renderer?.label)")
+        print("loadView - ForgeMetalViewController: \(self.renderer.id)")
         view = self.metalView
         view.isMultipleTouchEnabled = true
     }
@@ -388,7 +382,7 @@ public final class MetalViewController: UIViewController {
     private func setupView() {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
-        print("setupView - ForgeMetalViewController: \(self.renderer?.label)")
+        print("setupView - ForgeMetalViewController: \(self.renderer.id)")
 
         self.metalView.metalLayer.device = device
     }
@@ -396,38 +390,36 @@ public final class MetalViewController: UIViewController {
     // MARK: - Renderer
 
     private func setupRenderer() {
-        guard let device = metalView.metalLayer.device,
-              let queue = device.makeCommandQueue(),
-              let renderer = renderer, !renderer.isSetup
+        guard let device = metalView.metalLayer.device, let queue = device.makeCommandQueue(), !renderer.isSetup
         else { return }
 
-        print("setupRenderer - ForgeMetalViewController: \(renderer.label)")
+        print("setupRenderer - ForgeMetalViewController: \(self.renderer.id)")
 
-        renderer.metalView = self.metalView
-        renderer.device = device
-        renderer.commandQueue = queue
-        renderer.setup()
-        renderer.isSetup = true
+        self.renderer.metalView = self.metalView
+        self.renderer.device = device
+        self.renderer.commandQueue = queue
+        self.renderer.setup()
+        self.renderer.isSetup = true
 #if !os(visionOS)
         self.updateAppearance()
 #endif
-        self.metalView.metalLayer.pixelFormat = renderer.colorPixelFormat
-        self.metalView.delegate = renderer
+        self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
+        self.metalView.delegate = self.renderer
     }
 
     private func cleanupRenderer() {
-        guard let renderer = renderer, renderer.isSetup else { return }
+        guard self.renderer.isSetup else { return }
 
-        print("cleanupRenderer - ForgeMetalViewController: \(renderer.label)")
+        print("cleanupRenderer - ForgeMetalViewController: \(self.renderer.id)")
 
-        renderer.cleanup()
-        renderer.isSetup = false
+        self.renderer.cleanup()
+        self.renderer.isSetup = false
     }
 
     // MARK: - Events
 
     private func setupEvents() {
-        print("setupEvents - ForgeMetalViewController: \(self.renderer?.label)")
+        print("setupEvents - ForgeMetalViewController: \(self.renderer.id)")
 #if !os(visionOS)
         if #available(iOS 17.0, *) {
             registerForTraitChanges([UITraitActiveAppearance.self], action: #selector(self.updateAppearance))
@@ -448,46 +440,42 @@ public final class MetalViewController: UIViewController {
 
 #if !os(visionOS)
     @objc private func updateAppearance() {
-        guard let renderer = renderer, renderer.isSetup else { return }
+        guard self.renderer.isSetup else { return }
 
-        print("updateAppearance - ForgeMetalViewController: \(renderer.label)")
+        print("updateAppearance - ForgeMetalViewController: \(self.renderer.id)")
 
         if self.traitCollection.userInterfaceStyle == .dark {
-            renderer.appearance = .dark
+            self.renderer.appearance = .dark
         }
         else if self.traitCollection.userInterfaceStyle == .light {
-            renderer.appearance = .light
+            self.renderer.appearance = .light
         }
         else if self.traitCollection.userInterfaceStyle == .unspecified {
-            renderer.appearance = .unknown
+            self.renderer.appearance = .unknown
         }
     }
 #endif
 
     private func removeEvents() {
-        print("removeEvents - ForgeMetalViewController: \(self.renderer?.label)")
+        print("removeEvents - ForgeMetalViewController: \(self.renderer.id)")
     }
 
     // MARK: - Events
 
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let renderer = self.renderer else { return }
-        renderer.touchesBegan(touches, with: event)
+        self.renderer.touchesBegan(touches, with: event)
     }
 
     override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let renderer = self.renderer else { return }
-        renderer.touchesMoved(touches, with: event)
+        self.renderer.touchesMoved(touches, with: event)
     }
 
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let renderer = self.renderer else { return }
-        renderer.touchesEnded(touches, with: event)
+        self.renderer.touchesEnded(touches, with: event)
     }
 
     override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let renderer = self.renderer else { return }
-        renderer.touchesCancelled(touches, with: event)
+        self.renderer.touchesCancelled(touches, with: event)
     }
 }
 

@@ -17,10 +17,6 @@ import Satin
 import SatinCore
 
 class Renderer3D: BaseRenderer {
-    override public var label: String {
-        "Renderer3D"
-    }
-
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {

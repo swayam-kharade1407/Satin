@@ -117,6 +117,8 @@
 		E1903C152B6046B4004AB175 /* ARContactShadowRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152372429CBD0A700D96D46 /* ARContactShadowRendererView.swift */; };
 		E1903C162B6046B4004AB175 /* ARRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E767DA28A6DA31005D75AB /* ARRendererView.swift */; };
 		E1903C172B6046B4004AB175 /* ARPeopleOcclusionRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14C122C29E5D618009D3C8C /* ARPeopleOcclusionRendererView.swift */; };
+		E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */; };
+		E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */; };
 		E19D4C4929F9CA3F00DF993D /* ARSessionPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D4C4829F9CA3F00DF993D /* ARSessionPublisher.swift */; };
 		E19D4C4B29F9CF3100DF993D /* ARPlaneMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D4C4A29F9CF3100DF993D /* ARPlaneMesh.swift */; };
 		E1A25D962A9687EC00895430 /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1A25D952A9687EC00895430 /* Youi */; };
@@ -191,6 +193,8 @@
 		E18A1EDA291EFB1D00A71453 /* PBRStandardMaterialRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBRStandardMaterialRendererView.swift; sourceTree = "<group>"; };
 		E18FD5952A12B00F001376D8 /* ARDepthMaskGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARDepthMaskGenerator.swift; sourceTree = "<group>"; };
 		E18FD5972A12FE16001376D8 /* ARFeatheredDepthMaskGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARFeatheredDepthMaskGenerator.swift; sourceTree = "<group>"; };
+		E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Immersive3DRenderer.swift; sourceTree = "<group>"; };
+		E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveSuperShapesRenderer.swift; sourceTree = "<group>"; };
 		E1919A32248D9BC3008FD392 /* CubemapRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubemapRenderer.swift; sourceTree = "<group>"; };
 		E192EFCD24857EB600C7EE74 /* LiveCodeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveCodeRenderer.swift; sourceTree = "<group>"; };
 		E192F01F2485B16C00C7EE74 /* MatcapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatcapRenderer.swift; sourceTree = "<group>"; };
@@ -309,6 +313,7 @@
 		66E678CD243EE2190070B294 /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
+				E1903C192B608BF1004AB175 /* Vision */,
 				E1C967732B409E0E00271541 /* Text */,
 				E19D4C4029F9C23900DF993D /* Advanced */,
 				E152372029CBA8DA00D96D46 /* AR */,
@@ -403,6 +408,15 @@
 				E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		E1903C192B608BF1004AB175 /* Vision */ = {
+			isa = PBXGroup;
+			children = (
+				E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */,
+				E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */,
+			);
+			path = Vision;
 			sourceTree = "<group>";
 		};
 		E192F05F24875D6E00C7EE74 /* Utilities */ = {
@@ -851,6 +865,7 @@
 				E18FD5962A12B00F001376D8 /* ARDepthMaskGenerator.swift in Sources */,
 				E1BBE46729E4D5B000A21F3A /* ARLidarMesh.swift in Sources */,
 				E103E14D2B60400B0017588F /* ProjectedShadowRenderer.swift in Sources */,
+				E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */,
 				E1F4315A29C3ABCA00200E72 /* ARPerspectiveCamera.swift in Sources */,
 				E1903C102B6046B4004AB175 /* ARPBRRendererView.swift in Sources */,
 				E103E1032B603B620017588F /* InstancedMeshRendererView.swift in Sources */,
@@ -861,6 +876,7 @@
 				E103E1462B6040010017588F /* TessellationRendererView.swift in Sources */,
 				E103E1272B603E7C0017588F /* MatcapRendererView.swift in Sources */,
 				E103E1232B603E760017588F /* LiveCodeRenderer.swift in Sources */,
+				E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */,
 				E103E1112B603DE30017588F /* TextRenderer.swift in Sources */,
 				E103E1302B603ED30017588F /* ExportGeometryRenderer.swift in Sources */,
 				E103E1262B603E7C0017588F /* LiveCodeRendererView.swift in Sources */,

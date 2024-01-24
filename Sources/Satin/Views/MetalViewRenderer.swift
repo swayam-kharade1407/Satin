@@ -15,7 +15,14 @@ import UIKit
 #endif
 
 open class MetalViewRenderer: MetalViewRendererDelegate {
-    open var label: String { "MetalViewRenderer" }
+    open var id: String {
+        var result = String(describing: type(of: self)).replacingOccurrences(of: "Renderer", with: "")
+        if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != result {
+            result = result.replacingOccurrences(of: bundleName, with: "")
+        }
+        result = result.replacingOccurrences(of: ".", with: "")
+        return result
+    }
 
     public internal(set) unowned var metalView: MetalView!
 
@@ -171,7 +178,6 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     internal func updateDepthTexture() {
         if depthPixelFormat != .invalid, depthTextureNeedsUpdate {
-
             let width = Int(metalView.drawableSize.width)
             let height = Int(metalView.drawableSize.height)
 
@@ -180,7 +186,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
             }
 
             if depthTextureNeedsUpdate {
-                print("creating depth texture - MetalViewRenderer: \(label)")
+                print("creating depth texture - MetalViewRenderer: \(id)")
                 let descriptor = MTLTextureDescriptor()
                 descriptor.pixelFormat = depthPixelFormat
                 descriptor.usage = .renderTarget
@@ -190,12 +196,12 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
                 depthTexture = device.makeTexture(descriptor: descriptor)
             }
         }
-        
+
         depthTextureNeedsUpdate = false
     }
 
     internal func drawableResized(size: CGSize, scaleFactor: CGFloat) {
-        print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(label)")
+        print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(id)")
         depthTextureNeedsUpdate = true
         resize(size: (Float(size.width), Float(size.height)), scaleFactor: Float(scaleFactor))
     }

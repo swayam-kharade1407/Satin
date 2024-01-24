@@ -20,7 +20,14 @@ extension LayerRenderer.Clock.Instant.Duration {
 }
 
 open class MetalLayerRenderer {
-    open var label: String { "MetalViewRenderer" }
+    open var id: String {
+        var result = String(describing: type(of: self)).replacingOccurrences(of: "Renderer", with: "")
+        if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != result {
+            result = result.replacingOccurrences(of: bundleName, with: "")
+        }
+        result = result.replacingOccurrences(of: ".", with: "")
+        return result
+    }
     
     public internal(set) var layerRenderer: LayerRenderer!
     public internal(set) var arSession: ARKitSession!
@@ -35,10 +42,12 @@ open class MetalLayerRenderer {
     public var colorPixelFormat: MTLPixelFormat { .bgra8Unorm_srgb }
     public var depthPixelFormat: MTLPixelFormat { .depth32Float }
 
-    let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
+    private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
 
     public let leftEye = PerspectiveCamera()
     public let rightEye = PerspectiveCamera()
+
+    public internal(set) var firstFrame: Bool = true
 
     public var cameras: [PerspectiveCamera] {
         [leftEye, rightEye]
@@ -53,7 +62,7 @@ open class MetalLayerRenderer {
         return self
     }
 
-    open func startRenderLoop() {
+    public func startRenderLoop() {
         Task {
             do {
                 try await arSession.run([worldTracking])
@@ -69,7 +78,7 @@ open class MetalLayerRenderer {
         }
     }
 
-    open func renderLoop() {
+    internal func renderLoop() {
         while true {
             if layerRenderer.state == .invalidated {
                 cleanup()
@@ -91,8 +100,6 @@ open class MetalLayerRenderer {
     open func update() {}
 
     open func cleanup() {}
-
-    open func resize(size: (width: Float, height: Float)) {}
 
     open func preDraw(frame: LayerRenderer.Frame) -> (drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer)? {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { fatalError("Failed to create command buffer") }

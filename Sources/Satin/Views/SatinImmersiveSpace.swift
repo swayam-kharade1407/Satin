@@ -12,10 +12,14 @@ import Foundation
 import SwiftUI
 
 public struct SatinImmersiveSpace: SwiftUI.Scene {
-    private var renderer: MetalLayerRenderer
+    private let renderer: MetalLayerRenderer
+
+    public init(renderer: MetalLayerRenderer) {
+        self.renderer = renderer
+    }
 
     public var body: some SwiftUI.Scene {
-        ImmersiveSpace(id: renderer.label) {
+        ImmersiveSpace(id: renderer.id) {
             CompositorLayer(configuration: MetalLayerCompositorConfiguration(renderer: renderer)) { layerRenderer in
 
                 renderer.layerRenderer = layerRenderer

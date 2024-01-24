@@ -128,10 +128,6 @@ class SuperShapeGeometry: SatinGeometry {
 }
 
 class SuperShapesRenderer: BaseRenderer {
-    var cancellables = Set<AnyCancellable>()
-
-    var updateGeometry = true
-
     var wireframe = false {
         didSet {
             mesh.triangleFillMode = wireframe ? .lines : .fill
@@ -192,62 +188,34 @@ class SuperShapesRenderer: BaseRenderer {
         res: resParam.value
     )
 
+    var parametersSubscription: AnyCancellable?
+
+    lazy var startTime = getTime()
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.7))
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var renderer = Satin.Renderer(context: context)
 
-
     var camera = PerspectiveCamera(position: simd_make_float3(2.0, 1.0, 4.0), near: 0.001, far: 200.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
-
     override func setup() {
-        setupObservers()
+        parametersSubscription = parameters.objectWillChange.sink { [weak self] in
+            self?.updateGeometry()
+        }
+
         mesh.cullMode = .none
+        
         camera.lookAt(target: .zero)
     }
 
-    func setupGeometry() {
-        geometry.r1 = r1Param.value
-        geometry.a1 = a1Param.value
-        geometry.b1 = b1Param.value
-        geometry.m1 = m1Param.value
-        geometry.n11 = n11Param.value
-        geometry.n21 = n21Param.value
-        geometry.n31 = n31Param.value
-        geometry.r2 = r2Param.value
-        geometry.a2 = a2Param.value
-        geometry.b2 = b2Param.value
-        geometry.m2 = m2Param.value
-        geometry.n12 = n12Param.value
-        geometry.n22 = n22Param.value
-        geometry.n32 = n32Param.value
-        geometry.res = resParam.value
-    }
-
-    func setupObservers() {
-        for param in parameters.params {
-            if let p = param as? FloatParameter {
-                p.$value.sink { [weak self] _ in
-                    self?.updateGeometry = true
-                }.store(in: &cancellables)
-            } else if let p = param as? IntParameter {
-                p.$value.sink { [weak self] _ in
-                    self?.updateGeometry = true
-                }.store(in: &cancellables)
-            }
-        }
-    }
-
     override func update() {
-        if updateGeometry {
-            setupGeometry()
-            updateGeometry = false
-        }
-
         cameraController.update()
         camera.update()
+
+        let theta = Float(getTime() - startTime)
+        mesh.orientation = simd_quatf(angle: theta * 0.25, axis: simd_normalize(simd_make_float3(sin(theta), cos(theta), 1.0)))
+
         scene.update()
     }
 
@@ -263,5 +231,23 @@ class SuperShapesRenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
+    }
+
+    private func updateGeometry() {
+        geometry.r1 = r1Param.value
+        geometry.a1 = a1Param.value
+        geometry.b1 = b1Param.value
+        geometry.m1 = m1Param.value
+        geometry.n11 = n11Param.value
+        geometry.n21 = n21Param.value
+        geometry.n31 = n31Param.value
+        geometry.r2 = r2Param.value
+        geometry.a2 = a2Param.value
+        geometry.b2 = b2Param.value
+        geometry.m2 = m2Param.value
+        geometry.n12 = n12Param.value
+        geometry.n22 = n22Param.value
+        geometry.n32 = n32Param.value
+        geometry.res = resParam.value
     }
 }

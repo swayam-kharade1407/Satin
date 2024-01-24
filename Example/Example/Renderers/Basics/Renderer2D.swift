@@ -12,10 +12,6 @@ import MetalKit
 import Satin
 
 class Renderer2D: BaseRenderer {
-    public override var label: String {
-        "Renderer2D"
-    }
-
     let mesh = Mesh(label: "Quad", geometry: PlaneGeometry(size: 700), material: UvColorMaterial())
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
