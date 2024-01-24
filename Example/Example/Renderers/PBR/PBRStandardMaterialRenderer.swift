@@ -34,6 +34,8 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         ]
     }
 
+    var model: Object?
+    lazy var startTime = getTime()
     lazy var skybox: Mesh = .init(label: "Skybox", geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())
     lazy var scene = IBLScene(label: "Scene", [skybox])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
@@ -59,13 +61,14 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
     }
 
     override func update() {
+        model?.orientation = simd_quatf(angle: Float(getTime() - startTime) * 0.5, axis: worldUpDirection)
+
         cameraController.update()
         camera.update()
         scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -118,6 +121,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
             }
             if let mesh = mesh {
                 mesh.material = material
+                self.model = mesh
                 scene.add(mesh)
             }
         }

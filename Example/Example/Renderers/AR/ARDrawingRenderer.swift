@@ -22,7 +22,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - AR
 
-    var session = ARSession()
+    lazy var session = ARSession()
 
     // MARK: - 3D
 
@@ -52,17 +52,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    // MARK: - Init
-
-    override init() {
-        super.init()
-
-        let config = ARWorldTrackingConfiguration()
-        config.frameSemantics = [.smoothedSceneDepth]
-        session.run(config)
-    }
-
-    // MARK: - Deinit
+    // MARK: - Cleanup
 
     override func cleanup() {
         session.pause()
@@ -72,6 +62,10 @@ class ARDrawingRenderer: BaseRenderer {
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
+
+        let config = ARWorldTrackingConfiguration()
+        config.frameSemantics = [.smoothedSceneDepth]
+        session.run(config)
 
         mesh.drawCount = 0
         backgroundRenderer = ARBackgroundDepthRenderer(

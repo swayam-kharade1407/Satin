@@ -17,8 +17,9 @@ public class MetalView: NSView, CALayerDelegate {
             _displayLinkPaused
         }
         set {
+#if DEBUG
             print("isPaused - ForgeMetalView: \(newValue)")
-
+#endif
             if newValue {
                 pauseRenderLoop()
             }
@@ -63,8 +64,9 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Deinit
 
     deinit {
-        print("deinit - ForgeMetalView: \(delegate?.id)")
-
+#if DEBUG
+        print("\ndeinit - ForgeMetalView: \(delegate?.id)\n")
+#endif
         stopRenderLoop()
     }
 
@@ -77,8 +79,9 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Configure
 
     private func configure() {
+#if DEBUG
         print("\n\n\nconfigure - ForgeMetalView: \(delegate?.id)")
-
+#endif
         autoresizingMask = [.width, .height]
 
         wantsLayer = true
@@ -99,8 +102,10 @@ public class MetalView: NSView, CALayerDelegate {
     override public func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
 
-        if let window = self.window {
+        if let window = window {
+#if DEBUG
             print("viewDidMoveToWindow - ForgeMetalView: \(delegate?.id), \(window)")
+#endif
             setupRenderLoop(screen: window.screen)
             resizeDrawable()
         }
@@ -123,8 +128,9 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Render Loop
 
     private func setupRenderLoop(screen: NSScreen?) {
+#if DEBUG
         print("setupRenderLoop - ForgeMetalView: \(delegate?.id)")
-
+#endif
         _displaySource = DispatchSource.makeUserDataAddSource(queue: DispatchQueue.main)
         _displaySource!.setEventHandler { [weak self] in
             self?.render()
@@ -163,7 +169,9 @@ public class MetalView: NSView, CALayerDelegate {
 
     private func pauseRenderLoop() {
         if let displayLink = _displayLink, !_displayLinkPaused {
+#if DEBUG
             print("pauseRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
             CVDisplayLinkStop(displayLink)
         }
 
@@ -172,7 +180,9 @@ public class MetalView: NSView, CALayerDelegate {
 
     private func resumeRenderLoop() {
         if let displayLink = _displayLink, _displayLinkPaused {
+#if DEBUG
             print("resumeRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
             CVDisplayLinkStart(displayLink)
         }
 
@@ -181,9 +191,9 @@ public class MetalView: NSView, CALayerDelegate {
 
     func stopRenderLoop() {
         guard _displayLink != nil else { return }
-
+#if DEBUG
         print("stopRenderLoop - ForgeMetalView: \(delegate?.id)")
-
+#endif
         pauseRenderLoop()
 
         _displayLink = nil
@@ -194,7 +204,9 @@ public class MetalView: NSView, CALayerDelegate {
 
     @objc func windowWillClose(_ notification: Notification) {
         guard notification.object as AnyObject? === window else { return }
+#if DEBUG
         print("windowWillClose - ForgeMetalView: \(delegate?.id)")
+#endif
         stopRenderLoop()
     }
 
@@ -226,9 +238,9 @@ public class MetalView: NSView, CALayerDelegate {
 
         guard newSize.height != metalLayer.drawableSize.height ||
             newSize.width != metalLayer.drawableSize.width else { return }
-
+#if DEBUG
         print("resizeDrawable - ForgeMetalView: \(delegate?.id)")
-
+#endif
         metalLayer.drawableSize = newSize
 
         delegate?.drawableResized(size: newSize, scaleFactor: newScaleFactor)
@@ -249,7 +261,9 @@ public class MetalView: UIView {
             _displayLinkPaused
         }
         set {
-            print("isPaused - ForgeMetalView: \(newValue)")
+#if DEBUG
+            print("set(isPaused) - ForgeMetalView: \(delegate?.id) - isPaused: \(newValue)")
+#endif
             if newValue {
                 pauseRenderLoop()
             }
@@ -267,7 +281,8 @@ public class MetalView: UIView {
         didSet {
             if #available(iOS 15.0, *) {
                 _displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 120, preferred: Float(preferredFramesPerSecond))
-            } else {
+            }
+            else {
                 _displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
             }
         }
@@ -295,8 +310,9 @@ public class MetalView: UIView {
     // MARK: - Deinit
 
     deinit {
-        print("deinit - ForgeMetalView")
-
+#if DEBUG
+        print("\ndeinit - ForgeMetalView: \(delegate?.id)\n")
+#endif
         NotificationCenter.default.removeObserver(self)
 
         stopRenderLoop()
@@ -311,8 +327,9 @@ public class MetalView: UIView {
     // MARK: - Configure
 
     private func configure() {
-        print("configure - ForgeMetalView")
-
+#if DEBUG
+        print("configure - ForgeMetalView: \(delegate?.id)")
+#endif
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         metalLayer.delegate = self
@@ -328,25 +345,27 @@ public class MetalView: UIView {
 
     override public func didMoveToWindow() {
         super.didMoveToWindow()
-
-        print("didMoveToWindow - ForgeMetalView")
-
-        guard let window = window else {
-            cleanupRenderLoop()
-            return
+#if DEBUG
+        print("didMoveToWindow - ForgeMetalView: \(delegate?.id), - window: \(window)")
+#endif
+        if window != nil {
+            setupRenderLoop()
+            resizeDrawable()
         }
-
-        setupRenderLoop()
-
-        resizeDrawable()
+        else {
+            stopRenderLoop()
+        }
     }
 
     // MARK: - Render Loop
 
     private func setupRenderLoop() {
-        print("setupRenderLoop - ForgeMetalView")
-
-        cleanupRenderLoop()
+#if DEBUG
+        print("setupRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
+        _displayLink?.isPaused = true
+        _displayLink?.invalidate()
+        _displayLink = nil
 
         let displayLink = CADisplayLink(target: self, selector: #selector(render))
         displayLink.isPaused = _displayLinkPaused
@@ -371,49 +390,48 @@ public class MetalView: UIView {
     }
 
     @objc func didEnterBackground(_ notification: Notification) {
-        print("didEnterBackground - ForgeMetalView")
-
+#if DEBUG
+        print("didEnterBackground - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLink?.isPaused = true
     }
 
     @objc func willResignActive(_ notification: Notification) {
-        print("willResignActive - ForgeMetalView")
-
+#if DEBUG
+        print("willResignActive - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLink?.isPaused = true
     }
 
     @objc func willEnterForeground(_ notification: Notification) {
-        print("willEnterForeground - ForgeMetalView")
-
+#if DEBUG
+        print("willEnterForeground - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLink?.isPaused = _displayLinkPaused
     }
 
     private func stopRenderLoop() {
         guard _displayLink != nil else { return }
-
-        print("stopRenderLoop - ForgeMetalView")
-
-        cleanupRenderLoop()
-    }
-
-    func cleanupRenderLoop() {
-        print("cleanupRenderLoop - ForgeMetalView")
-
+#if DEBUG
+        print("stopRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLink?.isPaused = true
         _displayLink?.invalidate()
         _displayLink = nil
     }
 
     private func pauseRenderLoop() {
-        print("pauseRenderLoop - ForgeMetalView")
-
+#if DEBUG
+        print("pauseRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLinkPaused = true
         _displayLink?.isPaused = true
     }
 
     private func resumeRenderLoop() {
-        print("resumeRenderLoop - ForgeMetalView")
-
+#if DEBUG
+        print("resumeRenderLoop - ForgeMetalView: \(delegate?.id)")
+#endif
         _displayLinkPaused = false
         _displayLink?.isPaused = false
     }
@@ -480,9 +498,9 @@ public class MetalView: UIView {
 
         guard newSize.height != metalLayer.drawableSize.height ||
             newSize.width != metalLayer.drawableSize.width else { return }
-
-        print("resizeDrawable - ForgeMetalView")
-
+#if DEBUG
+        print("resizeDrawable - ForgeMetalView: \(delegate?.id)")
+#endif
         metalLayer.drawableSize = newSize
 
         delegate?.drawableResized(size: newSize, scaleFactor: newScaleFactor)

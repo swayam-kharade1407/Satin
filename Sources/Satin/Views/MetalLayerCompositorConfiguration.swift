@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  MetalLayerCompositorConfiguration.swift
 //
 //
 //  Created by Reza Ali on 1/23/24.

@@ -7,8 +7,8 @@
 
 import Combine
 import MetalKit
-import simd
 import SatinCore
+import simd
 
 public final class PerspectiveCameraController: CameraController, Codable {
     public internal(set) var isEnabled = false
@@ -114,7 +114,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     private var magnifyGestureRecognizer: NSMagnificationGestureRecognizer!
     private var rollGestureRecognizer: NSRotationGestureRecognizer!
 
-#elseif os(iOS)
+#else
 
     private var rollRotation: Float = 0.0
     private var rollGestureRecognizer: UIRotationGestureRecognizer!
@@ -149,7 +149,6 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     // MARK: - Update
-
 
     public func update() {
         updateTime()
@@ -347,7 +346,6 @@ public final class PerspectiveCameraController: CameraController, Codable {
         onChangePublisher.send(self)
     }
 
-
     private func tweenZoom() -> Bool {
         guard oldState == .zooming, abs(zoom) > 0.001 else { return false }
         zoom *= zoomDamping
@@ -363,7 +361,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func tweenTranslation() -> Bool {
-        guard (oldState == .panning || oldState == .dollying), simd_length(translation) > 0.001 else { return false }
+        guard oldState == .panning || oldState == .dollying, simd_length(translation) > 0.001 else { return false }
         translation *= translationDamping
         updateTranslation()
         return true
@@ -436,8 +434,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         let xyLen = simd_length(pt)
         if xyLen < radiusOverSqrt2 {
             return simd_make_float3(pt.x, pt.y, sqrt(radius2 - xyLen * xyLen))
-        }
-        else {
+        } else {
             return simd_make_float3(pt.x, pt.y, radius2 / (2.0 * xyLen))
         }
     }
@@ -505,7 +502,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         rollGestureRecognizer = NSRotationGestureRecognizer(target: self, action: #selector(rollGesture))
         view.addGestureRecognizer(rollGestureRecognizer)
 
-#elseif os(iOS)
+#else
 
         view.isMultipleTouchEnabled = true
 
@@ -558,7 +555,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         view.removeGestureRecognizer(magnifyGestureRecognizer)
         view.removeGestureRecognizer(rollGestureRecognizer)
 
-#elseif os(iOS)
+#else
 
         view.removeGestureRecognizer(rotateGestureRecognizer)
         view.removeGestureRecognizer(rollGestureRecognizer)
@@ -624,7 +621,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func rightMouseDragged(with event: NSEvent) -> NSEvent? {
-        guard let view = view, event.window == view.window, (state == .zooming || state == .dollying) else { return event }
+        guard let view = view, event.window == view.window, state == .zooming || state == .dollying else { return event }
         let dy = Float(event.deltaY) / mouseDeltaSensitivity
         if state == .dollying {
             translation.z = dy * translationScalar
@@ -637,7 +634,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func rightMouseUp(with event: NSEvent) -> NSEvent? {
-        guard let view = view, event.window == view.window, (state == .zooming || state == .dollying) else { return event }
+        guard let view = view, event.window == view.window, state == .zooming || state == .dollying else { return event }
         state = .tweening
         return event
     }
@@ -666,7 +663,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
     private func scrollWheel(with event: NSEvent) -> NSEvent? {
         guard let view = view, event.window == view.window else { return event }
-        
+
         if event.phase == .began { state = .panning }
 
         guard state == .panning else { return event }
@@ -716,7 +713,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         gestureRecognizer.rotation = 0.0
     }
 
-    #elseif os(iOS) // MARK: - iOS Gestures
+#else
 
     @objc private func tapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
         if gestureRecognizer.state == .ended { reset() }
@@ -809,7 +806,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         }
     }
 
-    #endif
+#endif
 
     private func getTime() -> TimeInterval {
         return CFAbsoluteTimeGetCurrent()
@@ -821,4 +818,3 @@ public final class PerspectiveCameraController: CameraController, Codable {
         previousTime = currentTime
     }
 }
-

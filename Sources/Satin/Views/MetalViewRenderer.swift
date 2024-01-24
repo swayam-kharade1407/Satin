@@ -64,9 +64,16 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {}
 
-    open func cleanup() {}
+    open func cleanup() {
+#if DEBUG
+        print("\ncleanup - MetalViewRenderer: \(id)\n")
+#endif
+    }
 
     deinit {
+#if DEBUG
+        print("\ndeinit - MetalViewRenderer: \(id)\n")
+#endif
         let delta = inFlightSemaphoreWait + inFlightSemaphoreRelease
         for _ in 0 ..< delta {
             inFlightSemaphore.signal()
@@ -167,8 +174,6 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
         guard let drawable = metalLayer.nextDrawable(), let commandBuffer = preDraw() else { return }
 
-//        print("draw - MetalViewRenderer")
-
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
         renderPassDescriptor.depthAttachment.texture = depthTexture
@@ -186,7 +191,9 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
             }
 
             if depthTextureNeedsUpdate {
-                print("creating depth texture - MetalViewRenderer: \(id)")
+#if DEBUG
+                print("Creating Depth Texture - MetalViewRenderer: \(id)")
+#endif
                 let descriptor = MTLTextureDescriptor()
                 descriptor.pixelFormat = depthPixelFormat
                 descriptor.usage = .renderTarget
@@ -201,7 +208,9 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     }
 
     internal func drawableResized(size: CGSize, scaleFactor: CGFloat) {
+#if DEBUG
         print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(id)")
+#endif
         depthTextureNeedsUpdate = true
         resize(size: (Float(size.width), Float(size.height)), scaleFactor: Float(scaleFactor))
     }

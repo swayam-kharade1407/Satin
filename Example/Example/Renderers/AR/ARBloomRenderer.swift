@@ -108,22 +108,16 @@ class ARBloomRenderer: BaseRenderer {
 
     lazy var postProcessor = PostProcessor(context: Context(device, 1, colorPixelFormat), material: postMaterial)
 
-    override init() {
-        super.init()
-
-        let configuration = ARWorldTrackingConfiguration()
-        // ARBackgroundDepthRenderer supports:
-        configuration.frameSemantics = .smoothedSceneDepth
-        // and/or
-//        configuration.planeDetection = [.horizontal, .vertical]
-        // and/or
-//        configuration.sceneReconstruction = .mesh
-        session.run(configuration)
-    }
-
     override func setup() {
         metalView.preferredFramesPerSecond = 60
         
+        let configuration = ARWorldTrackingConfiguration()
+        // ARBackgroundDepthRenderer supports:
+        configuration.frameSemantics = .smoothedSceneDepth
+        // and/or configuration.planeDetection = [.horizontal, .vertical]
+        // and/or configuration.sceneReconstruction = .mesh
+        session.run(configuration)
+
         setupBlurFilter()
 
         setupSessionObservers()

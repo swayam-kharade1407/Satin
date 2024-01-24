@@ -182,10 +182,7 @@ class BufferGeometryRenderer: BaseRenderer {
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
     lazy var renderer = Satin.Renderer(context: context)
-
-#if !os(visionOS)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-#endif
 
     let interleaved = true
 
@@ -196,24 +193,21 @@ class BufferGeometryRenderer: BaseRenderer {
             setupBufferGeometry()
         }
 
-//        camera.lookAt(target: .zero)
+        camera.lookAt(target: .zero)
         renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {
         freeGeometryData(&geometryData)
-#if !os(visionOS)
         cameraController.disable()
-#endif
     }
 
     var theta: Float = 0.0
 
     override func update() {
         setupInterleavedBufferGeometry(size: 1.0 + 0.25 * sin(theta))
-#if !os(visionOS)
         cameraController.update()
-#endif
+
         theta += 0.1
 
         camera.update()

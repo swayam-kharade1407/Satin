@@ -69,18 +69,6 @@ class ARPointCloudRenderer: BaseRenderer {
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    // MARK: - Setup MTKView
-
-    // MARK: - Init
-
-    override init() {
-        super.init()
-
-        let config = ARWorldTrackingConfiguration()
-        config.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
-        session.run(config)
-    }
-
     // MARK: - Deinit
 
     override func cleanup() {
@@ -91,7 +79,11 @@ class ARPointCloudRenderer: BaseRenderer {
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-        
+
+        let config = ARWorldTrackingConfiguration()
+        config.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
+        session.run(config)
+
         mesh.instanceCount = 256 * 192
         mesh.material?.onBind = { [weak self] re in
             re.setVertexBuffer(

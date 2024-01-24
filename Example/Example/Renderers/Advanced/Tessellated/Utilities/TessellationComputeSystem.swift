@@ -16,7 +16,7 @@ import Satin
 class TessellationComputeSystem<T>: Tessellator {
     open var defines: [String: NSObject] {
         var results = [String: NSObject]()
-#if os(iOS)
+#if !os(macOS)
         results["MOBILE"] = NSString(string: "true")
 #endif
         return results

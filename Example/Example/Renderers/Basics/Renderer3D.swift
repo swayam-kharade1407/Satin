@@ -17,7 +17,7 @@ import Satin
 import SatinCore
 
 class Renderer3D: BaseRenderer {
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(0.7))
+    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
@@ -35,12 +35,22 @@ class Renderer3D: BaseRenderer {
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
+    var tween: Tween?
+
     override func setup() {
         camera.lookAt(target: .zero)
+
+        tween = Tweener
+            .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
+            .easing(.inOutBack)
+            .pingPong()
+            .loop()
+            .start()
     }
 
     deinit {
         cameraController.disable()
+        tween?.remove()
     }
 
     override func update() {

@@ -21,7 +21,7 @@ public struct ComputeConfiguration: Equatable, Hashable {
 
     func getDefines() -> [ShaderDefine] {
         var results = defines
-#if os(iOS)
+#if !os(macOS)
         results.append(ShaderDefine(key: "MOBILE", value: NSString(string: "true")))
 #endif
 

@@ -11,7 +11,7 @@ import XCTest
 
 extension Bounds: Equatable {
     public static func == (lhs: Bounds, rhs: Bounds) -> Bool {
-        return simd_equal(lhs.min, rhs.min) && simd_equal(lhs.max, rhs.max)
+        simd_equal(lhs.min, rhs.min) && simd_equal(lhs.max, rhs.max)
     }
 }
 

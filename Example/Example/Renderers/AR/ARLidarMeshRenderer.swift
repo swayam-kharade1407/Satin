@@ -44,16 +44,12 @@ class ARLidarMeshRenderer: BaseRenderer {
         .invalid
     }
 
-    override init() {
-        super.init()
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
 
         let config = ARWorldTrackingConfiguration()
         config.sceneReconstruction = .mesh
         session.run(config)
-    }
-
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
 
         renderer.colorLoadAction = .load
 

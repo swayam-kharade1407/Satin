@@ -43,8 +43,6 @@ class MatcapRenderer: BaseRenderer {
     }
 
     deinit {
-        print("removing all meshes / objects")
-        scene.removeAll()
         cameraController.disable()
     }
 

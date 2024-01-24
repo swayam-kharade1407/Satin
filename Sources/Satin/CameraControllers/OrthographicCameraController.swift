@@ -75,7 +75,7 @@ public final class OrthographicCameraController: CameraController, Codable {
     private var magnifyGestureRecognizer: NSMagnificationGestureRecognizer!
     private var rollGestureRecognizer: NSRotationGestureRecognizer!
 
-    #elseif os(iOS)
+    #else
 
     private var rollRotation: Float = 0.0
     private var rollGestureRecognizer: UIRotationGestureRecognizer!
@@ -342,7 +342,7 @@ public final class OrthographicCameraController: CameraController, Codable {
         rollGestureRecognizer = NSRotationGestureRecognizer(target: self, action: #selector(rollGesture))
         view.addGestureRecognizer(rollGestureRecognizer)
 
-        #elseif os(iOS)
+        #else
 
         view.isMultipleTouchEnabled = true
 
@@ -389,7 +389,7 @@ public final class OrthographicCameraController: CameraController, Codable {
         view.removeGestureRecognizer(magnifyGestureRecognizer)
         view.removeGestureRecognizer(rollGestureRecognizer)
 
-        #elseif os(iOS)
+        #else
 
         view.removeGestureRecognizer(rollGestureRecognizer)
         view.removeGestureRecognizer(panGestureRecognizer)
@@ -498,7 +498,7 @@ public final class OrthographicCameraController: CameraController, Codable {
         }
     }
 
-    #elseif os(iOS)
+    #else
 
     // MARK: - Gestures iOS
 

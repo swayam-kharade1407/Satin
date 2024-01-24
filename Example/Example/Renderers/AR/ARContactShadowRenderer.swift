@@ -127,13 +127,6 @@ class ARContactShadowRenderer: BaseRenderer {
         .invalid
     }
 
-    override init() {
-        super.init()
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal]
-        session.run(configuration)
-    }
-
     lazy var lights: [PointLight] = {
         var lights = [PointLight]()
         var positions: [simd_float3] = [[1, 1, 1], [-1, 1, 1], [-1, 1, -1], [1, 1, -1]]
@@ -147,7 +140,11 @@ class ARContactShadowRenderer: BaseRenderer {
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
-        
+
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal]
+        session.run(configuration)
+
         invaderContainer.add(lights)
 
         renderer.colorLoadAction = .load
@@ -158,7 +155,7 @@ class ARContactShadowRenderer: BaseRenderer {
             session: session
         )
 
-        sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
+        anchorsSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
             guard let self else { return }
             for anchor in anchors {
                 if self.invaderContainer.anchor?.identifier == anchor.identifier {

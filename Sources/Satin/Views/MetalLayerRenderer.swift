@@ -39,7 +39,7 @@ open class MetalLayerRenderer {
     public internal(set) var commandQueue: MTLCommandQueue!
 
     public var sampleCount: Int { 1 }
-    public var colorPixelFormat: MTLPixelFormat { .bgra8Unorm_srgb }
+    public var colorPixelFormat: MTLPixelFormat { .bgra8Unorm }
     public var depthPixelFormat: MTLPixelFormat { .depth32Float }
 
     private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)

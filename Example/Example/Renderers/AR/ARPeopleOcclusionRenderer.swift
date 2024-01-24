@@ -17,7 +17,7 @@ import SatinCore
 
 class ARPeopleOcclusionRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
-    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private lazy var sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsUpdatedSubscription: AnyCancellable?
 
     let boxGeometry = BoxGeometry(size: 0.1)
@@ -48,15 +48,12 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
         .invalid
     }
 
-    override init() {
-        super.init()
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
+
         let config = ARWorldTrackingConfiguration()
         config.frameSemantics = [.personSegmentationWithDepth]
         session.run(config)
-    }
-
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
 
         backgroundRenderer = ARBackgroundRenderer(
             context: Context(device, 1, colorPixelFormat),

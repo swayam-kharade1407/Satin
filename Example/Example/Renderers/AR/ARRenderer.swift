@@ -36,14 +36,11 @@ class ARRenderer: BaseRenderer {
         .invalid
     }
 
-    override init() {
-        super.init()
-        session.run(ARWorldTrackingConfiguration())
-    }
-
     override func setup() {
         metalView.preferredFramesPerSecond = 60
         
+        session.run(ARWorldTrackingConfiguration())
+
         renderer.colorLoadAction = .load
 
         boxGeometry.context = context

@@ -333,9 +333,9 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         .invalid
     }
 
-    override init() {
-        super.init()
-
+    override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         let config = ARWorldTrackingConfiguration()
         config.environmentTexturing = .manual
         config.wantsHDREnvironmentTextures = true
@@ -343,11 +343,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         config.frameSemantics = [.sceneDepth]
         config.sceneReconstruction = .mesh
         session.run(config)
-    }
 
-    override func setup() {
-        metalView.preferredFramesPerSecond = 60
-        
         model.material.delegate = self
 
         renderer.setClearColor(.zero)

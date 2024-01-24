@@ -93,7 +93,7 @@ class ARPlaneContainer: Object {
 
 class ARPlanesRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
-    private let sessionPublisher = ARSessionPublisher(session: ARSession())
+    private lazy var sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsAddedSubscription: AnyCancellable?
     private var anchorsUpdatedSubscription: AnyCancellable?
 
@@ -120,15 +120,6 @@ class ARPlanesRenderer: BaseRenderer {
 
     var backgroundRenderer: ARBackgroundRenderer!
 
-    // MARK: - Init
-
-    override init() {
-        super.init()
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
-        session.run(configuration)
-    }
-
     // MARK: - Deinit
 
     override func cleanup() {
@@ -139,6 +130,10 @@ class ARPlanesRenderer: BaseRenderer {
 
     override func setup() {
         metalView.preferredFramesPerSecond = 60
+
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
+        session.run(configuration)
         
         backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
         renderer.compile(scene: scene, camera: camera)

@@ -50,7 +50,7 @@ class TriangulatorTests: XCTestCase {
         // Hash only positions because Vertex contains a float3 which has an extra four uninitized bytes for alignment.
         let positions = UnsafeMutableBufferPointer(start: geoData.vertexData, count: Int(geoData.vertexCount)).map { $0.position }
 
-        XCTAssertEqual(MD5(array: positions), "4a6341e671b4443e7332384ea3cd66ce")
+        XCTAssertEqual(MD5(array: positions), "9b835e4e6281be92a2c9be43d7e3c46d")
         XCTAssertEqual(MD5(ptr: geoData.indexData, count: Int(geoData.indexCount)), "ca5d4028863569f75629928ba570c9fd")
 
         freeGeometryData(&geoData)

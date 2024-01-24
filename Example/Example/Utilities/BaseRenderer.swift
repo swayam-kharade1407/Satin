@@ -11,7 +11,7 @@ import Metal
 import Satin
 import Youi
 
-#if os(macOS)
+#if canImport(AppKit)
 import AppKit
 #endif
 
@@ -42,23 +42,19 @@ class BaseRenderer: MetalViewRenderer {
     var params: [String: ParameterGroup?] {
         return [:]
     }
+
 #if !os(visionOS)
     override func preDraw() -> MTLCommandBuffer? {
         updateInspector()
         return super.preDraw()
     }
 #endif
-    
+
     override func cleanup() {
         super.cleanup()
-        print("cleanup: \(String(describing: type(of: self)))")
 #if os(macOS)
         inspectorWindow?.setIsVisible(false)
 #endif
-    }
-
-    deinit {
-        print("\ndeinit: \(String(describing: type(of: self)))\n")
     }
 
 #if os(macOS)
