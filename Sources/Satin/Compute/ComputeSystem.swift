@@ -126,7 +126,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     private func setupFeatures() {
         _useDispatchThreads = false
-        if #available(macOS 10.15, iOS 13, tvOS 13, *) {
+        if #available(macOS 10.15, iOS 13, tvOS 13, visionOS 1.0, *) {
             if device.supportsFamily(.common3) || device.supportsFamily(.apple4) || device.supportsFamily(.apple5) || device.supportsFamily(.mac1) || device.supportsFamily(.mac2) {
                 _useDispatchThreads = true
             }
@@ -135,7 +135,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
             if device.supportsFeatureSet(.macOS_GPUFamily1_v1) || device.supportsFeatureSet(.macOS_GPUFamily2_v1) {
                 _useDispatchThreads = true
             }
-#elseif os(iOS)
+#elseif os(iOS) || os(tvOS) || os(visionOS)
             if device.supportsFeatureSet(.iOS_GPUFamily4_v1) || device.supportsFeatureSet(.iOS_GPUFamily5_v1) {
                 _useDispatchThreads = true
             }
@@ -200,7 +200,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     // MARK: - Dispatch
 
     internal func dispatch(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
-#if os(iOS) || os(macOS)
+#if os(macOS) || os(iOS) || os(visionOS)
         if _useDispatchThreads {
             dispatchThreads(computeEncoder, pipeline)
         } else {
@@ -211,7 +211,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 #endif
     }
 
-#if os(iOS) || os(macOS)
+#if os(macOS) || os(iOS) || os(visionOS)
     open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {}
 #endif
 

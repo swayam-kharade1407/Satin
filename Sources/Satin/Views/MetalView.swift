@@ -263,6 +263,16 @@ public class MetalView: UIView {
         metalLayer.drawableSize
     }
 
+    public var preferredFramesPerSecond: Int = 120 {
+        didSet {
+            if #available(iOS 15.0, *) {
+                _displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 120, preferred: Float(preferredFramesPerSecond))
+            } else {
+                _displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
+            }
+        }
+    }
+
     weak var delegate: MetalViewRendererDelegate?
 
     public private(set) lazy var metalLayer: CAMetalLayer = self.layer as! CAMetalLayer
@@ -340,7 +350,7 @@ public class MetalView: UIView {
 
         let displayLink = CADisplayLink(target: self, selector: #selector(render))
         displayLink.isPaused = _displayLinkPaused
-        displayLink.preferredFramesPerSecond = 120
+        displayLink.preferredFramesPerSecond = preferredFramesPerSecond
         displayLink.add(to: .main, forMode: .common)
 
         _displayLink = displayLink

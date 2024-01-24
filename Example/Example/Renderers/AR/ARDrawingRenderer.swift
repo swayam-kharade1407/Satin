@@ -46,6 +46,7 @@ class ARDrawingRenderer: BaseRenderer {
     // MARK: - Interaction
 
     var touchDown = false
+    var clearDrawing = false
 
     // MARK: - Background
 
@@ -53,10 +54,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - Init
 
-    var clear: Binding<Bool>
-
-    init(clear: Binding<Bool>) {
-        self.clear = clear
+    override init() {
         super.init()
 
         let config = ARWorldTrackingConfiguration()
@@ -73,6 +71,8 @@ class ARDrawingRenderer: BaseRenderer {
     // MARK: - Setup
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+
         mesh.drawCount = 0
         backgroundRenderer = ARBackgroundDepthRenderer(
             context: context,
@@ -98,8 +98,6 @@ class ARDrawingRenderer: BaseRenderer {
     // MARK: - Draw
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
-
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -117,7 +115,7 @@ class ARDrawingRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
     }
 
     // MARK: - Interactions
@@ -132,23 +130,27 @@ class ARDrawingRenderer: BaseRenderer {
 
     // MARK: - Updates
 
-    func updateDrawing() {
-        if clear.wrappedValue {
+    public func clear() {
+        clearDrawing = true
+    }
+
+    private func updateDrawing() {
+        if clearDrawing {
             mesh.drawCount = 0
-            clear.wrappedValue = false
+            clearDrawing = false
         } else if touchDown, let currentFrame = session.currentFrame {
             add(simd_mul(currentFrame.camera.transform, translationMatrixf(0, 0, -0.2)))
         }
     }
 
-    func add(_ transform: simd_float4x4) {
+    private func add(_ transform: simd_float4x4) {
         if let index = mesh.drawCount {
             mesh.drawCount = index + 1
             mesh.setMatrixAt(index: index, matrix: transform)
         }
     }
 
-    func updateMaterial() {
+    private func updateMaterial() {
         time = getTime() - startTime
         material.set("Time", Float(time))
     }

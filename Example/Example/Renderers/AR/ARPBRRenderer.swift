@@ -337,7 +337,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         super.init()
 
         let config = ARWorldTrackingConfiguration()
-        config.environmentTexturing = .automatic
+        config.environmentTexturing = .manual
         config.wantsHDREnvironmentTextures = true
         config.planeDetection = [.horizontal]
         config.frameSemantics = [.sceneDepth]
@@ -346,6 +346,8 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     }
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         model.material.delegate = self
 
         renderer.setClearColor(.zero)
@@ -427,8 +429,8 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
-        postProcessor.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
+        postProcessor.resize(size: size, scaleFactor: scaleFactor)
         featheredDepthMaskGenerator.resize(size)
     }
 

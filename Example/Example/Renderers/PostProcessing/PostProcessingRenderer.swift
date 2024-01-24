@@ -85,7 +85,7 @@ class PostProcessingRenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
-        postProcessor.resize(size)
+        postProcessor.resize(size: size, scaleFactor: scaleFactor)
     }
 
     func createTexture(_ label: String, _ width: Int, _ height: Int, _ pixelFormat: MTLPixelFormat, _ device: MTLDevice) -> MTLTexture? {

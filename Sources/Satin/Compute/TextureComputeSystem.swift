@@ -275,7 +275,7 @@ open class TextureComputeSystem: ComputeSystem {
         }
     }
 
-    #if os(iOS) || os(macOS)
+    #if os(macOS) || os(iOS) || os(visionOS)
     override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
         guard let texture = textures.first else { return }
 

@@ -82,7 +82,7 @@ class FXAARenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
-        fxaaProcessor.resize(size)
+        fxaaProcessor.resize(size: size, scaleFactor: scaleFactor)
         updateRenderTexture = true
         fxaaMaterial.set("Inverse Resolution", 1.0 / simd_make_float2(size.width, size.height))
     }

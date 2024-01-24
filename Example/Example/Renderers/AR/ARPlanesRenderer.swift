@@ -138,6 +138,8 @@ class ARPlanesRenderer: BaseRenderer {
     // MARK: - Setup
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
         renderer.compile(scene: scene, camera: camera)
 
@@ -187,7 +189,7 @@ class ARPlanesRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
     }
 }
 #endif

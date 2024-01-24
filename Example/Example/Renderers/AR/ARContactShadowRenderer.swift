@@ -146,6 +146,8 @@ class ARContactShadowRenderer: BaseRenderer {
     }()
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         invaderContainer.add(lights)
 
         renderer.colorLoadAction = .load
@@ -206,7 +208,7 @@ class ARContactShadowRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
     }
 
     override func cleanup() {

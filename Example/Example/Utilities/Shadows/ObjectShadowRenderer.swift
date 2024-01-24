@@ -138,7 +138,7 @@ class ObjectShadowRenderer {
 
         let size = (Float(resolution), Float(resolution))
         renderer.resize(size)
-        processor.resize(size)
+        processor.resize(size: size, scaleFactor: 1)
 
         update()
     }

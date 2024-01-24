@@ -12,10 +12,9 @@ import Satin
 import SwiftUI
 
 struct ARDrawingRendererView: View {
-    @State var clear = false
-
+    let renderer = ARDrawingRenderer()
     var body: some View {
-        SatinMetalView(renderer: ARDrawingRenderer(clear: $clear))
+        SatinMetalView(renderer: renderer)
             .ignoresSafeArea()
             .navigationTitle("AR Drawing")
             .overlay {
@@ -24,7 +23,7 @@ struct ARDrawingRendererView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            clear.toggle()
+                            renderer.clear()
                         }, label: {
                             Image(systemName: "eraser.fill")
                                 .renderingMode(.template)

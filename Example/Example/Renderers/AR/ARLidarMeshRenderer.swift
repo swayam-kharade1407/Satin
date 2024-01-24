@@ -53,6 +53,8 @@ class ARLidarMeshRenderer: BaseRenderer {
     }
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+
         renderer.colorLoadAction = .load
 
         backgroundRenderer = ARBackgroundRenderer(
@@ -107,7 +109,7 @@ class ARLidarMeshRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
     }
 
     override func cleanup() {

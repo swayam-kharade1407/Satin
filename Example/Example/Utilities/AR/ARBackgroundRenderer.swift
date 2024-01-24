@@ -117,8 +117,8 @@ class ARBackgroundRenderer: PostProcessor {
        super.update()
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
-        super.resize(size)
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+        super.resize(size: size, scaleFactor: scaleFactor)
         _updateGeometry = true
         viewportSize = CGSize(width: Int(size.width), height: Int(size.height))
     }

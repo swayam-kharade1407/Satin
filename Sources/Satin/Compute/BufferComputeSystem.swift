@@ -231,7 +231,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Dispatching
 
-    #if os(iOS) || os(macOS)
+    #if os(macOS) || os(iOS) || os(visionOS)
     override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
         let gridSize = MTLSizeMake(_count, 1, 1)
         var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup

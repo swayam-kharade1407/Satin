@@ -56,6 +56,8 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
     }
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+
         backgroundRenderer = ARBackgroundRenderer(
             context: Context(device, 1, colorPixelFormat),
             session: session
@@ -126,8 +128,8 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
-        compositor.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
+        compositor.resize(size: size, scaleFactor: scaleFactor)
         matteRenderer.resize(size)
 
         _updateTextures = true

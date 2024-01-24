@@ -48,7 +48,7 @@ class ARPointCloudRenderer: BaseRenderer {
 
     // MARK: - 3D
 
-    lazy var mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.001, resolution: 2), material: PointMaterial(pipelinesURL: pipelinesURL))
+    lazy var mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.001, resolution: 1), material: PointMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
@@ -90,6 +90,8 @@ class ARPointCloudRenderer: BaseRenderer {
     // MARK: - Setup
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         mesh.instanceCount = 256 * 192
         mesh.material?.onBind = { [weak self] re in
             re.setVertexBuffer(
@@ -150,7 +152,7 @@ class ARPointCloudRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

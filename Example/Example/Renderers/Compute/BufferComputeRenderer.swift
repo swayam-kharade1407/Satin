@@ -131,7 +131,7 @@ class BufferComputeRenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
-        chromaticProcessor.resize(size)
+        chromaticProcessor.resize(size: size, scaleFactor: scaleFactor)
         _updateRenderTexture = true
     }
 

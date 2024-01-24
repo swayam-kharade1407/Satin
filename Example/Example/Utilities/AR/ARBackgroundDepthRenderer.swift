@@ -209,8 +209,8 @@ class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         )
     }
 
-    override func resize(_ size: (width: Float, height: Float)) {
-        super.resize(size)
+    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+        super.resize(size: size, scaleFactor: scaleFactor)
         depthRenderer.resize(size)
     }
 

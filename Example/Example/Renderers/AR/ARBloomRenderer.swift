@@ -83,12 +83,12 @@ class ARBloomRenderer: BaseRenderer {
 
     lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Satin.Renderer(context: context)
+    lazy var renderer = Renderer(context: context)
 
     // handles depth (lidar depth map, lidar mesh & horizontal & vertical planes)
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    lazy var bloomRenderer = Satin.Renderer(context: context)
+    lazy var bloomRenderer = Renderer(context: context)
     var bloomedScene = Object(label: "Bloomed Objects")
 
     var contentTexture: MTLTexture?
@@ -122,6 +122,8 @@ class ARBloomRenderer: BaseRenderer {
     }
 
     override func setup() {
+        metalView.preferredFramesPerSecond = 60
+        
         setupBlurFilter()
 
         setupSessionObservers()
@@ -236,9 +238,9 @@ class ARBloomRenderer: BaseRenderer {
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
-        backgroundRenderer.resize(size)
+        backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
         bloomRenderer.resize(size)
-        postProcessor.resize(size)
+        postProcessor.resize(size: size, scaleFactor: scaleFactor)
         _updateTextures = true
     }
 
