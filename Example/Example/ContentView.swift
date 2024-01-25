@@ -13,7 +13,7 @@ struct ContentView: View {
         NavigationView {
             List {
 #if os(visionOS)
-                Section(header: Text("AR")) {
+                Section(header: Text("Vision")) {
                     NavigationLink(destination: VisionsView()) {
                         Label("Immersive", systemImage: "visionpro")
                     }

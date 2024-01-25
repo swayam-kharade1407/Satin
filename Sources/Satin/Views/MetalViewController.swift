@@ -37,7 +37,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Deinit
 
     deinit {
-#if DEBUG
+#if DEBUG_VIEWS
         print("\ndeinit - MetalViewController: \(renderer.id)\n")
 #endif
         cleanupRenderer()
@@ -49,7 +49,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Load View
 
     override public func loadView() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("loadView - MetalViewController: \(self.renderer.id)")
 #endif
         view = self.metalView
@@ -59,7 +59,7 @@ public class MetalViewController: NSViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-#if DEBUG
+#if DEBUG_VIEWS
         print("viewDidLoad - MetalViewController: \(self.renderer.id)")
 #endif
         self.setupView()
@@ -73,7 +73,7 @@ public class MetalViewController: NSViewController {
 
     private func setupView() {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupView - MetalViewController: \(self.renderer.id)")
 #endif
         self.metalView.metalLayer.device = device
@@ -83,7 +83,7 @@ public class MetalViewController: NSViewController {
 
     private func setupRenderer() {
         guard let device = metalView.metalLayer.device, let queue = device.makeCommandQueue(), !renderer.isSetup else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupRenderer - MetalViewController: \(self.renderer.id)")
 #endif
         self.renderer.metalView = self.metalView
@@ -91,8 +91,7 @@ public class MetalViewController: NSViewController {
         self.renderer.commandQueue = queue
         self.renderer.setup()
         self.renderer.isSetup = true
-
-        self.updateAppearance()
+        self.renderer.appearance = getAppearance()
 
         self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
         self.metalView.delegate = self.renderer
@@ -100,17 +99,23 @@ public class MetalViewController: NSViewController {
 
     private func cleanupRenderer() {
         guard self.renderer.isSetup else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("cleanupRenderer - MetalViewController: \(self.renderer.id)")
 #endif
         self.renderer.cleanup()
         self.renderer.isSetup = false
     }
 
+    // MARK: - Appearance
+
+    private func getAppearance() -> MetalViewRenderer.Appearance {
+        UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == nil ? .light : .dark
+    }
+
     // MARK: - Tracking
 
     private func setupTracking() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupTracking - MetalViewController: \(self.renderer.id)")
 #endif
         let area = NSTrackingArea(rect: self.view.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved, .inVisibleRect], owner: self, userInfo: nil)
@@ -120,7 +125,7 @@ public class MetalViewController: NSViewController {
 
     private func removeTracking() {
         guard let trackingArea = trackingArea else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("removeTracking - MetalViewController: \(self.renderer.id)")
 #endif
         self.view.removeTrackingArea(trackingArea)
@@ -131,7 +136,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Events
 
     private func setupEvents() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupEvents - MetalViewController: \(self.renderer.id)")
 #endif
         self.metalView.allowedTouchTypes = .indirect
@@ -157,7 +162,7 @@ public class MetalViewController: NSViewController {
             }
         )
 
-        NotificationCenter.default.addObserver(
+        DistributedNotificationCenter.default.addObserver(
             self,
             selector: #selector(self.updateAppearance),
             name: Notification.Name("AppleInterfaceThemeChangedNotification"),
@@ -165,8 +170,13 @@ public class MetalViewController: NSViewController {
         )
     }
 
+    @objc func updateAppearance() {
+        guard renderer.isSetup else { return }
+        renderer.appearance = getAppearance()
+    }
+
     private func removeEvents() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("removeEvents - MetalViewController: \(self.renderer.id)")
 #endif
         if let keyDownHandler = self.keyDownHandler {
@@ -183,21 +193,6 @@ public class MetalViewController: NSViewController {
             NSEvent.removeMonitor(flagsChangedHandler)
             self.flagsChangedHandler = nil
         }
-
-        DistributedNotificationCenter.default.removeObserver(
-            self,
-            name: Notification.Name("AppleInterfaceThemeChangedNotification"),
-            object: nil
-        )
-    }
-
-    // MARK: - Appearance
-
-    @objc private func updateAppearance() {
-#if DEBUG
-        print("updateAppearance - MetalViewController: \(self.renderer.id)")
-#endif
-        self.renderer.appearance = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark" ? .dark : .light
     }
 
     // MARK: - Events
@@ -346,7 +341,7 @@ public final class MetalViewController: UIViewController {
     // MARK: - Deinit
 
     deinit {
-#if DEBUG
+#if DEBUG_VIEWS
         print("\ndeinit - MetalViewController: \(renderer.id)\n")
 #endif
         cleanupRenderer()
@@ -357,7 +352,7 @@ public final class MetalViewController: UIViewController {
     // MARK: - Load View
 
     override public func loadView() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("loadView - MetalViewController: \(self.renderer.id)")
 #endif
         view = self.metalView
@@ -377,7 +372,7 @@ public final class MetalViewController: UIViewController {
 
     private func setupView() {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupView - MetalViewController: \(self.renderer.id)")
 #endif
         self.metalView.metalLayer.device = device
@@ -388,7 +383,7 @@ public final class MetalViewController: UIViewController {
     private func setupRenderer() {
         guard let device = metalView.metalLayer.device, let queue = device.makeCommandQueue(), !renderer.isSetup
         else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupRenderer - MetalViewController: \(self.renderer.id)")
 #endif
         self.renderer.metalView = self.metalView
@@ -396,66 +391,54 @@ public final class MetalViewController: UIViewController {
         self.renderer.commandQueue = queue
         self.renderer.setup()
         self.renderer.isSetup = true
-#if !os(visionOS)
-        self.updateAppearance()
-#endif
+        self.renderer.appearance = getAppearance()
+
         self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
         self.metalView.delegate = self.renderer
     }
 
+    private func getAppearance() -> MetalViewRenderer.Appearance {
+        if self.traitCollection.userInterfaceStyle == .dark {
+            return .dark
+        }
+        else if self.traitCollection.userInterfaceStyle == .light {
+            return .light
+        }
+        else if self.traitCollection.userInterfaceStyle == .unspecified {
+            return .unspecified
+        }
+        else {
+            return .unspecified
+        }
+    }
+
     private func cleanupRenderer() {
         guard self.renderer.isSetup else { return }
-#if DEBUG
+#if DEBUG_VIEWS
         print("cleanupRenderer - MetalViewController: \(self.renderer.id)")
 #endif
         self.renderer.cleanup()
         self.renderer.isSetup = false
     }
 
+    override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        guard renderer.isSetup else { return }
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            self.renderer.appearance = getAppearance()
+        }
+        super.traitCollectionDidChange(previousTraitCollection)
+    }
+
     // MARK: - Events
 
     private func setupEvents() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("setupEvents - MetalViewController: \(self.renderer.id)")
 #endif
-#if !os(visionOS)
-        if #available(iOS 17.0, *) {
-            registerForTraitChanges([UITraitActiveAppearance.self], action: #selector(self.updateAppearance))
-        }
-#endif
     }
-
-#if !os(visionOS)
-    override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if #unavailable(iOS 17, tvOS 17) {
-            if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-                self.updateAppearance()
-            }
-        }
-    }
-#endif
-
-#if !os(visionOS)
-    @objc private func updateAppearance() {
-        guard self.renderer.isSetup else { return }
-#if DEBUG
-        print("updateAppearance - MetalViewController: \(self.renderer.id)")
-#endif
-        if self.traitCollection.userInterfaceStyle == .dark {
-            self.renderer.appearance = .dark
-        }
-        else if self.traitCollection.userInterfaceStyle == .light {
-            self.renderer.appearance = .light
-        }
-        else if self.traitCollection.userInterfaceStyle == .unspecified {
-            self.renderer.appearance = .unknown
-        }
-    }
-#endif
 
     private func removeEvents() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("removeEvents - MetalViewController: \(self.renderer.id)")
 #endif
     }

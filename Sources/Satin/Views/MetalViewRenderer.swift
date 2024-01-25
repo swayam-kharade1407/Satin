@@ -15,6 +15,12 @@ import UIKit
 #endif
 
 open class MetalViewRenderer: MetalViewRendererDelegate {
+    public enum Appearance {
+        case unspecified
+        case dark
+        case light
+    }
+
     open var id: String {
         var result = String(describing: type(of: self)).replacingOccurrences(of: "Renderer", with: "")
         if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != result {
@@ -33,19 +39,11 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     public internal(set) var isSetup = false
 
-#if !os(visionOS)
-    public enum Appearance {
-        case unknown
-        case dark
-        case light
-    }
-
-    public internal(set) var appearance: Appearance = .unknown {
+    public internal(set) var appearance: Appearance = .unspecified {
         didSet {
-            updateAppearance()
+            self.updateAppearance()
         }
     }
-#endif
 
     open var sampleCount: Int { 1 }
     open var colorPixelFormat: MTLPixelFormat { .bgra8Unorm }
@@ -64,14 +62,16 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {}
 
+    open func updateAppearance() {}
+
     open func cleanup() {
-#if DEBUG
+#if DEBUG_VIEWS
         print("\ncleanup - MetalViewRenderer: \(id)\n")
 #endif
     }
 
     deinit {
-#if DEBUG
+#if DEBUG_VIEWS
         print("\ndeinit - MetalViewRenderer: \(id)\n")
 #endif
         let delta = inFlightSemaphoreWait + inFlightSemaphoreRelease
@@ -81,10 +81,6 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     }
 
     open func resize(size: (width: Float, height: Float), scaleFactor: Float) {}
-
-#if !os(visionOS)
-    open func updateAppearance() {}
-#endif
 
     open func preDraw() -> MTLCommandBuffer? {
         _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
@@ -191,7 +187,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
             }
 
             if depthTextureNeedsUpdate {
-#if DEBUG
+#if DEBUG_VIEWS
                 print("Creating Depth Texture - MetalViewRenderer: \(id)")
 #endif
                 let descriptor = MTLTextureDescriptor()
@@ -208,7 +204,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     }
 
     internal func drawableResized(size: CGSize, scaleFactor: CGFloat) {
-#if DEBUG
+#if DEBUG_VIEWS
         print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(id)")
 #endif
         depthTextureNeedsUpdate = true
