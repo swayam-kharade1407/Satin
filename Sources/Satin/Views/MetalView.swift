@@ -11,7 +11,27 @@ import AppKit
 import Foundation
 import QuartzCore
 
+public protocol DragDelegate: AnyObject {
+    func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation
+    func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation
+    func draggingEnded(_ sender: NSDraggingInfo)
+    func draggingExited(_ sender: NSDraggingInfo?)
+    func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool
+    func performDragOperation(_ sender: NSDraggingInfo) -> Bool
+    func concludeDragOperation(_ sender: NSDraggingInfo?)
+}
+
+public protocol TouchDelegate: AnyObject {
+    func touchesBegan(with event: NSEvent)
+    func touchesMoved(with event: NSEvent)
+    func touchesEnded(with event: NSEvent)
+    func touchesCancelled(with event: NSEvent)
+}
+
 public class MetalView: NSView, CALayerDelegate {
+    public weak var dragDelegate: DragDelegate?
+    public weak var touchDelegate: TouchDelegate?
+
     public var isPaused: Bool {
         get {
             _displayLinkPaused
@@ -82,6 +102,9 @@ public class MetalView: NSView, CALayerDelegate {
 #if DEBUG_VIEWS
         print("\n\n\nconfigure - ForgeMetalView: \(delegate?.id)")
 #endif
+        allowedTouchTypes = [.indirect]
+        wantsRestingTouches = false
+
         autoresizingMask = [.width, .height]
 
         wantsLayer = true
@@ -122,6 +145,18 @@ public class MetalView: NSView, CALayerDelegate {
     }
 
     override public func draw(_ dirtyRect: NSRect) {
+        render()
+    }
+
+    public override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+#if DEBUG_VIEWS
+        print("viewDidChangeEffectiveAppearance - ForgeMetalView: \(metalView.effectiveAppearance.name)")
+#endif
+        if let metalViewController = nextResponder as? MetalViewController {
+            metalViewController.updateAppearance()
+        }
+        
         render()
     }
 
@@ -246,6 +281,72 @@ public class MetalView: NSView, CALayerDelegate {
         delegate?.drawableResized(size: newSize, scaleFactor: newScaleFactor)
 
         render()
+    }
+
+    // MARK: - Drag & Drop
+
+    override public func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        if let dd = dragDelegate {
+            return dd.draggingEntered(sender)
+        }
+        return []
+    }
+
+    override public func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        if let dd = dragDelegate {
+            return dd.draggingUpdated(sender)
+        }
+        return []
+    }
+
+    override public func draggingEnded(_ sender: NSDraggingInfo) {
+        dragDelegate?.draggingEnded(sender)
+    }
+
+    override public func draggingExited(_ sender: NSDraggingInfo?) {
+        dragDelegate?.draggingExited(sender)
+    }
+
+    override public func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        if let dd = dragDelegate {
+            return dd.prepareForDragOperation(sender)
+        }
+        return false
+    }
+
+    override public func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        if let dd = dragDelegate {
+            return dd.performDragOperation(sender)
+        }
+        return false
+    }
+
+    override public func concludeDragOperation(_ sender: NSDraggingInfo?) {
+        dragDelegate?.concludeDragOperation(sender)
+    }
+
+    // MARK: - Mouse
+
+    override public func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        return true
+    }
+
+    // MARK: - Touches
+
+    override public func touchesBegan(with event: NSEvent) {
+        touchDelegate?.touchesBegan(with: event)
+    }
+
+    override public func touchesMoved(with event: NSEvent) {
+        touchDelegate?.touchesMoved(with: event)
+    }
+
+    override public func touchesEnded(with event: NSEvent) {
+        touchDelegate?.touchesEnded(with: event)
+    }
+
+    override public func touchesCancelled(with event: NSEvent) {
+        touchDelegate?.touchesCancelled(with: event)
     }
 }
 

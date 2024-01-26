@@ -109,7 +109,7 @@ public class MetalViewController: NSViewController {
     // MARK: - Appearance
 
     private func getAppearance() -> MetalViewRenderer.Appearance {
-        UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == nil ? .light : .dark
+        metalView.effectiveAppearance.name == NSAppearance.Name.darkAqua ? .dark : .light
     }
 
     // MARK: - Tracking
@@ -168,6 +168,12 @@ public class MetalViewController: NSViewController {
             name: Notification.Name("AppleInterfaceThemeChangedNotification"),
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(self.updateAppearance),
+            name: Notification.Name("AppleInterfaceStyle"),
+            object: nil
+        )
     }
 
     @objc func updateAppearance() {
@@ -179,6 +185,10 @@ public class MetalViewController: NSViewController {
 #if DEBUG_VIEWS
         print("removeEvents - MetalViewController: \(self.renderer.id)")
 #endif
+
+        NotificationCenter.default.removeObserver(self)
+        DistributedNotificationCenter.default.removeObserver(self)
+
         if let keyDownHandler = self.keyDownHandler {
             NSEvent.removeMonitor(keyDownHandler)
             self.keyDownHandler = nil
