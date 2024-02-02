@@ -31,7 +31,7 @@ public extension Rectangle {
     }
 
     var corners: [simd_float2] {
-        return [
+        [
             simd_make_float2(max.x, max.y), // 0
             simd_make_float2(min.x, max.y), // 1
             simd_make_float2(max.x, min.y), // 2
@@ -39,15 +39,19 @@ public extension Rectangle {
         ]
     }
 
-    func contains(rectangle: Rectangle) {
+    func contains(rectangle: Rectangle) -> Bool {
         rectangleContainsRectangle(self, rectangle)
     }
 
     func intersects(rectangle: Rectangle) -> Bool {
-        return rectangleIntersectsRectangle(self, rectangle)
+        rectangleIntersectsRectangle(self, rectangle)
     }
 
     func contains(point: simd_float2) -> Bool {
-        return rectangleContainsPoint(self, point)
+        rectangleContainsPoint(self, point)
+    }
+
+    mutating func expand(point: inout simd_float2) {
+        expandRectangleInPlace(&self, &point)
     }
 }
