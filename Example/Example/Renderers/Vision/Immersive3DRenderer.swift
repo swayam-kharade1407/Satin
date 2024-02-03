@@ -21,6 +21,7 @@ class Immersive3DRenderer: MetalLayerRenderer {
     lazy var renderer = Renderer(context: context)
 
     override func setup() {
+        mesh.position.y = 1
         mesh.position.z = -1
     }
 
@@ -30,7 +31,7 @@ class Immersive3DRenderer: MetalLayerRenderer {
         scene.update()
     }
 
-    override func drawView(frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
+    override func drawView(view: Int, frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

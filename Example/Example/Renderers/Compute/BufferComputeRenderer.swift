@@ -8,11 +8,6 @@
 
 import Metal
 import MetalKit
-
-#if os(visionOS)
-import CompositorServices
-#endif
-
 import Satin
 
 class BufferComputeRenderer: BaseRenderer {
@@ -45,9 +40,7 @@ class BufferComputeRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device, sampleCount, colorPixelFormat, .invalid, .invalid)
-#if !os(visionOS)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-#endif
     lazy var renderer = Renderer(context: context)
 
     var startTime: CFAbsoluteTime = 0.0
@@ -77,9 +70,7 @@ class BufferComputeRenderer: BaseRenderer {
     }
 
     deinit {
-#if !os(visionOS)
         cameraController.disable()
-#endif
     }
 
     override func update() {
@@ -89,9 +80,7 @@ class BufferComputeRenderer: BaseRenderer {
         time *= 0.25
         let radius: Float = 10.0 * sin(time * 0.5) * cos(time)
         camera.position = simd_make_float3(radius * sin(time), radius * cos(time), 100.0)
-#if !os(visionOS)
         cameraController.update()
-#endif
         camera.update()
         scene.update()
     }

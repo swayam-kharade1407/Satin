@@ -159,15 +159,13 @@ open class MetalLayerRenderer {
 
     open func draw(frame: LayerRenderer.Frame, drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer) {
         for i in 0 ..< drawable.views.count {
-            let colorTexture = drawable.colorTextures[i]
-            let depthTexture = drawable.depthTextures[i]
-
             let renderPassDescriptor = MTLRenderPassDescriptor()
-            renderPassDescriptor.colorAttachments[0].texture = colorTexture
-            renderPassDescriptor.depthAttachment.texture = depthTexture
-            renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
+            renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[i]
+            renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[i]
+            renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps[i]
 
             drawView(
+                view: i,
                 frame: frame,
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
@@ -178,6 +176,7 @@ open class MetalLayerRenderer {
     }
 
     open func drawView(
+        view: Int, 
         frame: LayerRenderer.Frame,
         renderPassDescriptor: MTLRenderPassDescriptor,
         commandBuffer: MTLCommandBuffer,

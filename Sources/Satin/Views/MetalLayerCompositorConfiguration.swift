@@ -12,7 +12,7 @@ import SwiftUI
 
 public struct MetalLayerCompositorConfiguration: CompositorLayerConfiguration {
     private let renderer: MetalLayerRenderer
-    
+
     public init(renderer: MetalLayerRenderer) {
         self.renderer = renderer
     }
@@ -24,6 +24,11 @@ public struct MetalLayerCompositorConfiguration: CompositorLayerConfiguration {
         let foveationEnabled = capabilities.supportsFoveation
         configuration.isFoveationEnabled = foveationEnabled
         configuration.layout = .dedicated
+
+//        let options: LayerRenderer.Capabilities.SupportedLayoutsOptions = foveationEnabled ? [.foveationEnabled] : []
+//        let supportedLayouts = capabilities.supportedLayouts(options: options)
+//
+//        configuration.layout = supportedLayouts.contains(.layered) ? .layered : .dedicated
     }
 }
 

@@ -83,7 +83,8 @@ class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
     lazy var renderer = Renderer(context: context)
 
     override func setup() {
-        mesh.position.z = -2
+        mesh.position.y = 1
+        mesh.position.z = -1
         mesh.scale = .init(repeating: 0.25)
         mesh.cullMode = .none
 
@@ -97,7 +98,7 @@ class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
         scene.update()
     }
 
-    override func drawView(frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
+    override func drawView(view: Int, frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
