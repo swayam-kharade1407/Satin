@@ -193,6 +193,10 @@ struct ContentView: View {
                         Label("Ray Marching", systemImage: "camera.metering.multispot")
                     }
 
+                    NavigationLink(destination: MultipleViewportRendererView()) {
+                        Label("Vertex Amplification", systemImage: "rectangle.split.2x1")
+                    }
+
                     #if !os(visionOS)
                         NavigationLink(destination: TessellationRendererView()) {
                             Label("Tessellation", systemImage: "square.split.2x2")
@@ -234,7 +238,7 @@ struct ContentView: View {
             }
             .navigationTitle("Satin Examples")
 
-            MultipleViewportRendererView()
+//            MultipleViewportRendererView()
         }
     }
 }

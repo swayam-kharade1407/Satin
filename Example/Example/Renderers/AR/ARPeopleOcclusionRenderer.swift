@@ -29,7 +29,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
 
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.001, far: 100.0)
     lazy var renderer: Renderer = {
-        let renderer = Renderer(context: Context(device, sampleCount, colorPixelFormat, .depth32Float))
+        let renderer = Renderer(context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float))
         renderer.setClearColor(.zero)
         renderer.colorLoadAction = .clear
         renderer.depthLoadAction = .clear
@@ -60,7 +60,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
         metalView.preferredFramesPerSecond = 60
 
         backgroundRenderer = ARBackgroundRenderer(
-            context: Context(device, 1, colorPixelFormat),
+            context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
             session: session
         )
 
@@ -73,7 +73,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
         )
 
         compositor = ARCompositor(
-            context: Context(device, 1, colorPixelFormat),
+            context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
             session: session
         )
 

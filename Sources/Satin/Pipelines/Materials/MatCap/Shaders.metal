@@ -8,14 +8,17 @@ typedef struct {
     float4 color; // color
 } MatCapUniforms;
 
-vertex MatCapVertexData matCapVertex(Vertex in [[stage_in]],
-                                     // inject instancing args
-                                     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
+vertex MatCapVertexData matCapVertex
+(
+    Vertex in [[stage_in]],
+    // inject instancing args
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
 #if INSTANCING
-    const float4x4 modelViewMatrix = vertexUniforms.viewMatrix * instanceUniforms[instanceID].modelMatrix;
+    const float4x4 modelViewMatrix = vertexUniforms[amp_id].viewMatrix * instanceUniforms[instanceID].modelMatrix;
 #else
-    const float4x4 modelViewMatrix = vertexUniforms.modelViewMatrix;
+    const float4x4 modelViewMatrix = vertexUniforms[amp_id].modelViewMatrix;
 #endif
 
     const float4 screenSpaceNormal = modelViewMatrix * float4(in.normal, 0.0);
@@ -23,7 +26,7 @@ vertex MatCapVertexData matCapVertex(Vertex in [[stage_in]],
     const float3 eye = normalize(worldPosition.xyz);
 
     MatCapVertexData out;
-    out.position = vertexUniforms.projectionMatrix * worldPosition;
+    out.position = vertexUniforms[amp_id].projectionMatrix * worldPosition;
     out.eye = eye;
     out.normal = screenSpaceNormal.xyz;
     return out;

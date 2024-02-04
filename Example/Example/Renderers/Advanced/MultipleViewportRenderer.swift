@@ -14,95 +14,162 @@ import Satin
 import SatinCore
 
 class MultipleViewportRenderer: BaseRenderer {
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(0.7))
+    class ViewportMaterial: SourceMaterial {}
+    class AmplificationMaterial: SourceMaterial {}
 
-    var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
-        mesh.label = "Intersection Mesh"
-        mesh.renderPass = 1
-        mesh.visible = false
-        return mesh
-    }()
+    override var depthPixelFormat: MTLPixelFormat { .invalid }
 
+    lazy var material = ViewportMaterial(pipelinesURL: pipelinesURL)
+    lazy var mesh = Mesh(geometry: QuadGeometry(size: 2.0), material: material)
     lazy var startTime = getTime()
-    lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat)
     lazy var renderer = Renderer(context: context)
 
-    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+    var camera = OrthographicCamera()
 
-    var tween: Tween?
+    lazy var subContext = Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float, vertexAmplificationCount: 2)
+    lazy var subMesh = Mesh(geometry: IcosahedronGeometry(size: 0.5), material: BasicDiffuseMaterial(1.0))
+//    lazy var subMesh = Mesh(geometry: IcosahedronGeometry(size: 0.5), material: AmplificationMaterial(pipelinesURL: pipelinesURL))
+    lazy var subScene = Object(label: "Subscene", [grid, axisMesh, subMesh])
+    lazy var subRenderer = Renderer(context: subContext)
+
+    var _updateTextures = true
+    var subColorTexture: MTLTexture?
+    var subDepthTexture: MTLTexture?
+    var subRenderPassDescriptor = MTLRenderPassDescriptor()
+
+    lazy var subCamera0 = PerspectiveCamera(position: [0, 4, 4], near: 0.01, far: 100.0, fov: 30)
+    lazy var subCamera1 = PerspectiveCamera(position: [4, 4, 4], near: 0.01, far: 100.0, fov: 30)
+    var subViewport = MTLViewport()
+
+    lazy var grid: Object = {
+        let object = Object()
+        let material = BasicColorMaterial(color: simd_make_float4(1.0, 1.0, 1.0, 1.0))
+        let intervals = 5
+        let intervalsf = Float(intervals)
+        let geometryX = CapsuleGeometry(radius: 0.005, height: intervalsf, axis: .x)
+        let geometryZ = CapsuleGeometry(radius: 0.005, height: intervalsf, axis: .z)
+        for i in 0 ... intervals {
+            let fi = Float(i)
+            let meshX = Mesh(geometry: geometryX, material: material)
+            let offset = remap(fi, 0.0, Float(intervals), -intervalsf * 0.5, intervalsf * 0.5)
+            meshX.position = [0.0, 0.0, offset]
+            object.add(meshX)
+
+            let meshZ = Mesh(geometry: geometryZ, material: material)
+            meshZ.position = [offset, 0.0, 0.0]
+            object.add(meshZ)
+        }
+        return object
+    }()
+
+    lazy var axisMesh: Object = {
+        let object = Object()
+        let intervals = 5
+        let intervalsf = Float(intervals)
+        let radius = Float(0.005)
+        let height = intervalsf
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .x), material: BasicColorMaterial(color: simd_make_float4(1.0, 0.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(color: simd_make_float4(0.0, 1.0, 0.0, 1.0))))
+        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(color: simd_make_float4(0.0, 0.0, 1.0, 1.0))))
+        return object
+    }()
 
     override func setup() {
-        camera.lookAt(target: .zero)
+        subCamera0.lookAt(target: .zero)
+        subCamera0.update()
 
-#if os(visionOS)
-        renderer.setClearColor(.zero)
-        metalView.backgroundColor = .clear
-#endif
-
-        tween = Tweener
-            .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
-            .easing(.inOutBack)
-            .pingPong()
-            .loop()
-            .start()
-    }
-
-    deinit {
-        cameraController.disable()
-        tween?.remove()
+        subCamera1.lookAt(target: .zero)
+        subCamera1.update()
     }
 
     override func update() {
-        cameraController.update()
         camera.update()
-
-        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
-        scene.update()
+        mesh.update()
+        subScene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+        if _updateTextures {
+            setupTextures()
+        }
+
+        subRenderer.draw(
+            renderPassDescriptor: subRenderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: subScene,
+            cameras: [subCamera0, subCamera1],
+            viewports: [subViewport, subViewport]
+        )
+
+        material.set(subColorTexture, index: FragmentTextureIndex.Custom0)
+
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
-            scene: scene,
+            scene: mesh,
             camera: camera
         )
     }
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
-        camera.aspect = size.width / size.height
         renderer.resize(size)
+        _updateTextures = true
     }
 
-#if os(macOS)
-    override func mouseDown(with event: NSEvent) {
-        intersect(camera: camera, coordinate: normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size))
+    func setupTextures() {
+        let halfWidth = renderer.size.width / 2
+        let height = renderer.size.height
+
+        subColorTexture = createTextureArray(
+            label: "Color Texture",
+            width: Int(halfWidth),
+            height: Int(height),
+            arrayLength: subContext.vertexAmplificationCount,
+            pixelFormat: subContext.colorPixelFormat,
+            device: device
+        )
+
+        subDepthTexture = createTextureArray(
+            label: "Depth Texture",
+            width: Int(halfWidth),
+            height: Int(height),
+            arrayLength: subContext.vertexAmplificationCount,
+            pixelFormat: subContext.depthPixelFormat,
+            device: device
+        )
+
+        subRenderPassDescriptor.colorAttachments[0].texture = subColorTexture
+        subRenderPassDescriptor.depthAttachment.texture = subDepthTexture
+        subRenderPassDescriptor.renderTargetArrayLength = subContext.vertexAmplificationCount
+
+        subViewport = MTLViewport(originX: 0, originY: 0, width: Double(halfWidth), height: Double(height), znear: 0, zfar: 1)
+        subRenderer.resize((halfWidth, height))
+        subCamera0.aspect = halfWidth / height
+        subCamera1.aspect = halfWidth / height
+
+        _updateTextures = false
     }
 
-#elseif os(iOS)
-    override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
-        if let first = touches.first {
-            intersect(camera: camera, coordinate: normalizePoint(first.location(in: metalView), metalView.frame.size))
-        }
-    }
-#endif
-
-    func intersect(camera: Camera, coordinate: simd_float2) {
-        let results = raycast(camera: camera, coordinate: coordinate, object: scene)
-        if let result = results.first {
-            intersectionMesh.position = result.position
-            intersectionMesh.visible = true
-        }
+    func updateTextures() {
+        guard _updateTextures else { return }
+        setupTextures()
     }
 
-    func normalizePoint(_ point: CGPoint, _ size: CGSize) -> simd_float2 {
-#if os(macOS)
-        return 2.0 * simd_make_float2(Float(point.x / size.width), Float(point.y / size.height)) - 1.0
-#else
-        return 2.0 * simd_make_float2(Float(point.x / size.width), 1.0 - Float(point.y / size.height)) - 1.0
-#endif
+    func createTextureArray(label: String, width: Int, height: Int, arrayLength: Int, pixelFormat: MTLPixelFormat, device: MTLDevice) -> MTLTexture? {
+        guard width > 0, height > 0 else { return nil }
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = pixelFormat
+        descriptor.width = width
+        descriptor.height = height
+        descriptor.sampleCount = 1
+        descriptor.textureType = .type2DArray
+        descriptor.arrayLength = arrayLength
+        descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
+        descriptor.storageMode = .private
+        descriptor.resourceOptions = .storageModePrivate
+        guard let texture = device.makeTexture(descriptor: descriptor) else { return nil }
+        texture.label = label
+        return texture
     }
 }

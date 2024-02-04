@@ -11,9 +11,14 @@ typedef struct {
     float pointSize [[point_size]];
 } CustomVertexData;
 
-vertex CustomVertexData basicPointVertex(Vertex in [[stage_in]],
-                                         // inject instancing args
-                                         constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]], constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
+vertex CustomVertexData basicPointVertex
+(
+    Vertex in [[stage_in]],
+    // inject instancing args
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
+    constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]
+)
 {
 
     const float4 position = float4(in.position, 1.0);
@@ -21,9 +26,9 @@ vertex CustomVertexData basicPointVertex(Vertex in [[stage_in]],
     CustomVertexData out;
 #if INSTANCING
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
-    out.position = vertexUniforms.viewProjectionMatrix * modelMatrix * position;
+    out.position = vertexUniforms[amp_id].viewProjectionMatrix * modelMatrix * position;
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * position;
+    out.position = vertexUniforms[amp_id].modelViewProjectionMatrix * position;
 #endif
     out.pointSize = uniforms.pointSize * uniforms.contentScale;
     return out;

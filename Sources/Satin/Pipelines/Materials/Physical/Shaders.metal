@@ -31,25 +31,28 @@ typedef struct {
 #endif
 } CustomVertexData;
 
-vertex CustomVertexData physicalVertex(
+vertex CustomVertexData physicalVertex
+(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant PhysicalUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
+    constant PhysicalUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]],
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
+)
 {
 #if defined(INSTANCING)
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
 #else
-    const float3x3 normalMatrix = vertexUniforms.normalMatrix;
-    const float4x4 modelMatrix = vertexUniforms.modelMatrix;
+    const float3x3 normalMatrix = vertexUniforms[amp_id].normalMatrix;
+    const float4x4 modelMatrix = vertexUniforms[amp_id].modelMatrix;
 #endif
 
     const float4 position = float4(in.position, 1.0);
     const float4 worldPosition = modelMatrix * position;
     CustomVertexData out;
-    out.position = vertexUniforms.viewProjectionMatrix * worldPosition;
+    out.position = vertexUniforms[amp_id].viewProjectionMatrix * worldPosition;
 #if defined(HAS_TEXCOORD)
     out.texcoord = in.texcoord;
 #endif
@@ -68,7 +71,7 @@ vertex CustomVertexData physicalVertex(
 #endif
 
     out.worldPosition = worldPosition.xyz;
-    out.cameraPosition = vertexUniforms.worldCameraPosition.xyz;
+    out.cameraPosition = vertexUniforms[amp_id].worldCameraPosition.xyz;
 #if defined(HAS_TRANSMISSION)
     float3 modelScale;
     modelScale.x = length(modelMatrix[0].xyz);

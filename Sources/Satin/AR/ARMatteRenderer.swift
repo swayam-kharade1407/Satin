@@ -33,13 +33,12 @@ public class ARMatteRenderer {
         self.device = device
         self.session = session
         self.matteGenerator = ARMatteGenerator(device: device, matteResolution: matteResolution)
-        self.renderer = Renderer(context: Context(device, 1, .r32Float, .depth32Float))
+        self.renderer = Renderer(context: Context(device: device, sampleCount: 1, colorPixelFormat: .r32Float, depthPixelFormat: .depth32Float))
         renderer.setClearColor(.zero)
         renderer.label = "AR Matte Renderer"
 
         mesh.material = material
         material.set("Near Far Delta", [near, far, far - near])
-        renderer.compile(scene: mesh, camera: camera)
 
         NotificationCenter.default.addObserver(self, selector: #selector(ARMatteRenderer.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }

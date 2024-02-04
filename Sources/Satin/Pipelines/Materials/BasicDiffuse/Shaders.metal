@@ -17,25 +17,27 @@ vertex DiffuseVertexData basicDiffuseVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
+)
 {
     const float4 position = float4(in.position, 1.0);
 #if INSTANCING
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
 
-    const float4 viewPosition = vertexUniforms.viewMatrix * modelMatrix * position;
+    const float4 viewPosition = vertexUniforms[amp_id].viewMatrix * modelMatrix * position;
     const float3 normal = normalMatrix * in.normal;
 #else
-    const float4 viewPosition = vertexUniforms.modelViewMatrix * position;
-    const float3 normal = vertexUniforms.normalMatrix * in.normal;
+    const float4 viewPosition = vertexUniforms[amp_id].modelViewMatrix * position;
+    const float3 normal = vertexUniforms[amp_id].normalMatrix * in.normal;
 #endif
 
-    const float4 screenSpaceNormal = vertexUniforms.viewMatrix * float4(normal, 0.0);
+    const float4 screenSpaceNormal = vertexUniforms[amp_id].viewMatrix * float4(normal, 0.0);
 
     DiffuseVertexData out;
     out.viewPosition = viewPosition.xyz;
-    out.position = vertexUniforms.projectionMatrix * viewPosition;
+    out.position = vertexUniforms[amp_id].projectionMatrix * viewPosition;
     out.normal = screenSpaceNormal.xyz;
 
     // inject shadow vertex calc

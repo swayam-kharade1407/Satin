@@ -79,8 +79,6 @@ class ARDrawingRenderer: BaseRenderer {
             near: camera.near,
             far: camera.far
         )
-
-        renderer.compile(scene: scene, camera: camera)
     }
 
     // MARK: - Update

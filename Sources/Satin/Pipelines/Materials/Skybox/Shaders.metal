@@ -13,14 +13,18 @@ typedef struct {
     float3 texcoord;
 } SkyVertexData;
 
-vertex SkyVertexData skyboxVertex(Vertex v [[stage_in]],
-                                  // inject instancing args
-                                  constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
+vertex SkyVertexData skyboxVertex
+(
+    Vertex v [[stage_in]],
+    // inject instancing args
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
+)
 {
 #if INSTANCING
-    const float4x4 modelViewProjectionMatrix = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix;
+    const float4x4 modelViewProjectionMatrix = vertexUniforms[amp_id].viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix;
 #else
-    const float4x4 modelViewProjectionMatrix = vertexUniforms.modelViewProjectionMatrix;
+    const float4x4 modelViewProjectionMatrix = vertexUniforms[amp_id].modelViewProjectionMatrix;
 #endif
 
     const float4 position = float4(v.position, 1.0);

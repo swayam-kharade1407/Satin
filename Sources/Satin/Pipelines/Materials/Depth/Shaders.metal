@@ -14,20 +14,23 @@ typedef struct {
     bool color;  // toggle
 } DepthUniforms;
 
-vertex DepthVertexData depthVertex(
+vertex DepthVertexData depthVertex
+(
     Vertex v [[stage_in]],
     // inject instancing args
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant DepthUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
+    constant DepthUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]
+)
 {
 #if INSTANCING
-    const float4 position = vertexUniforms.viewMatrix * instanceUniforms[instanceID].modelMatrix * float4(v.position, 1.0);
+    const float4 position = vertexUniforms[amp_id].viewMatrix * instanceUniforms[instanceID].modelMatrix * float4(v.position, 1.0);
 #else
-    const float4 position = vertexUniforms.modelViewMatrix * float4(v.position, 1.0);
+    const float4 position = vertexUniforms[amp_id].modelViewMatrix * float4(v.position, 1.0);
 #endif
     const float z = position.z;
 
-    const float4x4 projection = vertexUniforms.projectionMatrix;
+    const float4x4 projection = vertexUniforms[amp_id].projectionMatrix;
     const float c = projection[2].z;
     const float d = projection[3].z;
 

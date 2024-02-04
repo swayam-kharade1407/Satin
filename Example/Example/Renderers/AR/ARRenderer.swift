@@ -26,7 +26,7 @@ class ARRenderer: BaseRenderer {
 
     private var scene = Object(label: "Scene")
 
-    private lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
+    private lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float)
     private lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     private lazy var renderer = Renderer(context: context)
 
@@ -51,7 +51,7 @@ class ARRenderer: BaseRenderer {
         boxMaterial.context = context
 
         backgroundRenderer = ARBackgroundRenderer(
-            context: Context(device, 1, colorPixelFormat),
+            context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
             session: session
         )
 

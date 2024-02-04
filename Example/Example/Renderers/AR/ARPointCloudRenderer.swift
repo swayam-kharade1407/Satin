@@ -99,8 +99,6 @@ class ARPointCloudRenderer: BaseRenderer {
             near: camera.near,
             far: camera.far
         )
-
-        renderer.compile(scene: scene, camera: camera)
     }
 
     override func update() {

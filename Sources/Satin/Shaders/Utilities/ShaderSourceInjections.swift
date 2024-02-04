@@ -203,7 +203,7 @@ public func injectShadowVertexCalc(source: inout String, receiveShadow: Bool, sh
                 #if defined(INSTANCING)
                 out.shadowCoord\(i) = shadowMatrices[\(i)] * instanceUniforms[instanceID].modelMatrix * float4(in.position.xyz, 1.0);\n
                 #else
-                out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms.modelMatrix * float4(in.position.xyz, 1.0);\n
+                out.shadowCoord\(i) = shadowMatrices[\(i)] * vertexUniforms[amp_id].modelMatrix * float4(in.position.xyz, 1.0);\n
                 #endif\n\n
                 """
         }

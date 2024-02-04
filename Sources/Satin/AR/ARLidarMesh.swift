@@ -46,7 +46,7 @@ public class ARLidarMesh: Object, Renderable {
         return false
     }
 
-    var vertexUniforms: VertexUniformBuffer?
+    public var vertexUniforms: VertexUniformBuffer?
 
     public var material: Material?
     public var materials: [Satin.Material] {
@@ -106,7 +106,7 @@ public class ARLidarMesh: Object, Renderable {
 
     func setupUniforms() {
         guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(device: context.device)
+        vertexUniforms = VertexUniformBuffer(context: context)
     }
 
     required init(from decoder: Decoder) throws {
@@ -120,10 +120,10 @@ public class ARLidarMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override public func update(camera: Camera, viewport: simd_float4) {
+    override public func update(camera: Camera, viewport: simd_float4, index: Int) {
         if let meshAnchor = meshAnchor { localMatrix = meshAnchor.transform }
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
-        super.update(camera: camera, viewport: viewport)
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(camera: camera, viewport: viewport, index: index)
     }
 
     // MARK: - Draw

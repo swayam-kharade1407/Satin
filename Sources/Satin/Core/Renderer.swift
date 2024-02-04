@@ -147,10 +147,7 @@ open class Renderer {
         }
     }
 
-    // fatal (not implemented yet)
-    // renderEncoder.setViewports(viewports)
     // https://developer.apple.com/documentation/metal/render_passes/improving_rendering_performance_with_vertex_amplification?language=objc
-
     // https://developer.apple.com/documentation/metal/render_passes/rendering_to_multiple_viewports_in_a_draw_command?language=objc
 
     public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil) {
@@ -163,7 +160,7 @@ open class Renderer {
         )
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport])
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: UnsafePointer<MTLVertexAmplificationViewMapping>? = nil)
     {
         let simd_viewports = viewports.map(\.float4)
         update(
@@ -326,6 +323,24 @@ open class Renderer {
                     renderEncoder.pushDebugGroup("Pass \(pass)")
 #endif
                     renderEncoder.setViewports(viewports)
+
+                    if context.vertexAmplificationCount > 1 {
+                        if viewMappings == nil {
+                            let mappings = context.vertexAmplificationCount
+                            var maps = [MTLVertexAmplificationViewMapping]()
+                            maps.reserveCapacity(mappings)
+
+                            for i in 0..<UInt32(mappings) {
+                                var mapping = MTLVertexAmplificationViewMapping()
+                                mapping.renderTargetArrayIndexOffset = i
+                                mapping.viewportArrayIndexOffset = i
+                                maps.append(mapping)
+                            }
+                            renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: maps)
+                        } else {
+                            renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: viewMappings)
+                        }
+                    }
 
                     encode(
                         renderEncoder: renderEncoder,

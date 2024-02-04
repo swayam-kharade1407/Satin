@@ -7,16 +7,19 @@ typedef struct {
     float2 texcoord;
 } CustomVertexData;
 
-vertex CustomVertexData textVertex(
+vertex CustomVertexData textVertex
+(
     Vertex in [[stage_in]],
-    constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
+    ushort amp_id [[amplification_id]],
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
+)
 {
     CustomVertexData out;
 
 #if INSTANCING
-    out.position = vertexUniforms.viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
+    out.position = vertexUniforms[amp_id].viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
 #else
-    out.position = vertexUniforms.modelViewProjectionMatrix * float4(in.position, 1.0);
+    out.position = vertexUniforms[amp_id].modelViewProjectionMatrix * float4(in.position, 1.0);
 #endif
 
     out.texcoord = in.texcoord;

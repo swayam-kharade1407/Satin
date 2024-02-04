@@ -17,7 +17,7 @@ import Satin
 import SatinCore
 import Youi
 
-fileprivate class ARScene: Object, Environment {
+fileprivate class ARScene: Object, IBLEnvironment {
     private var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }
     private var sharedAssetsURL: URL { assetsURL.appendingPathComponent("Shared") }
     private var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
@@ -310,7 +310,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     )
 
     fileprivate lazy var scene = ARScene(label: "Scene", [modelContainer], session: session)
-    lazy var context = Context(device, sampleCount, colorPixelFormat, .depth32Float)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = Renderer(context: context)
 
@@ -324,7 +324,10 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         return material
     }()
 
-    lazy var postProcessor = PostProcessor(context: Context(device, 1, colorPixelFormat), material: postMaterial)
+    lazy var postProcessor = PostProcessor(
+        context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
+        material: postMaterial
+    )
 
     lazy var startTime = getTime()
 

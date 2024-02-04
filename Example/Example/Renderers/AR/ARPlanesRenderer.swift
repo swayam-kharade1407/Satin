@@ -135,8 +135,7 @@ class ARPlanesRenderer: BaseRenderer {
     override func setup() {
         metalView.preferredFramesPerSecond = 60
 
-        backgroundRenderer = ARBackgroundRenderer(context: Context(device, 1, colorPixelFormat), session: session)
-        renderer.compile(scene: scene, camera: camera)
+        backgroundRenderer = ARBackgroundRenderer(context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat), session: session)
 
         anchorsAddedSubscription = sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
             guard let self else { return }
