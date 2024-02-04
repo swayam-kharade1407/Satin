@@ -14,7 +14,7 @@ import Satin
 
 class TessellatedMesh: Object, Renderable {
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
-    
+
     var opaque: Bool {
         material?.blending == .disabled
     }
@@ -31,8 +31,6 @@ class TessellatedMesh: Object, Renderable {
     var lighting: Bool { material?.lighting ?? false }
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
-
-    private var vertexUniforms: VertexUniformBuffer?
 
     var drawable: Bool {
         guard material?.pipeline != nil, geometry.vertexBuffers[.Vertices] != nil else { return false }
@@ -56,6 +54,7 @@ class TessellatedMesh: Object, Renderable {
         fatalError("init(from:) has not been implemented")
     }
 
+    var vertexUniforms: VertexUniformBuffer?
     var geometry: TessellatedGeometry
     var tessellator: Tessellator
 
@@ -67,8 +66,8 @@ class TessellatedMesh: Object, Renderable {
     }
 
     override func setup() {
+        setupVertexUniforms()
         setupGeometry()
-        setupUniforms()
         setupMaterial()
         super.setup()
     }
@@ -77,6 +76,11 @@ class TessellatedMesh: Object, Renderable {
         geometry.update()
         material?.update()
         super.update()
+    }
+
+    func setupVertexUniforms() {
+        guard let context = context else { return }
+        vertexUniforms = VertexUniformBuffer(context: context)
     }
 
     func setupGeometry() {
@@ -90,11 +94,6 @@ class TessellatedMesh: Object, Renderable {
         material.context = context
     }
 
-    func setupUniforms() {
-        guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(device: context.device)
-    }
-
     // MARK: - Update
 
     override func encode(_ commandBuffer: MTLCommandBuffer) {
@@ -103,17 +102,15 @@ class TessellatedMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera, viewport: viewport)
-        geometry.update(camera: camera, viewport: viewport)
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
-        super.update(camera: camera, viewport: viewport)
+    override func update(camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(camera: camera, viewport: viewport, index: index)
     }
 
     // MARK: - Draw
 
     open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0, let vertexUniforms = vertexUniforms, let material = material, !geometry.vertexBuffers.isEmpty else { return }
+        guard instanceCount > 0, let vertexUniforms, let material, !geometry.vertexBuffers.isEmpty else { return }
 
         renderEncoderState.vertexUniforms = vertexUniforms
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)

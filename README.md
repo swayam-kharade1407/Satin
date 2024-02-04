@@ -88,7 +88,7 @@ class SimpleRenderer: MetalViewRenderer {
 
     // Forge's Renderer class provides a MTLDevice and convenience getters for the view's color pixel format,
     // depth pixel format and stencil pixel format, by default a Forge Renderer has depth
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
 
     // A Satin Renderer handles setting the Content on all the objects in the scene graph
     // and drawing the scene either to a texture or on screen

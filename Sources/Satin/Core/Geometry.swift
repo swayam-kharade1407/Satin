@@ -113,8 +113,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         updateBuffers()
     }
     
-    open func update(camera: Camera, viewport: simd_float4) {}
-    
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
     
     // MARK: - Bind

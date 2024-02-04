@@ -54,6 +54,12 @@ public func setupRenderPipelineDescriptorContext(context: Context, descriptor: i
     descriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
     descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
     descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
+
+    let vertexAmplificationCount = context.vertexAmplificationCount
+
+    if vertexAmplificationCount > 1, context.device.supportsVertexAmplificationCount(vertexAmplificationCount) {
+        descriptor.maxVertexAmplificationCount = vertexAmplificationCount
+    }
 }
 
 public func setupRenderPipelineDescriptorBlending(blending: ShaderBlending, descriptor: inout MTLRenderPipelineDescriptor) {

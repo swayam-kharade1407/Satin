@@ -25,7 +25,9 @@ public protocol Renderable {
     var cullMode: MTLCullMode { get }
     var windingOrder: MTLWinding { get }
     var triangleFillMode: MTLTriangleFillMode { get }
-    
+
+    var vertexUniforms: VertexUniformBuffer? { get }
+
     var drawable: Bool { get }
 
     var material: Material? { get set }
@@ -33,6 +35,6 @@ public protocol Renderable {
 
     var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)? { get }
 
-    func update(camera: Camera, viewport: simd_float4)
+    func update(camera: Camera, viewport: simd_float4, index: Int)
     func draw(renderEncoderState: RenderEncoderState, shadow: Bool)
 }

@@ -15,7 +15,7 @@ import Satin
 class InstancedMeshRenderer: BaseRenderer {
     // MARK: - Satin
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     var camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     var scene = Object(label: "Scene")

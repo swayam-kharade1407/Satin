@@ -8,15 +8,6 @@
         "branch" : "master",
         "revision" : "43a24736252863edfbde73e1d3754d7ecdcf46fe"
       }
-    },
-    {
-      "identity" : "youipro",
-      "kind" : "remoteSourceControl",
-      "location" : "git@github.com:Hi-Rez/YouiPro.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "32b846f918ca199aa7de2cdf73296c97cb5cb74b"
-      }
     }
   ],
   "version" : 2

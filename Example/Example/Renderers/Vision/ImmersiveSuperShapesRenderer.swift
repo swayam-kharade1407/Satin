@@ -79,8 +79,12 @@ class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
     lazy var startTime = getTime()
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.2))
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var renderer = Renderer(context: context)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
+    lazy var renderer = Renderer(context: context, clearColor: .zero)
+
+    override var layerLayout: LayerRenderer.Layout {
+        .dedicated
+    }
 
     override func setup() {
         mesh.position.y = 1

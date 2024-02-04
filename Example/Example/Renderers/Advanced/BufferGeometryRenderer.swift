@@ -45,7 +45,7 @@ class BufferGeometryMesh: Object, Renderable {
     var material: Material?
     var materials: [Material] = []
 
-    var uniforms: VertexUniformBuffer?
+    var vertexUniforms: VertexUniformBuffer?
 
     public init(label: String = "Buffer Geometry Mesh", geometry: Geometry, material: Material) {
         self.geometry = geometry
@@ -58,7 +58,7 @@ class BufferGeometryMesh: Object, Renderable {
     }
 
     override func setup() {
-        setupUniforms()
+        setupVertexUniforms()
         setupGeometry()
         setupMaterial()
         super.setup()
@@ -75,9 +75,9 @@ class BufferGeometryMesh: Object, Renderable {
         material.context = context
     }
 
-    func setupUniforms() {
+    func setupVertexUniforms() {
         guard let context = context else { return }
-        uniforms = VertexUniformBuffer(device: context.device)
+        vertexUniforms = VertexUniformBuffer(context: context)
     }
 
     override func update() {
@@ -92,15 +92,13 @@ class BufferGeometryMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4) {
-        geometry.update(camera: camera, viewport: viewport)
-        material?.update(camera: camera, viewport: viewport)
-        uniforms?.update(object: self, camera: camera, viewport: viewport)
-        super.update(camera: camera, viewport: viewport)
+    override func update(camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(camera: camera, viewport: viewport, index: index)
     }
 
     func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        renderEncoderState.vertexUniforms = uniforms
+        renderEncoderState.vertexUniforms = vertexUniforms
         material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
@@ -179,7 +177,7 @@ class BufferGeometryRenderer: BaseRenderer {
     }()
 
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
     lazy var renderer = Renderer(context: context)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
@@ -194,7 +192,6 @@ class BufferGeometryRenderer: BaseRenderer {
         }
 
         camera.lookAt(target: .zero)
-        renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {

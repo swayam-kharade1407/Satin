@@ -178,26 +178,27 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     }
 
     internal func updateDepthTexture() {
-        if depthPixelFormat != .invalid, depthTextureNeedsUpdate {
-            let width = Int(metalView.drawableSize.width)
-            let height = Int(metalView.drawableSize.height)
+        guard depthPixelFormat != .invalid, depthTextureNeedsUpdate else { return }
+        let width = Int(metalView.drawableSize.width)
+        let height = Int(metalView.drawableSize.height)
 
-            if let depthTexture, width == depthTexture.width, height == depthTexture.height {
-                depthTextureNeedsUpdate = false
-            }
+        guard width > 0, height > 0 else { return }
 
-            if depthTextureNeedsUpdate {
+        if let depthTexture, width == depthTexture.width, height == depthTexture.height {
+            depthTextureNeedsUpdate = false
+        }
+
+        if depthTextureNeedsUpdate {
 #if DEBUG_VIEWS
-                print("Creating Depth Texture - MetalViewRenderer: \(id)")
+            print("Creating Depth Texture - MetalViewRenderer: \(id)")
 #endif
-                let descriptor = MTLTextureDescriptor()
-                descriptor.pixelFormat = depthPixelFormat
-                descriptor.usage = .renderTarget
-                descriptor.width = width
-                descriptor.height = height
-                descriptor.storageMode = .private
-                depthTexture = device.makeTexture(descriptor: descriptor)
-            }
+            let descriptor = MTLTextureDescriptor()
+            descriptor.pixelFormat = depthPixelFormat
+            descriptor.usage = .renderTarget
+            descriptor.width = width
+            descriptor.height = height
+            descriptor.storageMode = .private
+            depthTexture = device.makeTexture(descriptor: descriptor)
         }
 
         depthTextureNeedsUpdate = false

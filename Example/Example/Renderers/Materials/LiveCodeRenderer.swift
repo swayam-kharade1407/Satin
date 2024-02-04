@@ -36,7 +36,7 @@ class LiveCodeRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: CustomMaterial(pipelinesURL: pipelinesURL))
     lazy var scene = Object(label: "Scene", [mesh])
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var renderer = Renderer(context: context)
 
     override var depthPixelFormat: MTLPixelFormat {

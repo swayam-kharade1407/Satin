@@ -17,7 +17,7 @@ import Satin
 class TextRenderer: BaseRenderer {
     var scene = Object()
 
-    lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
 
     lazy var camera: PerspectiveCamera = {
         let camera = PerspectiveCamera()

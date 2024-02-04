@@ -39,7 +39,7 @@ class BufferComputeRenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0.0, 0.0, 100.0], near: 0.001, far: 1000.0)
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, .invalid, .invalid)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 
@@ -53,7 +53,7 @@ class BufferComputeRenderer: BaseRenderer {
     lazy var chromaMaterial = ChromaMaterial(pipelinesURL: pipelinesURL)
 
     lazy var chromaticProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(context.device, context.sampleCount, context.colorPixelFormat, .invalid, .invalid), material: chromaMaterial)
+        let pp = PostProcessor(context: Context(device: context.device, sampleCount: context.sampleCount, colorPixelFormat: context.colorPixelFormat), material: chromaMaterial)
         pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
             renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
         }

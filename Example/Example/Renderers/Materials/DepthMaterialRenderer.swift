@@ -103,7 +103,7 @@ class DepthMaterialRenderer: BaseRenderer {
         return obj
     }()
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
 
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 13.0], near: 0.001, far: 20.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)

@@ -54,7 +54,7 @@ open class Mesh: Object, Renderable {
     }
 
     open var drawable: Bool {
-        guard instanceCount > 0, !geometry.vertexBuffers.isEmpty, uniforms != nil else { return false }
+        guard instanceCount > 0, !geometry.vertexBuffers.isEmpty, vertexUniforms != nil else { return false }
 
         if submeshes.isEmpty, let material = material, material.pipeline != nil {
             return true
@@ -67,7 +67,7 @@ open class Mesh: Object, Renderable {
 
     public var instanceCount = 1
 
-    var uniforms: VertexUniformBuffer?
+    public var vertexUniforms: VertexUniformBuffer?
 
     public var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
 
@@ -127,15 +127,22 @@ open class Mesh: Object, Renderable {
     // MARK: - Setup
 
     override open func setup() {
+        setupVertexUniforms()
         setupGeometry()
         setupSubmeshes()
         setupMaterial()
-        setupUniforms()
     }
 
     internal func cleanupGeometrySubscriber() {
         geometrySubscription?.cancel()
         geometrySubscription = nil
+    }
+
+    // MARK: - Setup Uniforms
+
+    open func setupVertexUniforms() {
+        guard let context = context else { return }
+        vertexUniforms = VertexUniformBuffer(context: context)
     }
 
     open func setupGeometry() {
@@ -159,11 +166,6 @@ open class Mesh: Object, Renderable {
         material.context = context
     }
 
-    open func setupUniforms() {
-        guard let context = context, uniforms == nil else { return }
-        uniforms = VertexUniformBuffer(device: context.device)
-    }
-
     // MARK: - Binding
 
     open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
@@ -172,7 +174,7 @@ open class Mesh: Object, Renderable {
     }
 
     open func bindUniforms(renderEncoderState: RenderEncoderState) {
-        renderEncoderState.vertexUniforms = uniforms
+        renderEncoderState.vertexUniforms = vertexUniforms
     }
 
     open func bindGeometry(renderEncoderState: RenderEncoderState, shadow: Bool) {
@@ -195,12 +197,9 @@ open class Mesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override open func update(camera: Camera, viewport: simd_float4) {
-        geometry.update(camera: camera, viewport: viewport)
-        material?.update(camera: camera, viewport: viewport)
-        for submesh in submeshes { submesh.update(camera: camera, viewport: viewport) }
-        uniforms?.update(object: self, camera: camera, viewport: viewport)
-        super.update(camera: camera, viewport: viewport)
+    override open func update(camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(camera: camera, viewport: viewport, index: index)
     }
 
     // MARK: - Draw

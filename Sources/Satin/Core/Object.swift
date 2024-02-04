@@ -515,7 +515,7 @@ open class Object: Codable, ObservableObject {
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
-    open func update(camera: Camera, viewport: simd_float4) {}
+    open func update(camera: Camera, viewport: simd_float4, index: Int) {}
 
     // MARK: - Inserting, Adding, Attaching & Removing
 
@@ -780,13 +780,7 @@ open class Object: Codable, ObservableObject {
 
 extension Object: Equatable {
     public static func == (lhs: Object, rhs: Object) -> Bool {
-        return lhs.id == rhs.id &&
-            lhs.label == rhs.label &&
-            lhs.position == rhs.position &&
-            lhs.orientation == rhs.orientation &&
-            lhs.scale == rhs.scale &&
-            lhs.visible == rhs.visible &&
-            lhs.children == rhs.children
+        lhs === rhs
     }
 }
 

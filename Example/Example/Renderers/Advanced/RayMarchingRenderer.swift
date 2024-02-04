@@ -44,7 +44,7 @@ class RayMarchingRenderer: BaseRenderer {
     lazy var rayMarchedMaterial = RayMarchedMaterial(pipelinesURL: pipelinesURL, camera: camera)
     lazy var rayMarchedMesh = Mesh(geometry: QuadGeometry(), material: rayMarchedMaterial)
     lazy var scene = Object(label: "Scene", [mesh, rayMarchedMesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 

@@ -35,7 +35,7 @@ class SDFTextRenderer: BaseRenderer {
     }()
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 60)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
@@ -49,7 +49,6 @@ class SDFTextRenderer: BaseRenderer {
         textMesh.scale = .init(repeating: 1.0/64.0)
         textMesh.position.y = 9.5/64.0
         scene.add(textMesh)
-        renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {

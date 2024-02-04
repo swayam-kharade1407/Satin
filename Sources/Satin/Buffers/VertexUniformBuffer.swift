@@ -9,24 +9,28 @@ import Metal
 import simd
 
 public final class VertexUniformBuffer {
+    public private(set) var context: Context
     public private(set) var buffer: MTLBuffer
     public private(set) var offset = 0
-    public private(set) var index = 0
+    public var index: Int { offsetIndex }
 
+    private var offsetIndex: Int = -1
     private var uniforms: UnsafeMutablePointer<VertexUniforms>
     private let alignedSize = ((MemoryLayout<VertexUniforms>.size + 255) / 256) * 256
 
-    public init(device: MTLDevice) {
-        let length = alignedSize * Satin.maxBuffersInFlight
-        guard let buffer = device.makeBuffer(length: length, options: [MTLResourceOptions.cpuCacheModeWriteCombined]) else { fatalError("Couldn't not create Vertex Uniform Buffer") }
+    public init(context: Context) {
+        self.context = context
+        let length = alignedSize * Satin.maxBuffersInFlight * context.vertexAmplificationCount
+        guard let buffer = context.device.makeBuffer(length: length, options: [MTLResourceOptions.cpuCacheModeWriteCombined]) else { fatalError("Couldn't not create Vertex Uniform Buffer") }
         self.buffer = buffer
         self.buffer.label = "Vertex Uniforms"
-        uniforms = UnsafeMutableRawPointer(buffer.contents()).bindMemory(to: VertexUniforms.self, capacity: 1)
+        uniforms = UnsafeMutableRawPointer(buffer.contents()).bindMemory(to: VertexUniforms.self, capacity: context.vertexAmplificationCount)
     }
 
-    public func update(object: Object, camera: Camera, viewport: simd_float4) {
-        index = (index + 1) % maxBuffersInFlight
-        offset = alignedSize * index
+    public func update(object: Object, camera: Camera, viewport: simd_float4, index: Int) {
+        offsetIndex = (offsetIndex + 1) % maxBuffersInFlight
+        offset = alignedSize * (offsetIndex * context.vertexAmplificationCount) + alignedSize * index
+
         uniforms = UnsafeMutableRawPointer(buffer.contents() + offset).bindMemory(to: VertexUniforms.self, capacity: 1)
 
         uniforms[0].modelMatrix = object.worldMatrix

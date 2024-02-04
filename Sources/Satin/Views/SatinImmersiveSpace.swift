@@ -20,14 +20,11 @@ public struct SatinImmersiveSpace: SwiftUI.Scene {
 
     public var body: some SwiftUI.Scene {
         ImmersiveSpace(id: renderer.id) {
-            CompositorLayer(configuration: MetalLayerCompositorConfiguration(renderer: renderer)) { layerRenderer in
+            CompositorLayer(configuration: renderer) { layerRenderer in
+
+                guard let queue = layerRenderer.device.makeCommandQueue() else { fatalError("MTLDevice failed to create command queue") }
 
                 renderer.layerRenderer = layerRenderer
-
-                guard let queue = layerRenderer.device.makeCommandQueue() else {
-                    fatalError("MTLDevice failed to create command queue")
-                }
-
                 renderer.device = layerRenderer.device
                 renderer.commandQueue = queue
                 renderer.worldTracking = WorldTrackingProvider()

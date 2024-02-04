@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Satin",
-    platforms: [.macOS(.v10_15), .iOS(.v14), .tvOS(.v14), .visionOS(.v1)],
+    platforms: [.macOS(.v11), .iOS(.v14), .tvOS(.v14), .visionOS(.v1)],
     products: [
         .library(
             name: "SatinCore",

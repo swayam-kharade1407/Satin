@@ -37,7 +37,7 @@ class AudioInputRenderer: BaseRenderer {
     var camera = OrthographicCamera()
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
 //    lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 

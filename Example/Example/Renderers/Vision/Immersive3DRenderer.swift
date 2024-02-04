@@ -13,12 +13,12 @@ import Metal
 import CompositorServices
 
 class Immersive3DRenderer: MetalLayerRenderer {
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.25, resolution: 0), material: BasicDiffuseMaterial(0.7))
+    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.25, resolution: 0), material: DepthMaterial())
 
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat)
-    lazy var renderer = Renderer(context: context)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
+    lazy var renderer = Renderer(context: context, clearColor: .zero)
 
     override func setup() {
         mesh.position.y = 1
@@ -38,6 +38,16 @@ class Immersive3DRenderer: MetalLayerRenderer {
             scene: scene,
             camera: camera,
             viewport: viewport
+        )
+    }
+
+    override func draw(frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: any MTLCommandBuffer, cameras: [PerspectiveCamera], viewports: [MTLViewport]) {
+        renderer.draw(
+            renderPassDescriptor: renderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: cameras,
+            viewports: viewports
         )
     }
 }

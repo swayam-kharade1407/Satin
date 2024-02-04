@@ -39,7 +39,7 @@ class PostProcessingRenderer: BaseRenderer {
 
     lazy var postProcessor: PostProcessor = {
         let processor = PostProcessor(
-            context: Context(device, sampleCount, colorPixelFormat, .invalid, .invalid),
+            context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat),
             material: PostMaterial(pipelinesURL: pipelinesURL)
         )
         processor.label = "Post Processor"
@@ -51,7 +51,7 @@ class PostProcessingRenderer: BaseRenderer {
     }()
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 10.0], near: 0.001, far: 100.0, fov: 30.0)
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 

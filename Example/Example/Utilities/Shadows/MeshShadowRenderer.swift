@@ -43,7 +43,7 @@ class MeshShadowRenderer {
         scene = Object(label: "Scene")
         scene.add(shadowMesh, false)
 
-        renderer = Renderer(context: Context(device, 1, .bgra8Unorm, .invalid))
+        renderer = Renderer(context: Context(device: device, sampleCount: 1, colorPixelFormat: .bgra8Unorm))
         renderer.label = "Shadow Renderer"
         renderer.setClearColor(.zero)
         renderer.resize(size)

@@ -17,7 +17,7 @@ class PBRSubmeshRenderer: BaseRenderer {
 
     var scene = IBLScene(label: "Scene", [Mesh(geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())])
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var camera: PerspectiveCamera = {
         let pos = simd_make_float3(125.0, 125.0, 125.0)
         camera = PerspectiveCamera(position: pos, near: 0.01, far: 1000.0, fov: 45)

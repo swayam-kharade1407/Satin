@@ -1,17 +1,19 @@
 //
-//  Renderer.swift
+//  MultipleViewportRenderer.swift
 //  Example
 //
-//  Created by Reza Ali on 6/27/20.
-//  Copyright © 2020 Hi-Rez. All rights reserved.
+//  Created by Reza Ali on 2/4/24.
+//  Copyright © 2024 Hi-Rez. All rights reserved.
 //
+
+import Foundation
 
 import Metal
 import MetalKit
 import Satin
 import SatinCore
 
-class Renderer3D: BaseRenderer {
+class MultipleViewportRenderer: BaseRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(0.7))
 
     var intersectionMesh: Mesh = {
@@ -35,10 +37,10 @@ class Renderer3D: BaseRenderer {
     override func setup() {
         camera.lookAt(target: .zero)
 
-        #if os(visionOS)
+#if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-        #endif
+#endif
 
         tween = Tweener
             .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
@@ -75,18 +77,18 @@ class Renderer3D: BaseRenderer {
         renderer.resize(size)
     }
 
-    #if os(macOS)
+#if os(macOS)
     override func mouseDown(with event: NSEvent) {
         intersect(camera: camera, coordinate: normalizePoint(metalView.convert(event.locationInWindow, from: nil), metalView.frame.size))
     }
 
-    #elseif os(iOS)
+#elseif os(iOS)
     override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
         if let first = touches.first {
             intersect(camera: camera, coordinate: normalizePoint(first.location(in: metalView), metalView.frame.size))
         }
     }
-    #endif
+#endif
 
     func intersect(camera: Camera, coordinate: simd_float2) {
         let results = raycast(camera: camera, coordinate: coordinate, object: scene)
@@ -97,10 +99,10 @@ class Renderer3D: BaseRenderer {
     }
 
     func normalizePoint(_ point: CGPoint, _ size: CGSize) -> simd_float2 {
-        #if os(macOS)
+#if os(macOS)
         return 2.0 * simd_make_float2(Float(point.x / size.width), Float(point.y / size.height)) - 1.0
-        #else
+#else
         return 2.0 * simd_make_float2(Float(point.x / size.width), 1.0 - Float(point.y / size.height)) - 1.0
-        #endif
+#endif
     }
 }

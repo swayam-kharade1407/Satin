@@ -35,7 +35,7 @@ class FlockingRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [sprite])
     var camera = OrthographicCamera()
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var renderer = Renderer(context: context)
     lazy var particleSystem = FlockingComputeSystem(device: device, pipelinesURL: pipelinesURL, count: particleCountParam.value, feedback: true, live: true)
 

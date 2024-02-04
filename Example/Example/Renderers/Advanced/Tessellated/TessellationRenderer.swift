@@ -26,7 +26,7 @@ class TessellationRenderer: BaseRenderer {
     lazy var tessWireMesh = TessellatedMesh(geometry: tessGeometry, material: tessWireMaterial, tessellator: tessellator)
     lazy var scene = Object(label: "Scene", [tessMesh, tessWireMesh])
 
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 4.0), near: 0.01, far: 50.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
@@ -42,8 +42,6 @@ class TessellationRenderer: BaseRenderer {
         tessWireMaterial.set("Color", [1.0, 1.0, 1.0, 0.33])
 
         tessellator.setup(tessGeometry)
-
-        renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {

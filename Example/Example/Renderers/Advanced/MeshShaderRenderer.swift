@@ -17,7 +17,7 @@ class MeshShaderRenderer: BaseRenderer {
     fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(0.0, 0.0, 8.0), near: 0.01, far: 100.0, fov: 45)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
@@ -28,7 +28,6 @@ class MeshShaderRenderer: BaseRenderer {
         mesh.add(meshNormals)
 
         renderer.setClearColor(.one)
-        renderer.compile(scene: scene, camera: camera)
     }
 
     deinit {
@@ -215,8 +214,6 @@ private class CustomMesh: Object, Renderable {
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
 
-    private var vertexUniforms: VertexUniformBuffer?
-
     var drawable: Bool {
         guard #available(macOS 13.0, iOS 16.0, *), material?.pipeline != nil else { return false }
         return true
@@ -235,6 +232,8 @@ private class CustomMesh: Object, Renderable {
         return []
     }
 
+    var vertexUniforms: VertexUniformBuffer?
+
     public required init(from _: Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
@@ -248,9 +247,14 @@ private class CustomMesh: Object, Renderable {
     }
 
     override func setup() {
+        setupVertexUniforms()
         setupGeometry()
-        setupUniforms()
         setupMaterial()
+    }
+
+    func setupVertexUniforms() {
+        guard let context else { return }
+        vertexUniforms = VertexUniformBuffer(context: context)
     }
 
     func setupGeometry() {
@@ -261,11 +265,6 @@ private class CustomMesh: Object, Renderable {
     func setupMaterial() {
         guard let context = context, let material = material else { return }
         material.context = context
-    }
-
-    func setupUniforms() {
-        guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(device: context.device)
     }
 
     // MARK: - Update
@@ -282,19 +281,17 @@ private class CustomMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4) {
-        geometry.update(camera: camera, viewport: viewport)
-        material?.update(camera: camera, viewport: viewport)
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
-        super.update(camera: camera, viewport: viewport)
+    override func update(camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(camera: camera, viewport: viewport, index: index)
     }
 
     // MARK: - Draw
 
     func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard #available(macOS 13.0, iOS 16.0, *),
-              let vertexUniforms = vertexUniforms,
-              let material = material,
+              let vertexUniforms,
+              let material,
               let vertexBuffer = geometry.vertexBuffers[VertexBufferIndex.Vertices]
         else { return }
 

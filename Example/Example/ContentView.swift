@@ -233,6 +233,8 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Satin Examples")
+
+            MultipleViewportRendererView()
         }
     }
 }

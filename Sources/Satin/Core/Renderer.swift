@@ -71,16 +71,7 @@ open class Renderer {
     public var stencilLoadAction: MTLLoadAction = .clear
     public var stencilStoreAction: MTLStoreAction = .dontCare
 
-    public var viewport = MTLViewport() {
-        didSet {
-            _viewport = simd_make_float4(
-                Float(viewport.originX),
-                Float(viewport.originY),
-                Float(viewport.width),
-                Float(viewport.height)
-            )
-        }
-    }
+    public var viewport = MTLViewport()
 
     public var invertViewportNearFar = false {
         didSet {
@@ -89,8 +80,6 @@ open class Renderer {
             }
         }
     }
-
-    private var _viewport: simd_float4 = .zero
 
     private var objectList = [Object]()
     private var renderLists = [Int: RenderList]()
@@ -142,8 +131,7 @@ open class Renderer {
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
                 scene: scene,
-                camera: camera,
-                viewport: viewport
+                camera: camera
             )
             renderPassDescriptor.colorAttachments[0].resolveTexture = resolveTexture
         } else {
@@ -153,16 +141,37 @@ open class Renderer {
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
                 scene: scene,
-                camera: camera,
-                viewport: viewport
+                camera: camera
             )
             renderPassDescriptor.colorAttachments[0].texture = renderTexture
         }
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil)
+    // fatal (not implemented yet)
+    // renderEncoder.setViewports(viewports)
+    // https://developer.apple.com/documentation/metal/render_passes/improving_rendering_performance_with_vertex_amplification?language=objc
+
+    // https://developer.apple.com/documentation/metal/render_passes/rendering_to_multiple_viewports_in_a_draw_command?language=objc
+
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil) {
+        draw(
+            renderPassDescriptor: renderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: [camera],
+            viewports: [viewport ?? self.viewport]
+        )
+    }
+
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport])
     {
-        update(commandBuffer: commandBuffer, scene: scene, camera: camera)
+        let simd_viewports = viewports.map(\.float4)
+        update(
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: cameras,
+            viewports: simd_viewports
+        )
 
         // render objects that cast shadows into the depth textures
         if !shadowCasters.isEmpty, !shadowReceivers.isEmpty {
@@ -298,7 +307,7 @@ open class Renderer {
 #if DEBUG
                 renderEncoder.pushDebugGroup(label + " Empty Pass")
 #endif
-                renderEncoder.setViewport(viewport ?? self.viewport)
+                renderEncoder.setViewports(viewports)
 #if DEBUG
                 renderEncoder.popDebugGroup()
 #endif
@@ -316,9 +325,15 @@ open class Renderer {
                     renderEncoder.label = label + " Pass \(pass)"
                     renderEncoder.pushDebugGroup("Pass \(pass)")
 #endif
-                    renderEncoder.setViewport(viewport ?? self.viewport)
+                    renderEncoder.setViewports(viewports)
 
-                    encode(renderEncoder: renderEncoder, pass: pass, renderables: renderables, camera: camera)
+                    encode(
+                        renderEncoder: renderEncoder,
+                        pass: pass,
+                        renderables: renderables,
+                        cameras: cameras,
+                        viewports: simd_viewports
+                    )
 
 #if DEBUG
                     renderEncoder.popDebugGroup()
@@ -335,7 +350,7 @@ open class Renderer {
 
     // MARK: - Internal Update
 
-    private func update(commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera) {
+    private func update(commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [simd_float4]) {
         onUpdate?()
 
         objectList.removeAll(keepingCapacity: true)
@@ -348,22 +363,17 @@ open class Renderer {
         shadowCasters.removeAll(keepingCapacity: true)
         shadowReceivers.removeAll(keepingCapacity: true)
 
-        camera.context = context
-        camera.update(camera: camera, viewport: _viewport)
-        camera.encode(commandBuffer) // FIXME: - traverse children and make sure you update everything
-
         updateLists(object: scene)
 
-        updateScene(commandBuffer: commandBuffer, camera: camera)
+        updateScene(commandBuffer: commandBuffer, cameras: cameras, viewports: viewports)
         updateLights()
         updateShadows()
     }
 
-    private func updateLists(object: Object, visible: Bool = true) {
-        objectList.append(object)
+    private func updateLists(object: Object) {
+        guard object.visible else { return }
 
-        let isVisible = visible && object.visible
-        guard isVisible else { return }
+        objectList.append(object)
 
         if let light = object as? Light {
             lightList.append(light)
@@ -386,18 +396,18 @@ open class Renderer {
             if renderable.receiveShadow {
                 shadowReceivers.append(renderable)
             }
-            
+
             if renderable.castShadow {
                 shadowCasters.append(renderable)
             }
         }
 
         for child in object.children {
-            updateLists(object: child, visible: isVisible)
+            updateLists(object: child)
         }
     }
 
-    private func updateScene(commandBuffer: MTLCommandBuffer, camera: Camera) {
+    private func updateScene(commandBuffer: MTLCommandBuffer, cameras: [Camera], viewports: [simd_float4]) {
         let lightCount = lightList.count
         let shadowCount = shadowList.count
 
@@ -459,15 +469,22 @@ open class Renderer {
             }
 
             object.context = context
-            object.update(camera: camera, viewport: _viewport)
+            for i in 0..<context.vertexAmplificationCount {
+                object.update(camera: cameras[i], viewport: viewports[i], index: i)
+            }
             object.encode(commandBuffer)
         }
     }
 
     // MARK: - Internal Encoding
 
-    private func encode(renderEncoder: MTLRenderCommandEncoder, pass: Int, renderables: [Renderable], camera: Camera) {
-
+    private func encode(
+        renderEncoder: MTLRenderCommandEncoder,
+        pass: Int,
+        renderables: [Renderable],
+        cameras: [Camera],
+        viewports: [simd_float4]
+    ) {
         let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
 
         if !lightReceivers.isEmpty {
@@ -513,17 +530,19 @@ open class Renderer {
                 renderEncoder: renderEncoder,
                 renderEncoderState: renderEncoderState,
                 renderable: renderable,
-                camera: camera
+                cameras: cameras,
+                viewports: viewports
             )
         }
     }
 
-    private func _encode(renderEncoder: MTLRenderCommandEncoder, renderEncoderState: RenderEncoderState, renderable: Renderable, camera: Camera) {
+    private func _encode(renderEncoder: MTLRenderCommandEncoder, renderEncoderState: RenderEncoderState, renderable: Renderable, cameras: [Camera], viewports: [simd_float4]) {
 #if DEBUG
         renderEncoder.pushDebugGroup(renderable.label)
 #endif
-
-        renderable.update(camera: camera, viewport: _viewport)
+        for i in 0..<context.vertexAmplificationCount {
+            renderable.update(camera: cameras[i], viewport: viewports[i], index: i)
+        }
         renderable.preDraw?(renderEncoder)
 
         renderEncoderState.windingOrder = renderable.windingOrder
@@ -840,17 +859,5 @@ open class Renderer {
         }
 
         _updateShadowTextures = false
-    }
-
-    // MARK: - Compile
-
-    // MARK: - Internal Update
-
-    public func compile(scene: Object, camera: Camera) {
-        guard let commandQueue = context.device.makeCommandQueue(),
-              let commandBuffer = commandQueue.makeCommandBuffer()
-        else { return }
-        update(commandBuffer: commandBuffer, scene: scene, camera: camera)
-        commandBuffer.commit()
     }
 }

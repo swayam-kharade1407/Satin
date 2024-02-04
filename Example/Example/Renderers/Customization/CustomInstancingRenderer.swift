@@ -30,7 +30,7 @@ class CustomInstancingRenderer: BaseRenderer {
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: instanceMaterial)
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView, defaultZoom: 2.0)
     lazy var renderer = Renderer(context: context)
 

@@ -349,8 +349,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         uniforms?.update()
     }
 
-    open func update(camera: Camera, viewport: simd_float4) {}
-
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
     open func bindPipeline(renderEncoderState: RenderEncoderState, shadow: Bool) {

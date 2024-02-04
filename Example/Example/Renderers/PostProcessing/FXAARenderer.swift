@@ -22,7 +22,7 @@ class FXAARenderer: BaseRenderer {
     lazy var fxaaMaterial = FxaaMaterial(pipelinesURL: pipelinesURL)
 
     lazy var fxaaProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(context.device, context.sampleCount, context.colorPixelFormat, .invalid, .invalid), material: fxaaMaterial)
+        let pp = PostProcessor(context: Context(device: context.device, sampleCount: context.sampleCount, colorPixelFormat: context.colorPixelFormat), material: fxaaMaterial)
         pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
             renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
         }
@@ -48,7 +48,7 @@ class FXAARenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0, 0, 9], near: 0.001, far: 100.0)
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 

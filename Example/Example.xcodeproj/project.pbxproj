@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -97,7 +97,9 @@
 		E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B058F26BB704100D91376 /* AudioInputRenderer.swift */; };
 		E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */; };
 		E11325D028AEAEB50049CACC /* SuperShapeGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E11325CE28AEAEB50049CACC /* SuperShapeGenerator.c */; };
-		E11EA25A2A969575008FC06D /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E11EA2592A969575008FC06D /* Youi */; };
+		E1365B922B6F6A05008C0033 /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1365B912B6F6A05008C0033 /* Youi */; };
+		E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */; };
+		E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */; };
 		E152371F29CBA22B00D96D46 /* BaseRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371E29CBA22B00D96D46 /* BaseRenderer.swift */; };
 		E152372829CBDF4E00D96D46 /* ObjectShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152372729CBDF4E00D96D46 /* ObjectShadowRenderer.swift */; };
 		E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */; };
@@ -144,6 +146,8 @@
 		E11325CF28AEAEB50049CACC /* SuperShapeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuperShapeGenerator.h; sourceTree = "<group>"; };
 		E11325D128AEB0770049CACC /* SuperShapesRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperShapesRendererView.swift; sourceTree = "<group>"; };
 		E129CCB5252009CC009B237A /* ARRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARRenderer.swift; sourceTree = "<group>"; };
+		E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleViewportRenderer.swift; sourceTree = "<group>"; };
+		E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleViewportRendererView.swift; sourceTree = "<group>"; };
 		E13687272900BBEC00FFF43F /* InstancedMeshRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstancedMeshRenderer.swift; sourceTree = "<group>"; };
 		E13687292900BEEC00FFF43F /* InstancedMeshRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstancedMeshRendererView.swift; sourceTree = "<group>"; };
 		E144FA2D24D0D5550072D456 /* CameraControllerRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControllerRenderer.swift; sourceTree = "<group>"; };
@@ -257,9 +261,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E11EA25A2A969575008FC06D /* Youi in Frameworks */,
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
 				E1A25D962A9687EC00895430 /* Youi in Frameworks */,
+				E1365B922B6F6A05008C0033 /* Youi in Frameworks */,
 				E17A55AC28A6C159008F1DDB /* Satin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -492,6 +496,7 @@
 				E10E2FD729C5092700C4EAFF /* MeshShaderRendererView.swift */,
 				E1BCF33F29DA3C210076C163 /* TessellationRendererView.swift */,
 				E19A7EC32A60984E00D28E89 /* BufferGeometryRendererView.swift */,
+				E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */,
 			);
 			path = Advanced;
 			sourceTree = "<group>";
@@ -513,6 +518,7 @@
 				E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */,
 				E19B058F26BB704100D91376 /* AudioInputRenderer.swift */,
 				E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */,
+				E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */,
 			);
 			path = Advanced;
 			sourceTree = "<group>";
@@ -695,7 +701,7 @@
 				E17A55AB28A6C159008F1DDB /* Satin */,
 				E1FDCA162A3692ED00A1870D /* Spectra */,
 				E1A25D952A9687EC00895430 /* Youi */,
-				E11EA2592A969575008FC06D /* Youi */,
+				E1365B912B6F6A05008C0033 /* Youi */,
 			);
 			productName = Example;
 			productReference = E1D714D128A6BAD900B517B6 /* Example.app */;
@@ -727,7 +733,7 @@
 			mainGroup = 66E67880243EC73A0070B294;
 			packageReferences = (
 				E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */,
-				E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */,
+				E1365B902B6F6A05008C0033 /* XCLocalSwiftPackageReference "../../YouiPro" */,
 			);
 			productRefGroup = 66E6788A243EC73A0070B294 /* Products */;
 			projectDirPath = "";
@@ -819,6 +825,7 @@
 				E1903C102B6046B4004AB175 /* ARPBRRendererView.swift in Sources */,
 				E103E1032B603B620017588F /* InstancedMeshRendererView.swift in Sources */,
 				E103E1362B603F9A0017588F /* InstancingRendererView.swift in Sources */,
+				E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */,
 				E103E14F2B60400E0017588F /* PostProcessingRenderer.swift in Sources */,
 				E103E1422B603FF40017588F /* FXAARendererView.swift in Sources */,
 				E103E12B2B603ECD0017588F /* ExportGeometryRendererView.swift in Sources */,
@@ -832,6 +839,7 @@
 				E1903C112B6046B4004AB175 /* ARLidarMeshRendererView.swift in Sources */,
 				E103E10B2B603DBD0017588F /* ARDrawingRenderer.swift in Sources */,
 				E103E1062B603DBD0017588F /* ARPBRRenderer.swift in Sources */,
+				E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */,
 				E1E7681328A736BB005D75AB /* AudioInput.swift in Sources */,
 				E103E1472B6040010017588F /* AudioInputRendererView.swift in Sources */,
 				E103E1392B603FC50017588F /* PBRSubmeshRenderer.swift in Sources */,
@@ -925,7 +933,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -985,7 +993,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -1120,15 +1128,14 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:Hi-Rez/YouiPro.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		E1365B902B6F6A05008C0033 /* XCLocalSwiftPackageReference "../../YouiPro" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../YouiPro;
 		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
 		E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:Hi-Rez/Spectra.git";
@@ -1140,9 +1147,8 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E11EA2592A969575008FC06D /* Youi */ = {
+		E1365B912B6F6A05008C0033 /* Youi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E11EA2582A969575008FC06D /* XCRemoteSwiftPackageReference "YouiPro" */;
 			productName = Youi;
 		};
 		E17A55AB28A6C159008F1DDB /* Satin */ = {

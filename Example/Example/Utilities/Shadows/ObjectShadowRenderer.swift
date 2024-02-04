@@ -130,7 +130,7 @@ class ObjectShadowRenderer {
         renderer = Renderer(context: context)
         renderer.label = "Object Shadow Renderer"
 
-        processor = ShadowPostProcessor(context: Context(context.device, 1, .rgba16Float))
+        processor = ShadowPostProcessor(context: Context(device: context.device, sampleCount: 1, colorPixelFormat: .rgba16Float))
         camera = OrthographicCamera()
 
         renderer.setClearColor(.zero)

@@ -50,7 +50,7 @@ class CameraControllerRenderer: BaseRenderer {
 
     lazy var targetMesh = Mesh(geometry: BoxGeometry(size: 1.0), material: NormalColorMaterial())
     lazy var scene = Object(label: "Scene", [grid, axisMesh])
-    lazy var context: Context = .init(device, sampleCount, colorPixelFormat, depthPixelFormat, stencilPixelFormat)
+    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
 
     lazy var camera: PerspectiveCamera = {
         let pos = simd_make_float3(5.0, 5.0, 5.0)

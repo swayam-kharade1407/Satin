@@ -40,13 +40,13 @@ public class ARLidarMesh: Object, Renderable {
     public var renderPass = 0
 
     public var drawable: Bool {
-        if material?.pipeline != nil, uniforms != nil, vertexBuffer != nil, indexBuffer != nil {
+        if material?.pipeline != nil, vertexUniforms != nil, vertexBuffer != nil, indexBuffer != nil {
             return true
         }
         return false
     }
 
-    var uniforms: VertexUniformBuffer?
+    var vertexUniforms: VertexUniformBuffer?
 
     public var material: Material?
     public var materials: [Satin.Material] {
@@ -106,7 +106,7 @@ public class ARLidarMesh: Object, Renderable {
 
     func setupUniforms() {
         guard let context = context else { return }
-        uniforms = VertexUniformBuffer(device: context.device)
+        vertexUniforms = VertexUniformBuffer(device: context.device)
     }
 
     required init(from decoder: Decoder) throws {
@@ -122,21 +122,20 @@ public class ARLidarMesh: Object, Renderable {
 
     override public func update(camera: Camera, viewport: simd_float4) {
         if let meshAnchor = meshAnchor { localMatrix = meshAnchor.transform }
-        material?.update(camera: camera, viewport: viewport)
-        uniforms?.update(object: self, camera: camera, viewport: viewport)
+        vertexUniforms?.update(object: self, camera: camera, viewport: viewport)
         super.update(camera: camera, viewport: viewport)
     }
 
     // MARK: - Draw
 
     public func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        guard let uniforms = uniforms,
+        guard let vertexUniforms = vertexUniforms,
               let vertexBuffer = vertexBuffer,
               let material = material,
               let _ = material.pipeline
         else { return }
 
-        renderEncoderState.vertexUniforms = uniforms
+        renderEncoderState.vertexUniforms = vertexUniforms
         renderEncoderState.setVertexBuffer(vertexBuffer, offset: 0, index: .Vertices)
         material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 

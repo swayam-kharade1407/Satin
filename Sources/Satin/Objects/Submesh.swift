@@ -55,11 +55,6 @@ open class Submesh {
         geometry.update()
     }
 
-    open func update(camera: Camera, viewport: simd_float4) {
-        material?.update(camera: camera, viewport: viewport)
-        geometry.update(camera: camera, viewport: viewport)
-    }
-
     open func encode(_ commandBuffer: MTLCommandBuffer) {
         material?.encode(commandBuffer)
         geometry.encode(commandBuffer)
