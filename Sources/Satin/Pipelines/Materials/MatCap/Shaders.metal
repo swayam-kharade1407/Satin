@@ -8,8 +8,7 @@ typedef struct {
     float4 color; // color
 } MatCapUniforms;
 
-vertex MatCapVertexData matCapVertex
-(
+vertex MatCapVertexData matCapVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     ushort amp_id [[amplification_id]],

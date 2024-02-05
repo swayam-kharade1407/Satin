@@ -31,15 +31,13 @@ typedef struct {
 #endif
 } CustomVertexData;
 
-vertex CustomVertexData physicalVertex
-(
+vertex CustomVertexData physicalVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
     constant PhysicalUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]],
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
 #if defined(INSTANCING)
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;

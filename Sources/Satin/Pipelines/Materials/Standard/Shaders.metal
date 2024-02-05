@@ -29,8 +29,7 @@ vertex CustomVertexData standardVertex(
     // inject instancing args
     // inject shadow vertex args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
 #if defined(INSTANCING)
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;

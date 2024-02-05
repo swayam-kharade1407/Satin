@@ -11,14 +11,12 @@ typedef struct {
     float pointSize [[point_size]];
 } CustomVertexData;
 
-vertex CustomVertexData basicPointVertex
-(
+vertex CustomVertexData basicPointVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     ushort amp_id [[amplification_id]],
     constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]
-)
+    constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
 {
 
     const float4 position = float4(in.position, 1.0);

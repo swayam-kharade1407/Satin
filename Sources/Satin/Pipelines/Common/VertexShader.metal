@@ -1,11 +1,9 @@
-vertex VertexData satinVertex
-(
+vertex VertexData satinVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
     VertexData out;
 

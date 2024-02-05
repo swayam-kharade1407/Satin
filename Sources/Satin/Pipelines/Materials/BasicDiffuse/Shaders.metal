@@ -18,8 +18,7 @@ vertex DiffuseVertexData basicDiffuseVertex(
     // inject instancing args
     // inject shadow vertex args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
     const float4 position = float4(in.position, 1.0);
 #if INSTANCING

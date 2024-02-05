@@ -7,12 +7,10 @@ typedef struct {
     float2 texcoord;
 } CustomVertexData;
 
-vertex CustomVertexData textVertex
-(
+vertex CustomVertexData textVertex(
     Vertex in [[stage_in]],
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]
-)
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
     CustomVertexData out;
 
