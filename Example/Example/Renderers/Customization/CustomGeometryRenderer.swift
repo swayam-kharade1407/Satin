@@ -40,6 +40,11 @@ class CustomGeometryRenderer: BaseRenderer {
 
     override func setup() {
         setupMesh()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

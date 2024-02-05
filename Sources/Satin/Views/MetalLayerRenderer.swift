@@ -47,8 +47,6 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
     private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
 
-    public var cameras = Array(repeating: PerspectiveCamera(), count: 2)
-
     internal var onDisappearAction: (() -> Void)?
 
     public init() {}
@@ -102,6 +100,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         let supportedLayouts = capabilities.supportedLayouts(options: options)
         configuration.layout = supportedLayouts.contains(layerLayout) ? layerLayout : .dedicated
 
+        print("configuration.isFoveationEnabled: \(foveationEnabled)")
         print("configuration.layout: \(configuration.layout == .layered ? "layered" : "dedicated")")
     }
 
@@ -111,7 +110,25 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
     open func cleanup() {}
 
-    open func preDraw(frame: LayerRenderer.Frame) -> (drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer)? {
+    open func drawView(
+        view: Int,
+        frame: LayerRenderer.Frame,
+        renderPassDescriptor: MTLRenderPassDescriptor,
+        commandBuffer: MTLCommandBuffer,
+        camera: PerspectiveCamera,
+        viewport: MTLViewport
+    ) {}
+
+    open func draw(
+        frame: LayerRenderer.Frame,
+        renderPassDescriptor: MTLRenderPassDescriptor,
+        commandBuffer: MTLCommandBuffer,
+        cameras: [PerspectiveCamera],
+        viewports: [MTLViewport],
+        viewMappings: [MTLVertexAmplificationViewMapping]
+    ) {}
+
+    open func preDraw(frame: LayerRenderer.Frame) -> (drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer, cameras: [PerspectiveCamera])? {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { fatalError("Failed to create command buffer") }
 
         guard let drawable = frame.queryDrawable() else { return nil }
@@ -131,38 +148,17 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
             semaphore.signal()
         }
 
-        /// Update any game state before rendering
-
-        let simdDeviceAnchor = deviceAnchor?.originFromAnchorTransform ?? matrix_identity_float4x4
-
-        func camera(forViewIndex viewIndex: Int) -> (view: simd_float4x4, projection: simd_float4x4) {
-            let view = drawable.views[viewIndex]
-            let projection = ProjectiveTransform3D(
-                leftTangent: Double(view.tangents[0]),
-                rightTangent: Double(view.tangents[1]),
-                topTangent: Double(view.tangents[2]),
-                bottomTangent: Double(view.tangents[3]),
-                nearZ: Double(drawable.depthRange.y),
-                farZ: Double(drawable.depthRange.x),
-                reverseZ: true
+        return (
+            drawable: drawable,
+            commandBuffer: commandBuffer,
+            cameras: updateCameras(
+                drawable: drawable,
+                deviceAnchor: deviceAnchor?.originFromAnchorTransform ?? matrix_identity_float4x4
             )
-
-            return (view: (simdDeviceAnchor * view.transform).inverse, projection: .init(projection))
-        }
-
-        for i in 0 ..< drawable.views.count {
-            let info = camera(forViewIndex: 0)
-            let camera = cameras[i]
-            camera.viewMatrix = info.view
-            camera.updateViewMatrix = false
-            camera.projectionMatrix = info.projection
-            camera.updateProjectionMatrix = false
-        }
-
-        return (drawable, commandBuffer)
+        )
     }
 
-    open func draw(frame: LayerRenderer.Frame, drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer) {
+    open func draw(frame: LayerRenderer.Frame, drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer, cameras: [PerspectiveCamera]) {
         if layerRenderer.configuration.layout == .dedicated {
             for i in 0 ..< drawable.views.count {
                 let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -186,40 +182,32 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
             let renderPassDescriptor = MTLRenderPassDescriptor()
             renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[0]
             renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[0]
-#if targetEnvironment(simulator)
             renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
-#else
-            renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps[i]
-#endif
 
-            renderPassDescriptor.renderTargetArrayLength = drawable.views.count
+            let viewCount = drawable.views.count
+
+            if layerRenderer.configuration.layout == .layered {
+                renderPassDescriptor.renderTargetArrayLength = viewCount
+            }
+
+            var viewports = [MTLViewport]()
+            var viewMappings = [MTLVertexAmplificationViewMapping]()
+
+            for i in 0 ..< viewCount {
+                viewports.append(drawable.views[i].textureMap.viewport)
+                viewMappings.append(MTLVertexAmplificationViewMapping(viewportArrayIndexOffset: UInt32(i), renderTargetArrayIndexOffset: UInt32(i)))
+            }
 
             draw(
                 frame: frame,
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
                 cameras: cameras,
-                viewports: drawable.views.map { $0.textureMap.viewport }
+                viewports: viewports,
+                viewMappings: viewMappings
             )
         }
     }
-
-    open func drawView(
-        view: Int,
-        frame: LayerRenderer.Frame,
-        renderPassDescriptor: MTLRenderPassDescriptor,
-        commandBuffer: MTLCommandBuffer,
-        camera: PerspectiveCamera,
-        viewport: MTLViewport
-    ) {}
-
-    open func draw(
-        frame: LayerRenderer.Frame,
-        renderPassDescriptor: MTLRenderPassDescriptor,
-        commandBuffer: MTLCommandBuffer,
-        cameras: [PerspectiveCamera],
-        viewports: [MTLViewport]
-    ) {}
 
     open func postDraw(frame: LayerRenderer.Frame, drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer) {
         drawable.encodePresent(commandBuffer: commandBuffer)
@@ -230,15 +218,11 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     }
 
     open func renderFrame() {
-        /// Per frame updates hare
-
-        update()
-
         guard let frame = layerRenderer.queryNextFrame() else { return }
 
-        // Perform frame independent work
-
         frame.startUpdate()
+
+        update()
 
         frame.endUpdate()
 
@@ -246,12 +230,48 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
         LayerRenderer.Clock().wait(until: timing.optimalInputTime)
 
-        guard let (drawable, commandBuffer) = preDraw(frame: frame) else { return }
+        guard let (drawable, commandBuffer, cameras) = preDraw(frame: frame) else { return }
 
-        draw(frame: frame, drawable: drawable, commandBuffer: commandBuffer)
+        draw(frame: frame, drawable: drawable, commandBuffer: commandBuffer, cameras: cameras)
 
         postDraw(frame: frame, drawable: drawable, commandBuffer: commandBuffer)
     }
+}
+
+fileprivate func updateCameras(drawable: LayerRenderer.Drawable, deviceAnchor: simd_float4x4) -> [PerspectiveCamera] {
+    var cameras = [PerspectiveCamera]()
+
+    for i in 0 ..< drawable.views.count {
+        let info = getCameraInfo(drawable: drawable, deviceAnchor: deviceAnchor, forViewIndex: i)
+
+        let camera = PerspectiveCamera()
+
+        camera.viewMatrix = info.view
+        camera.updateViewMatrix = false
+
+        camera.projectionMatrix = info.projection
+        camera.updateProjectionMatrix = false
+
+        cameras.append(camera)
+    }
+
+    return cameras
+}
+
+fileprivate func getCameraInfo(drawable: LayerRenderer.Drawable, deviceAnchor: simd_float4x4, forViewIndex viewIndex: Int) -> (view: simd_float4x4, projection: simd_float4x4) {
+    let view = drawable.views[viewIndex]
+
+    let projection = ProjectiveTransform3D(
+        leftTangent: Double(view.tangents[0]),
+        rightTangent: Double(view.tangents[1]),
+        topTangent: Double(view.tangents[2]),
+        bottomTangent: Double(view.tangents[3]),
+        nearZ: Double(drawable.depthRange.y),
+        farZ: Double(drawable.depthRange.x),
+        reverseZ: true
+    )
+
+    return ((deviceAnchor * view.transform).inverse, .init(projection))
 }
 
 #endif

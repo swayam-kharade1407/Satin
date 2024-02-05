@@ -207,6 +207,11 @@ class SuperShapesRenderer: BaseRenderer {
         mesh.cullMode = .none
         
         camera.lookAt(target: .zero)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     override func update() {

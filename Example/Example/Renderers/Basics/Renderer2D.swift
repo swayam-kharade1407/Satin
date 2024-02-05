@@ -25,6 +25,13 @@ class Renderer2D: BaseRenderer {
         .invalid
     }
 
+    override func setup() {
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
+    }
+
     override func update() {
         cameraController.update()
         camera.update()

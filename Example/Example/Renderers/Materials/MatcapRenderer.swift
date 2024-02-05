@@ -40,6 +40,11 @@ class MatcapRenderer: BaseRenderer {
     override func setup() {
         loadModel()
         loadKnot()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

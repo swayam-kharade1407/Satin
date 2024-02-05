@@ -24,7 +24,7 @@ class ExportGeometryRenderer: BaseRenderer {
     }()
 
     lazy var rocks: Mesh = {
-        let mesh = Mesh(label: "ROCKS", geometry: ExtrudedTextGeometry(text: "ROCKS", fontName: "Ariel", fontSize: 1, distance: 0.5),
+        let mesh = Mesh(label: "PRO", geometry: ExtrudedTextGeometry(text: "PRO", fontName: "Ariel", fontSize: 1, distance: 0.5),
                         material: material)
         mesh.position = [0, -0.75, 0]
         return mesh
@@ -45,6 +45,13 @@ class ExportGeometryRenderer: BaseRenderer {
 
     deinit {
         cameraController.disable()
+    }
+
+    override func setup() {
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     override func update() {

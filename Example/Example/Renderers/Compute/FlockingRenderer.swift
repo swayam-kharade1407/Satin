@@ -75,6 +75,11 @@ class FlockingRenderer: BaseRenderer {
 
     override func setup() {
         setupObservers()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     func setupObservers() {

@@ -28,6 +28,11 @@ class MeshShaderRenderer: BaseRenderer {
         mesh.add(meshNormals)
 
         renderer.setClearColor(.one)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

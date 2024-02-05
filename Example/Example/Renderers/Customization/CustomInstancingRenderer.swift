@@ -40,6 +40,11 @@ class CustomInstancingRenderer: BaseRenderer {
 
     override func setup() {
         setupData()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     func setupData() {

@@ -24,6 +24,11 @@ class LoadObjRenderer: BaseRenderer {
 
     override func setup() {
         loadOBJ(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"))
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

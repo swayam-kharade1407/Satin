@@ -22,6 +22,11 @@ class ExtrudedTextRenderer: BaseRenderer {
 
     override func setup() {
         setupText()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

@@ -35,6 +35,11 @@ class VertexAttributesRenderer: BaseRenderer {
 
         mesh.material = CustomMaterial(pipelinesURL: pipelinesURL)
         scene.add(mesh)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

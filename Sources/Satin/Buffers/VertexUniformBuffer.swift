@@ -6,6 +6,7 @@
 //
 
 import Metal
+import SatinCore
 import simd
 
 public final class VertexUniformBuffer {
@@ -26,8 +27,10 @@ public final class VertexUniformBuffer {
     }
 
     public func update(object: Object, camera: Camera, viewport: simd_float4, index: Int) {
-        offsetIndex = (offsetIndex + 1) % maxBuffersInFlight
-        offset = alignedSize * (offsetIndex * context.vertexAmplificationCount)
+        if index == 0 {
+            offsetIndex = (offsetIndex + 1) % maxBuffersInFlight
+            offset = alignedSize * offsetIndex * context.vertexAmplificationCount
+        }
 
         uniforms = UnsafeMutableRawPointer(buffer.contents() + offset).bindMemory(to: VertexUniforms.self, capacity: context.vertexAmplificationCount)
 

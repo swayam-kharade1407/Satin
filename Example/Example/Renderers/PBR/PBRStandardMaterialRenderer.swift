@@ -54,6 +54,12 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         setupTextures()
         setupLights()
         setupScene()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+        skybox.visible = false
+#endif
     }
 
     deinit {

@@ -125,6 +125,11 @@ class DepthMaterialRenderer: BaseRenderer {
 //            boundingBoxes.add(mesh)
 //        }
 //        scene.add(boundingBoxes)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

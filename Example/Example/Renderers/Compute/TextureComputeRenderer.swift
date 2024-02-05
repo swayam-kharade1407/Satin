@@ -46,6 +46,11 @@ class TextureComputeRenderer: BaseRenderer {
 
     override func setup() {
         material.texture = textureCompute.dstTexture
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

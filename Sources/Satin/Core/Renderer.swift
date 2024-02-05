@@ -160,7 +160,7 @@ open class Renderer {
         )
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: UnsafePointer<MTLVertexAmplificationViewMapping>? = nil)
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [])
     {
         let simd_viewports = viewports.map(\.float4)
         update(
@@ -325,21 +325,11 @@ open class Renderer {
                     renderEncoder.setViewports(viewports)
 
                     if context.vertexAmplificationCount > 1 {
-                        if viewMappings == nil {
-                            let mappings = context.vertexAmplificationCount
-                            var maps = [MTLVertexAmplificationViewMapping]()
-                            maps.reserveCapacity(mappings)
-
-                            for i in 0..<UInt32(mappings) {
-                                var mapping = MTLVertexAmplificationViewMapping()
-                                mapping.renderTargetArrayIndexOffset = i
-                                mapping.viewportArrayIndexOffset = i
-                                maps.append(mapping)
-                            }
-                            renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: maps)
-                        } else {
-                            renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: viewMappings)
+                        var maps = viewMappings
+                        if maps.isEmpty {
+                            maps = (0..<context.vertexAmplificationCount).map { .init(viewportArrayIndexOffset: UInt32($0), renderTargetArrayIndexOffset: UInt32($0) ) }
                         }
+                        renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: &maps)
                     }
 
                     encode(
@@ -482,11 +472,13 @@ open class Renderer {
                     }
                 }
             }
+            else {
+                for i in 0..<context.vertexAmplificationCount {
+                    object.update(camera: cameras[i], viewport: viewports[i], index: i)
+                }
+            }
 
             object.context = context
-            for i in 0..<context.vertexAmplificationCount {
-                object.update(camera: cameras[i], viewport: viewports[i], index: i)
-            }
             object.encode(commandBuffer)
         }
     }
@@ -558,6 +550,7 @@ open class Renderer {
         for i in 0..<context.vertexAmplificationCount {
             renderable.update(camera: cameras[i], viewport: viewports[i], index: i)
         }
+
         renderable.preDraw?(renderEncoder)
 
         renderEncoderState.windingOrder = renderable.windingOrder

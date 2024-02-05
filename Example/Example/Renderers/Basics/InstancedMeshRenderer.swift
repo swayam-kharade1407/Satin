@@ -31,6 +31,11 @@ class InstancedMeshRenderer: BaseRenderer {
     override func setup() {
         setupScene()
         setupCamera()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

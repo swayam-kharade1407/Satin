@@ -27,14 +27,7 @@ class SDFTextRenderer: BaseRenderer {
         }
     }()
 
-    lazy var mesh = {
-        let mesh = Mesh(geometry: QuadGeometry(size: 1.0), material: BasicColorMaterial(color: [1, 0, 0, 0.5], blending: .alpha))
-        mesh.scale.x = 8.0
-        mesh.material?.depthWriteEnabled = false
-        return mesh
-    }()
-
-    lazy var scene = Object(label: "Scene", [mesh])
+    var scene = Object(label: "Scene")
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 60)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
@@ -46,9 +39,15 @@ class SDFTextRenderer: BaseRenderer {
     }()
 
     override func setup() {
+        textMesh.material?.depthWriteEnabled = false
         textMesh.scale = .init(repeating: 1.0/64.0)
         textMesh.position.y = 9.5/64.0
         scene.add(textMesh)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

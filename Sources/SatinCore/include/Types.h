@@ -86,6 +86,21 @@ typedef struct BVH {
     bool useSAH;
 } BVH;
 
+typedef struct VertexUniforms {
+    simd_float4x4 modelMatrix;
+    simd_float4x4 viewMatrix;
+    simd_float4x4 modelViewMatrix;
+    simd_float4x4 projectionMatrix;
+    simd_float4x4 viewProjectionMatrix;
+    simd_float4x4 modelViewProjectionMatrix;
+    simd_float4x4 inverseModelViewProjectionMatrix;
+    simd_float4x4 inverseViewMatrix;
+    simd_float3x3 normalMatrix;
+    simd_float4 viewport;
+    simd_float3 worldCameraPosition;
+    simd_float3 worldCameraViewDirection;
+} VertexUniforms;
+
 TriangleFaceMap createTriangleFaceMap(void);
 void freeTriangleFaceMap(TriangleFaceMap *map);
 

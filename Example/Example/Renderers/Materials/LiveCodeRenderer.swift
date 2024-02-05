@@ -50,6 +50,11 @@ class LiveCodeRenderer: BaseRenderer {
         #if os(macOS)
         openEditor()
         #endif
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     func copySatinCore() {

@@ -74,6 +74,11 @@ class CameraControllerRenderer: BaseRenderer {
     override func setup() {
         scene.attach(cameraController.target)
         cameraController.target.add(targetMesh)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

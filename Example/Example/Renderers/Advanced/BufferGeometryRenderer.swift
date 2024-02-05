@@ -192,6 +192,11 @@ class BufferGeometryRenderer: BaseRenderer {
         }
 
         camera.lookAt(target: .zero)
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     deinit {

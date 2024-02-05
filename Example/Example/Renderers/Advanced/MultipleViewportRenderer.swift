@@ -81,6 +81,12 @@ class MultipleViewportRenderer: BaseRenderer {
 
         subCamera1.lookAt(target: .zero)
         subCamera1.update()
+
+#if os(visionOS)
+        renderer.setClearColor(.zero)
+        subRenderer.setClearColor(.zero)
+        metalView.backgroundColor = .clear
+#endif
     }
 
     override func update() {
