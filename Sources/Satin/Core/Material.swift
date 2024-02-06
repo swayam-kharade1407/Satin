@@ -104,6 +104,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         didSet {
             parameters.delegate = self
             uniformsNeedsUpdate = true
+            objectWillChange.send()
         }
     }
 
@@ -613,12 +614,6 @@ public extension Material {
         delegate?.updated(material: self)
     }
 }
-
-//extension Material: Hashable {
-//    public func hash(into hasher: inout Hasher) {
-//        hasher.combine(id)
-//    }
-//}
 
 extension Material: Equatable {
     public static func == (lhs: Material, rhs: Material) -> Bool {

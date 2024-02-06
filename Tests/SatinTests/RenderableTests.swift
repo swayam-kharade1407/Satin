@@ -12,7 +12,7 @@ class RenderableTests: XCTestCase {
     func testShaderCompilation() {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
-        let context = Context(device, 1, .bgra8Unorm)
+        let context = Context(device: device, sampleCount: 1, colorPixelFormat: .bgra8Unorm)
         let label = "BasicColor"
         let shader = SourceShader(
             label: label,

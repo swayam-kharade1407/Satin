@@ -104,7 +104,6 @@ bool insidePath2(tsPath *path, tsVertex *vertex)
 
 tsVertex *createVertexStructureFromPath(simd_float2 *path, int length, int indexOffset, int localOffset)
 {
-    const float lengthMinusOne = length - 1.0;
     tsVertex *vertices = (tsVertex *)malloc(sizeof(tsVertex) * length);
 
     for (int i = 0; i < length; i++) {
@@ -779,170 +778,26 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
     return success;
 }
 
-// int triangulatePath(simd_float2 **paths, int *lengths, int count, TriangleData *tData) {
-//     int success = 0;
-//     TriangleData triData = createTriangleData();
-//     tsPath *pData = createPathStructureFromPaths(paths, lengths, count, gData->vertexCount, &geometryData);
-//
-//     tsVertex *pool = NULL;
-//     int poolLength = 0;
-//
-//     if (count == 1) {
-//         if (pData->clockwise) { reversePath(pData); }
-//     }
-//     else {
-//         for (int i = 0; i < count; i++) {
-//             tsPath *a = pData + i;
-//             for (int j = i + 1; j < count; j++) {
-//                 tsPath *b = pData + j;
-//                 if (insidePath2(a, b->v)) {
-//                     // B is inside of A
-//                     // if B is already inside of another path, then its enclosed in a bigger path,
-//                     // so unlink the path from the parent
-//                     if (b->parent != NULL) { b->parent = NULL; }
-//                     else {
-//                         b->parent = a;
-//                     }
-//                 }
-//                 else if (insidePath2(b, a->v)) {
-//                     // A is inside of B
-//                     // if A is already inside of another path, then its enclosed in a bigger path,
-//                     // so unlink the path from the parent
-//                     if (a->parent != NULL) { a->parent = NULL; }
-//                     else {
-//                         a->parent = b;
-//                     }
-//                 }
-//             }
-//         }
-//
-//         for (int i = 0; i < count; i++) {
-//             tsPath *inner = pData + i;
-//             tsPath *parent = inner->parent;
-//             if (parent != NULL) {
-//                 if (!inner->clockwise) { reversePath(inner); }
-//                 if (parent->clockwise) { reversePath(parent); }
-//                 combineOuterAndInnerPaths(parent, inner, pool, &poolLength);
-//             }
-//         }
-//     }
-//
-//     for (int i = 0; i < count; i++) {
-//         tsPath *path = pData + i;
-//         bool triangulate = false;
-//         if (path->parent == NULL) {
-//             if (path->clockwise) { reversePath(path); }
-//             triangulate = true;
-//         }
-//
-//         if (triangulate) {
-// #ifdef DEBUGTRIANGULATION
-//             printf("Triangulating path: %d, clockwise: %d\n", path->index, path->clockwise);
-// #endif
-//             TriangulationData triData = (TriangulationData) { .indexCount = 0, .indexData = NULL };
-//             success += _triangulate(path->v, path->length, path->added, &triData);
-//             appendTriangulationData(&geometryData, &triData);
-//             freeTriangulationData(triData);
-// #ifdef DEBUGTRIANGULATION
-//             printf("Triangulated path: %d, clockwise: %d\n", path->index, path->clockwise);
-//             printf("Result: %d\n", success);
-// #endif
-//         }
-//     }
-//
-//     appendGeometryData(gData, &geometryData);
-//     freeGeometryData(&geometryData);
-//
-//     if (pData != NULL) {
-//         freePathVertexStructure(pData, count);
-//         free(pData);
-//     }
-//
-//     if (poolLength > 0) { free(pool); }
-//
-//     return success;
-// }
+// triangulates counter clockwise path
+int triangulatePath(simd_float2 *points, int length, TriangleData *triData) {
 
-// int triangulateMesh(Vertex *vertices, int vertexCount, const uint32_t **faces, int *faceLengths,
-//                     int faceCount, GeometryData *gData, TriangleFaceMap *triangleFaceMap)
-//{
-//     // Copy Vertex Data
-//     GeometryData rData = (GeometryData) {
-//         .vertexCount = vertexCount, .vertexData = vertices, .indexCount = 0, .indexData = NULL
-//     };
-//     copyGeometryData(gData, &rData);
-//
-//     // Create Path Structures & Calculate Total Number of Triangles
-//     tsPath **structures = (tsPath **)malloc(faceCount * sizeof(tsPath *));
-//     int triangleCount = 0;
-//     for (int i = (faceCount - 1); i >= 0; i--) {
-//         int len = faceLengths[i];
-//         triangleCount += len - 2;
-//         structures[i] = createPathStructure(gData->vertexData, faces[i], len);
-//     }
-//
-//     // Set & Allocate Triangle Face Map Data -- this map correlate triangle(s) to the faces they
-//     // came from
-//     triangleFaceMap->count = triangleCount;
-//     triangleFaceMap->data = (uint32_t *)calloc(triangleCount, sizeof(uint32_t));
-//
-//     int success = 0;
-//     int triangles = 0;
-//
-//     for (int i = 0; i < faceCount; i++) {
-//         TriangleData triData = createTriangleData();
-//
-//         int len = faceLengths[i];
-//         tsPath *structure = structures[i];
-//         if (len == 3) {
-//             tsVertex *vertices = structure->v;
-//             // If three faces only, then add manually
-//             triData.count = 1;
-//             triData.indices = (TriangleIndices *)malloc(sizeof(TriangleIndices));
-//             triData.indices[0] = {
-//                 .i0 = uint32_t(vertices[0].index),
-//                 .i1 = uint32_t(vertices[1].index),
-//                 .i2 = uint32_t(vertices[2].index)
-//             };
-//         }
-//         else {
-//             // Perform Triangulation
-//             success += _triangulate(structures[i]->v, len, 0, &triData);
-//         }
-//
-//         if (structure->clockwise) {
-//             for (int k = 0; k < triData.count; k++) {
-//                 TriangleIndices tri = triData.indices[k];
-//                 uint32_t i1 = tri.i1;
-//                 uint32_t i2 = tri.i2;
-//                 triData.indices[k].i1 = i2;
-//                 triData.indices[k].i2 = i1;
-//             }
-//         }
-//
-//         // Set Triangle Face Map Data
-//         int triangleCount = triData.count;
-//         for (int t = 0; t < triangleCount; t++) {
-//             triangleFaceMap->data[triangles + t] = i;
-//         }
-//         triangles += triangleCount;
-//
-//         // Append Triangles to Geometry Data
-//         appendTriangleData(gData, &triData);
-//         freeTriangleData(&triData);
-//     }
-//
-//     // Free Vertex Structures
-//     for (int i = 0; i < faceCount; i++) {
-//         tsPath *structure = structures[i];
-//         freePathVertexStructure(structure, 1);
-//         free(structure);
-//     }
-//     free(structures);
-//
-//     // Return if all the triangulations were successful
-//     return success;
-// }
+    tsVertex vertices[length];
+
+    for (int i = 0; i < length; i++) {
+        const int next = (i + 1) % length;
+        const int prev = (i - 1) < 0 ? (length - 1) : (i - 1);
+
+        vertices[i] = (tsVertex) {
+            .index = i,
+            .v = points[i],
+            .ear = false,
+            .next = &vertices[next],
+            .prev = &vertices[prev],
+        };
+    }
+
+    return _triangulate(vertices, length, 0, triData);
+}
 
 int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gData)
 {
