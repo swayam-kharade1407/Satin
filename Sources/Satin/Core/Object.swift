@@ -613,6 +613,18 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    // MARK: - Root
+
+    public func getRoot() -> Object? {
+        if let parent = self.parent {
+            return parent.getRoot()
+        }
+        else {
+            return self
+        }
+        return nil
+    }
+
     // MARK: - Children
 
     public func getChildren(_ recursive: Bool = true) -> [Object] {
