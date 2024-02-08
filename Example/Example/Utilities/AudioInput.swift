@@ -26,7 +26,7 @@ class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
 
     var cancellables = Set<AnyCancellable>()
 
-    public weak var context: Satin.Context?
+    public var context: Satin.Context?
     public var texture: MTLTexture?
 
     public var windowTypes: [String] = ["Hanning-N", "Hanning-D", "Hamming", "Blackman", "None"]

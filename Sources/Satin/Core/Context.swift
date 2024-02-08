@@ -8,7 +8,7 @@
 
 import Metal
 
-open class Context {
+public struct Context {
     public var device: MTLDevice
     public var sampleCount: Int
     public var colorPixelFormat: MTLPixelFormat
@@ -34,6 +34,8 @@ open class Context {
 
 extension Context: Equatable {
     public static func == (lhs: Context, rhs: Context) -> Bool {
-        lhs === rhs
+        lhs.sampleCount == rhs.sampleCount && lhs.colorPixelFormat == rhs.colorPixelFormat &&
+            lhs.depthPixelFormat == rhs.depthPixelFormat && lhs.stencilPixelFormat == rhs.stencilPixelFormat &&
+            lhs.vertexAmplificationCount == rhs.vertexAmplificationCount
     }
 }

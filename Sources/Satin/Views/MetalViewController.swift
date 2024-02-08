@@ -91,7 +91,7 @@ public class MetalViewController: NSViewController {
         self.renderer.commandQueue = queue
         self.renderer.setup()
         self.renderer.isSetup = true
-        self.renderer.appearance = getAppearance()
+        self.renderer.appearance = self.getAppearance()
 
         self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
         self.metalView.delegate = self.renderer
@@ -109,7 +109,13 @@ public class MetalViewController: NSViewController {
     // MARK: - Appearance
 
     private func getAppearance() -> MetalViewRenderer.Appearance {
-        metalView.effectiveAppearance.name == NSAppearance.Name.darkAqua ? .dark : .light
+        let name = self.metalView.effectiveAppearance.name
+        if name == NSAppearance.Name.vibrantDark || name == NSAppearance.Name.darkAqua {
+            return .dark
+        }
+        else {
+            return .light
+        }
     }
 
     // MARK: - Tracking
@@ -177,8 +183,8 @@ public class MetalViewController: NSViewController {
     }
 
     @objc func updateAppearance() {
-        guard renderer.isSetup else { return }
-        renderer.appearance = getAppearance()
+        guard self.renderer.isSetup else { return }
+        self.renderer.appearance = self.getAppearance()
     }
 
     private func removeEvents() {
@@ -401,7 +407,7 @@ public final class MetalViewController: UIViewController {
         self.renderer.commandQueue = queue
         self.renderer.setup()
         self.renderer.isSetup = true
-        self.renderer.appearance = getAppearance()
+        self.renderer.appearance = self.getAppearance()
 
         self.metalView.metalLayer.pixelFormat = self.renderer.colorPixelFormat
         self.metalView.delegate = self.renderer
@@ -432,9 +438,9 @@ public final class MetalViewController: UIViewController {
     }
 
     override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        guard renderer.isSetup else { return }
+        guard self.renderer.isSetup else { return }
         if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-            self.renderer.appearance = getAppearance()
+            self.renderer.appearance = self.getAppearance()
         }
         super.traitCollectionDidChange(previousTraitCollection)
     }

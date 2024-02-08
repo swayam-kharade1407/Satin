@@ -1,6 +1,6 @@
 //
-//  ForgeMetalView.swift
-//  Forging
+//  MetalView.swift
+//  Satin
 //
 //  Created by Reza Ali on 1/21/24.
 //
@@ -37,8 +37,8 @@ public class MetalView: NSView, CALayerDelegate {
             _displayLinkPaused
         }
         set {
-#if DEBUG_VIEWS
-            print("isPaused - ForgeMetalView: \(newValue)")
+#if DEBUG_VIEW
+            print("isPaused - MetalView: \(newValue)")
 #endif
             if newValue {
                 pauseRenderLoop()
@@ -84,10 +84,9 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Deinit
 
     deinit {
-#if DEBUG_VIEWS
-        print("\ndeinit - ForgeMetalView: \(delegate?.id)\n")
+#if DEBUG_VIEW
+        print("\ndeinit - MetalView: \(delegate?.id)\n")
 #endif
-        stopRenderLoop()
     }
 
     // MARK: - Layer
@@ -99,8 +98,8 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Configure
 
     private func configure() {
-#if DEBUG_VIEWS
-        print("\n\n\nconfigure - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("\n\n\nconfigure - MetalView: \(delegate?.id)")
 #endif
         allowedTouchTypes = [.indirect]
         wantsRestingTouches = false
@@ -115,7 +114,7 @@ public class MetalView: NSView, CALayerDelegate {
     // MARK: - Render
 
     private func render() {
-//        print("render - ForgeMetalView")
+//        print("render - MetalView")
 
         delegate?.draw(metalLayer: metalLayer)
     }
@@ -126,12 +125,32 @@ public class MetalView: NSView, CALayerDelegate {
         super.viewDidMoveToWindow()
 
         if let window = window {
-#if DEBUG_VIEWS
-            print("viewDidMoveToWindow - ForgeMetalView: \(delegate?.id), \(window)")
+#if DEBUG_VIEW
+            print("viewDidMoveToWindow - MetalView: \(delegate?.id), \(window)")
 #endif
             setupRenderLoop(screen: window.screen)
             resizeDrawable()
         }
+        else {
+#if DEBUG_VIEW
+            print("viewDidMoveToWindow - MetalView: \(delegate?.id) - NO WINDOW")
+            stopRenderLoop()
+#endif
+        }
+    }
+
+    public override func viewDidHide() {
+        super.viewDidHide()
+#if DEBUG_VIEW
+        print("viewDidHide - MetalView: \(delegate?.id)")
+#endif
+    }
+
+    public override func viewDidUnhide() {
+        super.viewDidUnhide()
+#if DEBUG_VIEW
+        print("viewDidUnhide - MetalView: \(delegate?.id)")
+#endif
     }
 
     // MARK: - Event Based Rendering
@@ -148,23 +167,25 @@ public class MetalView: NSView, CALayerDelegate {
         render()
     }
 
-    public override func viewDidChangeEffectiveAppearance() {
+    override public func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
-#if DEBUG_VIEWS
-        print("viewDidChangeEffectiveAppearance - ForgeMetalView: \(metalView.effectiveAppearance.name)")
+#if DEBUG_VIEW
+        print("viewDidChangeEffectiveAppearance - MetalView: \(self.effectiveAppearance.name)")
 #endif
         if let metalViewController = nextResponder as? MetalViewController {
             metalViewController.updateAppearance()
         }
-        
+
         render()
     }
 
     // MARK: - Render Loop
 
-    private func setupRenderLoop(screen: NSScreen?) {
-#if DEBUG_VIEWS
-        print("setupRenderLoop - ForgeMetalView: \(delegate?.id)")
+    internal func setupRenderLoop(screen: NSScreen?) {
+        guard _displayLink == nil else { return }
+
+#if DEBUG_VIEW
+        print("setupRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displaySource = DispatchSource.makeUserDataAddSource(queue: DispatchQueue.main)
         _displaySource!.setEventHandler { [weak self] in
@@ -202,10 +223,10 @@ public class MetalView: NSView, CALayerDelegate {
         )
     }
 
-    private func pauseRenderLoop() {
+    internal func pauseRenderLoop() {
         if let displayLink = _displayLink, !_displayLinkPaused {
-#if DEBUG_VIEWS
-            print("pauseRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+            print("pauseRenderLoop - MetalView: \(delegate?.id)")
 #endif
             CVDisplayLinkStop(displayLink)
         }
@@ -213,10 +234,10 @@ public class MetalView: NSView, CALayerDelegate {
         _displayLinkPaused = true
     }
 
-    private func resumeRenderLoop() {
+    internal func resumeRenderLoop() {
         if let displayLink = _displayLink, _displayLinkPaused {
-#if DEBUG_VIEWS
-            print("resumeRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+            print("resumeRenderLoop - MetalView: \(delegate?.id)")
 #endif
             CVDisplayLinkStart(displayLink)
         }
@@ -226,21 +247,20 @@ public class MetalView: NSView, CALayerDelegate {
 
     func stopRenderLoop() {
         guard _displayLink != nil else { return }
-#if DEBUG_VIEWS
-        print("stopRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("stopRenderLoop - MetalView: \(delegate?.id)")
 #endif
         pauseRenderLoop()
 
         _displayLink = nil
-
         _displaySource?.cancel()
         _displaySource = nil
     }
 
     @objc func windowWillClose(_ notification: Notification) {
         guard notification.object as AnyObject? === window else { return }
-#if DEBUG_VIEWS
-        print("windowWillClose - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("windowWillClose - MetalView: \(delegate?.id)")
 #endif
         stopRenderLoop()
     }
@@ -273,8 +293,8 @@ public class MetalView: NSView, CALayerDelegate {
 
         guard newSize.height != metalLayer.drawableSize.height ||
             newSize.width != metalLayer.drawableSize.width else { return }
-#if DEBUG_VIEWS
-        print("resizeDrawable - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("resizeDrawable - MetalView: \(delegate?.id)")
 #endif
         metalLayer.drawableSize = newSize
 
@@ -362,8 +382,8 @@ public class MetalView: UIView {
             _displayLinkPaused
         }
         set {
-#if DEBUG_VIEWS
-            print("set(isPaused) - ForgeMetalView: \(delegate?.id) - isPaused: \(newValue)")
+#if DEBUG_VIEW
+            print("set(isPaused) - MetalView: \(delegate?.id) - isPaused: \(newValue)")
 #endif
             if newValue {
                 pauseRenderLoop()
@@ -411,8 +431,8 @@ public class MetalView: UIView {
     // MARK: - Deinit
 
     deinit {
-#if DEBUG_VIEWS
-        print("\ndeinit - ForgeMetalView: \(delegate?.id)\n")
+#if DEBUG_VIEW
+        print("\ndeinit - MetalView: \(delegate?.id)\n")
 #endif
         NotificationCenter.default.removeObserver(self)
 
@@ -428,8 +448,8 @@ public class MetalView: UIView {
     // MARK: - Configure
 
     private func configure() {
-#if DEBUG_VIEWS
-        print("configure - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("configure - MetalView: \(delegate?.id)")
 #endif
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
@@ -446,8 +466,8 @@ public class MetalView: UIView {
 
     override public func didMoveToWindow() {
         super.didMoveToWindow()
-#if DEBUG_VIEWS
-        print("didMoveToWindow - ForgeMetalView: \(delegate?.id), - window: \(window)")
+#if DEBUG_VIEW
+        print("didMoveToWindow - MetalView: \(delegate?.id), - window: \(window)")
 #endif
         if window != nil {
             setupRenderLoop()
@@ -461,8 +481,8 @@ public class MetalView: UIView {
     // MARK: - Render Loop
 
     private func setupRenderLoop() {
-#if DEBUG_VIEWS
-        print("setupRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("setupRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = true
         _displayLink?.invalidate()
@@ -491,30 +511,30 @@ public class MetalView: UIView {
     }
 
     @objc func didEnterBackground(_ notification: Notification) {
-#if DEBUG_VIEWS
-        print("didEnterBackground - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("didEnterBackground - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = true
     }
 
     @objc func willResignActive(_ notification: Notification) {
-#if DEBUG_VIEWS
-        print("willResignActive - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("willResignActive - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = true
     }
 
     @objc func willEnterForeground(_ notification: Notification) {
-#if DEBUG_VIEWS
-        print("willEnterForeground - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("willEnterForeground - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = _displayLinkPaused
     }
 
     private func stopRenderLoop() {
         guard _displayLink != nil else { return }
-#if DEBUG_VIEWS
-        print("stopRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("stopRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = true
         _displayLink?.invalidate()
@@ -522,16 +542,16 @@ public class MetalView: UIView {
     }
 
     private func pauseRenderLoop() {
-#if DEBUG_VIEWS
-        print("pauseRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("pauseRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displayLinkPaused = true
         _displayLink?.isPaused = true
     }
 
     private func resumeRenderLoop() {
-#if DEBUG_VIEWS
-        print("resumeRenderLoop - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("resumeRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displayLinkPaused = false
         _displayLink?.isPaused = false
@@ -599,8 +619,8 @@ public class MetalView: UIView {
 
         guard newSize.height != metalLayer.drawableSize.height ||
             newSize.width != metalLayer.drawableSize.width else { return }
-#if DEBUG_VIEWS
-        print("resizeDrawable - ForgeMetalView: \(delegate?.id)")
+#if DEBUG_VIEW
+        print("resizeDrawable - MetalView: \(delegate?.id)")
 #endif
         metalLayer.drawableSize = newSize
 

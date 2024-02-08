@@ -8,6 +8,42 @@
 import Metal
 
 public final class DepthMaterial: Material {
+    public var color: Bool {
+        get {
+            (get("Color") as! BoolParameter).value
+        }
+        set {
+            set("Color", newValue)
+        }
+    }
+
+    public var invert: Bool {
+        get {
+            (get("Invert") as! BoolParameter).value
+        }
+        set {
+            set("Invert", newValue)
+        }
+    }
+
+    public var near: Float {
+        get {
+            (get("Near") as! FloatParameter).value
+        }
+        set {
+            set("Near", newValue)
+        }
+    }
+
+    public var far: Float {
+        get {
+            (get("Far") as! FloatParameter).value
+        }
+        set {
+            set("Far", newValue)
+        }
+    }
+
     public init(color: Bool = true, invert: Bool = false, camera: Camera? = nil) {
         super.init()
         set("Color", color)

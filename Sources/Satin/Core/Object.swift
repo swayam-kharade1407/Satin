@@ -21,6 +21,7 @@ open class Object: Codable, ObservableObject {
         didSet {
             if context != nil, context != oldValue {
                 setup()
+                objectWillChange.send()
             }
         }
     }
