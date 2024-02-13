@@ -101,13 +101,13 @@ public class MetalView: NSView, CALayerDelegate {
 #if DEBUG_VIEW
         print("\n\n\nconfigure - MetalView: \(delegate?.id)")
 #endif
-        allowedTouchTypes = [.indirect]
+        allowedTouchTypes = [.indirect, .direct]
         wantsRestingTouches = false
 
         autoresizingMask = [.width, .height]
 
         wantsLayer = true
-        layerContentsRedrawPolicy = .duringViewResize
+        layerContentsRedrawPolicy = .crossfade
         metalLayer.delegate = self
     }
 
@@ -491,7 +491,7 @@ public class MetalView: UIView {
         let displayLink = CADisplayLink(target: self, selector: #selector(render))
         displayLink.isPaused = _displayLinkPaused
         displayLink.preferredFramesPerSecond = preferredFramesPerSecond
-        displayLink.add(to: .main, forMode: .common)
+        displayLink.add(to: .main, forMode: .default)
 
         _displayLink = displayLink
 
