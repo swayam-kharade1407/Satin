@@ -96,6 +96,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public var uniforms: UniformBuffer?
 
+    public let parametersSetPublisher = PassthroughSubject<ParameterGroup, Never>()
     public private(set) lazy var parameters: ParameterGroup = {
         let params = ParameterGroup(label)
         params.delegate = self
@@ -105,6 +106,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
             parameters.delegate = self
             uniformsNeedsUpdate = true
             objectWillChange.send()
+            parametersSetPublisher.send(parameters)
         }
     }
 
@@ -281,6 +283,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         setupDepthStencilState()
         setupShader()
         setupUniforms()
+        objectWillChange.send()
     }
 
     func setupDepthStencilState() {
@@ -611,6 +614,7 @@ public extension Material {
         parameters.label = newParameters.label
         uniformsNeedsUpdate = true
         objectWillChange.send()
+        parametersSetPublisher.send(parameters)
         delegate?.updated(material: self)
     }
 }
