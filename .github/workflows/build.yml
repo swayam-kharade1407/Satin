@@ -9,7 +9,7 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: latest
       - name: Check out Satin 
         uses: actions/checkout@v2
       - name: Build Satin 
