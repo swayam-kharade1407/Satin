@@ -12,7 +12,7 @@ import MetalKit
 import Satin
 
 class OctasphereRenderer: BaseRenderer {
-    lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, resolution: 3), material: BasicDiffuseMaterial(0.75))
+    lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, resolution: 3), material: BasicDiffuseMaterial(hardness: 0.75))
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
 

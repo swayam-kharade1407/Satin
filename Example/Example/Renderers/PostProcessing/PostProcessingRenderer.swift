@@ -18,7 +18,7 @@ class PostProcessingRenderer: BaseRenderer {
     class PostMaterial: SourceMaterial {}
 
     var renderTexture: MTLTexture?
-    var material = BasicDiffuseMaterial(0.7)
+    var material = BasicDiffuseMaterial(hardness: 0.7)
     var geometry = IcoSphereGeometry(radius: 1.0, resolution: 0)
 
     lazy var scene: Object = {

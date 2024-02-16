@@ -49,7 +49,7 @@ class InstancedMeshRenderer: BaseRenderer {
         let instancedMesh = InstancedMesh(
             label: "Spot",
             geometry: mesh.geometry,
-            material: BasicDiffuseMaterial(0.1),
+            material: BasicDiffuseMaterial(hardness: 0.1),
             count: dim * dim * dim
         )
 

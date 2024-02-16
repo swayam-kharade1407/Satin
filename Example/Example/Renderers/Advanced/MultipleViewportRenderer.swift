@@ -28,7 +28,7 @@ class MultipleViewportRenderer: BaseRenderer {
     var camera = OrthographicCamera()
 
     lazy var subContext = Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float, vertexAmplificationCount: 2)
-    lazy var subMesh = Mesh(geometry: IcosahedronGeometry(size: 0.5), material: BasicDiffuseMaterial(1.0))
+    lazy var subMesh = Mesh(geometry: IcosahedronGeometry(size: 0.5), material: BasicDiffuseMaterial(hardness: 1.0))
 //    lazy var subMesh = Mesh(geometry: IcosahedronGeometry(size: 0.5), material: AmplificationMaterial(pipelinesURL: pipelinesURL))
     lazy var subScene = Object(label: "Subscene", [grid, axisMesh, subMesh])
     lazy var subRenderer = Renderer(context: subContext)

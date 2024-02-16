@@ -40,7 +40,7 @@ class FXAARenderer: BaseRenderer {
                 distance: 0.5,
                 pivot: [0, 0]
             ),
-            material: BasicDiffuseMaterial(1.0)
+            material: BasicDiffuseMaterial(hardness: 1.0)
         )
         return mesh
     }()

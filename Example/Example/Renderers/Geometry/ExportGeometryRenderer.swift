@@ -14,7 +14,7 @@ import Satin
 import SatinCore
 
 class ExportGeometryRenderer: BaseRenderer {
-    lazy var material = BasicDiffuseMaterial(0.9)
+    lazy var material = BasicDiffuseMaterial(hardness: 0.9)
 
     lazy var metal: Mesh = {
         let geo = ExtrudedTextGeometry(text: "SATIN", fontName: "Ariel", fontSize: 1, distance: 0.5)

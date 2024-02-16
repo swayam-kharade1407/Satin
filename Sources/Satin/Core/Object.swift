@@ -623,7 +623,6 @@ open class Object: Codable, ObservableObject {
         else {
             return self
         }
-        return nil
     }
 
     // MARK: - Children

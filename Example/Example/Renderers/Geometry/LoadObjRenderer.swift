@@ -38,7 +38,7 @@ class LoadObjRenderer: BaseRenderer {
     func loadOBJ(url: URL) {
         let asset = MDLAsset(url: url, vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: context.device))
         let geometry = Geometry()
-        let mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.0))
+        let mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(hardness: 0.0))
         mesh.label = "Suzanne"
 
         let object0 = asset.object(at: 0)

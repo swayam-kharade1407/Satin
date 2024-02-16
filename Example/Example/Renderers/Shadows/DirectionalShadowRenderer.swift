@@ -15,7 +15,7 @@ class DirectionalShadowRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
     let lightHelperGeo = BoxGeometry(width: 0.1, height: 0.1, depth: 0.5)
-    let lightHelperMat = BasicDiffuseMaterial(0.7)
+    let lightHelperMat = BasicDiffuseMaterial(hardness: 0.7)
 
     lazy var lightHelperMesh0 = Mesh(geometry: lightHelperGeo, material: lightHelperMat)
     lazy var lightHelperMesh1 = Mesh(geometry: lightHelperGeo, material: lightHelperMat)

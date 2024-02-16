@@ -6,16 +6,25 @@
 //
 
 import Metal
+import simd
 
 public final class BasicDiffuseMaterial: BasicColorMaterial {
-    public init(_ hardness: Float = 0.75) {
-        super.init()
-        set("Hardness", hardness)
+    var hardness: Float {
+        get {
+            (get("Hardness") as? FloatParameter)!.value
+        }
+        set {
+            set("Hardness", newValue)
+        }
+    }
+    public init(color: simd_float4 = .one, blending: Blending = .alpha, hardness: Float = 0.75) {
+        super.init(color: color, blending: blending)
+        self.hardness = hardness
     }
 
     public required init() {
         super.init()
-        set("Hardness", 0.75)
+        hardness = 0.75
     }
 
     public required init(from decoder: Decoder) throws {
