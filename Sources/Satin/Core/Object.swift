@@ -701,10 +701,17 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    public func setFrom(_ object: Object) {
-        position = object.position
-        orientation = object.orientation
-        scale = object.scale
+    public func setFrom(object: Object, world: Bool = false) {
+        if world {
+            worldPosition = object.worldPosition
+            worldOrientation = object.worldOrientation
+            worldScale = object.worldScale
+        }
+        else {
+            position = object.position
+            orientation = object.orientation
+            scale = object.scale
+        }
     }
 
     // MARK: - Look At

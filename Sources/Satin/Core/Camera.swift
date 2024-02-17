@@ -136,8 +136,8 @@ open class Camera: Object {
         return simd_make_float3(origin)
     }
 
-    override public func setFrom(_ object: Object) {
-        super.setFrom(object)
+    override public func setFrom(object: Object, world: Bool = false) {
+        super.setFrom(object: object, world: world)
         if let camera = object as? Camera {
             near = camera.near
             far = camera.far

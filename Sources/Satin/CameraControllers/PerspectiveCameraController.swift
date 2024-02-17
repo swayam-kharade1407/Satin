@@ -239,8 +239,8 @@ public final class PerspectiveCameraController: CameraController, Codable {
         do {
             let data = try Data(contentsOf: url)
             let loaded = try JSONDecoder().decode(PerspectiveCameraController.self, from: data)
-            target.setFrom(loaded.target)
-            camera.setFrom(loaded.camera)
+            target.setFrom(object: loaded.target)
+            camera.setFrom(object: loaded.camera)
         } catch {
             print(error.localizedDescription)
         }

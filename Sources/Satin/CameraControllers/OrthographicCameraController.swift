@@ -187,7 +187,7 @@ public final class OrthographicCameraController: CameraController, Codable {
             let data = try Data(contentsOf: url)
             let loaded = try JSONDecoder().decode(OrthographicCameraController.self, from: data)
 
-            camera.setFrom(loaded.camera)
+            camera.setFrom(object: loaded.camera)
 
             defaultZoom = loaded.defaultZoom
             defaultPosition = loaded.defaultPosition
