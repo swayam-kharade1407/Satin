@@ -426,8 +426,9 @@ open class Object: Codable, ObservableObject {
 
     public init() {}
 
-    public init(label: String = "Object", _ children: [Object] = []) {
+    public init(label: String = "Object", visible: Bool = true, _ children: [Object] = []) {
         self.label = label
+        self.visible = visible
         for child in children {
             add(child)
         }
