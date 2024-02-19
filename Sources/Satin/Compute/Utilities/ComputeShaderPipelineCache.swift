@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public final class ComputeShaderPipelineCache {
+public actor ComputeShaderPipelineCache {
     static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
     static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
@@ -18,7 +18,7 @@ public final class ComputeShaderPipelineCache {
     static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
     static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
 
-    public class func invalidate(configuration: ComputeShaderConfiguration) {
+    public static func invalidate(configuration: ComputeShaderConfiguration) {
         invalidateResetPipeline(configuration: configuration)
         invalidateResetPipelineReflection(configuration: configuration)
 
@@ -29,34 +29,32 @@ public final class ComputeShaderPipelineCache {
         invalidatePipelineBuffers(configuration: configuration)
     }
 
-    public class func invalidateResetPipeline(configuration: ComputeShaderConfiguration) {
+    public static func invalidateResetPipeline(configuration: ComputeShaderConfiguration) {
         resetPipelineCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidateResetPipelineReflection(configuration: ComputeShaderConfiguration) {
+    public static func invalidateResetPipelineReflection(configuration: ComputeShaderConfiguration) {
         resetPipelineReflectionCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidateUpdatePipeline(configuration: ComputeShaderConfiguration) {
+    public static func invalidateUpdatePipeline(configuration: ComputeShaderConfiguration) {
         updatePipelineCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidateUpdatePipelineReflection(configuration: ComputeShaderConfiguration) {
+    public static func invalidateUpdatePipelineReflection(configuration: ComputeShaderConfiguration) {
         updatePipelineReflectionCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidatePipelineParameters(configuration: ComputeShaderConfiguration) {
+    public static func invalidatePipelineParameters(configuration: ComputeShaderConfiguration) {
         pipelineParametersCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidatePipelineBuffers(configuration: ComputeShaderConfiguration) {
+    public static func invalidatePipelineBuffers(configuration: ComputeShaderConfiguration) {
         pipelineBuffersCache.removeValue(forKey: configuration)
     }
 
-    public class func getResetPipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
-        if let pipeline = resetPipelineCache[configuration] {
-            return pipeline
-        }
+    public static func getResetPipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
+        if let pipeline = resetPipelineCache[configuration] { return pipeline }
         else {
             return try getPipeline(
                 functionName: configuration.resetFunctionName,
@@ -67,10 +65,8 @@ public final class ComputeShaderPipelineCache {
         }
     }
 
-    public class func getUpdatePipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
-        if let pipeline = updatePipelineCache[configuration] {
-            return pipeline
-        }
+    public static func getUpdatePipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
+        if let pipeline = updatePipelineCache[configuration] { return pipeline }
         else {
             return try getPipeline(
                 functionName: configuration.updateFunctionName,
@@ -81,15 +77,15 @@ public final class ComputeShaderPipelineCache {
         }
     }
 
-    public class func getResetPipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
+    public static func getResetPipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
         resetPipelineReflectionCache[configuration]
     }
 
-    public class func getUpdatePipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
+    public static func getUpdatePipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
         updatePipelineReflectionCache[configuration]
     }
 
-    public class func getPipelineParameters(configuration: ComputeShaderConfiguration) throws -> ParameterGroup? {
+    public static func getPipelineParameters(configuration: ComputeShaderConfiguration) throws -> ParameterGroup? {
         if let parameters = pipelineParametersCache[configuration] { return parameters }
 
         if let reflection = updatePipelineReflectionCache[configuration] {
@@ -113,7 +109,7 @@ public final class ComputeShaderPipelineCache {
         return nil
     }
 
-    public class func getPipelineBuffers(configuration: ComputeShaderConfiguration) throws -> [ParameterGroup]? {
+    public static func getPipelineBuffers(configuration: ComputeShaderConfiguration) throws -> [ParameterGroup]? {
         if let parameters = pipelineBuffersCache[configuration] { return parameters }
 
         if let reflection = updatePipelineReflectionCache[configuration] {
@@ -142,7 +138,7 @@ public final class ComputeShaderPipelineCache {
         return nil
     }
 
-    private class func getPipeline(
+    private static func getPipeline(
         functionName: String,
         configuration: ComputeShaderConfiguration,
         pipelineCache: inout [ComputeShaderConfiguration: MTLComputePipelineState],

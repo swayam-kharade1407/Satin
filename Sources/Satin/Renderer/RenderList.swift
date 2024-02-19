@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RenderList {
+final class RenderList {
     public var isEmpty: Bool {
         renderables.isEmpty
     }

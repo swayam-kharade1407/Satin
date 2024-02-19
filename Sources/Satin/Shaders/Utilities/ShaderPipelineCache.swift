@@ -8,36 +8,36 @@
 import Foundation
 import Metal
 
-public final class ShaderPipelineCache {
+public actor ShaderPipelineCache {
     static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
     static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
 
-    public class func invalidate(configuration: ShaderConfiguration) {
+    public static func invalidate(configuration: ShaderConfiguration) {
         invalidatePipeline(configuration: configuration)
         invalidatePipelineReflection(configuration: configuration)
         invalidatePipelineParameters(configuration: configuration)
         invalidateShadowPipeline(configuration: configuration)
     }
 
-    public class func invalidatePipeline(configuration: ShaderConfiguration) {
+    public static func invalidatePipeline(configuration: ShaderConfiguration) {
         pipelineCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidatePipelineReflection(configuration: ShaderConfiguration) {
+    public static func invalidatePipelineReflection(configuration: ShaderConfiguration) {
         pipelineReflectionCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidatePipelineParameters(configuration: ShaderConfiguration) {
+    public static func invalidatePipelineParameters(configuration: ShaderConfiguration) {
         pipelineParametersCache.removeValue(forKey: configuration)
     }
 
-    public class func invalidateShadowPipeline(configuration: ShaderConfiguration) {
+    public static func invalidateShadowPipeline(configuration: ShaderConfiguration) {
         shadowPipelineCache.removeValue(forKey: configuration)
     }
 
-    public class func getPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
+    public static func getPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
         if let pipeline = pipelineCache[configuration] { return pipeline }
 
 //        print("Creating Shader Pipeline: \(configuration)")
@@ -74,7 +74,7 @@ public final class ShaderPipelineCache {
         }
     }
 
-    public class func getShadowPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
+    public static func getShadowPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
         if let shadowPipeline = shadowPipelineCache[configuration] { return shadowPipeline }
 
         guard let context = configuration.context,
@@ -98,11 +98,11 @@ public final class ShaderPipelineCache {
         return pipeline
     }
 
-    public class func getPipelineReflection(configuration: ShaderConfiguration) -> MTLRenderPipelineReflection? {
+    public static func getPipelineReflection(configuration: ShaderConfiguration) -> MTLRenderPipelineReflection? {
         pipelineReflectionCache[configuration]
     }
 
-    public class func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {
+    public static func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {
         if let parameters = pipelineParametersCache[configuration] { return parameters }
 
         if let reflection = pipelineReflectionCache[configuration], let fragmentArgs = reflection.fragmentArguments {

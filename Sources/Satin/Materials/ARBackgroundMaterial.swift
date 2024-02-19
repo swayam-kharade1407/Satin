@@ -10,7 +10,7 @@
 import ARKit
 import Metal
 
-class ARBackgroundMaterial: Material {
+public final class ARBackgroundMaterial: Material {
     public var color: simd_float4 {
         set {
             (get("Color") as! Float4Parameter).value = newValue
@@ -56,7 +56,7 @@ class ARBackgroundMaterial: Material {
         try super.init(from: decoder)
     }
 
-    override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    public override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
         if let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr {

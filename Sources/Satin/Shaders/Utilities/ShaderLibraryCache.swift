@@ -8,37 +8,38 @@
 import Foundation
 import Metal
 
-public final class ShaderLibraryCache {
+public actor ShaderLibraryCache {
     static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
     static var defaultLibrary: MTLLibrary?
 
-    public class func invalidateLibrary(configuration: ShaderLibraryConfiguration) {
+    public static func invalidateLibrary(configuration: ShaderLibraryConfiguration) {
         cache.removeValue(forKey: configuration)
     }
 
-    public class func getDefaultLibrary(device: MTLDevice) -> MTLLibrary? {
-        guard defaultLibrary == nil else { return defaultLibrary! }
+    public static func getDefaultLibrary(device: MTLDevice) -> MTLLibrary? {
+        if let defaultLibrary { return defaultLibrary }
+
         defaultLibrary = device.makeDefaultLibrary()
         return defaultLibrary
     }
 
-    public class func getLibrary(configuration: ShaderLibraryConfiguration, device: MTLDevice) throws -> MTLLibrary? {
-        if let library = ShaderLibraryCache.cache[configuration] { return library }
+    public static func getLibrary(configuration: ShaderLibraryConfiguration, device: MTLDevice) throws -> MTLLibrary? {
+        if let library = cache[configuration] { return library }
 
 //        print("Creating Shader Library: \(configuration.label)")
 
         if let source = try ShaderLibrarySourceCache.getLibrarySource(configuration: configuration) {
             let library = try device.makeLibrary(source: source, options: nil)
-            ShaderLibraryCache.cache[configuration] = library
+            cache[configuration] = library
             return library
         }
         else if let url = configuration.libraryURL {
             let library = try device.makeLibrary(URL: url)
-            ShaderLibraryCache.cache[configuration] = library
+            cache[configuration] = library
             return library
         }
         else if let defaultLibrary = getDefaultLibrary(device: device) {
-            ShaderLibraryCache.cache[configuration] = defaultLibrary
+            cache[configuration] = defaultLibrary
             return defaultLibrary
         }
 

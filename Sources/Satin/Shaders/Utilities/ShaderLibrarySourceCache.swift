@@ -7,15 +7,15 @@
 
 import Foundation
 
-public final class ShaderLibrarySourceCache {
+public actor ShaderLibrarySourceCache {
     static var cache: [ShaderLibraryConfiguration: String] = [:]
 
-    class func invalidateLibrarySource(configuration: ShaderLibraryConfiguration) {
+    static func invalidateLibrarySource(configuration: ShaderLibraryConfiguration) {
         cache.removeValue(forKey: configuration)
     }
 
-    class func getLibrarySource(configuration: ShaderLibraryConfiguration) throws -> String? {
-        if let source = ShaderLibrarySourceCache.cache[configuration] { return source }
+    static func getLibrarySource(configuration: ShaderLibraryConfiguration) throws -> String? {
+        if let source = cache[configuration] { return source }
 
 //        print("Creating Shader Library Source: \(configuration.label)")
 

@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public class RenderEncoderState {
+public final class RenderEncoderState {
     public let renderEncoder: MTLRenderCommandEncoder
 
     public var cullMode: MTLCullMode? {

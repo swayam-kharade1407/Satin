@@ -9,7 +9,7 @@
 
 import AppKit
 
-public class MetalViewController: NSViewController {
+public final class MetalViewController: NSViewController {
     public let renderer: MetalViewRenderer
     public private(set) var metalView = MetalView()
 

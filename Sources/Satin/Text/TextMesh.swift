@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class TextMesh: Mesh {
+public final class TextMesh: Mesh {
     public var font: FontAtlas {
         get {
             (geometry as! TextGeometry).font

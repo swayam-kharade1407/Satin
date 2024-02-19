@@ -28,7 +28,7 @@ public protocol TouchDelegate: AnyObject {
     func touchesCancelled(with event: NSEvent)
 }
 
-public class MetalView: NSView, CALayerDelegate {
+public final class MetalView: NSView, CALayerDelegate {
     public weak var dragDelegate: DragDelegate?
     public weak var touchDelegate: TouchDelegate?
 
@@ -376,7 +376,7 @@ import Foundation
 import QuartzCore
 import UIKit
 
-public class MetalView: UIView {
+public final class MetalView: UIView {
     public var isPaused: Bool {
         get {
             _displayLinkPaused

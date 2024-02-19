@@ -7,14 +7,14 @@
 
 import Foundation
 
-public final class ComputeShaderLibrarySourceCache {
+public actor ComputeShaderLibrarySourceCache {
     static var cache: [ComputeShaderLibraryConfiguration: String] = [:]
 
-    class func invalidateLibrarySource(configuration: ComputeShaderLibraryConfiguration) {
+    static func invalidateLibrarySource(configuration: ComputeShaderLibraryConfiguration) {
         cache.removeValue(forKey: configuration)
     }
 
-    class func getLibrarySource(configuration: ComputeShaderLibraryConfiguration) throws -> String? {
+    static func getLibrarySource(configuration: ComputeShaderLibraryConfiguration) throws -> String? {
         if let source = ComputeShaderLibrarySourceCache.cache[configuration] { return source }
 
 //        print("Creating Compute Shader Library Source: \(configuration.label)")
@@ -36,7 +36,7 @@ public final class ComputeShaderLibrarySourceCache {
 
         source += shaderSource
 
-        ComputeShaderLibrarySourceCache.cache[configuration] = source
+        cache[configuration] = source
 
         return source
     }
