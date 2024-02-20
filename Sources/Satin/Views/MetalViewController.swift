@@ -18,9 +18,6 @@ public final class MetalViewController: NSViewController {
     override public func resignFirstResponder() -> Bool { return true }
 
     private var trackingArea: NSTrackingArea?
-    private var keyDownHandler: Any?
-    private var keyUpHandler: Any?
-    private var flagsChangedHandler: Any?
 
     // MARK: - Init
 
@@ -145,29 +142,6 @@ public final class MetalViewController: NSViewController {
 #if DEBUG_VIEWS
         print("setupEvents - MetalViewController: \(self.renderer.id)")
 #endif
-        self.metalView.allowedTouchTypes = .indirect
-
-        self.keyDownHandler = NSEvent.addLocalMonitorForEvents(
-            matching: .keyDown,
-            handler: { [weak self] event -> NSEvent? in
-                self?.keyDown(with: event)
-            }
-        )
-
-        self.keyUpHandler = NSEvent.addLocalMonitorForEvents(
-            matching: .keyUp,
-            handler: { [weak self] event -> NSEvent? in
-                self?.keyUp(with: event)
-            }
-        )
-
-        self.flagsChangedHandler = NSEvent.addLocalMonitorForEvents(
-            matching: .flagsChanged,
-            handler: { [weak self] event -> NSEvent? in
-                self?.flagsChanged(with: event)
-            }
-        )
-
         DistributedNotificationCenter.default.addObserver(
             self,
             selector: #selector(self.updateAppearance),
@@ -194,141 +168,120 @@ public final class MetalViewController: NSViewController {
 
         NotificationCenter.default.removeObserver(self)
         DistributedNotificationCenter.default.removeObserver(self)
-
-        if let keyDownHandler = self.keyDownHandler {
-            NSEvent.removeMonitor(keyDownHandler)
-            self.keyDownHandler = nil
-        }
-
-        if let keyUpHandler = self.keyUpHandler {
-            NSEvent.removeMonitor(keyUpHandler)
-            self.keyUpHandler = nil
-        }
-
-        if let flagsChangedHandler = self.flagsChangedHandler {
-            NSEvent.removeMonitor(flagsChangedHandler)
-            self.flagsChangedHandler = nil
-        }
     }
 
     // MARK: - Events
 
+    override public func performKeyEquivalent(with event: NSEvent) -> Bool {
+#if DEBUG_VIEWS
+        print("MetalViewController performKeyEquivalent: \(event.characters)")
+#endif
+        guard !self.renderer.performKeyEquivalent(with: event) else { return true }
+        return super.performKeyEquivalent(with: event)
+    }
+
+    override public func keyDown(with event: NSEvent) {
+#if DEBUG_VIEWS
+        print("MetalViewController keyDown: \(event.characters)")
+#endif
+        guard !self.renderer.keyDown(with: event) else { return }
+        super.keyDown(with: event)
+    }
+
+    override public func keyUp(with event: NSEvent) {
+#if DEBUG_VIEWS
+        print("MetalViewController keyUp: \(event.characters)")
+#endif
+        guard !self.renderer.keyUp(with: event) else { return }
+        super.keyUp(with: event)
+    }
+
+    override public func flagsChanged(with event: NSEvent) {
+#if DEBUG_VIEWS
+        print("MetalViewController flagsChanged: \(event.modifierFlags)")
+#endif
+        guard !self.renderer.flagsChanged(with: event) else { return }
+        super.flagsChanged(with: event)
+    }
+
     override public func touchesBegan(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.touchesBegan(with: event)
     }
 
     override public func touchesEnded(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.touchesEnded(with: event)
     }
 
     override public func touchesMoved(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.touchesMoved(with: event)
     }
 
     override public func touchesCancelled(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.touchesCancelled(with: event)
     }
 
     override public func mouseMoved(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseMoved(with: event)
     }
 
     override public func mouseDown(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseDown(with: event)
     }
 
     override public func mouseDragged(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseDragged(with: event)
     }
 
     override public func mouseUp(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseUp(with: event)
     }
 
     override public func rightMouseDown(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.rightMouseDown(with: event)
     }
 
     override public func rightMouseDragged(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.rightMouseDragged(with: event)
     }
 
     override public func rightMouseUp(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.rightMouseUp(with: event)
     }
 
     override public func otherMouseDown(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.otherMouseDown(with: event)
     }
 
     override public func otherMouseDragged(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.otherMouseDragged(with: event)
     }
 
     override public func otherMouseUp(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.otherMouseUp(with: event)
     }
 
     override public func mouseEntered(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseEntered(with: event)
     }
 
     override public func mouseExited(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.mouseExited(with: event)
     }
 
     override public func magnify(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.magnify(with: event)
     }
 
     override public func rotate(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.rotate(with: event)
     }
 
     override public func swipe(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.swipe(with: event)
     }
 
     override public func scrollWheel(with event: NSEvent) {
-        guard event.window == self.view.window else { return }
         self.renderer.scrollWheel(with: event)
-    }
-
-    public func keyDown(with event: NSEvent) -> NSEvent? {
-        guard event.window == self.view.window else { return event }
-        self.renderer.keyDown(with: event)
-        return event
-    }
-
-    public func keyUp(with event: NSEvent) -> NSEvent? {
-        guard event.window == self.view.window else { return event }
-        self.renderer.keyUp(with: event)
-        return event
-    }
-
-    private func flagsChanged(with event: NSEvent) -> NSEvent? {
-        guard event.window == self.metalView.window else { return event }
-        self.renderer.flagsChanged(with: event)
-        return event
     }
 }
 

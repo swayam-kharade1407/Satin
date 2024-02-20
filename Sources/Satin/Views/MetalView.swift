@@ -49,15 +49,15 @@ public final class MetalView: NSView, CALayerDelegate {
         }
     }
 
-    public var drawableSize: CGSize {
-        metalLayer.drawableSize
-    }
+    public var drawableSize: CGSize { metalLayer.drawableSize }
 
     weak var delegate: MetalViewRendererDelegate?
 
     public private(set) lazy var metalLayer: CAMetalLayer = self.layer as! CAMetalLayer
 
     public var contentScaleFactor: CGFloat { window?.screen?.backingScaleFactor ?? 1 }
+
+    override public var acceptsFirstResponder: Bool { return true }
 
     private var _displayLinkPaused = false
     private var _displayLink: CVDisplayLink?
@@ -111,14 +111,6 @@ public final class MetalView: NSView, CALayerDelegate {
         metalLayer.delegate = self
     }
 
-    // MARK: - Render
-
-    private func render() {
-//        print("render - MetalView")
-
-        delegate?.draw(metalLayer: metalLayer)
-    }
-
     // MARK: - View Window Change
 
     override public func viewDidMoveToWindow() {
@@ -139,18 +131,24 @@ public final class MetalView: NSView, CALayerDelegate {
         }
     }
 
-    public override func viewDidHide() {
+    override public func viewDidHide() {
         super.viewDidHide()
 #if DEBUG_VIEW
         print("viewDidHide - MetalView: \(delegate?.id)")
 #endif
     }
 
-    public override func viewDidUnhide() {
+    override public func viewDidUnhide() {
         super.viewDidUnhide()
 #if DEBUG_VIEW
         print("viewDidUnhide - MetalView: \(delegate?.id)")
 #endif
+    }
+
+    // MARK: - Layer Rendering
+
+    private func render() {
+        delegate?.draw(metalLayer: metalLayer)
     }
 
     // MARK: - Event Based Rendering
@@ -167,10 +165,12 @@ public final class MetalView: NSView, CALayerDelegate {
         render()
     }
 
+    // MARK: - Appearance
+
     override public func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
 #if DEBUG_VIEW
-        print("viewDidChangeEffectiveAppearance - MetalView: \(self.effectiveAppearance.name)")
+        print("viewDidChangeEffectiveAppearance - MetalView: \(effectiveAppearance.name)")
 #endif
         if let metalViewController = nextResponder as? MetalViewController {
             metalViewController.updateAppearance()
@@ -456,12 +456,6 @@ public final class MetalView: UIView {
         metalLayer.delegate = self
     }
 
-    // MARK: - Render
-
-    @objc private func render() {
-        delegate?.draw(metalLayer: metalLayer)
-    }
-
     // MARK: - View Window Change
 
     override public func didMoveToWindow() {
@@ -557,6 +551,12 @@ public final class MetalView: UIView {
         _displayLink?.isPaused = false
     }
 
+    // MARK: - Render
+
+    @objc private func render() {
+        delegate?.draw(metalLayer: metalLayer)
+    }
+    
     // MARK: - Event Based Rendering
 
     override public func display(_ layer: CALayer) {

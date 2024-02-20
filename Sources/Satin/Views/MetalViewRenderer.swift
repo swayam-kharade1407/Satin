@@ -150,11 +150,13 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     open func otherMouseUp(with event: NSEvent) {}
 
-    open func keyDown(with event: NSEvent) {}
+    open func performKeyEquivalent(with event: NSEvent) -> Bool { return false }
 
-    open func keyUp(with event: NSEvent) {}
+    open func keyDown(with event: NSEvent) -> Bool { return false }
 
-    open func flagsChanged(with event: NSEvent) {}
+    open func keyUp(with event: NSEvent) -> Bool { return false }
+
+    open func flagsChanged(with event: NSEvent) -> Bool { return false }
 
     open func magnify(with event: NSEvent) {}
 
@@ -213,18 +215,19 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 #if DEBUG_VIEWS
             print("Creating Depth Texture - MetalViewRenderer: \(id)")
 #endif
+            let multiSample = sampleCount > 1
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = depthPixelFormat
             descriptor.width = width
             descriptor.height = height
             descriptor.sampleCount = sampleCount
-            descriptor.textureType = sampleCount > 1 ? .type2DMultisample : .type2D
+            descriptor.textureType = multiSample ? .type2DMultisample : .type2D
             descriptor.usage = [.renderTarget, .shaderRead]
             descriptor.storageMode = .private
             descriptor.resourceOptions = .storageModePrivate
 
             depthTexture = device.makeTexture(descriptor: descriptor)
-            depthTexture?.label = "\(id) Multisample Depth Texture"
+            depthTexture?.label = "\(id) \(multiSample ? "MultiSample" : "") Depth Texture"
         }
 
         depthTextureNeedsUpdate = depthTexture == nil
