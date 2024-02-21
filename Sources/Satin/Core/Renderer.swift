@@ -296,9 +296,6 @@ open class Renderer {
         renderPassDescriptor.stencilAttachment.storeAction = stencilStoreAction
         renderPassDescriptor.stencilAttachment.clearStencil = clearStencil
 
-        renderPassDescriptor.renderTargetWidth = Int(size.width)
-        renderPassDescriptor.renderTargetHeight = Int(size.height)
-
         if renderLists.isEmpty {
             if colorLoadAction == .clear, let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
 #if DEBUG

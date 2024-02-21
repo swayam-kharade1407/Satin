@@ -107,7 +107,7 @@ public final class MetalView: NSView, CALayerDelegate {
         autoresizingMask = [.width, .height]
 
         wantsLayer = true
-        layerContentsRedrawPolicy = .crossfade
+        layerContentsRedrawPolicy = .duringViewResize
         metalLayer.delegate = self
     }
 
@@ -299,8 +299,6 @@ public final class MetalView: NSView, CALayerDelegate {
         metalLayer.drawableSize = newSize
 
         delegate?.drawableResized(size: newSize, scaleFactor: newScaleFactor)
-
-        render()
     }
 
     // MARK: - Drag & Drop
@@ -625,8 +623,6 @@ public final class MetalView: UIView {
         metalLayer.drawableSize = newSize
 
         delegate?.drawableResized(size: newSize, scaleFactor: newScaleFactor)
-
-        render()
     }
 }
 

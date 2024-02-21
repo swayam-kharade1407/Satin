@@ -181,6 +181,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     internal func draw(metalLayer: CAMetalLayer) {
         updateColorTexture()
         updateDepthTexture()
+
         update()
 
         guard let drawable = metalLayer.nextDrawable(), let commandBuffer = preDraw() else { return }
@@ -190,9 +191,13 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         if sampleCount > 1 {
             renderPassDescriptor.colorAttachments[0].texture = colorTexture
             renderPassDescriptor.colorAttachments[0].resolveTexture = drawable.texture
+            renderPassDescriptor.renderTargetWidth = colorTexture?.width ?? 0
+            renderPassDescriptor.renderTargetHeight = colorTexture?.height ?? 0
         }
         else {
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
+            renderPassDescriptor.renderTargetWidth = drawable.texture.width
+            renderPassDescriptor.renderTargetHeight = drawable.texture.height
         }
         renderPassDescriptor.depthAttachment.texture = depthTexture
 
