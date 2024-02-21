@@ -78,10 +78,12 @@ class BaseRenderer: MetalViewRenderer {
         }
     }
 
-    override func keyDown(with event: NSEvent) {
+    override func keyDown(with event: NSEvent) -> Bool {
         if event.characters == "e" {
             openEditor()
+            return true
         }
+        return false
     }
 #endif
 }

@@ -77,7 +77,7 @@ class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
     )
 
     lazy var startTime = getTime()
-    lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(0.2))
+    lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(hardness: 0.2))
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var renderer = Renderer(context: context, clearColor: .zero)

@@ -48,10 +48,10 @@ class ExportGeometryRenderer: BaseRenderer {
     }
 
     override func setup() {
-#if os(visionOS)
+        #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-#endif
+        #endif
     }
 
     override func update() {
@@ -61,7 +61,6 @@ class ExportGeometryRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -150,11 +149,12 @@ class ExportGeometryRenderer: BaseRenderer {
 
     #if os(macOS)
 
-    override func keyDown(with event: NSEvent) {
-        super.keyDown(with: event)
+    override func keyDown(with event: NSEvent) -> Bool {
         if event.characters == "s" {
             exportObj()
+            return true
         }
+        return false
     }
 
     func exportObj() {
