@@ -25,8 +25,8 @@ fileprivate class ARObject: Object {
         }
     }
 
-    override init(label: String, _ children: [Object] = []) {
-        super.init(label: label, children)
+    override init(label: String, visible: Bool = true, _ children: [Object] = []) {
+        super.init(label: label, visible: visible, children)
         self.visible = false
     }
 
