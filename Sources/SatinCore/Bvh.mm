@@ -199,34 +199,40 @@ BVH createBVHFromFloatData(const void *vertexData, int vertexStride, int vertexC
         triIDs[i] = i;
 
         const uint32_t offset = i * 3;
-        TriangleIndices tri = (TriangleIndices) { offset, offset + 1, offset + 2 };
+        uint32_t i0 = offset;
+        uint32_t i1 = offset + 1;
+        uint32_t i2 = offset + 2;
 
         if (hasTriangles) {
             if (uint32) {
                 uint32_t *indicies = (uint32_t *)indexData;
-                tri = (TriangleIndices) { indicies[offset], indicies[offset + 1], indicies[offset + 2] };
+                i0 = indicies[i0];
+                i1 = indicies[i1];
+                i2 = indicies[i2];
             }
             else {
                 uint16_t *indicies = (uint16_t *)indexData;
-                tri = (TriangleIndices) { indicies[offset], indicies[offset + 1], indicies[offset + 2] };
+                i0 = indicies[i0];
+                i1 = indicies[i1];
+                i2 = indicies[i2];
             }
         }
 
-        triangles[i] = tri;
+        triangles[i] = (TriangleIndices) { i0, i1, i2 };
 
-        const float *v0 = (float *)vertexData + (tri.i0 * vertexStride);
-        const float *v1 = (float *)vertexData + (tri.i1 * vertexStride);
-        const float *v2 = (float *)vertexData + (tri.i2 * vertexStride);
+        const float *v0 = (float *)vertexData + (i0 * vertexStride);
+        const float *v1 = (float *)vertexData + (i1 * vertexStride);
+        const float *v2 = (float *)vertexData + (i2 * vertexStride);
 
-        positions[tri.i0] = simd_make_float3(*v0, *(v0 + 1), *(v0 + 2));
-        positions[tri.i1] = simd_make_float3(*v1, *(v1 + 1), *(v1 + 2));
-        positions[tri.i2] = simd_make_float3(*v2, *(v2 + 1), *(v2 + 2));
+        positions[i0] = simd_make_float3(*v0, *(v0 + 1), *(v0 + 2));
+        positions[i1] = simd_make_float3(*v1, *(v1 + 1), *(v1 + 2));
+        positions[i2] = simd_make_float3(*v2, *(v2 + 1), *(v2 + 2));
 
-        expandBoundsInPlace(&aabb, &positions[tri.i0]);
-        expandBoundsInPlace(&aabb, &positions[tri.i1]);
-        expandBoundsInPlace(&aabb, &positions[tri.i2]);
+        expandBoundsInPlace(&aabb, &positions[i0]);
+        expandBoundsInPlace(&aabb, &positions[i1]);
+        expandBoundsInPlace(&aabb, &positions[i2]);
 
-        centroids[i] = (positions[tri.i0] + positions[tri.i1] + positions[tri.i2]) / 3.0;
+        centroids[i] = (positions[i0] + positions[i1] + positions[i2]) / 3.0;
     }
 
     BVH bvh = (BVH) { .nodes = nodes,

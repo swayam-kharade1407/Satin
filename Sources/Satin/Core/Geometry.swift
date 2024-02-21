@@ -128,21 +128,25 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, indexBufferOffset: Int = 0, vertexStart: Int = 0) {
         let renderEncoder = renderEncoderState.renderEncoder
         if let indexBuffer = indexBuffer, let indexType = indexType {
-            renderEncoder.drawIndexedPrimitives(
-                type: primitiveType,
-                indexCount: indexCount,
-                indexType: indexType,
-                indexBuffer: indexBuffer,
-                indexBufferOffset: indexBufferOffset,
-                instanceCount: instanceCount
-            )
+            if indexCount > 0 {
+                renderEncoder.drawIndexedPrimitives(
+                    type: primitiveType,
+                    indexCount: indexCount,
+                    indexType: indexType,
+                    indexBuffer: indexBuffer,
+                    indexBufferOffset: indexBufferOffset,
+                    instanceCount: instanceCount
+                )
+            }
         } else {
-            renderEncoder.drawPrimitives(
-                type: primitiveType,
-                vertexStart: vertexStart,
-                vertexCount: vertexCount,
-                instanceCount: instanceCount
-            )
+            if vertexCount > 0 {
+                renderEncoder.drawPrimitives(
+                    type: primitiveType,
+                    vertexStart: vertexStart,
+                    vertexCount: vertexCount,
+                    instanceCount: instanceCount
+                )
+            }
         }
     }
 

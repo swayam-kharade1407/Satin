@@ -484,12 +484,13 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
     printf("\n");
 #endif
 
+    const int totalCount = count + added;
     int triangleIndex = 0;
-    data->count = count + added - 2;
+    data->count = totalCount - 2;
     data->indices = (TriangleIndices *)malloc(sizeof(TriangleIndices) * data->count);
 
     tsVertex *v0, *v1, *v2 = vertices, *v3, *v4;
-    int n = count + added;
+    int n = totalCount;
 //    int n = count;
 #ifdef ALLOWFAILEDTRIAGULATIONS
     int indexCache = 0;
@@ -521,7 +522,7 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
 
         if (nCache > 1 && indexCache > 1) {
 #ifdef DEBUGTRIANGULATION
-            printf("\n\nBreaking at n: %d index: %d\n\n", n, v2->index);
+            printf("\n\nBreaking at n: %d index: %d, indexCache: %d\n\n", n, v2->index, indexCache);
             tsVertex *head = v2;
             do {
                 printf("%d ", head->index);
@@ -529,7 +530,9 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
             } while (head != vertices);
             printf("\n");
 #endif
-            return 2;
+            data->count = triangleIndex - indexCache;
+            data->indices = (TriangleIndices *)realloc(data->indices, (sizeof(TriangleIndices) * data->count));
+            return indexCache;
         }
 #endif
 
@@ -539,16 +542,23 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
                 v4 = v3->next;
                 v1 = v2->prev;
                 v0 = v1->prev;
+
 #ifdef DEBUGTRIANGULATION
                 printf("\nLeft: %d\n", n - 1);
                 printf("v0: %d, v1: %d, v2: %d, v3: %d, v4: %d\n", v0->index, v1->index, v2->index, v3->index, v4->index);
                 printf("Ear @ Index: %d\n", triangleIndex);
                 printf("Adding Triangle: %d, %d, %d\n", v1->index, v2->index, v3->index);
-
 #endif
+                const uint32_t i1 = v1->index;
+                const uint32_t i2 = v2->index;
+                const uint32_t i3 = v3->index;
+                
                 // add triangle
-                data->indices[triangleIndex] =
-                    (TriangleIndices) { .i0 = uint32_t(v1->index), .i1 = uint32_t(v2->index), .i2 = uint32_t(v3->index) };
+                data->indices[triangleIndex] = (TriangleIndices) {
+                    .i0 = uint32_t(i1),
+                    .i1 = uint32_t(i2),
+                    .i2 = uint32_t(i3)
+                };
 
                 triangleIndex++;
 
@@ -573,7 +583,6 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
                     head = head->next;
                 } while (head != start);
                 printf("\n");
-
 #endif
                 n--;
                 break;
@@ -781,7 +790,6 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
 // triangulates counter clockwise path
 int triangulatePath(simd_float2 *points, int length, TriangleData *triData)
 {
-
     tsVertex vertices[length];
 
     for (int i = 0; i < length; i++) {
