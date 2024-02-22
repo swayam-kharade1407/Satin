@@ -552,13 +552,9 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
                 const uint32_t i1 = v1->index;
                 const uint32_t i2 = v2->index;
                 const uint32_t i3 = v3->index;
-                
+
                 // add triangle
-                data->indices[triangleIndex] = (TriangleIndices) {
-                    .i0 = uint32_t(i1),
-                    .i1 = uint32_t(i2),
-                    .i2 = uint32_t(i3)
-                };
+                data->indices[triangleIndex] = (TriangleIndices) { .i0 = uint32_t(i1), .i1 = uint32_t(i2), .i2 = uint32_t(i3) };
 
                 triangleIndex++;
 

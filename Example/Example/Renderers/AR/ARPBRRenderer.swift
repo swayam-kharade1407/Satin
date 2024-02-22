@@ -468,7 +468,6 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     func updated(material: Material) {
         print("Material Updated: \(material.label)")
-        _updateInspector = true
     }
 
     internal func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {

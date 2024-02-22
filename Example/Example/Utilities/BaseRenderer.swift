@@ -9,7 +9,6 @@
 import Foundation
 import Metal
 import Satin
-import Youi
 
 #if canImport(AppKit)
 import AppKit
@@ -26,13 +25,6 @@ class BaseRenderer: MetalViewRenderer {
     var texturesURL: URL { rendererAssetsURL.appendingPathComponent("Textures") }
     var modelsURL: URL { rendererAssetsURL.appendingPathComponent("Models") }
 
-    // MARK: - UI
-
-#if !os(visionOS)
-    var inspectorWindow: InspectorWindow?
-    var _updateInspector: Bool = true
-#endif
-
     // MARK: - Parameters
 
     var paramKeys: [String] {
@@ -42,13 +34,6 @@ class BaseRenderer: MetalViewRenderer {
     var params: [String: ParameterGroup?] {
         return [:]
     }
-
-#if !os(visionOS)
-    override func preDraw() -> MTLCommandBuffer? {
-        updateInspector()
-        return super.preDraw()
-    }
-#endif
 
     override func cleanup() {
         super.cleanup()
@@ -87,74 +72,3 @@ class BaseRenderer: MetalViewRenderer {
     }
 #endif
 }
-
-#if !os(visionOS)
-
-import Foundation
-import Satin
-import Youi
-
-extension BaseRenderer {
-    func setupInspector() {
-        guard !paramKeys.isEmpty else { return }
-
-        var panelOpenStates: [String: Bool] = [:]
-        if let inspectorWindow = inspectorWindow, let inspector = inspectorWindow.inspectorViewController {
-            let panels = inspector.getPanels()
-            for panel in panels {
-                if let label = panel.title {
-                    panelOpenStates[label] = panel.open
-                }
-            }
-        }
-
-        if inspectorWindow == nil {
-#if os(macOS)
-            let inspectorWindow = InspectorWindow("Inspector")
-            inspectorWindow.setIsVisible(true)
-#elseif os(iOS)
-            let inspectorWindow = InspectorWindow("Inspector", edge: .right)
-            metalView.addSubview(inspectorWindow.view)
-#endif
-            self.inspectorWindow = inspectorWindow
-        }
-
-        if let inspectorWindow = inspectorWindow, let inspectorViewController = inspectorWindow.inspectorViewController {
-            if inspectorViewController.getPanels().count > 0 {
-                inspectorViewController.removeAllPanels()
-            }
-
-            updateUI(inspectorViewController)
-
-            let panels = inspectorViewController.getPanels()
-            for panel in panels {
-                if let label = panel.title {
-                    if let open = panelOpenStates[label] {
-                        panel.open = open
-                    }
-                }
-            }
-        }
-    }
-
-    func updateUI(_ inspectorViewController: InspectorViewController) {
-        let paramters = params
-        for key in paramKeys {
-            if let param = paramters[key], let p = param {
-                let panel = PanelViewController(key, parameters: p)
-                inspectorViewController.addPanel(panel)
-            }
-        }
-    }
-
-    func updateInspector() {
-        if _updateInspector {
-            DispatchQueue.main.async { [weak self] in
-                self?.setupInspector()
-            }
-            _updateInspector = false
-        }
-    }
-}
-
-#endif

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -97,7 +97,6 @@
 		E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B058F26BB704100D91376 /* AudioInputRenderer.swift */; };
 		E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */; };
 		E11325D028AEAEB50049CACC /* SuperShapeGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E11325CE28AEAEB50049CACC /* SuperShapeGenerator.c */; };
-		E1365B922B6F6A05008C0033 /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1365B912B6F6A05008C0033 /* Youi */; };
 		E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */; };
 		E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */; };
 		E152371F29CBA22B00D96D46 /* BaseRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371E29CBA22B00D96D46 /* BaseRenderer.swift */; };
@@ -117,7 +116,6 @@
 		E1903C172B6046B4004AB175 /* ARPeopleOcclusionRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14C122C29E5D618009D3C8C /* ARPeopleOcclusionRendererView.swift */; };
 		E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */; };
 		E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */; };
-		E1A25D962A9687EC00895430 /* Youi in Frameworks */ = {isa = PBXBuildFile; productRef = E1A25D952A9687EC00895430 /* Youi */; };
 		E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D328A6BADA00B517B6 /* ExampleApp.swift */; };
 		E1D714D628A6BADA00B517B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D528A6BADA00B517B6 /* ContentView.swift */; };
 		E1D714D828A6BADA00B517B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D714D728A6BADA00B517B6 /* Assets.xcassets */; };
@@ -262,8 +260,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
-				E1A25D962A9687EC00895430 /* Youi in Frameworks */,
-				E1365B922B6F6A05008C0033 /* Youi in Frameworks */,
 				E17A55AC28A6C159008F1DDB /* Satin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -700,8 +696,6 @@
 			packageProductDependencies = (
 				E17A55AB28A6C159008F1DDB /* Satin */,
 				E1FDCA162A3692ED00A1870D /* Spectra */,
-				E1A25D952A9687EC00895430 /* Youi */,
-				E1365B912B6F6A05008C0033 /* Youi */,
 			);
 			productName = Example;
 			productReference = E1D714D128A6BAD900B517B6 /* Example.app */;
@@ -733,7 +727,6 @@
 			mainGroup = 66E67880243EC73A0070B294;
 			packageReferences = (
 				E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */,
-				E1365B902B6F6A05008C0033 /* XCLocalSwiftPackageReference "../../YouiPro" */,
 			);
 			productRefGroup = 66E6788A243EC73A0070B294 /* Products */;
 			projectDirPath = "";
@@ -1038,7 +1031,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
@@ -1088,7 +1081,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
@@ -1128,13 +1121,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		E1365B902B6F6A05008C0033 /* XCLocalSwiftPackageReference "../../YouiPro" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../YouiPro;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1147,17 +1133,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E1365B912B6F6A05008C0033 /* Youi */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Youi;
-		};
 		E17A55AB28A6C159008F1DDB /* Satin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Satin;
-		};
-		E1A25D952A9687EC00895430 /* Youi */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Youi;
 		};
 		E1FDCA162A3692ED00A1870D /* Spectra */ = {
 			isa = XCSwiftPackageProductDependency;

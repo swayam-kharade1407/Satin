@@ -337,6 +337,10 @@ public final class MetalViewController: UIViewController {
         self.setupEvents()
     }
 
+    public override var prefersHomeIndicatorAutoHidden: Bool {
+        true
+    }
+
     // MARK: - Setup View
 
     private func setupView() {
