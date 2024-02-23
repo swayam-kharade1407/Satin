@@ -529,6 +529,7 @@ public final class MetalView: UIView {
         print("stopRenderLoop - MetalView: \(delegate?.id)")
 #endif
         _displayLink?.isPaused = true
+        _displayLink?.remove(from: .main, forMode: .default)
         _displayLink?.invalidate()
         _displayLink = nil
     }
