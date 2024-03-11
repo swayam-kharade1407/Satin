@@ -154,6 +154,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     internal func updated(shader: ComputeShader) {
         print("updated shader: \(shader.label)")
         reset()
+        delegate?.updated(computeSystem: self)
     }
 
     internal func setupShader() {
