@@ -7,7 +7,7 @@
 
 import Metal
 
-public class BasicTextureMaterial: BasicColorMaterial {
+open class BasicTextureMaterial: BasicColorMaterial {
     public var texture: MTLTexture?
     public var sampler: MTLSamplerState?
     public var flipped = false {
@@ -57,6 +57,7 @@ public class BasicTextureMaterial: BasicColorMaterial {
         desc.label = label.titleCase
         desc.minFilter = .linear
         desc.magFilter = .linear
+        desc.mipFilter = .linear
         sampler = context?.device.makeSamplerState(descriptor: desc)
     }
 

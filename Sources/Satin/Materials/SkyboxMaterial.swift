@@ -8,7 +8,7 @@
 import Metal
 import simd
 
-public final class SkyboxMaterial: BasicTextureMaterial {
+open class SkyboxMaterial: BasicTextureMaterial {
     override public var texture: MTLTexture? {
         willSet {
             if let newTexture = newValue, newTexture.textureType != .typeCube {
@@ -17,15 +17,30 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         }
     }
 
-    public var texcoordTransform: simd_float3x3 = matrix_identity_float3x3 {
-        didSet {
-            set("Texcoord Transform", texcoordTransform)
+    public var texcoordTransform: simd_float3x3 {
+        get {
+            (get("Texcoord Transform") as! Float3x3Parameter).value
+        }
+        set {
+            set("Texcoord Transform", newValue)
         }
     }
 
-    public var environmentIntensity: Float = 1.0 {
-        didSet {
-            set("Environment Intensity", environmentIntensity)
+    public var environmentIntensity: Float {
+        get {
+            (get("Environment Intensity") as! FloatParameter).value
+        }
+        set {
+            set("Environment Intensity", newValue)
+        }
+    }
+
+    public var blur: Float {
+        get {
+            (get("Blur") as! FloatParameter).value
+        }
+        set {
+            set("Blur", newValue)
         }
     }
 
@@ -33,14 +48,16 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         didSet {
             if oldValue != tonemapping, let shader = shader as? SkyboxShader {
                 shader.tonemapping = tonemapping
-                
             }
         }
     }
 
-    public var gammaCorrection: Float = 1.0 {
-        didSet {
-            set("Gamma Correction", gammaCorrection)
+    public var gammaCorrection: Float {
+        get {
+            (get("Gamma Correction") as! FloatParameter).value
+        }
+        set {
+            set("Gamma Correction", newValue)
         }
     }
 
@@ -65,6 +82,7 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         tonemapping: Tonemapping = .aces,
         gammaCorrection: Float = 1.0,
         environmentIntensity: Float = 1.0,
+        blur: Float = 0.0,
         texcoordTransform: simd_float3x3 = matrix_identity_float3x3
     ) {
         self.tonemapping = tonemapping
@@ -95,13 +113,13 @@ public final class SkyboxMaterial: BasicTextureMaterial {
         initalizeParameters()
     }
 
-    public override func setupShaderConfiguration(_ shader: Shader) {
+    override public func setupShaderConfiguration(_ shader: Shader) {
         super.setupShaderConfiguration(shader)
         guard let skyboxShader = shader as? SkyboxShader else { return }
         skyboxShader.tonemapping = tonemapping
     }
 
-    override public func createShader() -> Shader {
+    override open func createShader() -> Shader {
         return SkyboxShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 }
