@@ -36,6 +36,7 @@ public protocol BufferAttribute: VertexAttribute, Codable {
     func reserveCapacity(_ minimumCapacity: Int)
 
     func interpolate(start: Int, end: Int, at time: Float)
+    func set(at: Int, from: Int, source: any BufferAttribute)
 
     init(defaultValue: ValueType, data: [ValueType], stepRate: Int, stepFunction: MTLVertexStepFunction)
     init(defaultValue: ValueType, count: Int, stepRate: Int, stepFunction: MTLVertexStepFunction)
@@ -203,6 +204,12 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
 
     public func interpolate(start: Int, end: Int, at time: Float) {
         fatalError("")
+    }
+
+    public func set(at: Int, from: Int, source: any BufferAttribute) {
+        if let sourceBuffer = source as? GenericBufferAttribute<T> {
+            data[at] = sourceBuffer[from]
+        }
     }
 }
 
