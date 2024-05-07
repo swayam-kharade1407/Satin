@@ -15,7 +15,7 @@ import SatinCore
 
 open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, ElementBufferDelegate {
     public var id: String = UUID().uuidString
-    
+
     public var context: Context? {
         didSet {
             if context != nil, context != oldValue {
@@ -23,41 +23,41 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             }
         }
     }
-    
+
     public var windingOrder: MTLWinding = .counterClockwise
     public var primitiveType: MTLPrimitiveType = .triangle {
         didSet {
             if primitiveType != oldValue, primitiveType != .triangle {
-                _bvh.clear()
+                updateBVH = true
             }
         }
     }
-    
+
     private var _vertexDescriptor = ValueCache<MTLVertexDescriptor>()
     public var vertexDescriptor: MTLVertexDescriptor { _vertexDescriptor.get { generateVertexDescriptor() } }
-    
+
     public private(set) var vertexAttributes: [VertexAttributeIndex: any VertexAttribute] = [:] {
         didSet {
             _updateVertexBuffers = true
             _vertexDescriptor.clear()
         }
     }
-    
+
     public let onUpdate = PassthroughSubject<Geometry, Never>()
-    
+
     public var vertexCount: Int { vertexAttributes[.Position]?.count ?? 0 }
     public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer] = [:]
-    
+
     private var _updateVertexBuffers = true {
         didSet {
             if _updateVertexBuffers {
-                _bounds.clear()
-                _bvh.clear()
+                updateBounds = true
+                updateBVH = true
                 onUpdate.send(self)
             }
         }
     }
-    
+
     public internal(set) var elementBuffer: ElementBuffer? {
         didSet {
             if oldValue != elementBuffer, elementBuffer != nil {
@@ -65,58 +65,67 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             }
         }
     }
-    
+
     public var indexType: MTLIndexType? { elementBuffer?.type }
     public var indexCount: Int { elementBuffer?.count ?? 0 }
-    
+
     public private(set) var indexBuffer: MTLBuffer? {
         didSet {
             _updateIndexBuffer = false
         }
     }
-    
+
     private var _updateIndexBuffer = true {
         didSet {
             if _updateIndexBuffer {
-                _bounds.clear()
-                _bvh.clear()
+                updateBounds = true
+                updateBVH = true
                 onUpdate.send(self)
             }
         }
     }
-    
-    private var _bvh = ValueCache<BVH>()
+
+    public var updateBVH = true
+
+    private var _bvh: BVH?
     public var bvh: BVH? {
-        if primitiveType == .triangle {
-            return _bvh.get { createBVH() }
+        if updateBVH, primitiveType == .triangle {
+            _bvh = createBVH()
+            updateBVH = false
         }
-        return nil
+        return _bvh
     }
-    
-    private var _bounds = ValueCache<Bounds>()
+
+    public var updateBounds = true
+
+    private var _bounds: Bounds = createBounds()
     public var bounds: Bounds {
-        _bounds.get { computeBounds() }
+        if updateBounds {
+            _bounds = computeBounds()
+            updateBounds = false
+        }
+        return _bounds
     }
-    
+
     // MARK: - Init
-    
+
     public init(primitiveType: MTLPrimitiveType = .triangle, windingOrder: MTLWinding = .counterClockwise) {
         self.windingOrder = windingOrder
         self.primitiveType = primitiveType
     }
-    
+
     open func setup() {
         updateBuffers()
     }
-    
+
     open func update() {
         updateBuffers()
     }
-    
+
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
-    
+
     // MARK: - Bind
-    
+
     open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         for (index, buffer) in vertexBuffers {
             renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
@@ -138,7 +147,8 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
                     instanceCount: instanceCount
                 )
             }
-        } else {
+        }
+        else {
             if vertexCount > 0 {
                 renderEncoder.drawPrimitives(
                     type: primitiveType,
@@ -151,24 +161,24 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     }
 
     // MARK: - Elements
-    
+
     public func setElements(_ elementBuffer: ElementBuffer?) {
         if let oldElementBuffer = self.elementBuffer {
             oldElementBuffer.delegate = nil
         }
-        
+
         self.elementBuffer = elementBuffer
         if let newElementBuffer = self.elementBuffer {
             newElementBuffer.delegate = self
         }
     }
-    
+
     // MARK: - Attributes
-    
+
     public func getAttribute(_ index: VertexAttributeIndex) -> (any VertexAttribute)? {
         vertexAttributes[index]
     }
-    
+
     public func addAttribute(_ attribute: any VertexAttribute, for index: VertexAttributeIndex) {
         vertexAttributes[index] = attribute
         if let bufferAttribute = attribute as? any BufferAttribute {
@@ -178,7 +188,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             interleavedBuffer.parent.delegate = self
         }
     }
-    
+
     public func removeAttribute(_ index: VertexAttributeIndex) {
         if let attribute = vertexAttributes[index] {
             if let bufferAttribute = attribute as? any BufferAttribute {
@@ -187,7 +197,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             vertexAttributes.removeValue(forKey: index)
         }
     }
-    
+
     public func removeAttributes() {
         for (index, attribute) in vertexAttributes {
             if let bufferAttribute = attribute as? any BufferAttribute {
@@ -199,13 +209,13 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             vertexAttributes.removeValue(forKey: index)
         }
     }
-    
+
     public func hasAttribute(_ index: VertexAttributeIndex) -> Bool {
         return vertexAttributes[index] != nil
     }
-    
+
     // MARK: - Update Buffers
-    
+
     private func updateBuffers() {
         if _updateVertexBuffers {
             setupVertexBuffers()
@@ -214,9 +224,9 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
             setupIndexBuffer()
         }
     }
-    
+
     // MARK: - Setup Vertex Buffers
-    
+
     private func setupVertexBuffers() {
         guard let device = context?.device else { return }
         for (attributeIndex, attribute) in vertexAttributes {
@@ -229,19 +239,19 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         }
         _updateVertexBuffers = false
     }
-    
+
     // MARK: - Setup Index Buffer
-    
+
     private func setupIndexBuffer() {
         guard let device = context?.device, let elementBuffer = elementBuffer else { return }
         indexBuffer = elementBuffer.getBuffer(device: device)
     }
-    
+
     // MARK: - Setup Vertex Attributes
-    
+
     private func setupBufferAttribute(_ device: MTLDevice, attribute: any BufferAttribute, for index: VertexAttributeIndex) {
         let bufferIndex = index.bufferIndex
-        
+
         guard attribute.needsUpdate || vertexBuffers[bufferIndex] == nil else { return }
 
         if let buffer = attribute.getBuffer(device: device) {
@@ -289,7 +299,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
                 descriptor.layouts[bufferIndex].stepRate = interleavedBuffer.stepRate
                 descriptor.layouts[bufferIndex].stepFunction = interleavedBuffer.stepFunction
             }
-            else  {
+            else {
                 let index = attributeIndex.rawValue
                 let bufferIndex = attributeIndex.bufferIndex.rawValue
                 descriptor.attributes[index].format = attribute.format
@@ -351,7 +361,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
     // MARK: - Bounds
 
-    func computeBounds() -> Bounds {
+    open func computeBounds() -> Bounds {
         if primitiveType == .triangle, let bvh = bvh, let node = bvh.getNode(index: 0) {
             return node.aabb
         }
@@ -404,9 +414,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
         elementBuffer?.delegate = nil
         elementBuffer = nil
         indexBuffer = nil
-
-        _bvh.clear()
-        _bounds.clear()
     }
 
     // MARK: - Updated Buffer Attribute Data
