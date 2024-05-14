@@ -103,6 +103,7 @@ typedef struct VertexUniforms {
 
 TriangleFaceMap createTriangleFaceMap(void);
 void freeTriangleFaceMap(TriangleFaceMap *map);
+void appendFaceMapData(TriangleFaceMap *map, int index, int count);
 
 TriangleData createTriangleData(void);
 void freeTriangleData(TriangleData *data);
@@ -123,7 +124,7 @@ GeometryData duplicateGeometryData(GeometryData *src);
 void addTrianglesToGeometryData(GeometryData *dest, TriangleIndices *triangles, int triangleCount);
 
 void combineTriangleFaceMap(TriangleFaceMap *dest, const TriangleFaceMap *src);
-void combineTriangleData(TriangleData *dest, TriangleData *src, int offset);
+void combineTriangleData(TriangleData *dest, const TriangleData *src, int offset);
 
 void combineGeometryData(GeometryData *dest, GeometryData *src);
 void combineAndOffsetGeometryData(GeometryData *dest, GeometryData *src, simd_float3 offset);
