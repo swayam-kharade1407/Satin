@@ -121,7 +121,15 @@ public final class MetalViewController: NSViewController {
 #if DEBUG_VIEWS
         print("setupTracking - MetalViewController: \(self.renderer.id)")
 #endif
-        let area = NSTrackingArea(rect: self.view.bounds, options: [.activeAlways, .mouseEnteredAndExited, .mouseMoved, .inVisibleRect], owner: self, userInfo: nil)
+        let area = NSTrackingArea(
+            rect: self.view.bounds,
+            options: [
+                .mouseEnteredAndExited,
+                .mouseMoved,
+                .inVisibleRect,
+                .activeInKeyWindow
+            ], owner: self, userInfo: nil
+        )
         self.view.addTrackingArea(area)
         self.trackingArea = area
     }
@@ -337,7 +345,7 @@ public final class MetalViewController: UIViewController {
         self.setupEvents()
     }
 
-    public override var prefersHomeIndicatorAutoHidden: Bool {
+    override public var prefersHomeIndicatorAutoHidden: Bool {
         true
     }
 

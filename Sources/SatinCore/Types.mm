@@ -13,13 +13,16 @@
 
 TriangleFaceMap createTriangleFaceMap() { return (TriangleFaceMap) { .count = 0, .data = NULL }; }
 
-void appendFaceMapData(TriangleFaceMap *dest, int index, int count) {
+void appendFaceMapData(TriangleFaceMap *dest, int index, int count)
+{
     if (dest->count > 0) {
         int totalCount = dest->count + count;
         size_t newSize = sizeof(uint32_t) * totalCount;
 
         dest->data = (uint32_t *)realloc(dest->data, newSize);
-        for(int i = dest->count; i < totalCount; i++){ dest->data[i] = index; }
+        for (int i = dest->count; i < totalCount; i++) {
+            dest->data[i] = index;
+        }
 
         dest->count = totalCount;
     }
@@ -27,7 +30,7 @@ void appendFaceMapData(TriangleFaceMap *dest, int index, int count) {
         size_t newSize = sizeof(uint32_t) * count;
         dest->data = (uint32_t *)malloc(newSize);
 
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             dest->data[i] = index;
         }
 
