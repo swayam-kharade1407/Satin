@@ -103,7 +103,6 @@
 		E152372829CBDF4E00D96D46 /* ObjectShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152372729CBDF4E00D96D46 /* ObjectShadowRenderer.swift */; };
 		E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */; };
 		E1772A982981D320005FE7B2 /* MeshShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1772A972981D320005FE7B2 /* MeshShadowRenderer.swift */; };
-		E17A55AC28A6C159008F1DDB /* Satin in Frameworks */ = {isa = PBXBuildFile; productRef = E17A55AB28A6C159008F1DDB /* Satin */; };
 		E17A55BD28A6C9C6008F1DDB /* IcosahedronGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E1CC099F2489797300B92285 /* IcosahedronGenerator.c */; };
 		E1903C0F2B6046B4004AB175 /* ARPlaneRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371C29CBA11B00D96D46 /* ARPlaneRendererView.swift */; };
 		E1903C102B6046B4004AB175 /* ARPBRRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243729F8734D00AD1A8F /* ARPBRRendererView.swift */; };
@@ -132,7 +131,6 @@
 		E105CC36252BDE7F009EE563 /* FXAARenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXAARenderer.swift; sourceTree = "<group>"; };
 		E1077F4C2A096ABD00C2FB89 /* ARPointCloudRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPointCloudRenderer.swift; sourceTree = "<group>"; };
 		E1077F4E2A096B0900C2FB89 /* ARPointCloudRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPointCloudRendererView.swift; sourceTree = "<group>"; };
-		E10CC20327F128ED00E04B2B /* Satin */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Satin; path = ..; sourceTree = "<group>"; };
 		E10DC32129DCC4C100FF2A98 /* PBRCustomizationRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBRCustomizationRenderer.swift; sourceTree = "<group>"; };
 		E10DC32329DCC5DE00FF2A98 /* PBRCustomizationRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBRCustomizationRendererView.swift; sourceTree = "<group>"; };
 		E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshShaderRenderer.swift; sourceTree = "<group>"; };
@@ -260,7 +258,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
-				E17A55AC28A6C159008F1DDB /* Satin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,7 +267,6 @@
 		66E67880243EC73A0070B294 = {
 			isa = PBXGroup;
 			children = (
-				E10CC11327F105CE00E04B2B /* Packages */,
 				E1E767D828A6D808005D75AB /* Assets */,
 				E1D714D228A6BADA00B517B6 /* Example */,
 				66E6788A243EC73A0070B294 /* Products */,
@@ -303,14 +299,6 @@
 				E19D4C4629F9C28700DF993D /* Shadows */,
 			);
 			path = Renderers;
-			sourceTree = "<group>";
-		};
-		E10CC11327F105CE00E04B2B /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				E10CC20327F128ED00E04B2B /* Satin */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 		E10CC11827F1061100E04B2B /* Frameworks */ = {
@@ -694,7 +682,6 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				E17A55AB28A6C159008F1DDB /* Satin */,
 				E1FDCA162A3692ED00A1870D /* Spectra */,
 			);
 			productName = Example;
@@ -1133,10 +1120,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E17A55AB28A6C159008F1DDB /* Satin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Satin;
-		};
 		E1FDCA162A3692ED00A1870D /* Spectra */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1FDCA152A3692ED00A1870D /* XCRemoteSwiftPackageReference "Spectra" */;
