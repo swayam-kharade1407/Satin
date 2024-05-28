@@ -26,6 +26,7 @@ class Renderer3D: BaseRenderer {
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
 
     override var sampleCount: Int { 2 }
+    
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var renderer = Renderer(context: context)
 

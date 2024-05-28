@@ -35,7 +35,7 @@ open class ARPerspectiveCamera: PerspectiveCamera {
     override open func update() {
         super.update()
         guard let frame = session.currentFrame,
-              let orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation else { return }
+              let orientation = UIWindow.keyWindow?.windowScene?.interfaceOrientation else { return }
 
         viewMatrix = frame.camera.viewMatrix(for: orientation)
         let arkitProjectionMatrix = frame.camera.projectionMatrix(for: orientation, viewportSize: metalView.drawableSize, zNear: CGFloat(near), zFar: CGFloat(far))

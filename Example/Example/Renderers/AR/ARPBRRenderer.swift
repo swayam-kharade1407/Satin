@@ -14,8 +14,6 @@ import MetalKit
 import MetalPerformanceShaders
 
 import Satin
-import SatinCore
-import Youi
 
 fileprivate class ARScene: Object, IBLEnvironment {
     private var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }

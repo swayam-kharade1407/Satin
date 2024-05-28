@@ -90,7 +90,7 @@ public actor ShaderPipelineCache {
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = nil
 
-        descriptor.sampleCount = 1
+        descriptor.rasterSampleCount = 1
         descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
 
         let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor)
@@ -105,13 +105,17 @@ public actor ShaderPipelineCache {
     public static func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {
         if let parameters = pipelineParametersCache[configuration] { return parameters }
 
-        if let reflection = pipelineReflectionCache[configuration], let fragmentArgs = reflection.fragmentArguments {
-            let args = fragmentArgs[FragmentBufferIndex.MaterialUniforms.rawValue]
-            if let bufferStruct = args.bufferStructType {
-                let parameters = parseParameters(bufferStruct: bufferStruct)
-                parameters.label = configuration.label.titleCase + " Uniforms"
-                pipelineParametersCache[configuration] = parameters
-                return parameters
+        if let reflection = pipelineReflectionCache[configuration] {
+            for binding in reflection.fragmentBindings {
+                if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue, 
+                    let bufferBinding = binding as? MTLBufferBinding,
+                    let bufferStruct = bufferBinding.bufferStructType {
+
+                    let parameters = parseParameters(bufferStruct: bufferStruct)
+                    parameters.label = configuration.label.titleCase + " Uniforms"
+                    pipelineParametersCache[configuration] = parameters
+                    return parameters
+                }
             }
         }
         else if let pipelineURL = configuration.pipelineURL,

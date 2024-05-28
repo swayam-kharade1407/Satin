@@ -4,15 +4,11 @@ import PackageDescription
 
 let package = Package(
     name: "Satin",
-    platforms: [.macOS(.v11), .iOS(.v17), .tvOS(.v17), .visionOS(.v1)],
+    platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .visionOS(.v1)],
     products: [
         .library(
-            name: "SatinCore",
-            targets: ["SatinCore"]
-        ),
-        .library(
             name: "Satin",
-            targets: ["Satin"]
+            targets: ["Satin", "SatinCore"]
         )
     ],
     dependencies: [],

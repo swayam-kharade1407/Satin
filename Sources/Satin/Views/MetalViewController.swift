@@ -343,6 +343,7 @@ public final class MetalViewController: UIViewController {
         self.setupView()
         self.setupRenderer()
         self.setupEvents()
+        self.setupAppearance()
     }
 
     override public var prefersHomeIndicatorAutoHidden: Bool {
@@ -402,14 +403,14 @@ public final class MetalViewController: UIViewController {
         self.renderer.isSetup = false
     }
 
-    override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        guard self.renderer.isSetup else { return }
-        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+    func setupAppearance() {
+        registerForTraitChanges([UITraitUserInterfaceStyle.self], handler: { (self: Self, previousTraitCollection: UITraitCollection) in
+            guard self.renderer.isSetup,
+                  previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle else { return }
             self.renderer.appearance = self.getAppearance()
-        }
-        super.traitCollectionDidChange(previousTraitCollection)
+        })
     }
-
+    
     // MARK: - Events
 
     private func setupEvents() {

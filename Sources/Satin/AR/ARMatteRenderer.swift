@@ -80,7 +80,7 @@ public class ARMatteRenderer {
     }
 
     private func updateGeometry(_ frame: ARFrame) {
-        guard let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation else { return }
+        guard let interfaceOrientation = UIWindow.keyWindow?.windowScene?.interfaceOrientation else { return }
 
         // Update the texture coordinates of our image plane to aspect fill the viewport
         let displayToCameraTransform = frame.displayTransform(for: interfaceOrientation, viewportSize: viewportSize).inverted()

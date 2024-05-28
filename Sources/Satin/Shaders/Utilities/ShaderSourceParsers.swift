@@ -39,6 +39,12 @@ public func parseParameters(bufferStruct: MTLStructType) -> ParameterGroup {
                 params.append(Float3Parameter(name, .zero))
             case .float4:
                 params.append(Float4Parameter(name, .zero))
+            case .float2x2:
+                params.append(Float2x2Parameter(name, matrix_identity_float2x2))
+            case .float3x3:
+                params.append(Float3x3Parameter(name, matrix_identity_float3x3))
+            case .float4x4:
+                params.append(Float4x4Parameter(name, matrix_identity_float4x4))
             case .int:
                 params.append(IntParameter(name, .zero))
             case .int2:

@@ -115,6 +115,10 @@ extension MTLVertexFormat {
                 return .shortNormalized
             case .half:
                 return .half
+            case .floatRG11B10:
+                return .invalid
+            case .floatRGB9E5:
+                return .invalid
             @unknown default:
                 return .invalid
         }
@@ -226,6 +230,10 @@ extension MTLVertexFormat {
                 return "short"
             case .half:
                 return "half"
+            case .floatRG11B10:
+                fatalError("Unknown vertex format: \(self)")
+            case .floatRGB9E5:
+                fatalError("Unknown vertex format: \(self)")
             @unknown default:
                 fatalError("Unknown vertex format: \(self)")
         }

@@ -35,13 +35,6 @@ class BaseRenderer: MetalViewRenderer {
         return [:]
     }
 
-    override func cleanup() {
-        super.cleanup()
-#if os(macOS)
-        inspectorWindow?.setIsVisible(false)
-#endif
-    }
-
 #if os(macOS)
     func openEditor() {
         if let editorUrl = UserDefaults.standard.url(forKey: "Editor") {

@@ -145,8 +145,11 @@ public class ARBackgroundRenderer: PostProcessor {
     }
 
     internal func getOrientation() -> UIInterfaceOrientation? {
-        return UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation
+        return UIWindow.keyWindow?.windowScene?.interfaceOrientation
     }
 }
 
 #endif
+
+
+

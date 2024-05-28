@@ -39,34 +39,88 @@ open class Renderer {
                 updateDepthMultisampleTexture = true
 
                 updateStencilTexture = true
+                updateStencilMultisampleTexture = true
             }
         }
     }
 
+    // MARK: - Color Textures
+
     public var clearColor: MTLClearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0)
-    public var clearDepth = 0.0
-    public var clearStencil: UInt32 = 0
 
     private var updateColorTexture = true
-    private var updateColorMultisampleTexture = true
-
     public private(set) var colorTexture: MTLTexture?
+    public var colorTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != colorTextureStorageMode {
+                updateColorTexture = true
+            }
+        }
+    }
+
+    private var updateColorMultisampleTexture = true
     public private(set) var colorMultisampleTexture: MTLTexture?
+    public var colorMultisampleTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != colorMultisampleTextureStorageMode {
+                updateColorMultisampleTexture = true
+            }
+        }
+    }
 
     public var colorLoadAction: MTLLoadAction = .clear
     public var colorStoreAction: MTLStoreAction = .store
 
-    public var updateDepthTexture = true
-    public var updateDepthMultisampleTexture = true
+    // MARK: - Depth Textures
 
+    public var clearDepth = 0.0
+
+    public var updateDepthTexture = true
     public private(set) var depthTexture: MTLTexture?
+    public var depthTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != depthTextureStorageMode {
+                updateDepthTexture = true
+            }
+        }
+    }
+
+    public var updateDepthMultisampleTexture = true
     public private(set) var depthMultisampleTexture: MTLTexture?
+    public var depthMultisampleTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != depthMultisampleTextureStorageMode {
+                updateDepthMultisampleTexture = true
+            }
+        }
+    }
 
     public var depthLoadAction: MTLLoadAction = .clear
     public var depthStoreAction: MTLStoreAction = .store
 
+    // MARK: - Stencil Textures
+
+    public var clearStencil: UInt32 = 0
+
     public var updateStencilTexture = true
     public var stencilTexture: MTLTexture?
+    public var stencilTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != stencilTextureStorageMode {
+                updateStencilTexture = true
+            }
+        }
+    }
+
+    public var updateStencilMultisampleTexture = true
+    public var stencilMultisampleTexture: MTLTexture?
+    public var stencilMultisampleTextureStorageMode: MTLStorageMode = .memoryless {
+        didSet {
+            if oldValue != stencilMultisampleTextureStorageMode {
+                updateStencilMultisampleTexture = true
+            }
+        }
+    }
 
     public var stencilLoadAction: MTLLoadAction = .clear
     public var stencilStoreAction: MTLStoreAction = .dontCare
@@ -184,6 +238,7 @@ open class Renderer {
         let inDepthResolveTexture = renderPassDescriptor.depthAttachment.resolveTexture
 
         let inStencilTexture = renderPassDescriptor.stencilAttachment.texture
+        let inStencilResolveTexture = renderPassDescriptor.stencilAttachment.resolveTexture
 
         defer {
             renderPassDescriptor.colorAttachments[0].texture = inColorTexture
@@ -193,6 +248,7 @@ open class Renderer {
             renderPassDescriptor.depthAttachment.resolveTexture = inDepthResolveTexture
 
             renderPassDescriptor.stencilAttachment.texture = inStencilTexture
+            renderPassDescriptor.stencilAttachment.resolveTexture = inStencilResolveTexture
         }
 
         if context.colorPixelFormat == .invalid {
@@ -222,6 +278,7 @@ open class Renderer {
 
         if context.depthPixelFormat == .invalid {
             renderPassDescriptor.depthAttachment.texture = nil
+            renderPassDescriptor.depthAttachment.resolveTexture = nil
         } else {
             if context.sampleCount > 1 {
                 if inDepthTexture?.sampleCount != context.sampleCount {
@@ -244,16 +301,23 @@ open class Renderer {
             }
         }
 
-        if context.stencilPixelFormat == .invalid {
-            renderPassDescriptor.stencilAttachment.texture = nil
-        } else if inStencilTexture == nil ||
-            inStencilTexture?.sampleCount != context.sampleCount ||
-            inStencilTexture?.pixelFormat != context.stencilPixelFormat
-        {
-            setupStencilTexture()
-            if context.depthPixelFormat == .depth32Float_stencil8 {
-                renderPassDescriptor.stencilAttachment.texture = depthTexture
-            } else {
+        if context.depthPixelFormat != .depth32Float_stencil8 {
+            if context.stencilPixelFormat == .invalid {
+                renderPassDescriptor.stencilAttachment.texture = nil
+                renderPassDescriptor.stencilAttachment.resolveTexture = nil
+            } else if context.sampleCount > 1 {
+                if inStencilTexture?.sampleCount != context.sampleCount {
+                    setupStencilMultisampleTexture()
+                    renderPassDescriptor.stencilAttachment.texture = stencilMultisampleTexture
+                }
+
+                if inStencilResolveTexture == nil {
+                    setupStencilTexture()
+                    renderPassDescriptor.depthAttachment.resolveTexture = stencilTexture
+                }
+
+            } else if inStencilTexture == nil {
+                setupStencilTexture()
                 renderPassDescriptor.stencilAttachment.texture = stencilTexture
             }
         }
@@ -324,7 +388,7 @@ open class Renderer {
                     if context.vertexAmplificationCount > 1 {
                         var maps = viewMappings
                         if maps.isEmpty {
-                            maps = (0..<context.vertexAmplificationCount).map { .init(viewportArrayIndexOffset: UInt32($0), renderTargetArrayIndexOffset: UInt32($0) ) }
+                            maps = (0..<context.vertexAmplificationCount).map { .init(viewportArrayIndexOffset: UInt32($0), renderTargetArrayIndexOffset: UInt32($0)) }
                         }
                         renderEncoder.setVertexAmplificationCount(context.vertexAmplificationCount, viewMappings: &maps)
                     }
@@ -468,8 +532,7 @@ open class Renderer {
                         skyboxMaterial.update()
                     }
                 }
-            }
-            else {
+            } else {
                 for i in 0..<context.vertexAmplificationCount {
                     object.update(camera: cameras[i], viewport: viewports[i], index: i)
                 }
@@ -586,34 +649,7 @@ open class Renderer {
         )
     }
 
-    // MARK: - Textures
-
-    private func setupColorMultisampleTexture() {
-        guard updateColorMultisampleTexture,
-              context.colorPixelFormat != .invalid,
-              context.sampleCount > 1,
-              size.width > 1,
-              size.height > 1
-        else { return }
-
-        let descriptor = MTLTextureDescriptor
-            .texture2DDescriptor(
-                pixelFormat: context.colorPixelFormat,
-                width: Int(size.width),
-                height: Int(size.height),
-                mipmapped: false
-            )
-        descriptor.sampleCount = context.sampleCount
-        descriptor.textureType = .type2DMultisample
-        descriptor.usage = [.renderTarget, .shaderRead]
-        descriptor.storageMode = .private
-        descriptor.resourceOptions = .storageModePrivate
-
-        colorMultisampleTexture = context.device.makeTexture(descriptor: descriptor)
-        colorMultisampleTexture?.label = label + "Multisample Color Texture"
-
-        updateColorMultisampleTexture = false
-    }
+    // MARK: - Color Textures
 
     private func setupColorTexture() {
         guard updateColorTexture, context.colorPixelFormat != .invalid, size.width > 1, size.height > 1 else { return }
@@ -628,13 +664,68 @@ open class Renderer {
         descriptor.sampleCount = 1
         descriptor.textureType = .type2D
         descriptor.usage = [.renderTarget, .shaderRead]
-        descriptor.storageMode = .private
+        descriptor.storageMode = colorTextureStorageMode
         descriptor.resourceOptions = .storageModePrivate
 
         colorTexture = context.device.makeTexture(descriptor: descriptor)
         colorTexture?.label = label + " Color Texture"
 
         updateColorTexture = false
+    }
+
+    private func setupColorMultisampleTexture() {
+        guard updateColorMultisampleTexture,
+              context.colorPixelFormat != .invalid,
+              context.sampleCount > 1,
+              size.width > 0,
+              size.height > 0
+        else { return }
+
+        let descriptor = MTLTextureDescriptor
+            .texture2DDescriptor(
+                pixelFormat: context.colorPixelFormat,
+                width: Int(size.width),
+                height: Int(size.height),
+                mipmapped: false
+            )
+        descriptor.sampleCount = context.sampleCount
+        descriptor.textureType = .type2DMultisample
+        descriptor.usage = [.renderTarget, .shaderRead]
+        descriptor.storageMode = colorMultisampleTextureStorageMode
+        descriptor.resourceOptions = .storageModePrivate
+
+        colorMultisampleTexture = context.device.makeTexture(descriptor: descriptor)
+        colorMultisampleTexture?.label = label + "Multisample Color Texture"
+
+        updateColorMultisampleTexture = false
+    }
+
+    // MARK: - Depth Textures
+
+    private func setupDepthTexture() {
+        guard updateDepthTexture,
+              context.depthPixelFormat != .invalid,
+              size.width > 0,
+              size.height > 0
+        else { return }
+
+        let descriptor = MTLTextureDescriptor
+            .texture2DDescriptor(
+                pixelFormat: context.depthPixelFormat,
+                width: Int(size.width),
+                height: Int(size.height),
+                mipmapped: false
+            )
+        descriptor.sampleCount = 1
+        descriptor.textureType = .type2D
+        descriptor.usage = [.renderTarget, .shaderRead]
+        descriptor.storageMode = depthTextureStorageMode
+        descriptor.resourceOptions = .storageModePrivate
+
+        depthTexture = context.device.makeTexture(descriptor: descriptor)
+        depthTexture?.label = label + " Depth Texture"
+
+        updateDepthTexture = false
     }
 
     private func setupDepthMultisampleTexture() {
@@ -655,7 +746,7 @@ open class Renderer {
         descriptor.sampleCount = context.sampleCount
         descriptor.textureType = .type2DMultisample
         descriptor.usage = [.renderTarget, .shaderRead]
-        descriptor.storageMode = .private
+        descriptor.storageMode = depthMultisampleTextureStorageMode
         descriptor.resourceOptions = .storageModePrivate
 
         depthMultisampleTexture = context.device.makeTexture(descriptor: descriptor)
@@ -664,31 +755,7 @@ open class Renderer {
         updateDepthMultisampleTexture = false
     }
 
-    private func setupDepthTexture() {
-        guard updateDepthTexture,
-              context.depthPixelFormat != .invalid,
-              size.width > 0,
-              size.height > 0
-        else { return }
-
-        let descriptor = MTLTextureDescriptor
-            .texture2DDescriptor(
-                pixelFormat: context.depthPixelFormat,
-                width: Int(size.width),
-                height: Int(size.height),
-                mipmapped: false
-            )
-        descriptor.sampleCount = 1
-        descriptor.textureType = .type2D
-        descriptor.usage = [.renderTarget, .shaderRead]
-        descriptor.storageMode = .private
-        descriptor.resourceOptions = .storageModePrivate
-
-        depthTexture = context.device.makeTexture(descriptor: descriptor)
-        depthTexture?.label = label + " Depth Texture"
-
-        updateDepthTexture = false
-    }
+    // MARK: - Stencil Textures
 
     private func setupStencilTexture() {
         guard updateStencilTexture, context.stencilPixelFormat != .invalid, size.width > 1, size.height > 1 else { return }
@@ -697,14 +764,37 @@ open class Renderer {
         descriptor.pixelFormat = context.stencilPixelFormat
         descriptor.width = Int(size.width)
         descriptor.height = Int(size.height)
-        descriptor.sampleCount = context.sampleCount
-        descriptor.textureType = context.sampleCount > 1 ? .type2DMultisample : .type2D
+        descriptor.sampleCount = 1
+        descriptor.textureType = .type2D
         descriptor.usage = [.renderTarget, .shaderRead]
-        descriptor.storageMode = .private
+        descriptor.storageMode = .memoryless
         descriptor.resourceOptions = .storageModePrivate
 
         stencilTexture = context.device.makeTexture(descriptor: descriptor)
         stencilTexture?.label = label + " Stencil Texture"
+
+        updateStencilTexture = false
+    }
+
+    private func setupStencilMultisampleTexture() {
+        guard updateStencilMultisampleTexture,
+              context.stencilPixelFormat != .invalid,
+              context.sampleCount > 1,
+              size.width > 0,
+              size.height > 0 else { return }
+
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = context.stencilPixelFormat
+        descriptor.width = Int(size.width)
+        descriptor.height = Int(size.height)
+        descriptor.sampleCount = context.sampleCount
+        descriptor.textureType = .type2DMultisample
+        descriptor.usage = [.renderTarget, .shaderRead]
+        descriptor.storageMode = .memoryless
+        descriptor.resourceOptions = .storageModePrivate
+
+        stencilMultisampleTexture = context.device.makeTexture(descriptor: descriptor)
+        stencilMultisampleTexture?.label = label + "Multisample Stencil Texture"
 
         updateStencilTexture = false
     }

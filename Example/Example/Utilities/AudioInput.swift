@@ -312,7 +312,7 @@ class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     }
 
     func getInputDevices() -> [AVCaptureDevice] {
-        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone, .builtInWideAngleCamera], mediaType: .audio, position: .unspecified)
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.microphone, .builtInWideAngleCamera], mediaType: .audio, position: .unspecified)
         return discoverySession.devices
     }
 

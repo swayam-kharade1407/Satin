@@ -284,6 +284,10 @@ extension MTLPixelFormat {
                 return false
             case .x32_stencil8:
                 return false
+            case .depth24Unorm_stencil8:
+                return false
+            case .x24_stencil8:
+                return false
             @unknown default:
                 return false
         }

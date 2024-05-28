@@ -89,12 +89,16 @@ public actor ComputeShaderPipelineCache {
         if let parameters = pipelineParametersCache[configuration] { return parameters }
 
         if let reflection = updatePipelineReflectionCache[configuration] {
-            let args = reflection.arguments[ComputeBufferIndex.Uniforms.rawValue]
-            if let bufferStruct = args.bufferStructType {
-                let parameters = parseParameters(bufferStruct: bufferStruct)
-                parameters.label = configuration.label.titleCase + " Uniforms"
-                pipelineParametersCache[configuration] = parameters
-                return parameters
+            for binding in reflection.bindings {
+                if binding.index == ComputeBufferIndex.Uniforms.rawValue,
+                   let bufferBinding = binding as? MTLBufferBinding,
+                   let bufferStruct = bufferBinding.bufferStructType
+                {
+                    let parameters = parseParameters(bufferStruct: bufferStruct)
+                    parameters.label = configuration.label.titleCase + " Uniforms"
+                    pipelineParametersCache[configuration] = parameters
+                    return parameters
+                }
             }
         }
         else if let pipelineURL = configuration.pipelineURL,
@@ -114,15 +118,18 @@ public actor ComputeShaderPipelineCache {
 
         if let reflection = updatePipelineReflectionCache[configuration] {
             var parameters = [ParameterGroup]()
-            for arg in reflection.arguments {
-                if arg.index != ComputeBufferIndex.Uniforms.rawValue,
-                   let bufferStruct = arg.bufferStructType
+
+            for binding in reflection.bindings {
+                if binding.index != ComputeBufferIndex.Uniforms.rawValue,
+                   let bufferBinding = binding as? MTLBufferBinding,
+                   let bufferStruct = bufferBinding.bufferStructType
                 {
                     let p = parseParameters(bufferStruct: bufferStruct)
-                    p.label = "\(arg.name)"
+                    p.label = "\(binding.name)"
                     parameters.append(p)
                 }
             }
+
             pipelineBuffersCache[configuration] = parameters
             return parameters
         }

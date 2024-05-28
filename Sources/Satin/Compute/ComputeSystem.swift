@@ -127,7 +127,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     private func setupFeatures() {
         _useDispatchThreads = false
         if #available(macOS 10.15, iOS 13, tvOS 13, visionOS 1.0, *) {
-            if device.supportsFamily(.common3) || device.supportsFamily(.apple4) || device.supportsFamily(.apple5) || device.supportsFamily(.mac1) || device.supportsFamily(.mac2) {
+            if device.supportsFamily(.common3) || device.supportsFamily(.apple4) || device.supportsFamily(.apple5) || device.supportsFamily(.mac2) || device.supportsFamily(.mac2) {
                 _useDispatchThreads = true
             }
         } else {
