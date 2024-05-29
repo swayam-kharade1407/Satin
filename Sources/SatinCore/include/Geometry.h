@@ -12,11 +12,7 @@
 #import <stdbool.h>
 #import <simd/simd.h>
 
-#if SWIFT_PACKAGE
 #import "Types.h"
-#else
-#import <Satin/Types.h>
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

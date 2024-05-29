@@ -10,11 +10,7 @@
 
 #import <stdio.h>
 
-#if SWIFT_PACKAGE
 #import "Types.h"
-#else
-#import <Satin/Types.h>
-#endif
 
 #if defined(__cplusplus)
 extern "C" {
