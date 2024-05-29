@@ -8,7 +8,10 @@
 #ifndef Triangulator_h
 #define Triangulator_h
 
-#import "Types.h"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wquoted-include-in-framework-header"
+#include "Types.h"
+#pragma clang diagnostic pop
 
 #if defined(__cplusplus)
 extern "C" {

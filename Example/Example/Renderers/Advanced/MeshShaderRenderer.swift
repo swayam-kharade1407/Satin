@@ -149,7 +149,7 @@ private class CustomShader: SourceShader {
                 colorAttachment.destinationAlphaBlendFactor = blending.destinationAlphaBlendFactor
                 colorAttachment.rgbBlendOperation = blending.rgbBlendOperation
                 colorAttachment.alphaBlendOperation = blending.alphaBlendOperation
-            case .disabled:
+            default:
                 break
         }
     }

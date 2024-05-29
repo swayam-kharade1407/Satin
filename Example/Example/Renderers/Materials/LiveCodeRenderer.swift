@@ -36,7 +36,14 @@ class LiveCodeRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: CustomMaterial(pipelinesURL: pipelinesURL))
     lazy var scene = Object(label: "Scene", [mesh])
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
+    lazy var context = Context(
+        device: device,
+        sampleCount: sampleCount,
+        colorPixelFormat: colorPixelFormat,
+        depthPixelFormat: depthPixelFormat, 
+        stencilPixelFormat: stencilPixelFormat
+    )
+    
     lazy var renderer = Renderer(context: context)
 
     override var depthPixelFormat: MTLPixelFormat {
@@ -62,7 +69,7 @@ class LiveCodeRenderer: BaseRenderer {
             do {
                 try FileManager.default.copyItem(at: satinCore, to: assetsURL.appendingPathComponent("Satin"))
             } catch {
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }
@@ -72,7 +79,7 @@ class LiveCodeRenderer: BaseRenderer {
             do {
                 try FileManager.default.copyItem(at: satinLibrary, to: assetsURL.appendingPathComponent("Library"))
             } catch {
-                print(error)
+                print(error.localizedDescription)
             }
         }
     }

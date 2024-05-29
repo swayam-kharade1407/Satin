@@ -6,6 +6,8 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wquoted-include-in-framework-header"
 #import "Conversions.h"
 #import "Transforms.h"
 #import "Types.h"
@@ -17,3 +19,4 @@
 #import "Rectangle.h"
 #import "Triangulator.h"
 #import "Bvh.h"
+#pragma clang diagnostic pop
