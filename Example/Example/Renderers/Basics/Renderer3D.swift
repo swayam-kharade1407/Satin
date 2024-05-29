@@ -24,8 +24,14 @@ class Renderer3D: BaseRenderer {
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
 
-    override var sampleCount: Int { 2 }
-    
+    override var sampleCount: Int { 
+#if targetEnvironment(simulator)
+        return 1
+#else
+        return 2
+#endif
+    }
+
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
     lazy var renderer = Renderer(context: context)
 

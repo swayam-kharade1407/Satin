@@ -17,7 +17,6 @@ import MetalPerformanceShaders
 import Combine
 
 import Satin
-import SatinCore
 
 class ARBloomRenderer: BaseRenderer {
     class BloomMaterial: SourceMaterial {

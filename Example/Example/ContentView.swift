@@ -12,13 +12,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-#if os(visionOS)
-                Section(header: Text("Vision")) {
-                    NavigationLink(destination: VisionsView()) {
-                        Label("Immersive", systemImage: "visionpro")
+                #if os(visionOS)
+                    Section(header: Text("Vision")) {
+                        NavigationLink(destination: VisionsView()) {
+                            Label("Immersive", systemImage: "visionpro")
+                        }
                     }
-                }
-#endif
+                #endif
                 #if os(iOS)
                     Section(header: Text("AR")) {
                         NavigationLink(destination: ARRendererView()) {
@@ -159,8 +159,6 @@ struct ContentView: View {
                     }
                 }
 
-
-
                 Section(header: Text("Shadows")) {
                     NavigationLink(destination: ContactShadowRendererView()) {
                         Label("Contact Shadow", systemImage: "square.2.layers.3d.bottom.filled")
@@ -195,11 +193,10 @@ struct ContentView: View {
                         Label("Ray Marching", systemImage: "camera.metering.multispot")
                     }
 
-                    NavigationLink(destination: MultipleViewportRendererView()) {
-                        Label("Vertex Amplification", systemImage: "rectangle.split.2x1")
-                    }
-
-                    #if !os(visionOS)
+                    #if !targetEnvironment(simulator)
+                        NavigationLink(destination: MultipleViewportRendererView()) {
+                            Label("Vertex Amplification", systemImage: "rectangle.split.2x1")
+                        }
                         NavigationLink(destination: TessellationRendererView()) {
                             Label("Tessellation", systemImage: "square.split.2x2")
                         }
@@ -249,5 +246,3 @@ struct ContentView: View {
     ContentView()
         .preferredColorScheme(.dark)
 }
-
-

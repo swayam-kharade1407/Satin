@@ -13,7 +13,6 @@ import Metal
 import MetalKit
 
 import Satin
-import SatinCore
 
 import SwiftUI
 

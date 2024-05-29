@@ -13,7 +13,6 @@ import Combine
 import Metal
 
 import Satin
-import SatinCore
 
 fileprivate class ARObject: Object {
     var anchor: ARAnchor? {

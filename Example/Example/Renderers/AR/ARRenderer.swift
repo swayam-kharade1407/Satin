@@ -13,7 +13,6 @@ import Combine
 import Metal
 
 import Satin
-import SatinCore
 
 class ARRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }

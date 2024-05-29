@@ -13,7 +13,6 @@ import Combine
 import Metal
 
 import Satin
-import SatinCore
 import SwiftUI
 
 class ARPlaneGeometry: Geometry {
