@@ -6,9 +6,12 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import SatinCore
 import Metal
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 public final class ParametricGeometry: Geometry {
     var rangeU: ClosedRange<Float> = 0.0 ... 1.0 {

@@ -8,8 +8,11 @@
 import CoreText
 import Foundation
 import Metal
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 extension CTTextAlignment: Codable {}
 

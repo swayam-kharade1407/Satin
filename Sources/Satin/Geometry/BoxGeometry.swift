@@ -7,7 +7,10 @@
 //
 
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class BoxGeometry: SatinGeometry {
     public var width: Float {

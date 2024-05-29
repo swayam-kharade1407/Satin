@@ -9,7 +9,7 @@
 #ifndef SuperShapeGenerator_h
 #define SuperShapeGenerator_h
 
-#include "Types.h"
+#include <Satin/SatinCore.h>
 
 GeometryData generateSuperShapeGeometryData(float r1, float a1, float b1, float m1, float n11,
                                             float n21, float n31, float r2, float a2, float b2,

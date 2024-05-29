@@ -11,7 +11,6 @@ import MetalKit
 import ModelIO
 
 import Satin
-import SatinCore
 
 class ExportGeometryRenderer: BaseRenderer {
     lazy var material = BasicDiffuseMaterial(hardness: 0.9)

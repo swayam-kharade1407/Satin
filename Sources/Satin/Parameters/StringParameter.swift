@@ -6,6 +6,7 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+import Combine
 import Foundation
 
 public final class StringParameter: GenericParameter<String> {

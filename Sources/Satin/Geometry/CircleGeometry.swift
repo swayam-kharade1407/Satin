@@ -6,8 +6,9 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import simd
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class CircleGeometry: SatinGeometry {
     public var radius: Float = 1 {

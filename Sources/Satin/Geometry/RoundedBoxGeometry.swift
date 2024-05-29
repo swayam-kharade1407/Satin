@@ -5,7 +5,9 @@
 //  Created by Reza Ali on 3/15/22.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class RoundedBoxGeometry: SatinGeometry {
     public var size: simd_float3 {

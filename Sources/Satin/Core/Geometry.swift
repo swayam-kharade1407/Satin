@@ -9,7 +9,9 @@ import Combine
 import Foundation
 import Metal
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 // add on change publishers for vertex & index data
 

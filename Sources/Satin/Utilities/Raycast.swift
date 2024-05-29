@@ -8,7 +8,10 @@
 
 import Foundation
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public func raycast(ray: Ray, objects: [Object], recursive: Bool = true, invisible: Bool = false) -> [RaycastResult] {
     var intersections = [RaycastResult]()

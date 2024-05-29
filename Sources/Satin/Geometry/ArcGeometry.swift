@@ -6,7 +6,10 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
+
 import simd
 
 public final class ArcGeometry: SatinGeometry {

@@ -9,7 +9,10 @@ import Combine
 import Foundation
 import Metal
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public class InstancedMesh: Mesh {
 

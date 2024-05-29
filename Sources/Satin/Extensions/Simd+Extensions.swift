@@ -6,8 +6,11 @@
 //
 
 import Metal
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 extension MTLPackedFloat3: Equatable {
     public static func == (lhs: _MTLPackedFloat3, rhs: _MTLPackedFloat3) -> Bool {

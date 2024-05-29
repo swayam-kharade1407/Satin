@@ -1,4 +1,5 @@
 {
+  "originHash" : "61ae8696f73665e6562785379cc5f9d2a02f1802741cec5f18320b0e6efc6dd2",
   "pins" : [
     {
       "identity" : "spectra",
@@ -10,5 +11,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

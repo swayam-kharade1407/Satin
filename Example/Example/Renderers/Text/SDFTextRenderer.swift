@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 
 import Satin
-import SatinCore
 
 class SDFTextRenderer: BaseRenderer {
     lazy var fontTexture: MTLTexture? = {

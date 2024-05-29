@@ -8,7 +8,11 @@
 #ifndef Bounds_h
 #define Bounds_h
 
+#if SWIFT_PACKAGE
 #import "Types.h"
+#else
+#import <Satin/Types.h>
+#endif
 
 #if defined(__cplusplus)
 extern "C" {

@@ -7,7 +7,10 @@
 
 import Foundation
 import Metal
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class PointGeometry: Geometry {
     public var data: [simd_float3] {

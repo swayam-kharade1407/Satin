@@ -11,7 +11,6 @@ import Metal
 import MetalKit
 
 import Satin
-import SatinCore
 
 class SuperShapeGeometry: SatinGeometry {
     var r1: Float { didSet {

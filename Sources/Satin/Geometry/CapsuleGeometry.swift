@@ -7,7 +7,10 @@
 //
 
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class CapsuleGeometry: SatinGeometry {
     public enum Axis: Int32 {

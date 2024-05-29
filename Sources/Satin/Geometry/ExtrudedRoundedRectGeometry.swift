@@ -5,8 +5,9 @@
 //  Created by Reza Ali on 8/6/20.
 //
 
-import Foundation
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class ExtrudedRoundedRectGeometry: SatinGeometry {
     var size: simd_float3 {

@@ -11,7 +11,6 @@ import Foundation
 import Metal
 import MetalPerformanceShaders
 import Satin
-import SatinCore
 
 class MeshShadowRenderer {
     public var texture: MTLTexture? {

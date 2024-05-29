@@ -15,7 +15,9 @@ import ARKit
 import Metal
 import MetalPerformanceShaders
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
     private var sessionPublisher: ARSessionPublisher

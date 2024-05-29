@@ -9,7 +9,6 @@
 import Metal
 import MetalKit
 import Satin
-import SatinCore
 
 class Renderer3D: BaseRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))

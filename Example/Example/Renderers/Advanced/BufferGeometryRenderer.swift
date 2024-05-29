@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 
 import Satin
-import SatinCore
 
 class BufferGeometryMesh: Object, Renderable {
     var geometry: Geometry {
@@ -236,7 +235,7 @@ class BufferGeometryRenderer: BaseRenderer {
         freeGeometryData(&geometryData)
 //        var geoData = SatinCore.generateQuadGeometryData(1.0)
 //        var geoData = SatinCore.generateBoxGeometryData(1, 1, 1, 0, 0, 0, 1, 1, 1)
-        geometryData = SatinCore.generateRoundedBoxGeometryData(size, size, size, 0.25, 3)
+        geometryData = generateRoundedBoxGeometryData(size, size, size, 0.25, 3)
 
         // position (4) & normal (3) & uv (2)
         //        var data: [Float] = [

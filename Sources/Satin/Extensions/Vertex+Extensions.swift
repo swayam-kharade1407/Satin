@@ -5,7 +5,9 @@
 //  Created by Reza Ali on 1/31/22.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 extension SatinVertex: Codable {
     private enum CodingKeys: String, CodingKey {

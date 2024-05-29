@@ -6,7 +6,10 @@
 //
 
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public struct IntersectionResult {
     public let barycentricCoordinates: simd_float3

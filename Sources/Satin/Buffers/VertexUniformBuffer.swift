@@ -6,8 +6,11 @@
 //
 
 import Metal
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 public final class VertexUniformBuffer {
     public private(set) var context: Context

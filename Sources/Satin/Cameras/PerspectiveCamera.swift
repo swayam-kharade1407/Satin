@@ -8,7 +8,10 @@
 
 import Combine
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 open class PerspectiveCamera: Camera {
     @Published public var fov: Float = 45 {

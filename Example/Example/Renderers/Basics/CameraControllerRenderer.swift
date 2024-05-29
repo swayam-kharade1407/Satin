@@ -10,7 +10,6 @@ import Metal
 import MetalKit
 
 import Satin
-import SatinCore
 
 class CameraControllerRenderer: BaseRenderer {
     var gridInterval: Float = 1.0

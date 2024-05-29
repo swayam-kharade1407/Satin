@@ -9,7 +9,10 @@ import Foundation
 import Metal
 import MetalKit
 import ModelIO
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public func loadAsset(url: URL, textureLoader: MTKTextureLoader? = nil) -> Object? {
     let asset = MDLAsset(url: url)

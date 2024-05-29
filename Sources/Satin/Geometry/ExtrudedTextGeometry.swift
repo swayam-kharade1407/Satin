@@ -7,8 +7,11 @@
 
 import CoreGraphics
 import CoreText
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 public final class ExtrudedTextGeometry: TesselatedTextGeometry {
     public var distance: Float {

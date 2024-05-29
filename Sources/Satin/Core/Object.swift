@@ -9,8 +9,11 @@
 import Combine
 import Foundation
 import Metal
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 open class Object: Codable, ObservableObject {
     @Published open var id: String = UUID().uuidString

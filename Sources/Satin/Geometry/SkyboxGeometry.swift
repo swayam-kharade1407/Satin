@@ -4,7 +4,9 @@
 //
 //  Created by Reza Ali on 4/16/20.
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class SkyboxGeometry: SatinGeometry {
     public var size: Float {

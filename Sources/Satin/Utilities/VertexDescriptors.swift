@@ -7,7 +7,10 @@
 
 import Metal
 import ModelIO
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public func ModelIOVertexDescriptor(_ mtlVertexDescriptor: MTLVertexDescriptor) -> MDLVertexDescriptor {
     let descriptor = MDLVertexDescriptor()

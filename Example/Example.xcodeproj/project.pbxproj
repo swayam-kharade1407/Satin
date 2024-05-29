@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E101A96A2C0714CE0055FABA /* Satin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E101A9692C0714BB0055FABA /* Satin.framework */; };
+		E101A96B2C0714CE0055FABA /* Satin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E101A9692C0714BB0055FABA /* Satin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E103E0532B5DDEDF0017588F /* VisionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E103E0522B5DDEDF0017588F /* VisionsView.swift */; };
 		E103E0DC2B5F41570017588F /* Renderer3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F1B32724BAA93300563923 /* Renderer3D.swift */; };
 		E103E0FD2B5F476A0017588F /* Renderer3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E767BE28A6D2A2005D75AB /* Renderer3DView.swift */; };
@@ -126,7 +128,32 @@
 		E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */ = {isa = PBXBuildFile; productRef = E1FDCA162A3692ED00A1870D /* Spectra */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		E101A9682C0714BB0055FABA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E101A9642C0714BB0055FABA /* Satin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 66D7DD332C06A23000B5A6C8;
+			remoteInfo = Satin;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E101A96C2C0714CE0055FABA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E101A96B2C0714CE0055FABA /* Satin.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		E101A9642C0714BB0055FABA /* Satin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Satin.xcodeproj; path = ../Satin.xcodeproj; sourceTree = "<group>"; };
 		E103E0522B5DDEDF0017588F /* VisionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionsView.swift; sourceTree = "<group>"; };
 		E105CC36252BDE7F009EE563 /* FXAARenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXAARenderer.swift; sourceTree = "<group>"; };
 		E1077F4C2A096ABD00C2FB89 /* ARPointCloudRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPointCloudRenderer.swift; sourceTree = "<group>"; };
@@ -257,6 +284,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E101A96A2C0714CE0055FABA /* Satin.framework in Frameworks */,
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,6 +295,7 @@
 		66E67880243EC73A0070B294 = {
 			isa = PBXGroup;
 			children = (
+				E101A9642C0714BB0055FABA /* Satin.xcodeproj */,
 				E1E767D828A6D808005D75AB /* Assets */,
 				E1D714D228A6BADA00B517B6 /* Example */,
 				66E6788A243EC73A0070B294 /* Products */,
@@ -299,6 +328,14 @@
 				E19D4C4629F9C28700DF993D /* Shadows */,
 			);
 			path = Renderers;
+			sourceTree = "<group>";
+		};
+		E101A9652C0714BB0055FABA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E101A9692C0714BB0055FABA /* Satin.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		E10CC11827F1061100E04B2B /* Frameworks */ = {
@@ -675,6 +712,7 @@
 				E1D714CD28A6BAD900B517B6 /* Sources */,
 				E1D714CE28A6BAD900B517B6 /* Frameworks */,
 				E1D714CF28A6BAD900B517B6 /* Resources */,
+				E101A96C2C0714CE0055FABA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -694,8 +732,9 @@
 		66E67881243EC73A0070B294 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = "Hi-Rez";
 				TargetAttributes = {
 					E1D714D028A6BAD900B517B6 = {
@@ -717,12 +756,28 @@
 			);
 			productRefGroup = 66E6788A243EC73A0070B294 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E101A9652C0714BB0055FABA /* Products */;
+					ProjectRef = E101A9642C0714BB0055FABA /* Satin.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E1D714D028A6BAD900B517B6 /* Example */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E101A9692C0714BB0055FABA /* Satin.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Satin.framework;
+			remoteRef = E101A9682C0714BB0055FABA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E1D714CF28A6BAD900B517B6 /* Resources */ = {
@@ -887,6 +942,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -894,10 +950,13 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
+				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -914,6 +973,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -953,6 +1013,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -960,10 +1021,13 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
+				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -974,6 +1038,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -993,10 +1058,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_VIEWS = "";
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
 				DEVELOPMENT_TEAM = H5N5GRKN9A;
@@ -1043,10 +1110,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_VIEWS = "";
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
 				DEVELOPMENT_TEAM = H5N5GRKN9A;

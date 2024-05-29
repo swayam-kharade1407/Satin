@@ -5,7 +5,9 @@
 //  Created by Reza Ali on 8/3/20.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class SquircleGeometry: SatinGeometry {
     var size: Float = 2.0

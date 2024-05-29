@@ -8,7 +8,7 @@
 
 #include "SuperShapeGenerator.h"
 
-#include "Geometry.h"
+#include <Satin/SatinCore.h>
 
 #include <malloc/_malloc.h>
 #include <simd/simd.h>

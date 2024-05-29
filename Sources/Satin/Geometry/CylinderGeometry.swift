@@ -6,7 +6,9 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class CylinderGeometry: SatinGeometry {
     public var radius: Float = 1.0 {

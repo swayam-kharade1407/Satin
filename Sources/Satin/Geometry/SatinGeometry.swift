@@ -5,9 +5,9 @@
 //  Created by Reza Ali on 7/17/23.
 //
 
-import Foundation
-import Metal
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 open class SatinGeometry: Geometry {
     public internal(set) var geometryData: GeometryData = createGeometryData()

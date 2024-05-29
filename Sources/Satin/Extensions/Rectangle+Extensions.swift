@@ -7,7 +7,10 @@
 
 import Foundation
 import simd
+
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public extension Rectangle {
     init() {

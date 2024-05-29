@@ -11,7 +11,6 @@ import Foundation
 import Metal
 import MetalKit
 import Satin
-import SatinCore
 
 class MultipleViewportRenderer: BaseRenderer {
     class ViewportMaterial: SourceMaterial {}

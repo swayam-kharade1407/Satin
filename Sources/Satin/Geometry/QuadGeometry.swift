@@ -6,7 +6,9 @@
 //  Copyright © 2020 Reza Ali. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
 import SatinCore
+#endif
 
 public final class QuadGeometry: SatinGeometry {
     public var size: Float {

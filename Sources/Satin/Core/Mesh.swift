@@ -8,8 +8,11 @@
 
 import Combine
 import Metal
-import SatinCore
 import simd
+
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
 
 open class Mesh: Object, Renderable {
     public var opaque: Bool { material!.blending == .disabled }
