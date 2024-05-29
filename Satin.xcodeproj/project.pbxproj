@@ -1,0 +1,1728 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		66D7E0582C06A24B00B5A6C8 /* Bezier.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE02C06A24B00B5A6C8 /* Bezier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E0592C06A24B00B5A6C8 /* Bounds.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE12C06A24B00B5A6C8 /* Bounds.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05A2C06A24B00B5A6C8 /* Bvh.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE22C06A24B00B5A6C8 /* Bvh.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05B2C06A24B00B5A6C8 /* Conversions.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE32C06A24B00B5A6C8 /* Conversions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05C2C06A24B00B5A6C8 /* Generators.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE42C06A24B00B5A6C8 /* Generators.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05D2C06A24B00B5A6C8 /* Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE52C06A24B00B5A6C8 /* Geometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05E2C06A24B00B5A6C8 /* Hermite.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE62C06A24B00B5A6C8 /* Hermite.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E05F2C06A24B00B5A6C8 /* Rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE72C06A24B00B5A6C8 /* Rectangle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E0602C06A24B00B5A6C8 /* SatinCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE82C06A24B00B5A6C8 /* SatinCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E0612C06A24B00B5A6C8 /* Transforms.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEE92C06A24B00B5A6C8 /* Transforms.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E0622C06A24B00B5A6C8 /* Triangulator.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEEA2C06A24B00B5A6C8 /* Triangulator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E0632C06A24B00B5A6C8 /* Types.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D7DEEB2C06A24B00B5A6C8 /* Types.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66D7E06F2C06A2C000B5A6C8 /* Bezier.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEED2C06A24B00B5A6C8 /* Bezier.mm */; };
+		66D7E0702C06A2C000B5A6C8 /* Bounds.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEEE2C06A24B00B5A6C8 /* Bounds.mm */; };
+		66D7E0712C06A2C000B5A6C8 /* Bvh.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEEF2C06A24B00B5A6C8 /* Bvh.mm */; };
+		66D7E0722C06A2C000B5A6C8 /* Conversions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF02C06A24B00B5A6C8 /* Conversions.mm */; };
+		66D7E0732C06A2C000B5A6C8 /* Generators.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF12C06A24B00B5A6C8 /* Generators.mm */; };
+		66D7E0742C06A2C000B5A6C8 /* Geometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF22C06A24B00B5A6C8 /* Geometry.mm */; };
+		66D7E0752C06A2C000B5A6C8 /* Hermite.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF32C06A24B00B5A6C8 /* Hermite.mm */; };
+		66D7E0762C06A2C000B5A6C8 /* Rectangle.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF42C06A24B00B5A6C8 /* Rectangle.mm */; };
+		66D7E0772C06A2C000B5A6C8 /* Transforms.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF52C06A24B00B5A6C8 /* Transforms.mm */; };
+		66D7E0782C06A2C000B5A6C8 /* Triangulator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF62C06A24B00B5A6C8 /* Triangulator.mm */; };
+		66D7E0792C06A2C000B5A6C8 /* Types.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEF72C06A24B00B5A6C8 /* Types.mm */; };
+		66D7E09F2C06A39D00B5A6C8 /* Easing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DD3D2C06A24B00B5A6C8 /* Easing.swift */; };
+		66D7E0A02C06A3B800B5A6C8 /* Easings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DD3E2C06A24B00B5A6C8 /* Easings.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		66D7DD332C06A23000B5A6C8 /* Satin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Satin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		66D7DD3D2C06A24B00B5A6C8 /* Easing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Easing.swift; sourceTree = "<group>"; };
+		66D7DD3E2C06A24B00B5A6C8 /* Easings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Easings.swift; sourceTree = "<group>"; };
+		66D7DD3F2C06A24B00B5A6C8 /* Tween.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tween.swift; sourceTree = "<group>"; };
+		66D7DD402C06A24B00B5A6C8 /* Tweener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tweener.swift; sourceTree = "<group>"; };
+		66D7DD422C06A24B00B5A6C8 /* ARBackgroundDepthRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARBackgroundDepthRenderer.swift; sourceTree = "<group>"; };
+		66D7DD432C06A24B00B5A6C8 /* ARBackgroundRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARBackgroundRenderer.swift; sourceTree = "<group>"; };
+		66D7DD442C06A24B00B5A6C8 /* ARCompositor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARCompositor.swift; sourceTree = "<group>"; };
+		66D7DD452C06A24B00B5A6C8 /* ARDepthMaskGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARDepthMaskGenerator.swift; sourceTree = "<group>"; };
+		66D7DD462C06A24B00B5A6C8 /* ARDepthUpscaler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARDepthUpscaler.swift; sourceTree = "<group>"; };
+		66D7DD472C06A24B00B5A6C8 /* ARFeatheredDepthMaskGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARFeatheredDepthMaskGenerator.swift; sourceTree = "<group>"; };
+		66D7DD482C06A24B00B5A6C8 /* ARLidarMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARLidarMesh.swift; sourceTree = "<group>"; };
+		66D7DD492C06A24B00B5A6C8 /* ARMatteRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARMatteRenderer.swift; sourceTree = "<group>"; };
+		66D7DD4A2C06A24B00B5A6C8 /* ARPerspectiveCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARPerspectiveCamera.swift; sourceTree = "<group>"; };
+		66D7DD4B2C06A24B00B5A6C8 /* ARPlaneMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARPlaneMesh.swift; sourceTree = "<group>"; };
+		66D7DD4C2C06A24B00B5A6C8 /* ARPostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARPostProcessor.swift; sourceTree = "<group>"; };
+		66D7DD4D2C06A24B00B5A6C8 /* ARSessionPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARSessionPublisher.swift; sourceTree = "<group>"; };
+		66D7DD4F2C06A24B00B5A6C8 /* InstanceMatrixUniformBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstanceMatrixUniformBuffer.swift; sourceTree = "<group>"; };
+		66D7DD502C06A24B00B5A6C8 /* StructBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructBuffer.swift; sourceTree = "<group>"; };
+		66D7DD512C06A24B00B5A6C8 /* UniformBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniformBuffer.swift; sourceTree = "<group>"; };
+		66D7DD522C06A24B00B5A6C8 /* VertexUniformBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexUniformBuffer.swift; sourceTree = "<group>"; };
+		66D7DD542C06A24B00B5A6C8 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		66D7DD552C06A24B00B5A6C8 /* OrthographicCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrthographicCameraController.swift; sourceTree = "<group>"; };
+		66D7DD562C06A24B00B5A6C8 /* PerspectiveCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerspectiveCameraController.swift; sourceTree = "<group>"; };
+		66D7DD582C06A24B00B5A6C8 /* OrthographicCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrthographicCamera.swift; sourceTree = "<group>"; };
+		66D7DD592C06A24B00B5A6C8 /* PerspectiveCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerspectiveCamera.swift; sourceTree = "<group>"; };
+		66D7DD5B2C06A24B00B5A6C8 /* AnyMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyMaterial.swift; sourceTree = "<group>"; };
+		66D7DD5D2C06A24B00B5A6C8 /* ComputeConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeConfiguration.swift; sourceTree = "<group>"; };
+		66D7DD5E2C06A24B00B5A6C8 /* ComputeShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShader.swift; sourceTree = "<group>"; };
+		66D7DD5F2C06A24B00B5A6C8 /* ComputeShaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShaderConfiguration.swift; sourceTree = "<group>"; };
+		66D7DD602C06A24B00B5A6C8 /* ComputeShaderLibraryCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShaderLibraryCache.swift; sourceTree = "<group>"; };
+		66D7DD612C06A24B00B5A6C8 /* ComputeShaderLibraryConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShaderLibraryConfiguration.swift; sourceTree = "<group>"; };
+		66D7DD622C06A24B00B5A6C8 /* ComputeShaderLibrarySourceCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShaderLibrarySourceCache.swift; sourceTree = "<group>"; };
+		66D7DD632C06A24B00B5A6C8 /* ComputeShaderPipelineCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeShaderPipelineCache.swift; sourceTree = "<group>"; };
+		66D7DD652C06A24B00B5A6C8 /* BufferComputeSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferComputeSystem.swift; sourceTree = "<group>"; };
+		66D7DD662C06A24B00B5A6C8 /* ComputeSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeSystem.swift; sourceTree = "<group>"; };
+		66D7DD672C06A24B00B5A6C8 /* TextureComputeSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureComputeSystem.swift; sourceTree = "<group>"; };
+		66D7DD692C06A24B00B5A6C8 /* ComputeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputeConstants.swift; sourceTree = "<group>"; };
+		66D7DD6A2C06A24B00B5A6C8 /* FragmentConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FragmentConstants.swift; sourceTree = "<group>"; };
+		66D7DD6B2C06A24B00B5A6C8 /* MeshConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeshConstants.swift; sourceTree = "<group>"; };
+		66D7DD6C2C06A24B00B5A6C8 /* ObjectConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectConstants.swift; sourceTree = "<group>"; };
+		66D7DD6D2C06A24B00B5A6C8 /* PBRConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBRConstants.swift; sourceTree = "<group>"; };
+		66D7DD6E2C06A24B00B5A6C8 /* VertexConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexConstants.swift; sourceTree = "<group>"; };
+		66D7DD702C06A24B00B5A6C8 /* Blending.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blending.swift; sourceTree = "<group>"; };
+		66D7DD712C06A24B00B5A6C8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		66D7DD722C06A24B00B5A6C8 /* Lighting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lighting.swift; sourceTree = "<group>"; };
+		66D7DD732C06A24B00B5A6C8 /* Tonemapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tonemapping.swift; sourceTree = "<group>"; };
+		66D7DD752C06A24B00B5A6C8 /* YCbCrToRGBConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YCbCrToRGBConverter.swift; sourceTree = "<group>"; };
+		66D7DD772C06A24B00B5A6C8 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		66D7DD782C06A24B00B5A6C8 /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		66D7DD792C06A24B00B5A6C8 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
+		66D7DD7A2C06A24B00B5A6C8 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
+		66D7DD7B2C06A24B00B5A6C8 /* Mesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mesh.swift; sourceTree = "<group>"; };
+		66D7DD7C2C06A24B00B5A6C8 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		66D7DD7D2C06A24B00B5A6C8 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		66D7DD7E2C06A24B00B5A6C8 /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
+		66D7DD802C06A24B00B5A6C8 /* Bounds+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bounds+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD812C06A24B00B5A6C8 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD822C06A24B00B5A6C8 /* BVH+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BVH+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD832C06A24B00B5A6C8 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD842C06A24B00B5A6C8 /* CGSize+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD852C06A24B00B5A6C8 /* Metal+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Metal+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD862C06A24B00B5A6C8 /* MTLClearColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLClearColor+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD872C06A24B00B5A6C8 /* MTLSamplerDescriptor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLSamplerDescriptor+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD882C06A24B00B5A6C8 /* MTLTexture+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLTexture+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD892C06A24B00B5A6C8 /* MTLVertexFormat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLVertexFormat+Extension.swift"; sourceTree = "<group>"; };
+		66D7DD8A2C06A24B00B5A6C8 /* MTLVertexStepFunction+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLVertexStepFunction+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD8B2C06A24B00B5A6C8 /* MTLViewport+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLViewport+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD8C2C06A24B00B5A6C8 /* NSAppearanceCustomization+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAppearanceCustomization+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD8D2C06A24B00B5A6C8 /* Ray+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ray+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD8E2C06A24B00B5A6C8 /* Rectangle+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Rectangle+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD8F2C06A24B00B5A6C8 /* Simd+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Simd+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD902C06A24B00B5A6C8 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD912C06A24B00B5A6C8 /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD922C06A24B00B5A6C8 /* Vertex+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Vertex+Extensions.swift"; sourceTree = "<group>"; };
+		66D7DD942C06A24B00B5A6C8 /* BrdfGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrdfGenerator.swift; sourceTree = "<group>"; };
+		66D7DD952C06A24B00B5A6C8 /* CubemapGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubemapGenerator.swift; sourceTree = "<group>"; };
+		66D7DD962C06A24B00B5A6C8 /* DiffuseIBLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiffuseIBLGenerator.swift; sourceTree = "<group>"; };
+		66D7DD972C06A24B00B5A6C8 /* RandomNoiseGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomNoiseGenerator.swift; sourceTree = "<group>"; };
+		66D7DD982C06A24B00B5A6C8 /* SpecularIBLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecularIBLGenerator.swift; sourceTree = "<group>"; };
+		66D7DD9A2C06A24B00B5A6C8 /* AnyBufferAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyBufferAttribute.swift; sourceTree = "<group>"; };
+		66D7DD9B2C06A24B00B5A6C8 /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
+		66D7DD9C2C06A24B00B5A6C8 /* BufferAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferAttribute.swift; sourceTree = "<group>"; };
+		66D7DD9D2C06A24B00B5A6C8 /* ElementBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementBuffer.swift; sourceTree = "<group>"; };
+		66D7DD9E2C06A24B00B5A6C8 /* InterleavedBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterleavedBuffer.swift; sourceTree = "<group>"; };
+		66D7DD9F2C06A24B00B5A6C8 /* InterleavedBufferAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterleavedBufferAttribute.swift; sourceTree = "<group>"; };
+		66D7DDA02C06A24B00B5A6C8 /* VertexAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexAttribute.swift; sourceTree = "<group>"; };
+		66D7DDA22C06A24B00B5A6C8 /* ArcGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA32C06A24B00B5A6C8 /* BoxGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA42C06A24B00B5A6C8 /* CapsuleGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CapsuleGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA52C06A24B00B5A6C8 /* CircleGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA62C06A24B00B5A6C8 /* ConeGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConeGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA72C06A24B00B5A6C8 /* CylinderGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CylinderGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA82C06A24B00B5A6C8 /* ExtrudedRoundedRectGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtrudedRoundedRectGeometry.swift; sourceTree = "<group>"; };
+		66D7DDA92C06A24B00B5A6C8 /* ExtrudedTextGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtrudedTextGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAA2C06A24B00B5A6C8 /* IcoSphereGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IcoSphereGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAB2C06A24B00B5A6C8 /* LineGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAC2C06A24B00B5A6C8 /* OctaSphereGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OctaSphereGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAD2C06A24B00B5A6C8 /* ParametricGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParametricGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAE2C06A24B00B5A6C8 /* PlaneGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaneGeometry.swift; sourceTree = "<group>"; };
+		66D7DDAF2C06A24B00B5A6C8 /* PointGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB02C06A24B00B5A6C8 /* QuadGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB12C06A24B00B5A6C8 /* RoundedBoxGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedBoxGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB22C06A24B00B5A6C8 /* RoundedRectGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedRectGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB32C06A24B00B5A6C8 /* SatinGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SatinGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB42C06A24B00B5A6C8 /* SkyboxGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyboxGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB52C06A24B00B5A6C8 /* SphereGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SphereGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB62C06A24B00B5A6C8 /* SquircleGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquircleGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB72C06A24B00B5A6C8 /* TesselatedTextGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TesselatedTextGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB82C06A24B00B5A6C8 /* TextGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextGeometry.swift; sourceTree = "<group>"; };
+		66D7DDB92C06A24B00B5A6C8 /* TorusGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TorusGeometry.swift; sourceTree = "<group>"; };
+		66D7DDBA2C06A24B00B5A6C8 /* TriangleGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TriangleGeometry.swift; sourceTree = "<group>"; };
+		66D7DDBB2C06A24B00B5A6C8 /* TubeGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TubeGeometry.swift; sourceTree = "<group>"; };
+		66D7DDBD2C06A24B00B5A6C8 /* DirectionalLight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectionalLight.swift; sourceTree = "<group>"; };
+		66D7DDBE2C06A24B00B5A6C8 /* PointLight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointLight.swift; sourceTree = "<group>"; };
+		66D7DDBF2C06A24B00B5A6C8 /* SpotLight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotLight.swift; sourceTree = "<group>"; };
+		66D7DDC12C06A24B00B5A6C8 /* ARBackgroundDepthMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARBackgroundDepthMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC22C06A24B00B5A6C8 /* ARBackgroundMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARBackgroundMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC32C06A24B00B5A6C8 /* ARCompositorMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARCompositorMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC42C06A24B00B5A6C8 /* ARMatteMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARMatteMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC52C06A24B00B5A6C8 /* ARPostMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARPostMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC62C06A24B00B5A6C8 /* BasicColorMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicColorMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC72C06A24B00B5A6C8 /* BasicDiffuseMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicDiffuseMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC82C06A24B00B5A6C8 /* BasicPointMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicPointMaterial.swift; sourceTree = "<group>"; };
+		66D7DDC92C06A24B00B5A6C8 /* BasicTextureMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicTextureMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCA2C06A24B00B5A6C8 /* DepthMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCB2C06A24B00B5A6C8 /* MatCapMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatCapMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCC2C06A24B00B5A6C8 /* NormalColorMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NormalColorMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCD2C06A24B00B5A6C8 /* PhysicalMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhysicalMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCE2C06A24B00B5A6C8 /* ShadowMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowMaterial.swift; sourceTree = "<group>"; };
+		66D7DDCF2C06A24B00B5A6C8 /* SkyboxMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyboxMaterial.swift; sourceTree = "<group>"; };
+		66D7DDD02C06A24B00B5A6C8 /* SourceMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceMaterial.swift; sourceTree = "<group>"; };
+		66D7DDD12C06A24B00B5A6C8 /* StandardMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardMaterial.swift; sourceTree = "<group>"; };
+		66D7DDD22C06A24B00B5A6C8 /* TextMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextMaterial.swift; sourceTree = "<group>"; };
+		66D7DDD32C06A24B00B5A6C8 /* UVColorMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UVColorMaterial.swift; sourceTree = "<group>"; };
+		66D7DDD52C06A24B00B5A6C8 /* IBLScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBLScene.swift; sourceTree = "<group>"; };
+		66D7DDD62C06A24B00B5A6C8 /* InstancedMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstancedMesh.swift; sourceTree = "<group>"; };
+		66D7DDD72C06A24B00B5A6C8 /* Submesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Submesh.swift; sourceTree = "<group>"; };
+		66D7DDD92C06A24B00B5A6C8 /* AnyParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyParameter.swift; sourceTree = "<group>"; };
+		66D7DDDA2C06A24B00B5A6C8 /* BoolParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoolParameter.swift; sourceTree = "<group>"; };
+		66D7DDDB2C06A24B00B5A6C8 /* DoubleParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleParameter.swift; sourceTree = "<group>"; };
+		66D7DDDC2C06A24B00B5A6C8 /* Float2Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float2Parameter.swift; sourceTree = "<group>"; };
+		66D7DDDD2C06A24B00B5A6C8 /* Float2x2Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float2x2Parameter.swift; sourceTree = "<group>"; };
+		66D7DDDE2C06A24B00B5A6C8 /* Float3Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float3Parameter.swift; sourceTree = "<group>"; };
+		66D7DDDF2C06A24B00B5A6C8 /* Float3x3Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float3x3Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE02C06A24B00B5A6C8 /* Float4Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float4Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE12C06A24B00B5A6C8 /* Float4x4Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float4x4Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE22C06A24B00B5A6C8 /* FloatParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatParameter.swift; sourceTree = "<group>"; };
+		66D7DDE32C06A24B00B5A6C8 /* GenericParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericParameter.swift; sourceTree = "<group>"; };
+		66D7DDE42C06A24B00B5A6C8 /* Int2Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Int2Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE52C06A24B00B5A6C8 /* Int3Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Int3Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE62C06A24B00B5A6C8 /* Int4Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Int4Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE72C06A24B00B5A6C8 /* IntParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntParameter.swift; sourceTree = "<group>"; };
+		66D7DDE82C06A24B00B5A6C8 /* PackedFloat3Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PackedFloat3Parameter.swift; sourceTree = "<group>"; };
+		66D7DDE92C06A24B00B5A6C8 /* Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
+		66D7DDEA2C06A24B00B5A6C8 /* ParameterGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterGroup.swift; sourceTree = "<group>"; };
+		66D7DDEB2C06A24B00B5A6C8 /* StringParameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringParameter.swift; sourceTree = "<group>"; };
+		66D7DDEC2C06A24B00B5A6C8 /* UInt32Parameter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UInt32Parameter.swift; sourceTree = "<group>"; };
+		66D7DDEE2C06A24B00B5A6C8 /* PbrDirectLighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrDirectLighting.metal; sourceTree = "<group>"; };
+		66D7DDEF2C06A24B00B5A6C8 /* PbrInDirectLighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrInDirectLighting.metal; sourceTree = "<group>"; };
+		66D7DDF02C06A24B00B5A6C8 /* PbrInit.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrInit.metal; sourceTree = "<group>"; };
+		66D7DDF12C06A24B00B5A6C8 /* PbrTextures.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrTextures.metal; sourceTree = "<group>"; };
+		66D7DDF22C06A24B00B5A6C8 /* PbrTonemap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrTonemap.metal; sourceTree = "<group>"; };
+		66D7DDF32C06A24B00B5A6C8 /* PhysicalMaterialUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PhysicalMaterialUniforms.metal; sourceTree = "<group>"; };
+		66D7DDF42C06A24B00B5A6C8 /* PhysicalTexcoordUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PhysicalTexcoordUniforms.metal; sourceTree = "<group>"; };
+		66D7DDF52C06A24B00B5A6C8 /* PhysicalUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PhysicalUniforms.metal; sourceTree = "<group>"; };
+		66D7DDF62C06A24B00B5A6C8 /* PixelInfo.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfo.metal; sourceTree = "<group>"; };
+		66D7DDF72C06A24B00B5A6C8 /* PixelInfoInit.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfoInit.metal; sourceTree = "<group>"; };
+		66D7DDF82C06A24B00B5A6C8 /* PixelInfoInitMaterial.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfoInitMaterial.metal; sourceTree = "<group>"; };
+		66D7DDF92C06A24B00B5A6C8 /* PixelInfoInitNormal.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfoInitNormal.metal; sourceTree = "<group>"; };
+		66D7DDFA2C06A24B00B5A6C8 /* PixelInfoInitPosition.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfoInitPosition.metal; sourceTree = "<group>"; };
+		66D7DDFB2C06A24B00B5A6C8 /* PixelInfoInitView.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfoInitView.metal; sourceTree = "<group>"; };
+		66D7DDFC2C06A24B00B5A6C8 /* StandardMaterialUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = StandardMaterialUniforms.metal; sourceTree = "<group>"; };
+		66D7DDFD2C06A24B00B5A6C8 /* StandardTexcoordUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = StandardTexcoordUniforms.metal; sourceTree = "<group>"; };
+		66D7DDFE2C06A24B00B5A6C8 /* StandardUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = StandardUniforms.metal; sourceTree = "<group>"; };
+		66D7DE002C06A24B00B5A6C8 /* ShadowShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShadowShader.metal; sourceTree = "<group>"; };
+		66D7DE012C06A24B00B5A6C8 /* VertexShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VertexShader.metal; sourceTree = "<group>"; };
+		66D7DE032C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE052C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE072C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE092C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE0B2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE0D2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE0F2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE122C06A24B00B5A6C8 /* DistributionBeckmann.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = DistributionBeckmann.metal; sourceTree = "<group>"; };
+		66D7DE132C06A24B00B5A6C8 /* DistributionBlinnPhong.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = DistributionBlinnPhong.metal; sourceTree = "<group>"; };
+		66D7DE142C06A24B00B5A6C8 /* DistributionGGX.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = DistributionGGX.metal; sourceTree = "<group>"; };
+		66D7DE162C06A24B00B5A6C8 /* FresnelSchlick.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = FresnelSchlick.metal; sourceTree = "<group>"; };
+		66D7DE182C06A24B00B5A6C8 /* GeometryImplicit.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GeometryImplicit.metal; sourceTree = "<group>"; };
+		66D7DE192C06A24B00B5A6C8 /* GeometryNeumann.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GeometryNeumann.metal; sourceTree = "<group>"; };
+		66D7DE1A2C06A24B00B5A6C8 /* GeometrySchlickGGX.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GeometrySchlickGGX.metal; sourceTree = "<group>"; };
+		66D7DE1B2C06A24B00B5A6C8 /* GeometrySmith.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GeometrySmith.metal; sourceTree = "<group>"; };
+		66D7DE1D2C06A24B00B5A6C8 /* VisibilityKelemen.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VisibilityKelemen.metal; sourceTree = "<group>"; };
+		66D7DE1E2C06A24B00B5A6C8 /* VisibilitySmithGGXCorrelated.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VisibilitySmithGGXCorrelated.metal; sourceTree = "<group>"; };
+		66D7DE202C06A24B00B5A6C8 /* Hammersley.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Hammersley.metal; sourceTree = "<group>"; };
+		66D7DE212C06A24B00B5A6C8 /* ImportanceSampling.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ImportanceSampling.metal; sourceTree = "<group>"; };
+		66D7DE222C06A24B00B5A6C8 /* Lighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Lighting.metal; sourceTree = "<group>"; };
+		66D7DE232C06A24B00B5A6C8 /* Material.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Material.metal; sourceTree = "<group>"; };
+		66D7DE242C06A24B00B5A6C8 /* Pbr.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Pbr.metal; sourceTree = "<group>"; };
+		66D7DE252C06A24B00B5A6C8 /* PbrDirectLighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrDirectLighting.metal; sourceTree = "<group>"; };
+		66D7DE262C06A24B00B5A6C8 /* PbrEvaluate.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrEvaluate.metal; sourceTree = "<group>"; };
+		66D7DE272C06A24B00B5A6C8 /* PbrImageBasedLighting.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrImageBasedLighting.metal; sourceTree = "<group>"; };
+		66D7DE282C06A24B00B5A6C8 /* PbrInit.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrInit.metal; sourceTree = "<group>"; };
+		66D7DE292C06A24B00B5A6C8 /* PbrTonemap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrTonemap.metal; sourceTree = "<group>"; };
+		66D7DE2A2C06A24B00B5A6C8 /* PbrUtilities.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrUtilities.metal; sourceTree = "<group>"; };
+		66D7DE2B2C06A24B00B5A6C8 /* PixelInfo.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PixelInfo.metal; sourceTree = "<group>"; };
+		66D7DE2D2C06A24B00B5A6C8 /* Arc.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Arc.metal; sourceTree = "<group>"; };
+		66D7DE2E2C06A24B00B5A6C8 /* Box.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Box.metal; sourceTree = "<group>"; };
+		66D7DE2F2C06A24B00B5A6C8 /* Capsule.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Capsule.metal; sourceTree = "<group>"; };
+		66D7DE302C06A24B00B5A6C8 /* Circle.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Circle.metal; sourceTree = "<group>"; };
+		66D7DE312C06A24B00B5A6C8 /* Cylinder.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Cylinder.metal; sourceTree = "<group>"; };
+		66D7DE322C06A24B00B5A6C8 /* Hexagon.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Hexagon.metal; sourceTree = "<group>"; };
+		66D7DE332C06A24B00B5A6C8 /* Line.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Line.metal; sourceTree = "<group>"; };
+		66D7DE342C06A24B00B5A6C8 /* Plane.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Plane.metal; sourceTree = "<group>"; };
+		66D7DE352C06A24B00B5A6C8 /* Platonic.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Platonic.metal; sourceTree = "<group>"; };
+		66D7DE362C06A24B00B5A6C8 /* Pyramid.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Pyramid.metal; sourceTree = "<group>"; };
+		66D7DE372C06A24B00B5A6C8 /* Rect.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Rect.metal; sourceTree = "<group>"; };
+		66D7DE382C06A24B00B5A6C8 /* RoundedRect.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = RoundedRect.metal; sourceTree = "<group>"; };
+		66D7DE392C06A24B00B5A6C8 /* Sphere.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Sphere.metal; sourceTree = "<group>"; };
+		66D7DE3A2C06A24B00B5A6C8 /* Torus.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Torus.metal; sourceTree = "<group>"; };
+		66D7DE3C2C06A24B00B5A6C8 /* Aces.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Aces.metal; sourceTree = "<group>"; };
+		66D7DE3D2C06A24B00B5A6C8 /* Filmic.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Filmic.metal; sourceTree = "<group>"; };
+		66D7DE3E2C06A24B00B5A6C8 /* Lottes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Lottes.metal; sourceTree = "<group>"; };
+		66D7DE3F2C06A24B00B5A6C8 /* Reinhard.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Reinhard.metal; sourceTree = "<group>"; };
+		66D7DE402C06A24B00B5A6C8 /* Reinhard2.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Reinhard2.metal; sourceTree = "<group>"; };
+		66D7DE412C06A24B00B5A6C8 /* Uchimura.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Uchimura.metal; sourceTree = "<group>"; };
+		66D7DE422C06A24B00B5A6C8 /* Uncharted2.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Uncharted2.metal; sourceTree = "<group>"; };
+		66D7DE432C06A24B00B5A6C8 /* Unreal.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Unreal.metal; sourceTree = "<group>"; };
+		66D7DE452C06A24B00B5A6C8 /* Adjustments.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Adjustments.metal; sourceTree = "<group>"; };
+		66D7DE462C06A24B00B5A6C8 /* Bezier.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Bezier.metal; sourceTree = "<group>"; };
+		66D7DE472C06A24B00B5A6C8 /* Blend.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Blend.metal; sourceTree = "<group>"; };
+		66D7DE482C06A24B00B5A6C8 /* Cellular.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Cellular.metal; sourceTree = "<group>"; };
+		66D7DE492C06A24B00B5A6C8 /* Colors.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Colors.metal; sourceTree = "<group>"; };
+		66D7DE4A2C06A24B00B5A6C8 /* Conversion.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Conversion.metal; sourceTree = "<group>"; };
+		66D7DE4B2C06A24B00B5A6C8 /* Csg.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Csg.metal; sourceTree = "<group>"; };
+		66D7DE4C2C06A24B00B5A6C8 /* CubicSmooth.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = CubicSmooth.metal; sourceTree = "<group>"; };
+		66D7DE4D2C06A24B00B5A6C8 /* Curlnoise.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Curlnoise.metal; sourceTree = "<group>"; };
+		66D7DE4E2C06A24B00B5A6C8 /* Dither.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Dither.metal; sourceTree = "<group>"; };
+		66D7DE4F2C06A24B00B5A6C8 /* Easing.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Easing.metal; sourceTree = "<group>"; };
+		66D7DE502C06A24B00B5A6C8 /* Envelopes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Envelopes.metal; sourceTree = "<group>"; };
+		66D7DE512C06A24B00B5A6C8 /* Fbm.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fbm.metal; sourceTree = "<group>"; };
+		66D7DE522C06A24B00B5A6C8 /* Fog.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fog.metal; sourceTree = "<group>"; };
+		66D7DE532C06A24B00B5A6C8 /* Fresnel.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Fresnel.metal; sourceTree = "<group>"; };
+		66D7DE542C06A24B00B5A6C8 /* Gamma.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Gamma.metal; sourceTree = "<group>"; };
+		66D7DE552C06A24B00B5A6C8 /* Gaussian.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Gaussian.metal; sourceTree = "<group>"; };
+		66D7DE562C06A24B00B5A6C8 /* Halton.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Halton.metal; sourceTree = "<group>"; };
+		66D7DE572C06A24B00B5A6C8 /* Hsv2rgb.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Hsv2rgb.metal; sourceTree = "<group>"; };
+		66D7DE582C06A24B00B5A6C8 /* Intersections.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Intersections.metal; sourceTree = "<group>"; };
+		66D7DE592C06A24B00B5A6C8 /* Luminance.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Luminance.metal; sourceTree = "<group>"; };
+		66D7DE5A2C06A24B00B5A6C8 /* Map.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Map.metal; sourceTree = "<group>"; };
+		66D7DE5B2C06A24B00B5A6C8 /* Mix.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Mix.metal; sourceTree = "<group>"; };
+		66D7DE5C2C06A24B00B5A6C8 /* Noise2D.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Noise2D.metal; sourceTree = "<group>"; };
+		66D7DE5D2C06A24B00B5A6C8 /* Noise3D.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Noise3D.metal; sourceTree = "<group>"; };
+		66D7DE5E2C06A24B00B5A6C8 /* Noise4D.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Noise4D.metal; sourceTree = "<group>"; };
+		66D7DE5F2C06A24B00B5A6C8 /* Noise4Dgrad.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Noise4Dgrad.metal; sourceTree = "<group>"; };
+		66D7DE602C06A24B00B5A6C8 /* Phi.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Phi.metal; sourceTree = "<group>"; };
+		66D7DE612C06A24B00B5A6C8 /* Pi.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Pi.metal; sourceTree = "<group>"; };
+		66D7DE622C06A24B00B5A6C8 /* Poisson.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Poisson.metal; sourceTree = "<group>"; };
+		66D7DE632C06A24B00B5A6C8 /* Quadratic.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Quadratic.metal; sourceTree = "<group>"; };
+		66D7DE642C06A24B00B5A6C8 /* Random.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Random.metal; sourceTree = "<group>"; };
+		66D7DE652C06A24B00B5A6C8 /* Reflection.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Reflection.metal; sourceTree = "<group>"; };
+		66D7DE662C06A24B00B5A6C8 /* Refraction.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Refraction.metal; sourceTree = "<group>"; };
+		66D7DE672C06A24B00B5A6C8 /* Repeat.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Repeat.metal; sourceTree = "<group>"; };
+		66D7DE682C06A24B00B5A6C8 /* Rgb2hsv.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Rgb2hsv.metal; sourceTree = "<group>"; };
+		66D7DE692C06A24B00B5A6C8 /* Rotate.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Rotate.metal; sourceTree = "<group>"; };
+		66D7DE6A2C06A24B00B5A6C8 /* Rotate2D.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Rotate2D.metal; sourceTree = "<group>"; };
+		66D7DE6B2C06A24B00B5A6C8 /* Ryb2rgb.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Ryb2rgb.metal; sourceTree = "<group>"; };
+		66D7DE6C2C06A24B00B5A6C8 /* Shadow.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shadow.metal; sourceTree = "<group>"; };
+		66D7DE6D2C06A24B00B5A6C8 /* Shapes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shapes.metal; sourceTree = "<group>"; };
+		66D7DE6E2C06A24B00B5A6C8 /* Tonemap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Tonemap.metal; sourceTree = "<group>"; };
+		66D7DE702C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE722C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE742C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE762C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE782C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE7A2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE7C2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE7E2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE802C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE822C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE842C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE862C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE882C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE8A2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE8C2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE8E2C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE902C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE922C06A24B00B5A6C8 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		66D7DE952C06A24B00B5A6C8 /* ComputeConstants.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ComputeConstants.metal; sourceTree = "<group>"; };
+		66D7DE962C06A24B00B5A6C8 /* ComputeIncludes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ComputeIncludes.metal; sourceTree = "<group>"; };
+		66D7DE972C06A24B00B5A6C8 /* FragmentConstants.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = FragmentConstants.metal; sourceTree = "<group>"; };
+		66D7DE982C06A24B00B5A6C8 /* InstanceMatrixUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = InstanceMatrixUniforms.metal; sourceTree = "<group>"; };
+		66D7DE992C06A24B00B5A6C8 /* LightData.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = LightData.metal; sourceTree = "<group>"; };
+		66D7DE9A2C06A24B00B5A6C8 /* MeshConstants.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MeshConstants.metal; sourceTree = "<group>"; };
+		66D7DE9B2C06A24B00B5A6C8 /* MetalIncludes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MetalIncludes.metal; sourceTree = "<group>"; };
+		66D7DE9C2C06A24B00B5A6C8 /* PbrConstants.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PbrConstants.metal; sourceTree = "<group>"; };
+		66D7DE9D2C06A24B00B5A6C8 /* RenderIncludes.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = RenderIncludes.metal; sourceTree = "<group>"; };
+		66D7DE9E2C06A24B00B5A6C8 /* ShadowData.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShadowData.metal; sourceTree = "<group>"; };
+		66D7DE9F2C06A24B00B5A6C8 /* Vertex.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Vertex.metal; sourceTree = "<group>"; };
+		66D7DEA02C06A24B00B5A6C8 /* VertexConstants.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VertexConstants.metal; sourceTree = "<group>"; };
+		66D7DEA12C06A24B00B5A6C8 /* VertexData.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VertexData.metal; sourceTree = "<group>"; };
+		66D7DEA22C06A24B00B5A6C8 /* VertexUniforms.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = VertexUniforms.metal; sourceTree = "<group>"; };
+		66D7DEA42C06A24B00B5A6C8 /* .clang-format */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ".clang-format"; sourceTree = "<group>"; };
+		66D7DEA62C06A24B00B5A6C8 /* GeometryProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryProtocol.swift; sourceTree = "<group>"; };
+		66D7DEA72C06A24B00B5A6C8 /* IBLEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBLEnvironment.swift; sourceTree = "<group>"; };
+		66D7DEA82C06A24B00B5A6C8 /* Light.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Light.swift; sourceTree = "<group>"; };
+		66D7DEA92C06A24B00B5A6C8 /* Renderable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderable.swift; sourceTree = "<group>"; };
+		66D7DEAA2C06A24B00B5A6C8 /* Shadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
+		66D7DEAC2C06A24B00B5A6C8 /* RenderEncoderState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderEncoderState.swift; sourceTree = "<group>"; };
+		66D7DEAD2C06A24B00B5A6C8 /* RenderList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderList.swift; sourceTree = "<group>"; };
+		66D7DEAF2C06A24B00B5A6C8 /* RenderingConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderingConfiguration.swift; sourceTree = "<group>"; };
+		66D7DEB02C06A24B00B5A6C8 /* ShaderBlending.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderBlending.swift; sourceTree = "<group>"; };
+		66D7DEB12C06A24B00B5A6C8 /* ShaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderConfiguration.swift; sourceTree = "<group>"; };
+		66D7DEB22C06A24B00B5A6C8 /* ShaderDefine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderDefine.swift; sourceTree = "<group>"; };
+		66D7DEB32C06A24B00B5A6C8 /* ShaderLibraryCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderLibraryCache.swift; sourceTree = "<group>"; };
+		66D7DEB42C06A24B00B5A6C8 /* ShaderLibraryConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderLibraryConfiguration.swift; sourceTree = "<group>"; };
+		66D7DEB52C06A24B00B5A6C8 /* ShaderLibrarySourceCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderLibrarySourceCache.swift; sourceTree = "<group>"; };
+		66D7DEB62C06A24B00B5A6C8 /* ShaderPipelineCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderPipelineCache.swift; sourceTree = "<group>"; };
+		66D7DEB72C06A24B00B5A6C8 /* ShaderSourceCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderSourceCache.swift; sourceTree = "<group>"; };
+		66D7DEB82C06A24B00B5A6C8 /* ShaderSourceInjections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderSourceInjections.swift; sourceTree = "<group>"; };
+		66D7DEB92C06A24B00B5A6C8 /* ShaderSourceParsers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderSourceParsers.swift; sourceTree = "<group>"; };
+		66D7DEBB2C06A24B00B5A6C8 /* PBRShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBRShader.swift; sourceTree = "<group>"; };
+		66D7DEBC2C06A24B00B5A6C8 /* PhysicalShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhysicalShader.swift; sourceTree = "<group>"; };
+		66D7DEBD2C06A24B00B5A6C8 /* SkyboxShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyboxShader.swift; sourceTree = "<group>"; };
+		66D7DEBE2C06A24B00B5A6C8 /* SourceShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceShader.swift; sourceTree = "<group>"; };
+		66D7DEBF2C06A24B00B5A6C8 /* StandardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardShader.swift; sourceTree = "<group>"; };
+		66D7DEC12C06A24B00B5A6C8 /* DirectionalLightShadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectionalLightShadow.swift; sourceTree = "<group>"; };
+		66D7DEC32C06A24B00B5A6C8 /* FontAtlas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontAtlas.swift; sourceTree = "<group>"; };
+		66D7DEC42C06A24B00B5A6C8 /* TextMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextMesh.swift; sourceTree = "<group>"; };
+		66D7DEC62C06A24B00B5A6C8 /* InstanceMatrixUniforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstanceMatrixUniforms.swift; sourceTree = "<group>"; };
+		66D7DEC72C06A24B00B5A6C8 /* LightData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightData.swift; sourceTree = "<group>"; };
+		66D7DEC82C06A24B00B5A6C8 /* RaycastResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RaycastResult.swift; sourceTree = "<group>"; };
+		66D7DEC92C06A24B00B5A6C8 /* ShadowData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowData.swift; sourceTree = "<group>"; };
+		66D7DECB2C06A24B00B5A6C8 /* FileWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
+		66D7DECC2C06A24B00B5A6C8 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		66D7DECD2C06A24B00B5A6C8 /* Loader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		66D7DECE2C06A24B00B5A6C8 /* MetalFileCompiler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalFileCompiler.swift; sourceTree = "<group>"; };
+		66D7DECF2C06A24B00B5A6C8 /* MetalSourceCompiler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalSourceCompiler.swift; sourceTree = "<group>"; };
+		66D7DED02C06A24B00B5A6C8 /* Paths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paths.swift; sourceTree = "<group>"; };
+		66D7DED12C06A24B00B5A6C8 /* PostProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostProcessor.swift; sourceTree = "<group>"; };
+		66D7DED22C06A24B00B5A6C8 /* Raycast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raycast.swift; sourceTree = "<group>"; };
+		66D7DED32C06A24B00B5A6C8 /* Textures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Textures.swift; sourceTree = "<group>"; };
+		66D7DED42C06A24B00B5A6C8 /* ValueCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueCache.swift; sourceTree = "<group>"; };
+		66D7DED52C06A24B00B5A6C8 /* VertexDescriptors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexDescriptors.swift; sourceTree = "<group>"; };
+		66D7DED72C06A24B00B5A6C8 /* MetalLayerRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalLayerRenderer.swift; sourceTree = "<group>"; };
+		66D7DED82C06A24B00B5A6C8 /* MetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
+		66D7DED92C06A24B00B5A6C8 /* MetalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalViewController.swift; sourceTree = "<group>"; };
+		66D7DEDA2C06A24B00B5A6C8 /* MetalViewRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalViewRenderer.swift; sourceTree = "<group>"; };
+		66D7DEDB2C06A24B00B5A6C8 /* MetalViewRendererDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalViewRendererDelegate.swift; sourceTree = "<group>"; };
+		66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SatinImmersiveSpace.swift; sourceTree = "<group>"; };
+		66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SatinMetalView.swift; sourceTree = "<group>"; };
+		66D7DEE02C06A24B00B5A6C8 /* Bezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bezier.h; sourceTree = "<group>"; };
+		66D7DEE12C06A24B00B5A6C8 /* Bounds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bounds.h; sourceTree = "<group>"; };
+		66D7DEE22C06A24B00B5A6C8 /* Bvh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bvh.h; sourceTree = "<group>"; };
+		66D7DEE32C06A24B00B5A6C8 /* Conversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Conversions.h; sourceTree = "<group>"; };
+		66D7DEE42C06A24B00B5A6C8 /* Generators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Generators.h; sourceTree = "<group>"; };
+		66D7DEE52C06A24B00B5A6C8 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
+		66D7DEE62C06A24B00B5A6C8 /* Hermite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hermite.h; sourceTree = "<group>"; };
+		66D7DEE72C06A24B00B5A6C8 /* Rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rectangle.h; sourceTree = "<group>"; };
+		66D7DEE82C06A24B00B5A6C8 /* SatinCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SatinCore.h; sourceTree = "<group>"; };
+		66D7DEE92C06A24B00B5A6C8 /* Transforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transforms.h; sourceTree = "<group>"; };
+		66D7DEEA2C06A24B00B5A6C8 /* Triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangulator.h; sourceTree = "<group>"; };
+		66D7DEEB2C06A24B00B5A6C8 /* Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		66D7DEED2C06A24B00B5A6C8 /* Bezier.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Bezier.mm; sourceTree = "<group>"; };
+		66D7DEEE2C06A24B00B5A6C8 /* Bounds.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Bounds.mm; sourceTree = "<group>"; };
+		66D7DEEF2C06A24B00B5A6C8 /* Bvh.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Bvh.mm; sourceTree = "<group>"; };
+		66D7DEF02C06A24B00B5A6C8 /* Conversions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Conversions.mm; sourceTree = "<group>"; };
+		66D7DEF12C06A24B00B5A6C8 /* Generators.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Generators.mm; sourceTree = "<group>"; };
+		66D7DEF22C06A24B00B5A6C8 /* Geometry.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Geometry.mm; sourceTree = "<group>"; };
+		66D7DEF32C06A24B00B5A6C8 /* Hermite.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Hermite.mm; sourceTree = "<group>"; };
+		66D7DEF42C06A24B00B5A6C8 /* Rectangle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Rectangle.mm; sourceTree = "<group>"; };
+		66D7DEF52C06A24B00B5A6C8 /* Transforms.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Transforms.mm; sourceTree = "<group>"; };
+		66D7DEF62C06A24B00B5A6C8 /* Triangulator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Triangulator.mm; sourceTree = "<group>"; };
+		66D7DEF72C06A24B00B5A6C8 /* Types.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Types.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		66D7DD302C06A23000B5A6C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		66D7DD292C06A23000B5A6C8 = {
+			isa = PBXGroup;
+			children = (
+				66D7DEF92C06A24B00B5A6C8 /* Sources */,
+				66D7DD342C06A23000B5A6C8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		66D7DD342C06A23000B5A6C8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD332C06A23000B5A6C8 /* Satin.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		66D7DD412C06A24B00B5A6C8 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD3D2C06A24B00B5A6C8 /* Easing.swift */,
+				66D7DD3E2C06A24B00B5A6C8 /* Easings.swift */,
+				66D7DD3F2C06A24B00B5A6C8 /* Tween.swift */,
+				66D7DD402C06A24B00B5A6C8 /* Tweener.swift */,
+			);
+			path = Animation;
+			sourceTree = "<group>";
+		};
+		66D7DD4E2C06A24B00B5A6C8 /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD422C06A24B00B5A6C8 /* ARBackgroundDepthRenderer.swift */,
+				66D7DD432C06A24B00B5A6C8 /* ARBackgroundRenderer.swift */,
+				66D7DD442C06A24B00B5A6C8 /* ARCompositor.swift */,
+				66D7DD452C06A24B00B5A6C8 /* ARDepthMaskGenerator.swift */,
+				66D7DD462C06A24B00B5A6C8 /* ARDepthUpscaler.swift */,
+				66D7DD472C06A24B00B5A6C8 /* ARFeatheredDepthMaskGenerator.swift */,
+				66D7DD482C06A24B00B5A6C8 /* ARLidarMesh.swift */,
+				66D7DD492C06A24B00B5A6C8 /* ARMatteRenderer.swift */,
+				66D7DD4A2C06A24B00B5A6C8 /* ARPerspectiveCamera.swift */,
+				66D7DD4B2C06A24B00B5A6C8 /* ARPlaneMesh.swift */,
+				66D7DD4C2C06A24B00B5A6C8 /* ARPostProcessor.swift */,
+				66D7DD4D2C06A24B00B5A6C8 /* ARSessionPublisher.swift */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
+		66D7DD532C06A24B00B5A6C8 /* Buffers */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD4F2C06A24B00B5A6C8 /* InstanceMatrixUniformBuffer.swift */,
+				66D7DD502C06A24B00B5A6C8 /* StructBuffer.swift */,
+				66D7DD512C06A24B00B5A6C8 /* UniformBuffer.swift */,
+				66D7DD522C06A24B00B5A6C8 /* VertexUniformBuffer.swift */,
+			);
+			path = Buffers;
+			sourceTree = "<group>";
+		};
+		66D7DD572C06A24B00B5A6C8 /* CameraControllers */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD542C06A24B00B5A6C8 /* CameraController.swift */,
+				66D7DD552C06A24B00B5A6C8 /* OrthographicCameraController.swift */,
+				66D7DD562C06A24B00B5A6C8 /* PerspectiveCameraController.swift */,
+			);
+			path = CameraControllers;
+			sourceTree = "<group>";
+		};
+		66D7DD5A2C06A24B00B5A6C8 /* Cameras */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD582C06A24B00B5A6C8 /* OrthographicCamera.swift */,
+				66D7DD592C06A24B00B5A6C8 /* PerspectiveCamera.swift */,
+			);
+			path = Cameras;
+			sourceTree = "<group>";
+		};
+		66D7DD5C2C06A24B00B5A6C8 /* Codable */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD5B2C06A24B00B5A6C8 /* AnyMaterial.swift */,
+			);
+			path = Codable;
+			sourceTree = "<group>";
+		};
+		66D7DD642C06A24B00B5A6C8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD5D2C06A24B00B5A6C8 /* ComputeConfiguration.swift */,
+				66D7DD5E2C06A24B00B5A6C8 /* ComputeShader.swift */,
+				66D7DD5F2C06A24B00B5A6C8 /* ComputeShaderConfiguration.swift */,
+				66D7DD602C06A24B00B5A6C8 /* ComputeShaderLibraryCache.swift */,
+				66D7DD612C06A24B00B5A6C8 /* ComputeShaderLibraryConfiguration.swift */,
+				66D7DD622C06A24B00B5A6C8 /* ComputeShaderLibrarySourceCache.swift */,
+				66D7DD632C06A24B00B5A6C8 /* ComputeShaderPipelineCache.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		66D7DD682C06A24B00B5A6C8 /* Compute */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD642C06A24B00B5A6C8 /* Utilities */,
+				66D7DD652C06A24B00B5A6C8 /* BufferComputeSystem.swift */,
+				66D7DD662C06A24B00B5A6C8 /* ComputeSystem.swift */,
+				66D7DD672C06A24B00B5A6C8 /* TextureComputeSystem.swift */,
+			);
+			path = Compute;
+			sourceTree = "<group>";
+		};
+		66D7DD6F2C06A24B00B5A6C8 /* Pipelines */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD692C06A24B00B5A6C8 /* ComputeConstants.swift */,
+				66D7DD6A2C06A24B00B5A6C8 /* FragmentConstants.swift */,
+				66D7DD6B2C06A24B00B5A6C8 /* MeshConstants.swift */,
+				66D7DD6C2C06A24B00B5A6C8 /* ObjectConstants.swift */,
+				66D7DD6D2C06A24B00B5A6C8 /* PBRConstants.swift */,
+				66D7DD6E2C06A24B00B5A6C8 /* VertexConstants.swift */,
+			);
+			path = Pipelines;
+			sourceTree = "<group>";
+		};
+		66D7DD742C06A24B00B5A6C8 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD6F2C06A24B00B5A6C8 /* Pipelines */,
+				66D7DD702C06A24B00B5A6C8 /* Blending.swift */,
+				66D7DD712C06A24B00B5A6C8 /* Constants.swift */,
+				66D7DD722C06A24B00B5A6C8 /* Lighting.swift */,
+				66D7DD732C06A24B00B5A6C8 /* Tonemapping.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		66D7DD762C06A24B00B5A6C8 /* Converters */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD752C06A24B00B5A6C8 /* YCbCrToRGBConverter.swift */,
+			);
+			path = Converters;
+			sourceTree = "<group>";
+		};
+		66D7DD7F2C06A24B00B5A6C8 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD772C06A24B00B5A6C8 /* Camera.swift */,
+				66D7DD782C06A24B00B5A6C8 /* Context.swift */,
+				66D7DD792C06A24B00B5A6C8 /* Geometry.swift */,
+				66D7DD7A2C06A24B00B5A6C8 /* Material.swift */,
+				66D7DD7B2C06A24B00B5A6C8 /* Mesh.swift */,
+				66D7DD7C2C06A24B00B5A6C8 /* Object.swift */,
+				66D7DD7D2C06A24B00B5A6C8 /* Renderer.swift */,
+				66D7DD7E2C06A24B00B5A6C8 /* Shader.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		66D7DD932C06A24B00B5A6C8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD802C06A24B00B5A6C8 /* Bounds+Extensions.swift */,
+				66D7DD812C06A24B00B5A6C8 /* Bundle+Extensions.swift */,
+				66D7DD822C06A24B00B5A6C8 /* BVH+Extensions.swift */,
+				66D7DD832C06A24B00B5A6C8 /* CGPoint+Extensions.swift */,
+				66D7DD842C06A24B00B5A6C8 /* CGSize+Extensions.swift */,
+				66D7DD852C06A24B00B5A6C8 /* Metal+Extensions.swift */,
+				66D7DD862C06A24B00B5A6C8 /* MTLClearColor+Extensions.swift */,
+				66D7DD872C06A24B00B5A6C8 /* MTLSamplerDescriptor+Extensions.swift */,
+				66D7DD882C06A24B00B5A6C8 /* MTLTexture+Extensions.swift */,
+				66D7DD892C06A24B00B5A6C8 /* MTLVertexFormat+Extension.swift */,
+				66D7DD8A2C06A24B00B5A6C8 /* MTLVertexStepFunction+Extensions.swift */,
+				66D7DD8B2C06A24B00B5A6C8 /* MTLViewport+Extensions.swift */,
+				66D7DD8C2C06A24B00B5A6C8 /* NSAppearanceCustomization+Extensions.swift */,
+				66D7DD8D2C06A24B00B5A6C8 /* Ray+Extensions.swift */,
+				66D7DD8E2C06A24B00B5A6C8 /* Rectangle+Extensions.swift */,
+				66D7DD8F2C06A24B00B5A6C8 /* Simd+Extensions.swift */,
+				66D7DD902C06A24B00B5A6C8 /* String+Extensions.swift */,
+				66D7DD912C06A24B00B5A6C8 /* UIWindow+Extensions.swift */,
+				66D7DD922C06A24B00B5A6C8 /* Vertex+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		66D7DD992C06A24B00B5A6C8 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD942C06A24B00B5A6C8 /* BrdfGenerator.swift */,
+				66D7DD952C06A24B00B5A6C8 /* CubemapGenerator.swift */,
+				66D7DD962C06A24B00B5A6C8 /* DiffuseIBLGenerator.swift */,
+				66D7DD972C06A24B00B5A6C8 /* RandomNoiseGenerator.swift */,
+				66D7DD982C06A24B00B5A6C8 /* SpecularIBLGenerator.swift */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
+		66D7DDA12C06A24B00B5A6C8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD9A2C06A24B00B5A6C8 /* AnyBufferAttribute.swift */,
+				66D7DD9B2C06A24B00B5A6C8 /* Attribute.swift */,
+				66D7DD9C2C06A24B00B5A6C8 /* BufferAttribute.swift */,
+				66D7DD9D2C06A24B00B5A6C8 /* ElementBuffer.swift */,
+				66D7DD9E2C06A24B00B5A6C8 /* InterleavedBuffer.swift */,
+				66D7DD9F2C06A24B00B5A6C8 /* InterleavedBufferAttribute.swift */,
+				66D7DDA02C06A24B00B5A6C8 /* VertexAttribute.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		66D7DDBC2C06A24B00B5A6C8 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDA12C06A24B00B5A6C8 /* Utilities */,
+				66D7DDA22C06A24B00B5A6C8 /* ArcGeometry.swift */,
+				66D7DDA32C06A24B00B5A6C8 /* BoxGeometry.swift */,
+				66D7DDA42C06A24B00B5A6C8 /* CapsuleGeometry.swift */,
+				66D7DDA52C06A24B00B5A6C8 /* CircleGeometry.swift */,
+				66D7DDA62C06A24B00B5A6C8 /* ConeGeometry.swift */,
+				66D7DDA72C06A24B00B5A6C8 /* CylinderGeometry.swift */,
+				66D7DDA82C06A24B00B5A6C8 /* ExtrudedRoundedRectGeometry.swift */,
+				66D7DDA92C06A24B00B5A6C8 /* ExtrudedTextGeometry.swift */,
+				66D7DDAA2C06A24B00B5A6C8 /* IcoSphereGeometry.swift */,
+				66D7DDAB2C06A24B00B5A6C8 /* LineGeometry.swift */,
+				66D7DDAC2C06A24B00B5A6C8 /* OctaSphereGeometry.swift */,
+				66D7DDAD2C06A24B00B5A6C8 /* ParametricGeometry.swift */,
+				66D7DDAE2C06A24B00B5A6C8 /* PlaneGeometry.swift */,
+				66D7DDAF2C06A24B00B5A6C8 /* PointGeometry.swift */,
+				66D7DDB02C06A24B00B5A6C8 /* QuadGeometry.swift */,
+				66D7DDB12C06A24B00B5A6C8 /* RoundedBoxGeometry.swift */,
+				66D7DDB22C06A24B00B5A6C8 /* RoundedRectGeometry.swift */,
+				66D7DDB32C06A24B00B5A6C8 /* SatinGeometry.swift */,
+				66D7DDB42C06A24B00B5A6C8 /* SkyboxGeometry.swift */,
+				66D7DDB52C06A24B00B5A6C8 /* SphereGeometry.swift */,
+				66D7DDB62C06A24B00B5A6C8 /* SquircleGeometry.swift */,
+				66D7DDB72C06A24B00B5A6C8 /* TesselatedTextGeometry.swift */,
+				66D7DDB82C06A24B00B5A6C8 /* TextGeometry.swift */,
+				66D7DDB92C06A24B00B5A6C8 /* TorusGeometry.swift */,
+				66D7DDBA2C06A24B00B5A6C8 /* TriangleGeometry.swift */,
+				66D7DDBB2C06A24B00B5A6C8 /* TubeGeometry.swift */,
+			);
+			path = Geometry;
+			sourceTree = "<group>";
+		};
+		66D7DDC02C06A24B00B5A6C8 /* Lights */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDBD2C06A24B00B5A6C8 /* DirectionalLight.swift */,
+				66D7DDBE2C06A24B00B5A6C8 /* PointLight.swift */,
+				66D7DDBF2C06A24B00B5A6C8 /* SpotLight.swift */,
+			);
+			path = Lights;
+			sourceTree = "<group>";
+		};
+		66D7DDD42C06A24B00B5A6C8 /* Materials */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDC12C06A24B00B5A6C8 /* ARBackgroundDepthMaterial.swift */,
+				66D7DDC22C06A24B00B5A6C8 /* ARBackgroundMaterial.swift */,
+				66D7DDC32C06A24B00B5A6C8 /* ARCompositorMaterial.swift */,
+				66D7DDC42C06A24B00B5A6C8 /* ARMatteMaterial.swift */,
+				66D7DDC52C06A24B00B5A6C8 /* ARPostMaterial.swift */,
+				66D7DDC62C06A24B00B5A6C8 /* BasicColorMaterial.swift */,
+				66D7DDC72C06A24B00B5A6C8 /* BasicDiffuseMaterial.swift */,
+				66D7DDC82C06A24B00B5A6C8 /* BasicPointMaterial.swift */,
+				66D7DDC92C06A24B00B5A6C8 /* BasicTextureMaterial.swift */,
+				66D7DDCA2C06A24B00B5A6C8 /* DepthMaterial.swift */,
+				66D7DDCB2C06A24B00B5A6C8 /* MatCapMaterial.swift */,
+				66D7DDCC2C06A24B00B5A6C8 /* NormalColorMaterial.swift */,
+				66D7DDCD2C06A24B00B5A6C8 /* PhysicalMaterial.swift */,
+				66D7DDCE2C06A24B00B5A6C8 /* ShadowMaterial.swift */,
+				66D7DDCF2C06A24B00B5A6C8 /* SkyboxMaterial.swift */,
+				66D7DDD02C06A24B00B5A6C8 /* SourceMaterial.swift */,
+				66D7DDD12C06A24B00B5A6C8 /* StandardMaterial.swift */,
+				66D7DDD22C06A24B00B5A6C8 /* TextMaterial.swift */,
+				66D7DDD32C06A24B00B5A6C8 /* UVColorMaterial.swift */,
+			);
+			path = Materials;
+			sourceTree = "<group>";
+		};
+		66D7DDD82C06A24B00B5A6C8 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDD52C06A24B00B5A6C8 /* IBLScene.swift */,
+				66D7DDD62C06A24B00B5A6C8 /* InstancedMesh.swift */,
+				66D7DDD72C06A24B00B5A6C8 /* Submesh.swift */,
+			);
+			path = Objects;
+			sourceTree = "<group>";
+		};
+		66D7DDED2C06A24B00B5A6C8 /* Parameters */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDD92C06A24B00B5A6C8 /* AnyParameter.swift */,
+				66D7DDDA2C06A24B00B5A6C8 /* BoolParameter.swift */,
+				66D7DDDB2C06A24B00B5A6C8 /* DoubleParameter.swift */,
+				66D7DDDC2C06A24B00B5A6C8 /* Float2Parameter.swift */,
+				66D7DDDD2C06A24B00B5A6C8 /* Float2x2Parameter.swift */,
+				66D7DDDE2C06A24B00B5A6C8 /* Float3Parameter.swift */,
+				66D7DDDF2C06A24B00B5A6C8 /* Float3x3Parameter.swift */,
+				66D7DDE02C06A24B00B5A6C8 /* Float4Parameter.swift */,
+				66D7DDE12C06A24B00B5A6C8 /* Float4x4Parameter.swift */,
+				66D7DDE22C06A24B00B5A6C8 /* FloatParameter.swift */,
+				66D7DDE32C06A24B00B5A6C8 /* GenericParameter.swift */,
+				66D7DDE42C06A24B00B5A6C8 /* Int2Parameter.swift */,
+				66D7DDE52C06A24B00B5A6C8 /* Int3Parameter.swift */,
+				66D7DDE62C06A24B00B5A6C8 /* Int4Parameter.swift */,
+				66D7DDE72C06A24B00B5A6C8 /* IntParameter.swift */,
+				66D7DDE82C06A24B00B5A6C8 /* PackedFloat3Parameter.swift */,
+				66D7DDE92C06A24B00B5A6C8 /* Parameter.swift */,
+				66D7DDEA2C06A24B00B5A6C8 /* ParameterGroup.swift */,
+				66D7DDEB2C06A24B00B5A6C8 /* StringParameter.swift */,
+				66D7DDEC2C06A24B00B5A6C8 /* UInt32Parameter.swift */,
+			);
+			path = Parameters;
+			sourceTree = "<group>";
+		};
+		66D7DDFF2C06A24B00B5A6C8 /* Chunks */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDEE2C06A24B00B5A6C8 /* PbrDirectLighting.metal */,
+				66D7DDEF2C06A24B00B5A6C8 /* PbrInDirectLighting.metal */,
+				66D7DDF02C06A24B00B5A6C8 /* PbrInit.metal */,
+				66D7DDF12C06A24B00B5A6C8 /* PbrTextures.metal */,
+				66D7DDF22C06A24B00B5A6C8 /* PbrTonemap.metal */,
+				66D7DDF32C06A24B00B5A6C8 /* PhysicalMaterialUniforms.metal */,
+				66D7DDF42C06A24B00B5A6C8 /* PhysicalTexcoordUniforms.metal */,
+				66D7DDF52C06A24B00B5A6C8 /* PhysicalUniforms.metal */,
+				66D7DDF62C06A24B00B5A6C8 /* PixelInfo.metal */,
+				66D7DDF72C06A24B00B5A6C8 /* PixelInfoInit.metal */,
+				66D7DDF82C06A24B00B5A6C8 /* PixelInfoInitMaterial.metal */,
+				66D7DDF92C06A24B00B5A6C8 /* PixelInfoInitNormal.metal */,
+				66D7DDFA2C06A24B00B5A6C8 /* PixelInfoInitPosition.metal */,
+				66D7DDFB2C06A24B00B5A6C8 /* PixelInfoInitView.metal */,
+				66D7DDFC2C06A24B00B5A6C8 /* StandardMaterialUniforms.metal */,
+				66D7DDFD2C06A24B00B5A6C8 /* StandardTexcoordUniforms.metal */,
+				66D7DDFE2C06A24B00B5A6C8 /* StandardUniforms.metal */,
+			);
+			path = Chunks;
+			sourceTree = "<group>";
+		};
+		66D7DE022C06A24B00B5A6C8 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE002C06A24B00B5A6C8 /* ShadowShader.metal */,
+				66D7DE012C06A24B00B5A6C8 /* VertexShader.metal */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		66D7DE042C06A24B00B5A6C8 /* ARDepthMask */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE032C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARDepthMask;
+			sourceTree = "<group>";
+		};
+		66D7DE062C06A24B00B5A6C8 /* Brdf */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE052C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Brdf;
+			sourceTree = "<group>";
+		};
+		66D7DE082C06A24B00B5A6C8 /* Cubemap */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE072C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Cubemap;
+			sourceTree = "<group>";
+		};
+		66D7DE0A2C06A24B00B5A6C8 /* DiffuseIBL */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE092C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = DiffuseIBL;
+			sourceTree = "<group>";
+		};
+		66D7DE0C2C06A24B00B5A6C8 /* RandomNoise */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE0B2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = RandomNoise;
+			sourceTree = "<group>";
+		};
+		66D7DE0E2C06A24B00B5A6C8 /* SpecularIBL */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE0D2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = SpecularIBL;
+			sourceTree = "<group>";
+		};
+		66D7DE102C06A24B00B5A6C8 /* YCbCrToRGB */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE0F2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = YCbCrToRGB;
+			sourceTree = "<group>";
+		};
+		66D7DE112C06A24B00B5A6C8 /* Compute */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE042C06A24B00B5A6C8 /* ARDepthMask */,
+				66D7DE062C06A24B00B5A6C8 /* Brdf */,
+				66D7DE082C06A24B00B5A6C8 /* Cubemap */,
+				66D7DE0A2C06A24B00B5A6C8 /* DiffuseIBL */,
+				66D7DE0C2C06A24B00B5A6C8 /* RandomNoise */,
+				66D7DE0E2C06A24B00B5A6C8 /* SpecularIBL */,
+				66D7DE102C06A24B00B5A6C8 /* YCbCrToRGB */,
+			);
+			path = Compute;
+			sourceTree = "<group>";
+		};
+		66D7DE152C06A24B00B5A6C8 /* Distribution */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE122C06A24B00B5A6C8 /* DistributionBeckmann.metal */,
+				66D7DE132C06A24B00B5A6C8 /* DistributionBlinnPhong.metal */,
+				66D7DE142C06A24B00B5A6C8 /* DistributionGGX.metal */,
+			);
+			path = Distribution;
+			sourceTree = "<group>";
+		};
+		66D7DE172C06A24B00B5A6C8 /* Fresnel */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE162C06A24B00B5A6C8 /* FresnelSchlick.metal */,
+			);
+			path = Fresnel;
+			sourceTree = "<group>";
+		};
+		66D7DE1C2C06A24B00B5A6C8 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE182C06A24B00B5A6C8 /* GeometryImplicit.metal */,
+				66D7DE192C06A24B00B5A6C8 /* GeometryNeumann.metal */,
+				66D7DE1A2C06A24B00B5A6C8 /* GeometrySchlickGGX.metal */,
+				66D7DE1B2C06A24B00B5A6C8 /* GeometrySmith.metal */,
+			);
+			path = Geometry;
+			sourceTree = "<group>";
+		};
+		66D7DE1F2C06A24B00B5A6C8 /* Visibility */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE1D2C06A24B00B5A6C8 /* VisibilityKelemen.metal */,
+				66D7DE1E2C06A24B00B5A6C8 /* VisibilitySmithGGXCorrelated.metal */,
+			);
+			path = Visibility;
+			sourceTree = "<group>";
+		};
+		66D7DE2C2C06A24B00B5A6C8 /* Pbr */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE152C06A24B00B5A6C8 /* Distribution */,
+				66D7DE172C06A24B00B5A6C8 /* Fresnel */,
+				66D7DE1C2C06A24B00B5A6C8 /* Geometry */,
+				66D7DE1F2C06A24B00B5A6C8 /* Visibility */,
+				66D7DE202C06A24B00B5A6C8 /* Hammersley.metal */,
+				66D7DE212C06A24B00B5A6C8 /* ImportanceSampling.metal */,
+				66D7DE222C06A24B00B5A6C8 /* Lighting.metal */,
+				66D7DE232C06A24B00B5A6C8 /* Material.metal */,
+				66D7DE242C06A24B00B5A6C8 /* Pbr.metal */,
+				66D7DE252C06A24B00B5A6C8 /* PbrDirectLighting.metal */,
+				66D7DE262C06A24B00B5A6C8 /* PbrEvaluate.metal */,
+				66D7DE272C06A24B00B5A6C8 /* PbrImageBasedLighting.metal */,
+				66D7DE282C06A24B00B5A6C8 /* PbrInit.metal */,
+				66D7DE292C06A24B00B5A6C8 /* PbrTonemap.metal */,
+				66D7DE2A2C06A24B00B5A6C8 /* PbrUtilities.metal */,
+				66D7DE2B2C06A24B00B5A6C8 /* PixelInfo.metal */,
+			);
+			path = Pbr;
+			sourceTree = "<group>";
+		};
+		66D7DE3B2C06A24B00B5A6C8 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE2D2C06A24B00B5A6C8 /* Arc.metal */,
+				66D7DE2E2C06A24B00B5A6C8 /* Box.metal */,
+				66D7DE2F2C06A24B00B5A6C8 /* Capsule.metal */,
+				66D7DE302C06A24B00B5A6C8 /* Circle.metal */,
+				66D7DE312C06A24B00B5A6C8 /* Cylinder.metal */,
+				66D7DE322C06A24B00B5A6C8 /* Hexagon.metal */,
+				66D7DE332C06A24B00B5A6C8 /* Line.metal */,
+				66D7DE342C06A24B00B5A6C8 /* Plane.metal */,
+				66D7DE352C06A24B00B5A6C8 /* Platonic.metal */,
+				66D7DE362C06A24B00B5A6C8 /* Pyramid.metal */,
+				66D7DE372C06A24B00B5A6C8 /* Rect.metal */,
+				66D7DE382C06A24B00B5A6C8 /* RoundedRect.metal */,
+				66D7DE392C06A24B00B5A6C8 /* Sphere.metal */,
+				66D7DE3A2C06A24B00B5A6C8 /* Torus.metal */,
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
+		66D7DE442C06A24B00B5A6C8 /* Tonemapping */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE3C2C06A24B00B5A6C8 /* Aces.metal */,
+				66D7DE3D2C06A24B00B5A6C8 /* Filmic.metal */,
+				66D7DE3E2C06A24B00B5A6C8 /* Lottes.metal */,
+				66D7DE3F2C06A24B00B5A6C8 /* Reinhard.metal */,
+				66D7DE402C06A24B00B5A6C8 /* Reinhard2.metal */,
+				66D7DE412C06A24B00B5A6C8 /* Uchimura.metal */,
+				66D7DE422C06A24B00B5A6C8 /* Uncharted2.metal */,
+				66D7DE432C06A24B00B5A6C8 /* Unreal.metal */,
+			);
+			path = Tonemapping;
+			sourceTree = "<group>";
+		};
+		66D7DE6F2C06A24B00B5A6C8 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE2C2C06A24B00B5A6C8 /* Pbr */,
+				66D7DE3B2C06A24B00B5A6C8 /* Shapes */,
+				66D7DE442C06A24B00B5A6C8 /* Tonemapping */,
+				66D7DE452C06A24B00B5A6C8 /* Adjustments.metal */,
+				66D7DE462C06A24B00B5A6C8 /* Bezier.metal */,
+				66D7DE472C06A24B00B5A6C8 /* Blend.metal */,
+				66D7DE482C06A24B00B5A6C8 /* Cellular.metal */,
+				66D7DE492C06A24B00B5A6C8 /* Colors.metal */,
+				66D7DE4A2C06A24B00B5A6C8 /* Conversion.metal */,
+				66D7DE4B2C06A24B00B5A6C8 /* Csg.metal */,
+				66D7DE4C2C06A24B00B5A6C8 /* CubicSmooth.metal */,
+				66D7DE4D2C06A24B00B5A6C8 /* Curlnoise.metal */,
+				66D7DE4E2C06A24B00B5A6C8 /* Dither.metal */,
+				66D7DE4F2C06A24B00B5A6C8 /* Easing.metal */,
+				66D7DE502C06A24B00B5A6C8 /* Envelopes.metal */,
+				66D7DE512C06A24B00B5A6C8 /* Fbm.metal */,
+				66D7DE522C06A24B00B5A6C8 /* Fog.metal */,
+				66D7DE532C06A24B00B5A6C8 /* Fresnel.metal */,
+				66D7DE542C06A24B00B5A6C8 /* Gamma.metal */,
+				66D7DE552C06A24B00B5A6C8 /* Gaussian.metal */,
+				66D7DE562C06A24B00B5A6C8 /* Halton.metal */,
+				66D7DE572C06A24B00B5A6C8 /* Hsv2rgb.metal */,
+				66D7DE582C06A24B00B5A6C8 /* Intersections.metal */,
+				66D7DE592C06A24B00B5A6C8 /* Luminance.metal */,
+				66D7DE5A2C06A24B00B5A6C8 /* Map.metal */,
+				66D7DE5B2C06A24B00B5A6C8 /* Mix.metal */,
+				66D7DE5C2C06A24B00B5A6C8 /* Noise2D.metal */,
+				66D7DE5D2C06A24B00B5A6C8 /* Noise3D.metal */,
+				66D7DE5E2C06A24B00B5A6C8 /* Noise4D.metal */,
+				66D7DE5F2C06A24B00B5A6C8 /* Noise4Dgrad.metal */,
+				66D7DE602C06A24B00B5A6C8 /* Phi.metal */,
+				66D7DE612C06A24B00B5A6C8 /* Pi.metal */,
+				66D7DE622C06A24B00B5A6C8 /* Poisson.metal */,
+				66D7DE632C06A24B00B5A6C8 /* Quadratic.metal */,
+				66D7DE642C06A24B00B5A6C8 /* Random.metal */,
+				66D7DE652C06A24B00B5A6C8 /* Reflection.metal */,
+				66D7DE662C06A24B00B5A6C8 /* Refraction.metal */,
+				66D7DE672C06A24B00B5A6C8 /* Repeat.metal */,
+				66D7DE682C06A24B00B5A6C8 /* Rgb2hsv.metal */,
+				66D7DE692C06A24B00B5A6C8 /* Rotate.metal */,
+				66D7DE6A2C06A24B00B5A6C8 /* Rotate2D.metal */,
+				66D7DE6B2C06A24B00B5A6C8 /* Ryb2rgb.metal */,
+				66D7DE6C2C06A24B00B5A6C8 /* Shadow.metal */,
+				66D7DE6D2C06A24B00B5A6C8 /* Shapes.metal */,
+				66D7DE6E2C06A24B00B5A6C8 /* Tonemap.metal */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		66D7DE712C06A24B00B5A6C8 /* ARBackground */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE702C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARBackground;
+			sourceTree = "<group>";
+		};
+		66D7DE732C06A24B00B5A6C8 /* ARBackgroundDepth */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE722C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARBackgroundDepth;
+			sourceTree = "<group>";
+		};
+		66D7DE752C06A24B00B5A6C8 /* ARCompositor */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE742C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARCompositor;
+			sourceTree = "<group>";
+		};
+		66D7DE772C06A24B00B5A6C8 /* ARMatte */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE762C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARMatte;
+			sourceTree = "<group>";
+		};
+		66D7DE792C06A24B00B5A6C8 /* ARPost */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE782C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = ARPost;
+			sourceTree = "<group>";
+		};
+		66D7DE7B2C06A24B00B5A6C8 /* BasicColor */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE7A2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = BasicColor;
+			sourceTree = "<group>";
+		};
+		66D7DE7D2C06A24B00B5A6C8 /* BasicDiffuse */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE7C2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = BasicDiffuse;
+			sourceTree = "<group>";
+		};
+		66D7DE7F2C06A24B00B5A6C8 /* BasicPoint */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE7E2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = BasicPoint;
+			sourceTree = "<group>";
+		};
+		66D7DE812C06A24B00B5A6C8 /* BasicTexture */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE802C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = BasicTexture;
+			sourceTree = "<group>";
+		};
+		66D7DE832C06A24B00B5A6C8 /* Depth */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE822C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Depth;
+			sourceTree = "<group>";
+		};
+		66D7DE852C06A24B00B5A6C8 /* MatCap */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE842C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = MatCap;
+			sourceTree = "<group>";
+		};
+		66D7DE872C06A24B00B5A6C8 /* NormalColor */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE862C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = NormalColor;
+			sourceTree = "<group>";
+		};
+		66D7DE892C06A24B00B5A6C8 /* Physical */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE882C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Physical;
+			sourceTree = "<group>";
+		};
+		66D7DE8B2C06A24B00B5A6C8 /* Shadow */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE8A2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Shadow;
+			sourceTree = "<group>";
+		};
+		66D7DE8D2C06A24B00B5A6C8 /* Skybox */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE8C2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Skybox;
+			sourceTree = "<group>";
+		};
+		66D7DE8F2C06A24B00B5A6C8 /* Standard */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE8E2C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Standard;
+			sourceTree = "<group>";
+		};
+		66D7DE912C06A24B00B5A6C8 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE902C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
+		66D7DE932C06A24B00B5A6C8 /* UVColor */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE922C06A24B00B5A6C8 /* Shaders.metal */,
+			);
+			path = UVColor;
+			sourceTree = "<group>";
+		};
+		66D7DE942C06A24B00B5A6C8 /* Materials */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE712C06A24B00B5A6C8 /* ARBackground */,
+				66D7DE732C06A24B00B5A6C8 /* ARBackgroundDepth */,
+				66D7DE752C06A24B00B5A6C8 /* ARCompositor */,
+				66D7DE772C06A24B00B5A6C8 /* ARMatte */,
+				66D7DE792C06A24B00B5A6C8 /* ARPost */,
+				66D7DE7B2C06A24B00B5A6C8 /* BasicColor */,
+				66D7DE7D2C06A24B00B5A6C8 /* BasicDiffuse */,
+				66D7DE7F2C06A24B00B5A6C8 /* BasicPoint */,
+				66D7DE812C06A24B00B5A6C8 /* BasicTexture */,
+				66D7DE832C06A24B00B5A6C8 /* Depth */,
+				66D7DE852C06A24B00B5A6C8 /* MatCap */,
+				66D7DE872C06A24B00B5A6C8 /* NormalColor */,
+				66D7DE892C06A24B00B5A6C8 /* Physical */,
+				66D7DE8B2C06A24B00B5A6C8 /* Shadow */,
+				66D7DE8D2C06A24B00B5A6C8 /* Skybox */,
+				66D7DE8F2C06A24B00B5A6C8 /* Standard */,
+				66D7DE912C06A24B00B5A6C8 /* Text */,
+				66D7DE932C06A24B00B5A6C8 /* UVColor */,
+			);
+			path = Materials;
+			sourceTree = "<group>";
+		};
+		66D7DEA32C06A24B00B5A6C8 /* Satin */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DE952C06A24B00B5A6C8 /* ComputeConstants.metal */,
+				66D7DE962C06A24B00B5A6C8 /* ComputeIncludes.metal */,
+				66D7DE972C06A24B00B5A6C8 /* FragmentConstants.metal */,
+				66D7DE982C06A24B00B5A6C8 /* InstanceMatrixUniforms.metal */,
+				66D7DE992C06A24B00B5A6C8 /* LightData.metal */,
+				66D7DE9A2C06A24B00B5A6C8 /* MeshConstants.metal */,
+				66D7DE9B2C06A24B00B5A6C8 /* MetalIncludes.metal */,
+				66D7DE9C2C06A24B00B5A6C8 /* PbrConstants.metal */,
+				66D7DE9D2C06A24B00B5A6C8 /* RenderIncludes.metal */,
+				66D7DE9E2C06A24B00B5A6C8 /* ShadowData.metal */,
+				66D7DE9F2C06A24B00B5A6C8 /* Vertex.metal */,
+				66D7DEA02C06A24B00B5A6C8 /* VertexConstants.metal */,
+				66D7DEA12C06A24B00B5A6C8 /* VertexData.metal */,
+				66D7DEA22C06A24B00B5A6C8 /* VertexUniforms.metal */,
+			);
+			path = Satin;
+			sourceTree = "<group>";
+		};
+		66D7DEA52C06A24B00B5A6C8 /* Pipelines */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DDFF2C06A24B00B5A6C8 /* Chunks */,
+				66D7DE022C06A24B00B5A6C8 /* Common */,
+				66D7DE112C06A24B00B5A6C8 /* Compute */,
+				66D7DE6F2C06A24B00B5A6C8 /* Library */,
+				66D7DE942C06A24B00B5A6C8 /* Materials */,
+				66D7DEA32C06A24B00B5A6C8 /* Satin */,
+				66D7DEA42C06A24B00B5A6C8 /* .clang-format */,
+			);
+			path = Pipelines;
+			sourceTree = "<group>";
+		};
+		66D7DEAB2C06A24B00B5A6C8 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEA62C06A24B00B5A6C8 /* GeometryProtocol.swift */,
+				66D7DEA72C06A24B00B5A6C8 /* IBLEnvironment.swift */,
+				66D7DEA82C06A24B00B5A6C8 /* Light.swift */,
+				66D7DEA92C06A24B00B5A6C8 /* Renderable.swift */,
+				66D7DEAA2C06A24B00B5A6C8 /* Shadow.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		66D7DEAE2C06A24B00B5A6C8 /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEAC2C06A24B00B5A6C8 /* RenderEncoderState.swift */,
+				66D7DEAD2C06A24B00B5A6C8 /* RenderList.swift */,
+			);
+			path = Renderer;
+			sourceTree = "<group>";
+		};
+		66D7DEBA2C06A24B00B5A6C8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEAF2C06A24B00B5A6C8 /* RenderingConfiguration.swift */,
+				66D7DEB02C06A24B00B5A6C8 /* ShaderBlending.swift */,
+				66D7DEB12C06A24B00B5A6C8 /* ShaderConfiguration.swift */,
+				66D7DEB22C06A24B00B5A6C8 /* ShaderDefine.swift */,
+				66D7DEB32C06A24B00B5A6C8 /* ShaderLibraryCache.swift */,
+				66D7DEB42C06A24B00B5A6C8 /* ShaderLibraryConfiguration.swift */,
+				66D7DEB52C06A24B00B5A6C8 /* ShaderLibrarySourceCache.swift */,
+				66D7DEB62C06A24B00B5A6C8 /* ShaderPipelineCache.swift */,
+				66D7DEB72C06A24B00B5A6C8 /* ShaderSourceCache.swift */,
+				66D7DEB82C06A24B00B5A6C8 /* ShaderSourceInjections.swift */,
+				66D7DEB92C06A24B00B5A6C8 /* ShaderSourceParsers.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		66D7DEC02C06A24B00B5A6C8 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEBA2C06A24B00B5A6C8 /* Utilities */,
+				66D7DEBB2C06A24B00B5A6C8 /* PBRShader.swift */,
+				66D7DEBC2C06A24B00B5A6C8 /* PhysicalShader.swift */,
+				66D7DEBD2C06A24B00B5A6C8 /* SkyboxShader.swift */,
+				66D7DEBE2C06A24B00B5A6C8 /* SourceShader.swift */,
+				66D7DEBF2C06A24B00B5A6C8 /* StandardShader.swift */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		66D7DEC22C06A24B00B5A6C8 /* Shadows */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEC12C06A24B00B5A6C8 /* DirectionalLightShadow.swift */,
+			);
+			path = Shadows;
+			sourceTree = "<group>";
+		};
+		66D7DEC52C06A24B00B5A6C8 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEC32C06A24B00B5A6C8 /* FontAtlas.swift */,
+				66D7DEC42C06A24B00B5A6C8 /* TextMesh.swift */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
+		66D7DECA2C06A24B00B5A6C8 /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEC62C06A24B00B5A6C8 /* InstanceMatrixUniforms.swift */,
+				66D7DEC72C06A24B00B5A6C8 /* LightData.swift */,
+				66D7DEC82C06A24B00B5A6C8 /* RaycastResult.swift */,
+				66D7DEC92C06A24B00B5A6C8 /* ShadowData.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		66D7DED62C06A24B00B5A6C8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DECB2C06A24B00B5A6C8 /* FileWatcher.swift */,
+				66D7DECC2C06A24B00B5A6C8 /* Helpers.swift */,
+				66D7DECD2C06A24B00B5A6C8 /* Loader.swift */,
+				66D7DECE2C06A24B00B5A6C8 /* MetalFileCompiler.swift */,
+				66D7DECF2C06A24B00B5A6C8 /* MetalSourceCompiler.swift */,
+				66D7DED02C06A24B00B5A6C8 /* Paths.swift */,
+				66D7DED12C06A24B00B5A6C8 /* PostProcessor.swift */,
+				66D7DED22C06A24B00B5A6C8 /* Raycast.swift */,
+				66D7DED32C06A24B00B5A6C8 /* Textures.swift */,
+				66D7DED42C06A24B00B5A6C8 /* ValueCache.swift */,
+				66D7DED52C06A24B00B5A6C8 /* VertexDescriptors.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		66D7DEDE2C06A24B00B5A6C8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DED72C06A24B00B5A6C8 /* MetalLayerRenderer.swift */,
+				66D7DED82C06A24B00B5A6C8 /* MetalView.swift */,
+				66D7DED92C06A24B00B5A6C8 /* MetalViewController.swift */,
+				66D7DEDA2C06A24B00B5A6C8 /* MetalViewRenderer.swift */,
+				66D7DEDB2C06A24B00B5A6C8 /* MetalViewRendererDelegate.swift */,
+				66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */,
+				66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		66D7DEDF2C06A24B00B5A6C8 /* Satin */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DD412C06A24B00B5A6C8 /* Animation */,
+				66D7DD4E2C06A24B00B5A6C8 /* AR */,
+				66D7DD532C06A24B00B5A6C8 /* Buffers */,
+				66D7DD572C06A24B00B5A6C8 /* CameraControllers */,
+				66D7DD5A2C06A24B00B5A6C8 /* Cameras */,
+				66D7DD5C2C06A24B00B5A6C8 /* Codable */,
+				66D7DD682C06A24B00B5A6C8 /* Compute */,
+				66D7DD742C06A24B00B5A6C8 /* Constants */,
+				66D7DD762C06A24B00B5A6C8 /* Converters */,
+				66D7DD7F2C06A24B00B5A6C8 /* Core */,
+				66D7DD932C06A24B00B5A6C8 /* Extensions */,
+				66D7DD992C06A24B00B5A6C8 /* Generators */,
+				66D7DDBC2C06A24B00B5A6C8 /* Geometry */,
+				66D7DDC02C06A24B00B5A6C8 /* Lights */,
+				66D7DDD42C06A24B00B5A6C8 /* Materials */,
+				66D7DDD82C06A24B00B5A6C8 /* Objects */,
+				66D7DDED2C06A24B00B5A6C8 /* Parameters */,
+				66D7DEA52C06A24B00B5A6C8 /* Pipelines */,
+				66D7DEAB2C06A24B00B5A6C8 /* Protocols */,
+				66D7DEAE2C06A24B00B5A6C8 /* Renderer */,
+				66D7DEC02C06A24B00B5A6C8 /* Shaders */,
+				66D7DEC22C06A24B00B5A6C8 /* Shadows */,
+				66D7DEC52C06A24B00B5A6C8 /* Text */,
+				66D7DECA2C06A24B00B5A6C8 /* Types */,
+				66D7DED62C06A24B00B5A6C8 /* Utilities */,
+				66D7DEDE2C06A24B00B5A6C8 /* Views */,
+			);
+			path = Satin;
+			sourceTree = "<group>";
+		};
+		66D7DEEC2C06A24B00B5A6C8 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEE02C06A24B00B5A6C8 /* Bezier.h */,
+				66D7DEE12C06A24B00B5A6C8 /* Bounds.h */,
+				66D7DEE22C06A24B00B5A6C8 /* Bvh.h */,
+				66D7DEE32C06A24B00B5A6C8 /* Conversions.h */,
+				66D7DEE42C06A24B00B5A6C8 /* Generators.h */,
+				66D7DEE52C06A24B00B5A6C8 /* Geometry.h */,
+				66D7DEE62C06A24B00B5A6C8 /* Hermite.h */,
+				66D7DEE72C06A24B00B5A6C8 /* Rectangle.h */,
+				66D7DEE82C06A24B00B5A6C8 /* SatinCore.h */,
+				66D7DEE92C06A24B00B5A6C8 /* Transforms.h */,
+				66D7DEEA2C06A24B00B5A6C8 /* Triangulator.h */,
+				66D7DEEB2C06A24B00B5A6C8 /* Types.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		66D7DEF82C06A24B00B5A6C8 /* SatinCore */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEEC2C06A24B00B5A6C8 /* include */,
+				66D7DEED2C06A24B00B5A6C8 /* Bezier.mm */,
+				66D7DEEE2C06A24B00B5A6C8 /* Bounds.mm */,
+				66D7DEEF2C06A24B00B5A6C8 /* Bvh.mm */,
+				66D7DEF02C06A24B00B5A6C8 /* Conversions.mm */,
+				66D7DEF12C06A24B00B5A6C8 /* Generators.mm */,
+				66D7DEF22C06A24B00B5A6C8 /* Geometry.mm */,
+				66D7DEF32C06A24B00B5A6C8 /* Hermite.mm */,
+				66D7DEF42C06A24B00B5A6C8 /* Rectangle.mm */,
+				66D7DEF52C06A24B00B5A6C8 /* Transforms.mm */,
+				66D7DEF62C06A24B00B5A6C8 /* Triangulator.mm */,
+				66D7DEF72C06A24B00B5A6C8 /* Types.mm */,
+			);
+			path = SatinCore;
+			sourceTree = "<group>";
+		};
+		66D7DEF92C06A24B00B5A6C8 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				66D7DEDF2C06A24B00B5A6C8 /* Satin */,
+				66D7DEF82C06A24B00B5A6C8 /* SatinCore */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		66D7DD2E2C06A23000B5A6C8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66D7E05B2C06A24B00B5A6C8 /* Conversions.h in Headers */,
+				66D7E0602C06A24B00B5A6C8 /* SatinCore.h in Headers */,
+				66D7E05A2C06A24B00B5A6C8 /* Bvh.h in Headers */,
+				66D7E05D2C06A24B00B5A6C8 /* Geometry.h in Headers */,
+				66D7E0582C06A24B00B5A6C8 /* Bezier.h in Headers */,
+				66D7E0612C06A24B00B5A6C8 /* Transforms.h in Headers */,
+				66D7E0632C06A24B00B5A6C8 /* Types.h in Headers */,
+				66D7E05C2C06A24B00B5A6C8 /* Generators.h in Headers */,
+				66D7E05E2C06A24B00B5A6C8 /* Hermite.h in Headers */,
+				66D7E05F2C06A24B00B5A6C8 /* Rectangle.h in Headers */,
+				66D7E0622C06A24B00B5A6C8 /* Triangulator.h in Headers */,
+				66D7E0592C06A24B00B5A6C8 /* Bounds.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		66D7DD322C06A23000B5A6C8 /* Satin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66D7DD3A2C06A23000B5A6C8 /* Build configuration list for PBXNativeTarget "Satin" */;
+			buildPhases = (
+				66D7DD2E2C06A23000B5A6C8 /* Headers */,
+				66D7DD2F2C06A23000B5A6C8 /* Sources */,
+				66D7DD302C06A23000B5A6C8 /* Frameworks */,
+				66D7DD312C06A23000B5A6C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Satin;
+			productName = Satin;
+			productReference = 66D7DD332C06A23000B5A6C8 /* Satin.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		66D7DD2A2C06A23000B5A6C8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					66D7DD322C06A23000B5A6C8 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 66D7DD2D2C06A23000B5A6C8 /* Build configuration list for PBXProject "Satin" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 66D7DD292C06A23000B5A6C8;
+			productRefGroup = 66D7DD342C06A23000B5A6C8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				66D7DD322C06A23000B5A6C8 /* Satin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		66D7DD312C06A23000B5A6C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		66D7DD2F2C06A23000B5A6C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66D7E09F2C06A39D00B5A6C8 /* Easing.swift in Sources */,
+				66D7E0A02C06A3B800B5A6C8 /* Easings.swift in Sources */,
+				66D7E06F2C06A2C000B5A6C8 /* Bezier.mm in Sources */,
+				66D7E0702C06A2C000B5A6C8 /* Bounds.mm in Sources */,
+				66D7E0712C06A2C000B5A6C8 /* Bvh.mm in Sources */,
+				66D7E0722C06A2C000B5A6C8 /* Conversions.mm in Sources */,
+				66D7E0732C06A2C000B5A6C8 /* Generators.mm in Sources */,
+				66D7E0742C06A2C000B5A6C8 /* Geometry.mm in Sources */,
+				66D7E0752C06A2C000B5A6C8 /* Hermite.mm in Sources */,
+				66D7E0762C06A2C000B5A6C8 /* Rectangle.mm in Sources */,
+				66D7E0772C06A2C000B5A6C8 /* Transforms.mm in Sources */,
+				66D7E0782C06A2C000B5A6C8 /* Triangulator.mm in Sources */,
+				66D7E0792C06A2C000B5A6C8 /* Types.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		66D7DD382C06A23000B5A6C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		66D7DD392C06A23000B5A6C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		66D7DD3B2C06A23000B5A6C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = H5N5GRKN9A;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hi-rez.Satin";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 1.1;
+			};
+			name = Debug;
+		};
+		66D7DD3C2C06A23000B5A6C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = H5N5GRKN9A;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hi-rez.Satin";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 1.1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		66D7DD2D2C06A23000B5A6C8 /* Build configuration list for PBXProject "Satin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66D7DD382C06A23000B5A6C8 /* Debug */,
+				66D7DD392C06A23000B5A6C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		66D7DD3A2C06A23000B5A6C8 /* Build configuration list for PBXNativeTarget "Satin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66D7DD3B2C06A23000B5A6C8 /* Debug */,
+				66D7DD3C2C06A23000B5A6C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 66D7DD2A2C06A23000B5A6C8 /* Project object */;
+}
