@@ -31,13 +31,19 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     }
 
     public internal(set) var layerRenderer: LayerRenderer!
-    public internal(set) var arSession: ARKitSession!
-    public internal(set) var worldTracking: WorldTrackingProvider!
+    public internal(set) var arSession = ARKitSession()
+    public internal(set) var worldTracking = WorldTrackingProvider()
 
     public internal(set) var isSetup: Bool = false
 
     public internal(set) var device: MTLDevice!
     public internal(set) var commandQueue: MTLCommandQueue!
+
+    open var arSessionDataProviders: [any DataProvider] {
+        [
+            worldTracking
+        ]
+    }
 
     open var sampleCount: Int { 1 }
     open var colorPixelFormat: MTLPixelFormat { .bgra8Unorm_srgb }
@@ -56,18 +62,22 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         return self
     }
 
-    public func startRenderLoop() {
+    public func startARSession() {
         Task {
             do {
-                try await arSession.run([worldTracking])
+                try await arSession.run(arSessionDataProviders)
             } catch {
                 fatalError("Failed to initialize ARSession")
             }
+        }
+    }
 
+    public func startRenderLoop() {
+        Task {
             let renderThread = Thread {
                 self.renderLoop()
             }
-            renderThread.name = "Forge Render Thread"
+            renderThread.name = "Satin Render Thread"
             renderThread.start()
         }
     }
@@ -99,9 +109,6 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         let options: LayerRenderer.Capabilities.SupportedLayoutsOptions = foveationEnabled ? [.foveationEnabled] : []
         let supportedLayouts = capabilities.supportedLayouts(options: options)
         configuration.layout = supportedLayouts.contains(layerLayout) ? layerLayout : .dedicated
-
-        print("configuration.isFoveationEnabled: \(foveationEnabled)")
-        print("configuration.layout: \(configuration.layout == .layered ? "layered" : "dedicated")")
     }
 
     open func setup() {}

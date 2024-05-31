@@ -27,10 +27,11 @@ public struct SatinImmersiveSpace: SwiftUI.Scene {
                 renderer.layerRenderer = layerRenderer
                 renderer.device = layerRenderer.device
                 renderer.commandQueue = queue
-                renderer.worldTracking = WorldTrackingProvider()
-                renderer.arSession = ARKitSession()
-                renderer.setup()
-                renderer.isSetup = true
+                if !renderer.isSetup {
+                    renderer.setup()
+                    renderer.isSetup = true
+                    renderer.startARSession()
+                }
                 renderer.startRenderLoop()
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
