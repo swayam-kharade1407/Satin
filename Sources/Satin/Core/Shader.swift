@@ -13,7 +13,29 @@ open class Shader {
     // MARK: - Main Pipeline
 
     open var pipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
-    open var pipelineReflection: MTLRenderPipelineReflection?
+    open var pipelineReflection: MTLRenderPipelineReflection? {
+        didSet {
+            guard let pipelineReflection else { return }
+            for binding in pipelineReflection.vertexBindings {
+                if binding.index == VertexBufferIndex.VertexUniforms.rawValue {
+                    vertexWantsVertexUniforms = binding.isUsed
+                }
+                if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
+                    vertexWantsMaterialUniforms = binding.isUsed
+                }
+            }
+
+            for binding in pipelineReflection.fragmentBindings {
+                if binding.index == FragmentBufferIndex.VertexUniforms.rawValue {
+                    fragmentWantsVertexUniforms = binding.isUsed
+                }
+
+                if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
+                    fragmentWantsMaterialUniforms = binding.isUsed
+                }
+            }
+        }
+    }
 
     public internal(set) var pipeline: MTLRenderPipelineState?
     public internal(set) var error: Error?
@@ -25,6 +47,12 @@ open class Shader {
 
     public internal(set) var shadowPipeline: MTLRenderPipelineState?
     public internal(set) var shadowError: Error?
+
+    public internal(set) var vertexWantsVertexUniforms: Bool = false
+    public internal(set) var vertexWantsMaterialUniforms: Bool = false
+
+    public internal(set) var fragmentWantsVertexUniforms: Bool = false
+    public internal(set) var fragmentWantsMaterialUniforms: Bool = false
 
     // MARK: - Blending
 
@@ -268,18 +296,21 @@ open class Shader {
         shadowError = nil
     }
 
-    open func makePipeline() throws -> MTLRenderPipelineState? {
+    open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         try ShaderPipelineCache.getPipeline(configuration: configuration)
     }
 
     func setupPipeline() {
         do {
-            pipeline = try makePipeline()
+            let result = try makePipeline()
+            pipeline = result.pipeline
+            pipelineReflection = result.reflection
             error = nil
         } catch {
             print("\(label) Shader Pipeline: \(error.localizedDescription)")
             self.error = error
             pipeline = nil
+            pipelineReflection = nil
         }
         pipelineNeedsUpdate = false
     }

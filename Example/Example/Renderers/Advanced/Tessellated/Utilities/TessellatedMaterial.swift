@@ -22,11 +22,13 @@ class TessellatedShader: SourceShader {
         fatalError("init(configuration:) has not been implemented")
     }
 
-    override open func makePipeline() throws -> MTLRenderPipelineState? {
+    override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         guard let context = context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
               let vertexFunction = library.makeFunction(name: vertexFunctionName),
-              let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return nil }
+              let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return (nil, nil) }
+
+        var reflection: MTLRenderPipelineReflection?
 
         var descriptor = MTLRenderPipelineDescriptor()
         descriptor.label = label
@@ -43,7 +45,13 @@ class TessellatedShader: SourceShader {
         setupRenderPipelineDescriptorContext(context: context, descriptor: &descriptor)
         setupRenderPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
 
-        return try context.device.makeRenderPipelineState(descriptor: descriptor)
+        let pipeline = try context.device.makeRenderPipelineState(
+            descriptor: descriptor,
+            options: [.argumentInfo, .bufferTypeInfo],
+            reflection: &reflection
+        )
+
+        return (pipeline, reflection)
     }
 }
 

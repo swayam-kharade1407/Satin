@@ -179,7 +179,13 @@ open class Mesh: Object, Renderable {
     }
 
     open func bindUniforms(renderEncoderState: RenderEncoderState) {
-        renderEncoderState.vertexUniforms = vertexUniforms
+        guard let shader = material?.shader else { return }
+        if shader.vertexWantsVertexUniforms {
+            renderEncoderState.vertexVertexUniforms = vertexUniforms
+        }
+        if shader.fragmentWantsVertexUniforms {
+            renderEncoderState.fragmentVertexUniforms = vertexUniforms
+        }
     }
 
     open func bindGeometry(renderEncoderState: RenderEncoderState, shadow: Bool) {

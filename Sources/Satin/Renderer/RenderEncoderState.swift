@@ -74,13 +74,25 @@ public final class RenderEncoderState {
         }
     }
 
-    public var vertexUniforms: VertexUniformBuffer? {
+    public var vertexVertexUniforms: VertexUniformBuffer? {
         didSet {
-            if oldValue !== vertexUniforms, let vertexUniforms {
+            if oldValue !== vertexVertexUniforms, let vertexVertexUniforms {
                 renderEncoder.setVertexBuffer(
-                    vertexUniforms.buffer,
-                    offset: vertexUniforms.offset,
+                    vertexVertexUniforms.buffer,
+                    offset: vertexVertexUniforms.offset,
                     index: VertexBufferIndex.VertexUniforms.rawValue
+                )
+            }
+        }
+    }
+
+    public var fragmentVertexUniforms: VertexUniformBuffer? {
+        didSet {
+            if oldValue !== fragmentVertexUniforms, let fragmentVertexUniforms {
+                renderEncoder.setFragmentBuffer(
+                    fragmentVertexUniforms.buffer,
+                    offset: fragmentVertexUniforms.offset,
+                    index: FragmentBufferIndex.VertexUniforms.rawValue
                 )
             }
         }

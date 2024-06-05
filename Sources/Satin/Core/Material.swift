@@ -116,6 +116,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public internal(set) var isClone = false
     public weak var delegate: MaterialDelegate?
 
+    public let updatedPublisher = PassthroughSubject<Material, Never>()
+
     public var pipeline: MTLRenderPipelineState? {
         shader?.pipeline
     }
@@ -361,8 +363,15 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func bindUniforms(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        renderEncoderState.vertexMaterialUniforms = uniforms
-        if !shadow { renderEncoderState.fragmentMaterialUniforms = uniforms }
+        guard let shader else { return }
+        
+        if shader.vertexWantsMaterialUniforms {
+            renderEncoderState.vertexMaterialUniforms = uniforms
+        }
+
+        if !shadow, shader.fragmentWantsMaterialUniforms {
+            renderEncoderState.fragmentMaterialUniforms = uniforms
+        }
     }
 
     open func bindDepthStates(renderEncoderState: RenderEncoderState) {
@@ -388,7 +397,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         bindPipeline(renderEncoderState: renderEncoderState, shadow: shadow)
         onBind?(renderEncoderState.renderEncoder)
     }
-
 
     public func set(_ texture: MTLTexture?, index: VertexTextureIndex) {
         if let texture = texture {
@@ -615,6 +623,7 @@ public extension Material {
         uniformsNeedsUpdate = true
         objectWillChange.send()
         parametersSetPublisher.send(parameters)
+        updatedPublisher.send(self)
         delegate?.updated(material: self)
     }
 }

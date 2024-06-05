@@ -30,7 +30,7 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
     public var label: String
 
     public var description: String {
-        "Label: \(label) type: \(string) value: \(value)"
+        "Label: \(label) type: \(string) value: \(value) controlType: \(controlType)"
     }
 
     @Published public var value: ValueType {

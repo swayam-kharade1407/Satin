@@ -135,7 +135,7 @@ public class ARLidarMesh: Object, Renderable {
               let _ = material.pipeline
         else { return }
 
-        renderEncoderState.vertexUniforms = vertexUniforms
+        renderEncoderState.vertexVertexUniforms = vertexUniforms
         renderEncoderState.setVertexBuffer(vertexBuffer, offset: 0, index: .Vertices)
         material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 

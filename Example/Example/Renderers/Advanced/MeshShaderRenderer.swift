@@ -83,7 +83,7 @@ private class CustomShader: SourceShader {
         super.init(configuration: configuration)
     }
 
-    override open func makePipeline() throws -> MTLRenderPipelineState? {
+    override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         if #available(macOS 13.0, iOS 16.0, *) {
             if let context = context,
                let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
@@ -104,10 +104,9 @@ private class CustomShader: SourceShader {
                 descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 
                 setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
-
-                return try context.device.makeRenderPipelineState(descriptor: descriptor, options: []).0
+                return try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo])
             } else {
-                return nil
+                return (nil, nil)
             }
         } else {
             fatalError("Mesh Shader's are not supported")

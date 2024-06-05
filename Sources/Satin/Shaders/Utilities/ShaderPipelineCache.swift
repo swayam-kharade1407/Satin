@@ -37,18 +37,18 @@ public actor ShaderPipelineCache {
         shadowPipelineCache.removeValue(forKey: configuration)
     }
 
-    public static func getPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
-        if let pipeline = pipelineCache[configuration] { return pipeline }
+    public static func getPipeline(configuration: ShaderConfiguration) throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
+        if let pipeline = pipelineCache[configuration], let reflection = pipelineReflectionCache[configuration] { return (pipeline, reflection) }
 
 //        print("Creating Shader Pipeline: \(configuration)")
 
         guard let context = configuration.context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device)
-        else { return nil }
+        else { return (nil, nil) }
 
         guard let vertexFunction = library.makeFunction(name: configuration.vertexFunctionName),
               let fragmentFunction = library.makeFunction(name: configuration.fragmentFunctionName)
-        else { return nil }
+        else { return (nil, nil) }
 
         var descriptor = MTLRenderPipelineDescriptor()
         descriptor.label = configuration.label
@@ -60,18 +60,11 @@ public actor ShaderPipelineCache {
         setupRenderPipelineDescriptorContext(context: context, descriptor: &descriptor)
         setupRenderPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
-        if configuration.libraryURL != nil {
-            var pipelineReflection: MTLRenderPipelineReflection?
-            let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
-            pipelineCache[configuration] = pipeline
-            pipelineReflectionCache[configuration] = pipelineReflection
-            return pipeline
-        }
-        else {
-            let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor)
-            pipelineCache[configuration] = pipeline
-            return pipeline
-        }
+        var pipelineReflection: MTLRenderPipelineReflection?
+        let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
+        pipelineCache[configuration] = pipeline
+        pipelineReflectionCache[configuration] = pipelineReflection
+        return (pipeline, pipelineReflection)
     }
 
     public static func getShadowPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
@@ -105,26 +98,26 @@ public actor ShaderPipelineCache {
     public static func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {
         if let parameters = pipelineParametersCache[configuration] { return parameters }
 
-        if let reflection = pipelineReflectionCache[configuration] {
+        if let pipelineURL = configuration.pipelineURL,
+           let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL),
+           let parameters = parseParameters(source: shaderSource, key: configuration.label + "Uniforms")
+        {
+            parameters.label = configuration.label.titleCase + " Uniforms"
+            pipelineParametersCache[configuration] = parameters
+            return parameters
+        }
+        else if let reflection = pipelineReflectionCache[configuration] {
             for binding in reflection.fragmentBindings {
-                if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue, 
-                    let bufferBinding = binding as? MTLBufferBinding,
-                    let bufferStruct = bufferBinding.bufferStructType {
-
+                if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue,
+                   let bufferBinding = binding as? MTLBufferBinding,
+                   let bufferStruct = bufferBinding.bufferStructType
+                {
                     let parameters = parseParameters(bufferStruct: bufferStruct)
                     parameters.label = configuration.label.titleCase + " Uniforms"
                     pipelineParametersCache[configuration] = parameters
                     return parameters
                 }
             }
-        }
-        else if let pipelineURL = configuration.pipelineURL,
-                let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL),
-                let parameters = parseParameters(source: shaderSource, key: configuration.label + "Uniforms")
-        {
-            parameters.label = configuration.label.titleCase + " Uniforms"
-            pipelineParametersCache[configuration] = parameters
-            return parameters
         }
 
         return nil

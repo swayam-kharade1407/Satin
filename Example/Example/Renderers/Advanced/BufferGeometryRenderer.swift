@@ -97,8 +97,17 @@ class BufferGeometryMesh: Object, Renderable {
     }
 
     func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        renderEncoderState.vertexUniforms = vertexUniforms
-        material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        if let material, let shader = material.shader {
+            if shader.vertexWantsVertexUniforms {
+                renderEncoderState.vertexVertexUniforms = vertexUniforms
+            }
+
+            if shader.vertexWantsMaterialUniforms {
+                renderEncoderState.fragmentVertexUniforms = vertexUniforms
+            }
+
+            material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        }
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
     }

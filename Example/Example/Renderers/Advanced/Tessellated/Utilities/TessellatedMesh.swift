@@ -112,7 +112,7 @@ class TessellatedMesh: Object, Renderable {
     open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         guard instanceCount > 0, let vertexUniforms, let material, !geometry.vertexBuffers.isEmpty else { return }
 
-        renderEncoderState.vertexUniforms = vertexUniforms
+        renderEncoderState.vertexVertexUniforms = vertexUniforms
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
