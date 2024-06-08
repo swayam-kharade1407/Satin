@@ -231,22 +231,34 @@ open class Renderer {
             }
         }
 
+        let inColorStoreAction = renderPassDescriptor.colorAttachments[0].storeAction
+        let inColorLoadAction = renderPassDescriptor.colorAttachments[0].loadAction
         let inColorTexture = renderPassDescriptor.colorAttachments[0].texture
         let inColorResolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
 
+        let inDepthStoreAction = renderPassDescriptor.depthAttachment.storeAction
+        let inDepthLoadAction = renderPassDescriptor.depthAttachment.loadAction
         let inDepthTexture = renderPassDescriptor.depthAttachment.texture
         let inDepthResolveTexture = renderPassDescriptor.depthAttachment.resolveTexture
 
+        let inStencilStoreAction = renderPassDescriptor.stencilAttachment.storeAction
+        let inStencilLoadAction = renderPassDescriptor.stencilAttachment.loadAction
         let inStencilTexture = renderPassDescriptor.stencilAttachment.texture
         let inStencilResolveTexture = renderPassDescriptor.stencilAttachment.resolveTexture
 
         defer {
+            renderPassDescriptor.colorAttachments[0].storeAction = inColorStoreAction
+            renderPassDescriptor.colorAttachments[0].loadAction = inColorLoadAction
             renderPassDescriptor.colorAttachments[0].texture = inColorTexture
             renderPassDescriptor.colorAttachments[0].resolveTexture = inColorResolveTexture
 
+            renderPassDescriptor.depthAttachment.storeAction = inDepthStoreAction
+            renderPassDescriptor.depthAttachment.loadAction = inDepthLoadAction
             renderPassDescriptor.depthAttachment.texture = inDepthTexture
             renderPassDescriptor.depthAttachment.resolveTexture = inDepthResolveTexture
 
+            renderPassDescriptor.stencilAttachment.storeAction = inStencilStoreAction
+            renderPassDescriptor.stencilAttachment.loadAction = inStencilLoadAction
             renderPassDescriptor.stencilAttachment.texture = inStencilTexture
             renderPassDescriptor.stencilAttachment.resolveTexture = inStencilResolveTexture
         }
@@ -301,7 +313,7 @@ open class Renderer {
             }
         }
 
-        if context.depthPixelFormat != .depth32Float_stencil8 {
+        if context.stencilPixelFormat != .invalid, context.depthPixelFormat != .depth32Float_stencil8 {
             if context.stencilPixelFormat == .invalid {
                 renderPassDescriptor.stencilAttachment.texture = nil
                 renderPassDescriptor.stencilAttachment.resolveTexture = nil
@@ -328,36 +340,45 @@ open class Renderer {
             } else {
                 renderPassDescriptor.colorAttachments[0].storeAction = .multisampleResolve
             }
+            if depthStoreAction == .store || depthStoreAction == .storeAndMultisampleResolve {
+                renderPassDescriptor.depthAttachment.storeAction = .storeAndMultisampleResolve
+            } else {
+                renderPassDescriptor.depthAttachment.storeAction = .multisampleResolve
+            }
+            if context.stencilPixelFormat != .invalid {
+                if stencilStoreAction == .store || stencilStoreAction == .storeAndMultisampleResolve {
+                    renderPassDescriptor.stencilAttachment.storeAction = .storeAndMultisampleResolve
+                } else {
+                    renderPassDescriptor.stencilAttachment.storeAction = .multisampleResolve
+                }
+            }
         } else {
             if colorStoreAction == .store || colorStoreAction == .storeAndMultisampleResolve {
                 renderPassDescriptor.colorAttachments[0].storeAction = .store
             } else {
                 renderPassDescriptor.colorAttachments[0].storeAction = .dontCare
             }
-        }
-
-        if context.sampleCount > 1 {
-            if depthStoreAction == .store || depthStoreAction == .storeAndMultisampleResolve {
-                renderPassDescriptor.depthAttachment.storeAction = .storeAndMultisampleResolve
-            } else {
-                renderPassDescriptor.depthAttachment.storeAction = .multisampleResolve
-            }
-        } else {
             if depthStoreAction == .store || depthStoreAction == .storeAndMultisampleResolve {
                 renderPassDescriptor.depthAttachment.storeAction = .store
             } else {
                 renderPassDescriptor.depthAttachment.storeAction = .dontCare
             }
+            if context.stencilPixelFormat != .invalid {
+                if stencilStoreAction == .store || stencilStoreAction == .storeAndMultisampleResolve {
+                    renderPassDescriptor.stencilAttachment.storeAction = .store
+                } else {
+                    renderPassDescriptor.stencilAttachment.storeAction = .dontCare
+                }
+            }
         }
 
-        renderPassDescriptor.colorAttachments[0].clearColor = clearColor
         renderPassDescriptor.colorAttachments[0].loadAction = colorLoadAction
+        renderPassDescriptor.colorAttachments[0].clearColor = clearColor
 
         renderPassDescriptor.depthAttachment.loadAction = depthLoadAction
         renderPassDescriptor.depthAttachment.clearDepth = clearDepth
 
         renderPassDescriptor.stencilAttachment.loadAction = stencilLoadAction
-        renderPassDescriptor.stencilAttachment.storeAction = stencilStoreAction
         renderPassDescriptor.stencilAttachment.clearStencil = clearStencil
 
         if renderLists.isEmpty {

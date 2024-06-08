@@ -45,6 +45,8 @@ open class BufferComputeSystem: ComputeSystem {
     private var _setupBuffers = true
     private var _setupSize: Bool = true
 
+    public private(set) var bufferTextures: [ComputeTextureIndex: MTLTexture?] = [:]
+
     override public internal(set) var shader: ComputeShader? {
         didSet {
             if shader != oldValue, let shader = shader {
@@ -85,7 +87,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
-        if bufferMap.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
+        if count > 0, bufferMap.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
             encode(computeEncoder)
             computeEncoder.endEncoding()
@@ -94,7 +96,7 @@ open class BufferComputeSystem: ComputeSystem {
 
     override open func update(_ computeEncoder: MTLComputeCommandEncoder) {
         super.update(computeEncoder)
-        if bufferMap.count > 0 {
+        if count > 0, bufferMap.count > 0 {
             encode(computeEncoder)
         }
     }
@@ -103,8 +105,15 @@ open class BufferComputeSystem: ComputeSystem {
         bindBuffers(computeEncoder, ComputeBufferIndex.Custom0.rawValue)
     }
 
+    private func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
+        for (index, texture) in bufferTextures {
+            computeEncoder.setTexture(texture, index: index.rawValue)
+        }
+    }
+
     private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
         bindUniforms(computeEncoder)
+        bindTextures(computeEncoder)
 
         if _reset, let pipeline = resetPipeline {
             computeEncoder.setComputePipelineState(pipeline)
@@ -159,13 +168,14 @@ open class BufferComputeSystem: ComputeSystem {
     }
 
     private func setupBuffers() {
+        guard count > 0 else { return }
         bufferMap = [:]
         bufferOrder = []
-        for param in buffers where param.stride > 0 {
 
+        for param in buffers where param.stride > 0 {
             let stride = param.stride
             let label = param.label
-            
+
             bufferMap[label] = []
             bufferOrder.append(label)
 
@@ -234,8 +244,10 @@ open class BufferComputeSystem: ComputeSystem {
     #if os(macOS) || os(iOS) || os(visionOS)
     override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
         let gridSize = MTLSizeMake(_count, 1, 1)
+
         var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup
-        threadGroupSize = threadGroupSize > _count ? _count : threadGroupSize
+        threadGroupSize = threadGroupSize > _count ? 32 * max(((_count / 32)), 1) : threadGroupSize
+
         let threadsPerThreadgroup = MTLSizeMake(threadGroupSize, 1, 1)
         computeEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadsPerThreadgroup)
     }
@@ -246,6 +258,14 @@ open class BufferComputeSystem: ComputeSystem {
         let threadsPerThreadgroup = MTLSizeMake(m, 1, 1)
         let threadgroupsPerGrid = MTLSize(width: (_count + m - 1) / m, height: 1, depth: 1)
         computeEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+    }
+
+    public func set(_ texture: MTLTexture?, index: ComputeTextureIndex) {
+        if let texture = texture {
+            bufferTextures[index] = texture
+        } else {
+            bufferTextures.removeValue(forKey: index)
+        }
     }
 
     // MARK: - Deinit
