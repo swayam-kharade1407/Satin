@@ -25,6 +25,22 @@ public extension BVHNode {
     func intersects(ray: Ray) -> Bool {
         return rayBoundsIntersect(ray, aabb)
     }
+
+    func intersects(bounds: Bounds) -> Bool {
+        return boundsIntersectsBounds(bounds, aabb)
+    }
+
+    func contained(in bounds: Bounds) -> Bool {
+        return boundsContainsBounds(bounds, aabb)
+    }
+
+    func contains(bounds: Bounds) -> Bool {
+        return boundsContainsBounds(aabb, bounds)
+    }
+
+    func contains(point: simd_float3) -> Bool {
+        return aabb.contains(point)
+    }
 }
 
 public extension BVH {

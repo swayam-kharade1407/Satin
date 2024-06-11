@@ -27,6 +27,12 @@ Bounds expandBounds(Bounds bounds, simd_float3 pt);
 Bounds mergeBounds(Bounds a, Bounds b);
 Bounds transformBounds(Bounds a, simd_float4x4 transform);
 
+bool isPointInsideBounds(simd_float3 pt, Bounds b);
+bool isPointInsideOrOnBounds(simd_float3 pt, Bounds b);
+
+bool boundsIntersectsBounds(Bounds a, Bounds b);
+bool boundsContainsBounds(Bounds a, Bounds b); 
+
 simd_float4 boundsCorner(Bounds a, int index);
 
 void mergeBoundsInPlace(Bounds *a, const Bounds *b);

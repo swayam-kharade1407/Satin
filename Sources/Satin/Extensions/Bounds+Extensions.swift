@@ -37,5 +37,9 @@ public extension Bounds {
             simd_make_float3(min.x, min.y, min.z), // 7
         ]
     }
+
+    func contains(_ pt: simd_float3) -> Bool {
+        return isPointInsideOrOnBounds(pt, self)
+    }
 }
 
