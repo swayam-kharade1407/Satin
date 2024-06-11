@@ -82,36 +82,38 @@ simd_float4 boundsCorner(Bounds a, int index)
     return simd_make_float4(index & 1 ? a.min.x : a.max.x, index & 2 ? a.min.y : a.max.y, index & 4 ? a.min.z : a.max.z, 1.0);
 }
 
-bool isPointInsideBounds(simd_float3 pt, Bounds b) {
-    if(pt.x <= b.min.x) { return false; }
-    if(pt.x >= b.max.x) { return false; }
-    if(pt.y <= b.min.y) { return false; }
-    if(pt.y >= b.max.y) { return false; }
-    if(pt.z <= b.min.z) { return false; }
-    if(pt.z >= b.max.z) { return false; }
+bool isPointInsideBounds(simd_float3 pt, Bounds b)
+{
+    if (pt.x <= b.min.x) { return false; }
+    if (pt.x >= b.max.x) { return false; }
+    if (pt.y <= b.min.y) { return false; }
+    if (pt.y >= b.max.y) { return false; }
+    if (pt.z <= b.min.z) { return false; }
+    if (pt.z >= b.max.z) { return false; }
     return true;
 }
 
-bool isPointInsideOrOnBounds(simd_float3 pt, Bounds b) {
-    if(pt.x < b.min.x) { return false; }
-    if(pt.x > b.max.x) { return false; }
-    if(pt.y < b.min.y) { return false; }
-    if(pt.y > b.max.y) { return false; }
-    if(pt.z < b.min.z) { return false; }
-    if(pt.z > b.max.z) { return false; }
+bool isPointInsideOrOnBounds(simd_float3 pt, Bounds b)
+{
+    if (pt.x < b.min.x) { return false; }
+    if (pt.x > b.max.x) { return false; }
+    if (pt.y < b.min.y) { return false; }
+    if (pt.y > b.max.y) { return false; }
+    if (pt.z < b.min.z) { return false; }
+    if (pt.z > b.max.z) { return false; }
     return true;
 }
 
-bool boundsIntersectsBounds(Bounds a, Bounds b) {
-    return (a.min.x <= b.max.x && a.max.x >= b.min.x) &&
-    (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
-    (a.min.z <= b.max.z && a.max.z >= b.min.z);
+bool boundsIntersectsBounds(Bounds a, Bounds b)
+{
+    return (a.min.x <= b.max.x && a.max.x >= b.min.x) && (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+           (a.min.z <= b.max.z && a.max.z >= b.min.z);
 }
 
-bool boundsContainsBounds(Bounds a, Bounds b) {
-    return (a.min.x <= b.max.x && b.max.x <= a.max.x) &&
-    (a.min.y <= b.max.y && b.max.y <= a.max.y) &&
-    (a.min.z <= b.max.z && b.max.z <= a.max.z);
+bool boundsContainsBounds(Bounds a, Bounds b)
+{
+    return (a.min.x <= b.max.x && b.max.x <= a.max.x) && (a.min.y <= b.max.y && b.max.y <= a.max.y) &&
+           (a.min.z <= b.max.z && b.max.z <= a.max.z);
 }
 
 void mergeBoundsInPlace(Bounds *a, const Bounds *b)

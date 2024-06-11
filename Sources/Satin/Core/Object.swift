@@ -737,7 +737,12 @@ open class Object: Codable, ObservableObject {
     open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
         guard visible || invisible, intersects(ray: ray), recursive else { return }
         for child in children {
-            child.intersect(ray: ray, intersections: &intersections, recursive: recursive, invisible: invisible)
+            child.intersect(
+                ray: ray,
+                intersections: &intersections,
+                recursive: recursive,
+                invisible: invisible
+            )
         }
     }
 

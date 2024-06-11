@@ -31,7 +31,7 @@ bool isPointInsideBounds(simd_float3 pt, Bounds b);
 bool isPointInsideOrOnBounds(simd_float3 pt, Bounds b);
 
 bool boundsIntersectsBounds(Bounds a, Bounds b);
-bool boundsContainsBounds(Bounds a, Bounds b); 
+bool boundsContainsBounds(Bounds a, Bounds b);
 
 simd_float4 boundsCorner(Bounds a, int index);
 
