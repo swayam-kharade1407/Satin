@@ -45,8 +45,6 @@ open class BufferComputeSystem: ComputeSystem {
     private var _setupBuffers = true
     private var _setupSize: Bool = true
 
-    public private(set) var bufferTextures: [ComputeTextureIndex: MTLTexture?] = [:]
-
     override public internal(set) var shader: ComputeShader? {
         didSet {
             if shader != oldValue, let shader = shader {
@@ -103,12 +101,6 @@ open class BufferComputeSystem: ComputeSystem {
 
     open func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
         bindBuffers(computeEncoder, ComputeBufferIndex.Custom0.rawValue)
-    }
-
-    private func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
-        for (index, texture) in bufferTextures {
-            computeEncoder.setTexture(texture, index: index.rawValue)
-        }
     }
 
     private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
@@ -258,14 +250,6 @@ open class BufferComputeSystem: ComputeSystem {
         let threadsPerThreadgroup = MTLSizeMake(m, 1, 1)
         let threadgroupsPerGrid = MTLSize(width: (_count + m - 1) / m, height: 1, depth: 1)
         computeEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-    }
-
-    public func set(_ texture: MTLTexture?, index: ComputeTextureIndex) {
-        if let texture = texture {
-            bufferTextures[index] = texture
-        } else {
-            bufferTextures.removeValue(forKey: index)
-        }
     }
 
     // MARK: - Deinit

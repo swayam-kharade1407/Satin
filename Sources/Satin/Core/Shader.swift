@@ -12,7 +12,7 @@ import Metal
 open class Shader {
     // MARK: - Main Pipeline
 
-    open var pipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
+    open var pipelineOptions: MTLPipelineOption = [.bindingInfo, .bufferTypeInfo]
     open var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
             guard let pipelineReflection else { return }
@@ -42,7 +42,7 @@ open class Shader {
 
     // MARK: - Shadow Pipeline
 
-    open var shadowPipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
+    open var shadowPipelineOptions: MTLPipelineOption = [.bindingInfo, .bufferTypeInfo]
     open var shadowPipelineReflection: MTLRenderPipelineReflection?
 
     public internal(set) var shadowPipeline: MTLRenderPipelineState?

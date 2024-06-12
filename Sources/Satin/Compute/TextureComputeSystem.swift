@@ -75,10 +75,10 @@ open class TextureComputeSystem: ComputeSystem {
     }
 
     override open func update() {
-        super.update()
         updateDescriptor()
         updateTextures()
         updateSize()
+        super.update()
     }
 
     // MARK: - Descriptors
@@ -131,12 +131,14 @@ open class TextureComputeSystem: ComputeSystem {
     private func setupSize() {
         guard let txDsx = textureDescriptors.first else { return }
 
-        if txDsx.depth > 1 {
-            parameters.set("Size", [txDsx.width, txDsx.height, txDsx.depth])
-        } else if txDsx.height > 1 {
-            parameters.set("Size", [txDsx.width, txDsx.height])
-        } else if txDsx.width > 1 {
+        if txDsx.textureType == .type1D {
             parameters.set("Size", txDsx.width)
+        }
+        else if txDsx.textureType == .type2D {
+            parameters.set("Size", [txDsx.width, txDsx.height])
+        }
+        else if txDsx.textureType == .type3D {
+            parameters.set("Size", [txDsx.width, txDsx.height, txDsx.depth])
         }
 
         _setupSize = false
@@ -176,6 +178,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
         bindUniforms(computeEncoder)
+        bindTextures(computeEncoder)
 
         if _reset, let pipeline = resetPipeline {
             computeEncoder.setComputePipelineState(pipeline)

@@ -38,6 +38,8 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     public var preReset: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
     public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
 
+    public private(set) var computeTextures: [ComputeTextureIndex: MTLTexture?] = [:]
+
     public internal(set) var shader: ComputeShader? {
         didSet {
             if shader != oldValue, let shader = shader {
@@ -242,6 +244,12 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         computeEncoder.setBuffer(uniforms.buffer, offset: uniforms.offset, index: ComputeBufferIndex.Uniforms.rawValue)
     }
 
+    internal func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
+        for (index, texture) in computeTextures {
+            computeEncoder.setTexture(texture, index: index.rawValue)
+        }
+    }
+
     // MARK: - Parameters
 
     public func set(_ name: String, _ value: [Float]) {
@@ -271,51 +279,107 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: Float) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? FloatParameter {
+            param.value = value
+        } else {
+            parameters.append(FloatParameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float2) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float2Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float3) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float3Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_float4) {
-        parameters.set(name, value)
-    }
-
-    public func set(_ name: String, _ value: simd_float2x2) {
-        parameters.set(name, value)
-    }
-
-    public func set(_ name: String, _ value: simd_float3x3) {
-        parameters.set(name, value)
-    }
-
-    public func set(_ name: String, _ value: simd_float4x4) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Float4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float4Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: Int) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? IntParameter {
+            param.value = value
+        } else {
+            parameters.append(IntParameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int2) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int2Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int3) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int3Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: simd_int4) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? Int4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Int4Parameter(name, value))
+        }
     }
 
     public func set(_ name: String, _ value: Bool) {
-        parameters.set(name, value)
+        if let param = parameters.get(name) as? BoolParameter {
+            param.value = value
+        } else {
+            parameters.append(BoolParameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: simd_float2x2) {
+        if let param = parameters.get(name) as? Float2x2Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float2x2Parameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: simd_float3x3) {
+        if let param = parameters.get(name) as? Float3x3Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float3x3Parameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: simd_float4x4) {
+        if let param = parameters.get(name) as? Float4x4Parameter {
+            param.value = value
+        } else {
+            parameters.append(Float4x4Parameter(name, value))
+        }
+    }
+
+    public func set(_ texture: MTLTexture?, index: ComputeTextureIndex) {
+        if let texture = texture {
+            computeTextures[index] = texture
+        } else {
+            computeTextures.removeValue(forKey: index)
+        }
     }
 
     public func get(_ name: String) -> (any Parameter)? {

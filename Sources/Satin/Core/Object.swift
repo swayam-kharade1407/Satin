@@ -17,8 +17,20 @@ import SatinCore
 
 open class Object: Codable, ObservableObject {
     @Published open var id: String = UUID().uuidString
-    @Published open var label = "Object"
-    @Published open var visible = true
+    
+    public let labelPublisher = PassthroughSubject<String, Never>()
+    @Published open var label = "Object" {
+        didSet {
+            labelPublisher.send(label)
+        }
+    }
+
+    public let visiblePublisher = PassthroughSubject<Bool, Never>()
+    @Published open var visible = true {
+        didSet {
+            visiblePublisher.send(visible)
+        }
+    }
 
     open var context: Context? = nil {
         didSet {

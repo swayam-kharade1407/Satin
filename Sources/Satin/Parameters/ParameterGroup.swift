@@ -72,7 +72,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     public func append(_ param: any Parameter) {
         params.append(param)
         paramsMap[param.label] = param
-        paramSubscriptions[param.label] = param.onUpdate.sink { [weak self] p in
+        paramSubscriptions[param.label] = param.valuePublisher.sink { [weak self] p in
             guard let self = self else { return }
             self._updateData = true
             self.objectWillChange.send()
@@ -235,7 +235,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             try payload.write(to: url)
             delegate?.saved(group: self)
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
 
@@ -249,7 +249,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             }
             delegate?.loaded(group: self)
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
 
