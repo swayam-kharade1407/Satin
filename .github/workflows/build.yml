@@ -9,10 +9,10 @@ jobs:
       - name: Setup Xcode version
         uses: maxim-lobanov/setup-xcode@v1.6.0
         with:
-          xcode-version: '15.0.1'
-      - name: Check out Satin 
+          xcode-version: '15.4'
+      - name: Check out Satin
         uses: actions/checkout@v2
-      - name: Build Satin 
+      - name: Build Satin
         run: |
           set -euo pipefail
           swift build

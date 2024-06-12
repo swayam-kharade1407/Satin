@@ -12,7 +12,7 @@ import simd
 import SatinCore
 #endif
 
-extension MTLPackedFloat3: @retroactive Equatable {
+extension MTLPackedFloat3: Equatable {
     public static func == (lhs: _MTLPackedFloat3, rhs: _MTLPackedFloat3) -> Bool {
         lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
     }

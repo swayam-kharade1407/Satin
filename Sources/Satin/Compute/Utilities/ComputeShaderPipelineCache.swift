@@ -171,7 +171,7 @@ public actor ComputeShaderPipelineCache {
 
         if configuration.libraryURL != nil {
             var pipelineReflection: MTLComputePipelineReflection?
-            let pipeline = try device.makeComputePipelineState(descriptor: descriptor, options: [.bindingInfo, .bufferTypeInfo], reflection: &pipelineReflection)
+            let pipeline = try device.makeComputePipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
             pipelineCache[configuration] = pipeline
             pipelineReflectionCache[configuration] = pipelineReflection
             return pipeline
