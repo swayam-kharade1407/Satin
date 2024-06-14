@@ -30,7 +30,7 @@ public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
     var label: String { get }
     var description: String { get }
 
-    var valuePublisher: PassthroughSubject<any Parameter, Never> { get }
+    var valuePublisher: PassthroughSubject<ValueType, Never> { get }
 
     func alignData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer
     func writeData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer

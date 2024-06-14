@@ -16,13 +16,31 @@ import SatinCore
 
 open class Mesh: Object, Renderable {
     public var opaque: Bool { material!.blending == .disabled }
-    public var doubleSided: Bool = false
+    
+    public let doubleSidedPublisher = PassthroughSubject<Bool, Never>()
+    public var doubleSided: Bool = false {
+        didSet {
+            doubleSidedPublisher.send(doubleSided)
+        }
+    }
 
-    public var renderOrder = 0
-    public var renderPass = 0
+    public let renderOrderPublisher = PassthroughSubject<Int, Never>()
+    public var renderOrder = 0 {
+        didSet {
+            renderOrderPublisher.send(renderOrder)
+        }
+    }
+
+    public let renderPassPublisher = PassthroughSubject<Int, Never>()
+    public var renderPass = 0 {
+        didSet {
+            renderPassPublisher.send(renderPass)
+        }
+    }
 
     public var lighting: Bool { material?.lighting ?? false }
 
+    public let receiveShadowPublisher = PassthroughSubject<Bool, Never>()
     public var receiveShadow = false {
         didSet {
             if receiveShadow != oldValue {
@@ -31,9 +49,11 @@ open class Mesh: Object, Renderable {
                     submesh.material?.receiveShadow = receiveShadow
                 }
             }
+            receiveShadowPublisher.send(receiveShadow)
         }
     }
 
+    public let castShadowPublisher = PassthroughSubject<Bool, Never>()
     public var castShadow = false {
         didSet {
             if castShadow != oldValue {
@@ -42,11 +62,24 @@ open class Mesh: Object, Renderable {
                     submesh.material?.castShadow = castShadow
                 }
             }
+            castShadowPublisher.send(castShadow)
         }
     }
 
-    public var cullMode: MTLCullMode = .back
-    public var triangleFillMode: MTLTriangleFillMode = .fill
+    public let cullModePublisher = PassthroughSubject<MTLCullMode, Never>()
+    public var cullMode: MTLCullMode = .back {
+        didSet {
+            cullModePublisher.send(cullMode)
+        }
+    }
+    
+    public let triangleFillModePublisher = PassthroughSubject<MTLTriangleFillMode, Never>()
+    public var triangleFillMode: MTLTriangleFillMode = .fill {
+        didSet {
+            triangleFillModePublisher.send(triangleFillMode)
+        }
+    }
+
     public var windingOrder: MTLWinding {
         get {
             geometry.windingOrder
@@ -68,7 +101,12 @@ open class Mesh: Object, Renderable {
         }
     }
 
-    public var instanceCount = 1
+    public let instanceCountPublisher = PassthroughSubject<Int, Never>()
+    public var instanceCount = 1 {
+        didSet {
+            instanceCountPublisher.send(instanceCount)
+        }
+    }
 
     public var vertexUniforms: VertexUniformBuffer?
 

@@ -15,7 +15,7 @@ public final class StringParameter: GenericParameter<String> {
     @Published public var options: [String] = [] {
         didSet {
             if oldValue != options {
-                valuePublisher.send(self)
+                valuePublisher.send(value)
             }
         }
     }

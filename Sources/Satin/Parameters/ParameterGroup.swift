@@ -69,14 +69,14 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    public func append(_ param: any Parameter) {
+    public func append(_ param: some Parameter) {
         params.append(param)
         paramsMap[param.label] = param
-        paramSubscriptions[param.label] = param.valuePublisher.sink { [weak self] p in
-            guard let self = self else { return }
+        paramSubscriptions[param.label] = param.valuePublisher.sink { [weak self, weak param] value in
+            guard let self = self, let param else { return }
             self._updateData = true
             self.objectWillChange.send()
-            self.delegate?.update(parameter: p, from: self)
+            self.delegate?.update(parameter: param, from: self)
         }
 
         delegate?.added(parameter: param, from: self)

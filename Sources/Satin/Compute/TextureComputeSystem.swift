@@ -272,9 +272,11 @@ open class TextureComputeSystem: ComputeSystem {
             let threadsPerThreadgroup = MTLSizeMake(w, w, w)
             return threadsPerThreadgroup
 
-        } else {
-            let threadsPerThreadgroup = MTLSizeMake(threadExecutionWidth, maxTotalThreadsPerThreadgroup / threadExecutionWidth, 1)
-            return threadsPerThreadgroup
+        } else if texture.height > 1 {
+            return MTLSizeMake(threadExecutionWidth, maxTotalThreadsPerThreadgroup / threadExecutionWidth, 1)
+        }
+        else {
+            return MTLSizeMake(threadExecutionWidth, 1, 1)
         }
     }
 

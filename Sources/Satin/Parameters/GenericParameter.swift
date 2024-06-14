@@ -14,7 +14,7 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
     public typealias ValueType = T
 
     // Delegate
-    public let valuePublisher = PassthroughSubject<any Parameter, Never>()
+    public let valuePublisher = PassthroughSubject<ValueType, Never>()
 
     // Getable Properties
     public var type: ParameterType { .generic }
@@ -36,7 +36,7 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
     @Published public var value: ValueType {
         didSet {
             if value != oldValue {
-                valuePublisher.send(self)
+                valuePublisher.send(value)
             }
         }
     }
@@ -92,13 +92,13 @@ public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParamete
 
     @Published public var min: ValueType {
         didSet {
-            valuePublisher.send(self)
+            valuePublisher.send(value)
         }
     }
 
     @Published public var max: ValueType {
         didSet {
-            valuePublisher.send(self)
+            valuePublisher.send(value)
         }
     }
 
