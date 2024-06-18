@@ -46,7 +46,10 @@ open class Object: Codable, ObservableObject {
     @Published open var position: simd_float3 = .zero {
         didSet {
             _translationMatrix.clear()
+            
             updateLocalMatrix = true
+
+            positionPublisher.send(self)
         }
     }
 
@@ -82,6 +85,8 @@ open class Object: Codable, ObservableObject {
             _forwardDirection.clear()
 
             updateLocalMatrix = true
+
+            orientationPublisher.send(self)
         }
     }
 
@@ -119,7 +124,10 @@ open class Object: Codable, ObservableObject {
     @Published open var scale: simd_float3 = .one {
         didSet {
             _scaleMatrix.clear()
+            
             updateLocalMatrix = true
+
+            scalePublisher.send(self)
         }
     }
 
@@ -424,6 +432,10 @@ open class Object: Codable, ObservableObject {
     public var onUpdate: (() -> Void)?
 
     // MARK: - Publishers
+
+    public let positionPublisher = PassthroughSubject<Object, Never>()
+    public let scalePublisher = PassthroughSubject<Object, Never>()
+    public let orientationPublisher = PassthroughSubject<Object, Never>()
 
     public let boundsPublisher = PassthroughSubject<Object, Never>()
     public let localBoundsPublisher = PassthroughSubject<Object, Never>()

@@ -16,16 +16,18 @@ open class Shader {
     open var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
             guard let pipelineReflection else { return }
-            for binding in pipelineReflection.vertexBindings {
+
+            for binding in pipelineReflection.vertexBindings where binding.type == .buffer {
                 if binding.index == VertexBufferIndex.VertexUniforms.rawValue {
                     vertexWantsVertexUniforms = binding.isUsed
                 }
+
                 if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
                     vertexWantsMaterialUniforms = binding.isUsed
                 }
             }
 
-            for binding in pipelineReflection.fragmentBindings {
+            for binding in pipelineReflection.fragmentBindings where binding.type == .buffer {
                 if binding.index == FragmentBufferIndex.VertexUniforms.rawValue {
                     fragmentWantsVertexUniforms = binding.isUsed
                 }
@@ -301,6 +303,7 @@ open class Shader {
     }
 
     func setupPipeline() {
+        guard context != nil else { return }
         do {
             let result = try makePipeline()
             pipeline = result.pipeline
@@ -316,8 +319,7 @@ open class Shader {
     }
 
     func setupShadowPipeline() {
-        guard castShadow else { return }
-
+        guard context != nil, castShadow else { return }
         do {
             shadowPipeline = try ShaderPipelineCache.getShadowPipeline(configuration: configuration)
             shadowError = nil

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RenderingConfiguration: Equatable, Hashable {
+public struct RenderingConfiguration: Hashable {
     // Blending
     var blending = ShaderBlending()
 
@@ -79,6 +79,21 @@ public struct RenderingConfiguration: Equatable, Hashable {
     }
 }
 
+extension RenderingConfiguration: Equatable {
+    public static func == (lhs: RenderingConfiguration, rhs: RenderingConfiguration) -> Bool {
+        lhs.blending == rhs.blending &&
+        lhs.vertexDescriptor == rhs.vertexDescriptor &&
+        lhs.instancing == rhs.instancing &&
+        lhs.lighting == rhs.lighting &&
+        lhs.lightCount == rhs.lightCount &&
+        lhs.castShadow == rhs.castShadow &&
+        lhs.receiveShadow == rhs.receiveShadow &&
+        lhs.shadowCount == rhs.shadowCount &&
+        lhs.defines == rhs.defines &&
+        lhs.constants == rhs.constants
+    }
+}
+
 extension RenderingConfiguration: CustomStringConvertible {
     public var description: String {
         var output = "RenderingConfiguration: \n"
@@ -92,6 +107,8 @@ extension RenderingConfiguration: CustomStringConvertible {
         output += "\t\t receiveShadow: \(receiveShadow)\n"
         output += "\t\t shadowCount: \(shadowCount)\n"
 
+        output += "\t\t vertexDecriptor: \(vertexDescriptor)\n"
+        
         if !defines.isEmpty {
             output += "\t\t defines:\n"
             for (index, define) in defines.enumerated() {

@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E101A96A2C0714CE0055FABA /* Satin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E101A9692C0714BB0055FABA /* Satin.framework */; };
-		E101A96B2C0714CE0055FABA /* Satin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E101A9692C0714BB0055FABA /* Satin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E103E0532B5DDEDF0017588F /* VisionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E103E0522B5DDEDF0017588F /* VisionsView.swift */; };
 		E103E0DC2B5F41570017588F /* Renderer3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F1B32724BAA93300563923 /* Renderer3D.swift */; };
 		E103E0FD2B5F476A0017588F /* Renderer3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E767BE28A6D2A2005D75AB /* Renderer3DView.swift */; };
@@ -129,9 +127,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E101A9682C0714BB0055FABA /* PBXContainerItemProxy */ = {
+		E183102F2C20D7390067E62D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = E101A9642C0714BB0055FABA /* Satin.xcodeproj */;
+			containerPortal = E183102B2C20D7390067E62D /* Satin.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 66D7DD332C06A23000B5A6C8;
 			remoteInfo = Satin;
@@ -145,7 +143,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E101A96B2C0714CE0055FABA /* Satin.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,7 +150,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E101A9642C0714BB0055FABA /* Satin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Satin.xcodeproj; path = ../Satin.xcodeproj; sourceTree = "<group>"; };
 		E103E0522B5DDEDF0017588F /* VisionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionsView.swift; sourceTree = "<group>"; };
 		E105CC36252BDE7F009EE563 /* FXAARenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXAARenderer.swift; sourceTree = "<group>"; };
 		E1077F4C2A096ABD00C2FB89 /* ARPointCloudRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPointCloudRenderer.swift; sourceTree = "<group>"; };
@@ -203,6 +199,7 @@
 		E17D2C1126BBB7DF005A136A /* AudioInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioInput.swift; sourceTree = "<group>"; };
 		E180FD7127E13A85002D6DF5 /* OctasphereRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OctasphereRenderer.swift; sourceTree = "<group>"; };
 		E182809B24C52061000810D1 /* ExtrudedTextRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtrudedTextRenderer.swift; sourceTree = "<group>"; };
+		E183102B2C20D7390067E62D /* Satin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Satin.xcodeproj; path = ../Satin.xcodeproj; sourceTree = "<group>"; };
 		E18A1EDA291EFB1D00A71453 /* PBRStandardMaterialRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBRStandardMaterialRendererView.swift; sourceTree = "<group>"; };
 		E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Immersive3DRenderer.swift; sourceTree = "<group>"; };
 		E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveSuperShapesRenderer.swift; sourceTree = "<group>"; };
@@ -284,7 +281,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E101A96A2C0714CE0055FABA /* Satin.framework in Frameworks */,
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,7 +291,7 @@
 		66E67880243EC73A0070B294 = {
 			isa = PBXGroup;
 			children = (
-				E101A9642C0714BB0055FABA /* Satin.xcodeproj */,
+				E183102B2C20D7390067E62D /* Satin.xcodeproj */,
 				E1E767D828A6D808005D75AB /* Assets */,
 				E1D714D228A6BADA00B517B6 /* Example */,
 				66E6788A243EC73A0070B294 /* Products */,
@@ -328,14 +324,6 @@
 				E19D4C4629F9C28700DF993D /* Shadows */,
 			);
 			path = Renderers;
-			sourceTree = "<group>";
-		};
-		E101A9652C0714BB0055FABA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E101A9692C0714BB0055FABA /* Satin.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		E10CC11827F1061100E04B2B /* Frameworks */ = {
@@ -397,6 +385,14 @@
 				E1077F4E2A096B0900C2FB89 /* ARPointCloudRendererView.swift */,
 			);
 			path = AR;
+			sourceTree = "<group>";
+		};
+		E183102C2C20D7390067E62D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E18310302C20D7390067E62D /* Satin.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		E18E2C0129DA46900045B7DC /* Utilities */ = {
@@ -758,8 +754,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = E101A9652C0714BB0055FABA /* Products */;
-					ProjectRef = E101A9642C0714BB0055FABA /* Satin.xcodeproj */;
+					ProductGroup = E183102C2C20D7390067E62D /* Products */;
+					ProjectRef = E183102B2C20D7390067E62D /* Satin.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -770,11 +766,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E101A9692C0714BB0055FABA /* Satin.framework */ = {
+		E18310302C20D7390067E62D /* Satin.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Satin.framework;
-			remoteRef = E101A9682C0714BB0055FABA /* PBXContainerItemProxy */;
+			remoteRef = E183102F2C20D7390067E62D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

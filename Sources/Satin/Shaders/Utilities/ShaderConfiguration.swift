@@ -92,6 +92,7 @@ extension ShaderConfiguration: CustomStringConvertible {
     public var description: String {
         var output = "\n"
         output += "\t Label: \(label)\n"
+        output += "\t Context: \(context == nil ? "nil" : "valid")\n"
         output += "\t VertexName: \(vertexFunctionName)\n"
         output += "\t FragmentName: \(fragmentFunctionName)\n"
         output += "\t ShadowName: \(shadowFunctionName)\n"
