@@ -17,6 +17,7 @@ struct VisionsView: View {
     enum ExampleType: String, Codable {
         case threed = "Immersive3D"
         case supershapes = "ImmersiveSuperShapes"
+        case post = "ImmersivePost"
     }
     
     @State private var immersiveSpaceIsShown = false
@@ -34,6 +35,12 @@ struct VisionsView: View {
                 example = .supershapes
             }, label: {
                 Text("Super Shapes")
+            })
+
+            Button(action: {
+                example = .post
+            }, label: {
+                Text("Post")
             })
 
             Button(action: {

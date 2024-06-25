@@ -1,4 +1,4 @@
-fragment float4 uvcolorFragment(VertexData in [[stage_in]])
+fragment half4 uvcolorFragment(VertexData in [[stage_in]])
 {
-    return float4(in.texcoord, 0.0, 1.0);
+    return half4(half2(in.texcoord), 0.0h, 1.0h);
 }

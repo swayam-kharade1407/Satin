@@ -119,6 +119,9 @@
 		E1D714D628A6BADA00B517B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D528A6BADA00B517B6 /* ContentView.swift */; };
 		E1D714D828A6BADA00B517B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D714D728A6BADA00B517B6 /* Assets.xcassets */; };
 		E1D714DC28A6BADA00B517B6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D714DB28A6BADA00B517B6 /* Preview Assets.xcassets */; };
+		E1DDD29C2C2B529600012A44 /* Satin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E18310302C20D7390067E62D /* Satin.framework */; };
+		E1DDD29D2C2B529600012A44 /* Satin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E18310302C20D7390067E62D /* Satin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E1DDD29F2C2B531300012A44 /* ImmersivePostRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD29E2C2B531300012A44 /* ImmersivePostRenderer.swift */; };
 		E1E767D928A6D808005D75AB /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = E1E767D828A6D808005D75AB /* Assets */; };
 		E1E767E228A6E84A005D75AB /* TorusKnotGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E192F05D24874CE700C7EE74 /* TorusKnotGenerator.c */; };
 		E1E7681328A736BB005D75AB /* AudioInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17D2C1126BBB7DF005A136A /* AudioInput.swift */; };
@@ -143,6 +146,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E1DDD29D2C2B529600012A44 /* Satin.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -236,6 +240,7 @@
 		E1D714D728A6BADA00B517B6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E1D714D928A6BADA00B517B6 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		E1D714DB28A6BADA00B517B6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E1DDD29E2C2B531300012A44 /* ImmersivePostRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersivePostRenderer.swift; sourceTree = "<group>"; };
 		E1E69D1624A4711E00EDA686 /* DepthMaterialRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthMaterialRenderer.swift; sourceTree = "<group>"; };
 		E1E767BE28A6D2A2005D75AB /* Renderer3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer3DView.swift; sourceTree = "<group>"; };
 		E1E767C128A6D341005D75AB /* Renderer2DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer2DView.swift; sourceTree = "<group>"; };
@@ -281,6 +286,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DDD29C2C2B529600012A44 /* Satin.framework in Frameworks */,
 				E1FDCA172A3692ED00A1870D /* Spectra in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,6 +418,7 @@
 			children = (
 				E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */,
 				E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */,
+				E1DDD29E2C2B531300012A44 /* ImmersivePostRenderer.swift */,
 			);
 			path = Vision;
 			sourceTree = "<group>";
@@ -865,6 +872,7 @@
 				E103E1232B603E760017588F /* LiveCodeRenderer.swift in Sources */,
 				E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */,
 				E103E1112B603DE30017588F /* TextRenderer.swift in Sources */,
+				E1DDD29F2C2B531300012A44 /* ImmersivePostRenderer.swift in Sources */,
 				E103E1302B603ED30017588F /* ExportGeometryRenderer.swift in Sources */,
 				E103E1262B603E7C0017588F /* LiveCodeRendererView.swift in Sources */,
 				E1903C112B6046B4004AB175 /* ARLidarMeshRendererView.swift in Sources */,

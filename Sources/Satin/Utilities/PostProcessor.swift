@@ -62,6 +62,32 @@ open class PostProcessor {
         )
     }
 
+    open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [], renderTarget: MTLTexture) {
+        update()
+        renderer.draw(
+            renderPassDescriptor: renderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: [camera, camera],
+            viewports: viewports,
+            viewMappings: viewMappings,
+            renderTarget: renderTarget
+        )
+    }
+
+    open func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = []) {
+        update()
+        renderer.draw(
+            renderPassDescriptor: renderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: [camera, camera],
+            viewports: viewports,
+            viewMappings: viewMappings
+        )
+    }
+
+
     open func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
     }

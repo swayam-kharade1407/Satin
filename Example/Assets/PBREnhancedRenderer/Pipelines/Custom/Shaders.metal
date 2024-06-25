@@ -28,7 +28,7 @@ vertex CustomVertexData customVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     constant VertexUniforms &vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant CustomUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
+    constant CustomUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
 {
     float3 xyz = 0.0;
 #if defined(INSTANCING)

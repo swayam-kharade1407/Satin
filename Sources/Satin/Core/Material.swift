@@ -110,7 +110,10 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
+    public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer?] = [:]
     public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture?] = [:]
+
+    public private(set) var fragmentBuffers: [FragmentBufferIndex: MTLBuffer?] = [:]
     public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture?] = [:]
 
     public internal(set) var isClone = false
@@ -380,6 +383,20 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         renderEncoderState.depthClipMode = depthClipMode
     }
 
+    open func bindBuffers(renderEncoderState: RenderEncoderState) {
+        for (index, buffer) in vertexBuffers {
+            if let buffer {
+                renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
+            }
+        }
+
+        for (index, buffer) in fragmentBuffers {
+            if let buffer {
+                renderEncoderState.setFragmentBuffer(buffer, offset: 0, index: index)
+            }
+        }
+    }
+
     open func bindTextures(renderEncoderState: RenderEncoderState) {
         for (index, texture) in vertexTextures {
             renderEncoderState.setVertexTexture(texture, index: index)
@@ -393,9 +410,18 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         bindUniforms(renderEncoderState: renderEncoderState, shadow: shadow)
         bindDepthStates(renderEncoderState: renderEncoderState)
+        bindBuffers(renderEncoderState: renderEncoderState)
         bindTextures(renderEncoderState: renderEncoderState)
         bindPipeline(renderEncoderState: renderEncoderState, shadow: shadow)
         onBind?(renderEncoderState.renderEncoder)
+    }
+
+    public func set(_ buffer: MTLBuffer?, index: VertexBufferIndex) {
+        if let buffer = buffer {
+            vertexBuffers[index] = buffer
+        } else {
+            vertexBuffers.removeValue(forKey: index)
+        }
     }
 
     public func set(_ texture: MTLTexture?, index: VertexTextureIndex) {
@@ -403,6 +429,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
             vertexTextures[index] = texture
         } else {
             vertexTextures.removeValue(forKey: index)
+        }
+    }
+
+    public func set(_ buffer: MTLBuffer?, index: FragmentBufferIndex) {
+        if let buffer = buffer {
+            fragmentBuffers[index] = buffer
+        } else {
+            fragmentBuffers.removeValue(forKey: index)
         }
     }
 

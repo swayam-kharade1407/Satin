@@ -12,7 +12,7 @@ import ModelIO
 
 import Satin
 
-class InstancedMeshRenderer: BaseRenderer {
+final class InstancedMeshRenderer: BaseRenderer {
     // MARK: - Satin
 
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)

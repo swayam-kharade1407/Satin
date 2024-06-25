@@ -10,7 +10,7 @@ import Metal
 import MetalKit
 import Satin
 
-class Renderer3D: BaseRenderer {
+final class Renderer3D: BaseRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
 
     var intersectionMesh: Mesh = {

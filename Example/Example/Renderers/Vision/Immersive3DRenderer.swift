@@ -13,7 +13,7 @@ import Metal
 import Satin
 import ARKit
 
-class Immersive3DRenderer: MetalLayerRenderer {
+final class Immersive3DRenderer: MetalLayerRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: NormalColorMaterial(true))
     let floor = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: NormalColorMaterial(true))
 

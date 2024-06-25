@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class Renderer2D: BaseRenderer {
+final class Renderer2D: BaseRenderer {
     let mesh = Mesh(label: "Quad", geometry: PlaneGeometry(size: 700), material: UVColorMaterial())
 
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)

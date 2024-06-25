@@ -13,7 +13,7 @@ import Metal
 import CompositorServices
 import Combine
 
-class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
+final class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
     var wireframe = false {
         didSet {
             mesh.triangleFillMode = wireframe ? .lines : .fill

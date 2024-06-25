@@ -19,6 +19,7 @@ struct ExampleApp: App {
         #if os(visionOS)
         SatinImmersiveSpace(renderer: Immersive3DRenderer())
         SatinImmersiveSpace(renderer: ImmersiveSuperShapesRenderer())
+        SatinImmersiveSpace(renderer: ImmersivePostRenderer())
         #endif
     }
 }

@@ -201,6 +201,35 @@ open class Renderer {
         }
     }
 
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [], renderTarget: MTLTexture)
+    {
+        if context.sampleCount > 1 {
+            let resolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
+            renderPassDescriptor.colorAttachments[0].resolveTexture = renderTarget
+            draw(
+                renderPassDescriptor: renderPassDescriptor,
+                commandBuffer: commandBuffer,
+                scene: scene,
+                cameras: cameras,
+                viewports: viewports,
+                viewMappings: viewMappings
+            )
+            renderPassDescriptor.colorAttachments[0].resolveTexture = resolveTexture
+        } else {
+            let renderTexture = renderPassDescriptor.colorAttachments[0].texture
+            renderPassDescriptor.colorAttachments[0].texture = renderTarget
+            draw(
+                renderPassDescriptor: renderPassDescriptor,
+                commandBuffer: commandBuffer,
+                scene: scene,
+                cameras: cameras,
+                viewports: viewports,
+                viewMappings: viewMappings
+            )
+            renderPassDescriptor.colorAttachments[0].texture = renderTexture
+        }
+    }
+
     // https://developer.apple.com/documentation/metal/render_passes/improving_rendering_performance_with_vertex_amplification?language=objc
     // https://developer.apple.com/documentation/metal/render_passes/rendering_to_multiple_viewports_in_a_draw_command?language=objc
 

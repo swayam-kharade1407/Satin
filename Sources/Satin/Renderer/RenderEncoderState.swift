@@ -137,6 +137,7 @@ public final class RenderEncoderState {
     private var vertexBuffers = [VertexBufferIndex: MTLBuffer]()
     private var vertexTextures = [VertexTextureIndex: MTLTexture?]()
 
+    private var fragmentBuffers = [FragmentBufferIndex: MTLBuffer]()
     private var fragmentPBRTextures = [PBRTextureType: MTLTexture?]()
     private var fragmentTextures = [FragmentTextureIndex: MTLTexture?]()
 
@@ -147,6 +148,16 @@ public final class RenderEncoderState {
         else {
             renderEncoder.setVertexBuffer(buffer, offset: offset, index: index.rawValue)
             vertexBuffers[index] = buffer
+        }
+    }
+
+    public func setFragmentBuffer(_ buffer: MTLBuffer, offset: Int, index: FragmentBufferIndex) {
+        if let existingBuffer = fragmentBuffers[index], existingBuffer === buffer {
+            return
+        }
+        else {
+            renderEncoder.setFragmentBuffer(buffer, offset: offset, index: index.rawValue)
+            fragmentBuffers[index] = buffer
         }
     }
 

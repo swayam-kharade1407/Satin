@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class CameraControllerRenderer: BaseRenderer {
+final class CameraControllerRenderer: BaseRenderer {
     var gridInterval: Float = 1.0
 
     lazy var grid: Object = {
