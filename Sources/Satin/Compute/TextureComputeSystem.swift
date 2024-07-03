@@ -20,7 +20,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     public var textureDescriptors: [MTLTextureDescriptor] {
         didSet {
-            reset()
+            resetTextures()
         }
     }
 
@@ -302,8 +302,8 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override open func reset() {
-        super.reset()
+    open func resetTextures() {
+        reset()
         _setupDescriptors = true
         _setupTextures = true
         _setupSize = true

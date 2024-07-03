@@ -236,6 +236,7 @@
 		E101A95B2C070EA00055FABA /* SatinImmersiveSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */; };
 		E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
+		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -469,6 +470,7 @@
 		66D7DEF72C06A24B00B5A6C8 /* Types.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Types.mm; sourceTree = "<group>"; };
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
+		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -547,6 +549,7 @@
 				66D7DD542C06A24B00B5A6C8 /* CameraController.swift */,
 				66D7DD552C06A24B00B5A6C8 /* OrthographicCameraController.swift */,
 				66D7DD562C06A24B00B5A6C8 /* PerspectiveCameraController.swift */,
+				E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */,
 			);
 			path = CameraControllers;
 			sourceTree = "<group>";
@@ -1278,6 +1281,7 @@
 				E101A9172C070E8E0055FABA /* IBLScene.swift in Sources */,
 				E101A9182C070E8E0055FABA /* InstancedMesh.swift in Sources */,
 				E101A9192C070E8E0055FABA /* Submesh.swift in Sources */,
+				E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */,
 				E101A91A2C070E8E0055FABA /* AnyParameter.swift in Sources */,
 				E101A91B2C070E8E0055FABA /* BoolParameter.swift in Sources */,
 				E101A91C2C070E8E0055FABA /* DoubleParameter.swift in Sources */,

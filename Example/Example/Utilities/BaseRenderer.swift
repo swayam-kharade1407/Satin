@@ -57,7 +57,10 @@ class BaseRenderer: MetalViewRenderer {
     }
 
     override func keyDown(with event: NSEvent) -> Bool {
-        if event.characters == "e" {
+        if event.characters == "c" {
+            if event.modifierFlags.contains(.command) {
+                UserDefaults.standard.setValue(nil, forKey: "Editor")
+            }
             openEditor()
             return true
         }
