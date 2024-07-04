@@ -7,6 +7,11 @@
 
 import Foundation
 
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
+
+
 extension Float {
     var toDegrees: Float {
         radToDeg(self)
