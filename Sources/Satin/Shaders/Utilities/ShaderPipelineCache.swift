@@ -8,37 +8,76 @@
 import Foundation
 import Metal
 
-public actor ShaderPipelineCache {
+public final actor ShaderPipelineCache {
     static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
     static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
     static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
 
+    private static let pipelineCacheQueue = DispatchQueue(label: "ShaderPipelineCacheQueue", attributes: .concurrent)
+    private static let shadowPipelineCacheQueue = DispatchQueue(label: "ShaderShadowPipelineCacheQueue", attributes: .concurrent)
+    
+    private static let pipelineReflectionCacheQueue = DispatchQueue(label: "ShaderPipelineReflectionCacheQueue", attributes: .concurrent)
+    private static let pipelineParametersCacheQueue = DispatchQueue(label: "ShaderPipelineParametersCacheQueue", attributes: .concurrent)
+
     public static func invalidate(configuration: ShaderConfiguration) {
-        invalidatePipeline(configuration: configuration)
-        invalidatePipelineReflection(configuration: configuration)
-        invalidatePipelineParameters(configuration: configuration)
-        invalidateShadowPipeline(configuration: configuration)
+        pipelineCacheQueue.sync(flags: .barrier) {
+            invalidatePipeline(configuration: configuration)
+        }
+
+        shadowPipelineCacheQueue.sync(flags: .barrier) {
+            invalidateShadowPipeline(configuration: configuration)
+        }
+
+        pipelineReflectionCacheQueue.sync(flags: .barrier) {
+            invalidatePipelineReflection(configuration: configuration)
+        }
+
+        pipelineParametersCacheQueue.sync(flags: .barrier) {
+            invalidatePipelineParameters(configuration: configuration)
+        }
     }
 
     public static func invalidatePipeline(configuration: ShaderConfiguration) {
-        pipelineCache.removeValue(forKey: configuration)
-    }
-
-    public static func invalidatePipelineReflection(configuration: ShaderConfiguration) {
-        pipelineReflectionCache.removeValue(forKey: configuration)
-    }
-
-    public static func invalidatePipelineParameters(configuration: ShaderConfiguration) {
-        pipelineParametersCache.removeValue(forKey: configuration)
+        _ = pipelineCacheQueue.sync(flags: .barrier) {
+            pipelineCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidateShadowPipeline(configuration: ShaderConfiguration) {
-        shadowPipelineCache.removeValue(forKey: configuration)
+        _ = shadowPipelineCacheQueue.sync(flags: .barrier) {
+            shadowPipelineCache.removeValue(forKey: configuration)
+        }
+    }
+
+    public static func invalidatePipelineReflection(configuration: ShaderConfiguration) {
+        _ = pipelineReflectionCacheQueue.sync(flags: .barrier) {
+            pipelineReflectionCache.removeValue(forKey: configuration)
+        }
+    }
+
+    public static func invalidatePipelineParameters(configuration: ShaderConfiguration) {
+        _ = pipelineParametersCacheQueue.sync(flags: .barrier) {
+            pipelineParametersCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func getPipeline(configuration: ShaderConfiguration) throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
-        if let pipeline = pipelineCache[configuration], let reflection = pipelineReflectionCache[configuration] { return (pipeline, reflection) }
+
+        var cachedPipeline: MTLRenderPipelineState?
+        var cachedReflection: MTLRenderPipelineReflection?
+
+        pipelineCacheQueue.sync {
+            cachedPipeline = pipelineCache[configuration]
+        }
+
+        pipelineReflectionCacheQueue.sync {
+            cachedReflection = pipelineReflectionCache[configuration]
+        }
+
+        if let cachedPipeline, let cachedReflection {
+            return (cachedPipeline, cachedReflection)
+        }
 
 //        print("Creating Shader Pipeline: \(configuration)")
 
@@ -62,13 +101,29 @@ public actor ShaderPipelineCache {
 
         var pipelineReflection: MTLRenderPipelineReflection?
         let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
-        pipelineCache[configuration] = pipeline
-        pipelineReflectionCache[configuration] = pipelineReflection
+
+        pipelineCacheQueue.sync(flags: .barrier) {
+            pipelineCache[configuration] = pipeline
+        }
+
+        pipelineReflectionCacheQueue.sync(flags: .barrier) {
+            pipelineReflectionCache[configuration] = pipelineReflection
+        }
+
         return (pipeline, pipelineReflection)
     }
 
     public static func getShadowPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
-        if let shadowPipeline = shadowPipelineCache[configuration] { return shadowPipeline }
+
+        var cachedShadowPipeline: MTLRenderPipelineState?
+
+        pipelineCacheQueue.sync {
+            cachedShadowPipeline = shadowPipelineCache[configuration]
+        }
+
+        if let cachedShadowPipeline {
+            return cachedShadowPipeline
+        }
 
         guard let context = configuration.context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device)
@@ -87,12 +142,22 @@ public actor ShaderPipelineCache {
         descriptor.depthAttachmentPixelFormat = context.depthPixelFormat
 
         let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor)
-        shadowPipelineCache[configuration] = pipeline
+
+        shadowPipelineCacheQueue.sync(flags: .barrier) {
+            shadowPipelineCache[configuration] = pipeline
+        }
+
         return pipeline
     }
 
     public static func getPipelineReflection(configuration: ShaderConfiguration) -> MTLRenderPipelineReflection? {
-        pipelineReflectionCache[configuration]
+        var cachedReflection: MTLRenderPipelineReflection?
+
+        pipelineReflectionCacheQueue.sync {
+            cachedReflection = pipelineReflectionCache[configuration]
+        }
+
+        return cachedReflection
     }
 
     public static func getPipelineParameters(configuration: ShaderConfiguration) throws -> ParameterGroup? {
@@ -103,7 +168,11 @@ public actor ShaderPipelineCache {
            let parameters = parseParameters(source: shaderSource, key: configuration.label + "Uniforms")
         {
             parameters.label = configuration.label.titleCase + " Uniforms"
-            pipelineParametersCache[configuration] = parameters
+            
+            pipelineParametersCacheQueue.sync(flags: .barrier) {
+                pipelineParametersCache[configuration] = parameters
+            }
+
             return parameters
         }
         else if let reflection = pipelineReflectionCache[configuration] {
@@ -114,7 +183,11 @@ public actor ShaderPipelineCache {
                 {
                     let parameters = parseParameters(bufferStruct: bufferStruct)
                     parameters.label = configuration.label.titleCase + " Uniforms"
-                    pipelineParametersCache[configuration] = parameters
+                    
+                    pipelineParametersCacheQueue.sync(flags: .barrier) {
+                        pipelineParametersCache[configuration] = parameters
+                    }
+                    
                     return parameters
                 }
             }

@@ -240,11 +240,27 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Satin Examples")
+            #if os(macOS)
+                .toolbar {
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: toggleSidebar, label: { // 1
+                            Image(systemName: "sidebar.leading")
+                        })
+                    }
+                }
+            #endif
 
 //            OrbitCameraControllerRendererView()
-            JumpFloodOutlineRendererView()
+//            JumpFloodOutlineRendererView()
+            Renderer3DView()
         }
     }
+
+    #if os(macOS)
+        private func toggleSidebar() {
+            NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+        }
+    #endif
 }
 
 #Preview {

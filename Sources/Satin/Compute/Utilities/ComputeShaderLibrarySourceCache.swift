@@ -7,15 +7,27 @@
 
 import Foundation
 
-public actor ComputeShaderLibrarySourceCache {
+public final actor ComputeShaderLibrarySourceCache {
     static var cache: [ComputeShaderLibraryConfiguration: String] = [:]
 
+    private static let queue = DispatchQueue(label: "ComputeShaderLibrarySourceCacheQueue", attributes: .concurrent)
+
     static func invalidateLibrarySource(configuration: ComputeShaderLibraryConfiguration) {
-        cache.removeValue(forKey: configuration)
+        _ = queue.sync(flags: .barrier) {
+            cache.removeValue(forKey: configuration)
+        }
     }
 
     static func getLibrarySource(configuration: ComputeShaderLibraryConfiguration) throws -> String? {
-        if let source = ComputeShaderLibrarySourceCache.cache[configuration] { return source }
+        var cachedSource: String?
+
+        queue.sync {
+            cachedSource = ComputeShaderLibrarySourceCache.cache[configuration]
+        }
+
+        if let cachedSource {
+            return cachedSource
+        }
 
 //        print("Creating Compute Shader Library Source: \(configuration.label)")
 
@@ -36,7 +48,9 @@ public actor ComputeShaderLibrarySourceCache {
 
         source += shaderSource
 
-        cache[configuration] = source
+        queue.sync(flags: .barrier) {
+            cache[configuration] = source
+        }
 
         return source
     }

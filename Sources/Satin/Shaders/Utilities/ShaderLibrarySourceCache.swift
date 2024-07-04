@@ -7,21 +7,33 @@
 
 import Foundation
 
-public actor ShaderLibrarySourceCache {
+public final actor ShaderLibrarySourceCache {
     static var cache: [ShaderLibraryConfiguration: String] = [:]
 
+    private static let queue = DispatchQueue(label: "ShaderLibrarySourceCacheQueue", attributes: .concurrent)
+
     static func invalidateLibrarySource(configuration: ShaderLibraryConfiguration) {
-        cache.removeValue(forKey: configuration)
+        _ = queue.sync(flags: .barrier) {
+            cache.removeValue(forKey: configuration)
+        }
     }
 
     static func getLibrarySource(configuration: ShaderLibraryConfiguration) throws -> String? {
-        if let source = cache[configuration] { return source }
+        var cachedSource: String?
+
+        queue.sync {
+            cachedSource = cache[configuration]
+        }
+
+        if let cachedSource {
+            return cachedSource
+        }
 
 //        print("Creating Shader Library Source: \(configuration.label)")
 //        defer { print(source) }
         
         guard let pipelineURL = configuration.pipelineURL,
-              var source = try RenderIncludeSource.get(),
+              var source = RenderIncludeSource.get(),
               let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL)
         else { return nil }
 
@@ -111,7 +123,9 @@ public actor ShaderLibrarySourceCache {
             lighting: configuration.lighting
         )
 
-        ShaderLibrarySourceCache.cache[configuration] = source
+        queue.sync(flags: .barrier) {
+            cache[configuration] = source
+        }
 
         return source
     }

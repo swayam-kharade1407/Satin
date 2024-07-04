@@ -7,347 +7,647 @@
 
 import Foundation
 
-public actor ShaderSourceCache {
+public final actor ShaderSourceCache {
     static var sourceCache: [URL: String] = [:]
     static var compilerCache: [URL: MetalFileCompiler] = [:]
+
+    private static let sourceQueue = DispatchQueue(label: "ShaderSourceCacheSourceQueue", attributes: .concurrent)
+    private static let compilerQueue = DispatchQueue(label: "ShaderSourceCacheCompilerQueue", attributes: .concurrent)
 
     public static func removeSource(url: URL) {
         sourceCache.removeValue(forKey: url)
     }
 
     public static func getSource(url: URL) throws -> String? {
-        if let source = sourceCache[url] { return source }
+        var cachedSource: String?
 
-        let source = try getCompiler(url: url).parse(url)
-        sourceCache[url] = source
-        return source
+        sourceQueue.sync { // Read
+            cachedSource = sourceCache[url]
+        }
+
+        if let cachedSource {
+            return cachedSource
+        }
+
+        try sourceQueue.sync(flags: .barrier) {
+            cachedSource = try getCompiler(url: url).parse(url)
+            sourceCache[url] = cachedSource
+        }
+
+        return cachedSource
     }
 
     public static func getCompiler(url: URL) -> MetalFileCompiler {
-        if let compiler = compilerCache[url] { return compiler }
+        var cachedCompiler: MetalFileCompiler?
+
+        compilerQueue.sync { // Read
+            cachedCompiler = compilerCache[url]
+        }
+
+        if let cachedCompiler {
+            return cachedCompiler
+        }
 
         let compiler = MetalFileCompiler(watch: false)
-        compilerCache[url] = compiler
+
+        compilerQueue.sync(flags: .barrier) {
+            compilerCache[url] = compiler
+        }
+
         return compiler
     }
 }
 
-public actor PassThroughVertexPipelineSource {
+public final actor PassThroughVertexPipelineSource {
     static let shared = PassThroughVertexPipelineSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesCommonURL("VertexShader.metal")
+    private static let queue = DispatchQueue(label: "PassThroughVertexPipelineSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesCommonURL("VertexShader.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error.localizedDescription)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor PassThroughShadowPipelineSource {
+public final actor PassThroughShadowPipelineSource {
     static let shared = PassThroughShadowPipelineSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesCommonURL("ShadowShader.metal")
+    private static let queue = DispatchQueue(label: "PassThroughShadowPipelineSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesCommonURL("ShadowShader.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error.localizedDescription)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor ShadowFunctionSource {
+public final actor ShadowFunctionSource {
     static let shared = ShadowFunctionSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesLibraryURL("Shadow.metal")
+    private static let queue = DispatchQueue(label: "ShadowFunctionSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesLibraryURL("Shadow.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error.localizedDescription)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor ConstantsSource {
+public final actor ConstantsSource {
     static let shared = ConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("Constants.metal")
+    private static let queue = DispatchQueue(label: "ConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("Constants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor ComputeConstantsSource {
+public final actor ComputeConstantsSource {
     static let shared = ComputeConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("ComputeConstants.metal")
+    private static let queue = DispatchQueue(label: "ComputeConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("ComputeConstants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor MeshConstantsSource {
+public final actor MeshConstantsSource {
     static let shared = MeshConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("MeshConstants.metal")
+    private static let queue = DispatchQueue(label: "MeshConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("MeshConstants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor VertexConstantsSource {
+public final actor VertexConstantsSource {
     static let shared = VertexConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("VertexConstants.metal")
+    private static let queue = DispatchQueue(label: "VertexConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("VertexConstants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor FragmentConstantsSource {
+public final actor FragmentConstantsSource {
     static let shared = FragmentConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("FragmentConstants.metal")
+    private static let queue = DispatchQueue(label: "FragmentConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("FragmentConstants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor PBRConstantsSource {
+public final actor PBRConstantsSource {
     static let shared = PBRConstantsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("PBRConstants.metal")
+    private static let queue = DispatchQueue(label: "PBRConstantsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("PBRConstants.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor RenderIncludeSource {
+public final actor RenderIncludeSource {
     static let shared = RenderIncludeSource()
     private static var sharedSource: String?
 
-    public static func get() throws -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("RenderIncludes.metal")
+    private static let queue = DispatchQueue(label: "RenderIncludeSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("RenderIncludes.metal") {
-            sharedSource = try MetalFileCompiler(watch: false).parse(url)
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor ComputeIncludeSource {
+public final actor ComputeIncludeSource {
     static let shared = ComputeIncludeSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("ComputeIncludes.metal")
+    private static let queue = DispatchQueue(label: "ComputeIncludeSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("ComputeIncludes.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor VertexSource {
+public final actor VertexSource {
     static let shared = VertexSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("Vertex.metal")
+    private static let queue = DispatchQueue(label: "VertexSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("Vertex.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor VertexDataSource {
+public final actor VertexDataSource {
     static let shared = VertexDataSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("VertexData.metal")
+    private static let queue = DispatchQueue(label: "VertexDataSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("VertexData.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor VertexUniformsSource {
+public final actor VertexUniformsSource {
     static let shared = VertexUniformsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("VertexUniforms.metal")
+    private static let queue = DispatchQueue(label: "VertexUniformsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("VertexUniforms.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor InstanceMatrixUniformsSource {
+public final actor InstanceMatrixUniformsSource {
     static let shared = InstanceMatrixUniformsSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("InstanceMatrixUniforms.metal")
+    private static let queue = DispatchQueue(label: "InstanceMatrixUniformsSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("InstanceMatrixUniforms.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor LightingSource {
+public final actor LightingSource {
     static let shared = LightingSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("LightData.metal")
+    private static let queue = DispatchQueue(label: "LightingSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("LightData.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor ShadowDataSource {
+public final actor ShadowDataSource {
     static let shared = ShadowDataSource()
     private static var sharedSource: String?
 
-    public static func get() -> String? {
-        if let sharedSource { return sharedSource }
+    private static let url = getPipelinesSatinURL("ShadowData.metal")
+    private static let queue = DispatchQueue(label: "ShadowDataSourceQueue", attributes: .concurrent)
 
-        if let url = getPipelinesSatinURL("ShadowData.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error)
-            }
+    public static func get() -> String? {
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }
 
-public actor InstancingArgsSource {
+public final actor InstancingArgsSource {
     static let shared = InstancingArgsSource()
     private static var sharedSource: String?
 
+    private static let url = getPipelinesSatinURL("InstancingArgs.metal")
+    private static let queue = DispatchQueue(label: "InstancingArgsSourceQueue", attributes: .concurrent)
+
     public static func get() -> String? {
-        if let sharedSource { return sharedSource }
-        
-        if let url = getPipelinesSatinURL("InstancingArgs.metal") {
-            do {
-                sharedSource = try MetalFileCompiler(watch: false).parse(url)
-            } catch {
-                print(error.localizedDescription)
-            }
+        var source: String?
+
+        queue.sync {
+            source = self.sharedSource
         }
-        return sharedSource
+
+        if let source {
+            return source
+        }
+
+        guard let url else { return nil }
+
+        do {
+            let source = try MetalFileCompiler(watch: false).parse(url)
+            queue.sync(flags: .barrier) {
+                self.sharedSource = source
+            }
+            return source
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
 }

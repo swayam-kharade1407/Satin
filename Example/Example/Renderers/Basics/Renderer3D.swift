@@ -54,6 +54,34 @@ final class Renderer3D: BaseRenderer {
             .pingPong()
             .loop()
             .start()
+
+
+//        let configuration = ShaderConfiguration(
+//            label: "BasicColor",
+//            vertexFunctionName: "basicColorVertex",
+//            fragmentFunctionName: "basicColorFragment",
+//            shadowFunctionName: "basicColorShadow")
+//
+//        let url = getPipelinesURL("Materials/UVColor/Shaders.metal")!
+////        print(url.path)
+//        
+//        for i in 0...100 {
+//            DispatchQueue.global().async { [unowned self] in
+////                do {
+////                    _ = PassThroughVertexPipelineSource.get()
+////                    let result = try ShaderSourceCache.getSource(url: url)
+////                    print(i, result)
+////                }
+////                catch {
+////                    print(error.localizedDescription)
+////                }
+//
+//                    print(i)
+//                    let material = PhysicalMaterial()
+//                    material.context = self.defaultContext
+//            }
+//        }
+
     }
 
     deinit {
@@ -64,7 +92,6 @@ final class Renderer3D: BaseRenderer {
     override func update() {
         cameraController.update()
         camera.update()
-
         mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
         scene.update()
     }

@@ -8,40 +8,68 @@
 import Foundation
 import Metal
 
-public actor ComputeShaderLibraryCache {
+public final actor ComputeShaderLibraryCache {
     static var cache: [ComputeShaderLibraryConfiguration: MTLLibrary] = [:]
     static var defaultLibrary: MTLLibrary?
+
+    private static let libraryQueue = DispatchQueue(label: "ShaderLibraryCacheQueue", attributes: .concurrent)
+    private static let defaultLibraryQueue = DispatchQueue(label: "ComputeShaderDefaultLibraryQueue", attributes: .concurrent)
 
     public static func invalidateLibrary(configuration: ComputeShaderLibraryConfiguration) {
         cache.removeValue(forKey: configuration)
     }
 
     public static func getDefaultLibrary(device: MTLDevice) -> MTLLibrary? {
-        guard defaultLibrary == nil else { return defaultLibrary! }
-        defaultLibrary = device.makeDefaultLibrary()
-        return defaultLibrary
+        var library: MTLLibrary?
+
+        defaultLibraryQueue.sync {
+            library = defaultLibrary
+        }
+
+        if let library {
+            return library
+        }
+
+        library = device.makeDefaultLibrary()
+
+        defaultLibraryQueue.sync(flags: .barrier) {
+            defaultLibrary = library
+        }
+
+        return library
     }
 
     public static func getLibrary(configuration: ComputeShaderLibraryConfiguration, device: MTLDevice) throws -> MTLLibrary? {
-        if let library = cache[configuration] { return library }
+        var library: MTLLibrary?
+
+        libraryQueue.sync {
+            library = self.cache[configuration]
+        }
+
+        if let library {
+            return library
+        }
 
 //        print("Creating Compute Shader Library: \(configuration.label)")
 
         if let source = try ComputeShaderLibrarySourceCache.getLibrarySource(configuration: configuration) {
-            let library = try device.makeLibrary(source: source, options: nil)
-            cache[configuration] = library
-            return library
+            library = try device.makeLibrary(source: source, options: nil)
         }
         else if let url = configuration.libraryURL {
-            let library = try device.makeLibrary(URL: url)
-            cache[configuration] = library
-            return library
+            library = try device.makeLibrary(URL: url)
         }
         else if let defaultLibrary = getDefaultLibrary(device: device) {
-            cache[configuration] = defaultLibrary
-            return defaultLibrary
+            library = defaultLibrary
         }
 
-        return nil
+        if let library {
+            libraryQueue.sync(flags: .barrier) {
+                cache[configuration] = library
+            }
+            return library
+        }
+        else {
+            return nil
+        }
     }
 }

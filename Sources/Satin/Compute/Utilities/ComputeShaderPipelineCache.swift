@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public actor ComputeShaderPipelineCache {
+public final actor ComputeShaderPipelineCache {
     static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
     static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
@@ -17,6 +17,15 @@ public actor ComputeShaderPipelineCache {
 
     static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
     static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
+
+    private static let resetPipelineCacheQueue = DispatchQueue(label: "ComputeShaderResetPipelineCacheQueue", attributes: .concurrent)
+    private static let resetPipelineReflectionCacheQueue = DispatchQueue(label: "ComputeShaderResetReflectionCacheQueue", attributes: .concurrent)
+
+    private static let updatePipelineCacheQueue = DispatchQueue(label: "ComputeShaderUpdatePipelineCacheQueue", attributes: .concurrent)
+    private static let updatePipelineReflectionCacheQueue = DispatchQueue(label: "ComputeShaderUpdateReflectionCacheQueue", attributes: .concurrent)
+
+    private static let pipelineParametersCacheQueue = DispatchQueue(label: "ComputeShaderPipelineParametersCacheQueue", attributes: .concurrent)
+    private static let pipelineBuffersCacheQueue = DispatchQueue(label: "ComputeShaderPipelineBuffersCacheQueue", attributes: .concurrent)
 
     public static func invalidate(configuration: ComputeShaderConfiguration) {
         invalidateResetPipeline(configuration: configuration)
@@ -30,59 +39,73 @@ public actor ComputeShaderPipelineCache {
     }
 
     public static func invalidateResetPipeline(configuration: ComputeShaderConfiguration) {
-        resetPipelineCache.removeValue(forKey: configuration)
+        _ = resetPipelineCacheQueue.sync(flags: .barrier) {
+            resetPipelineCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidateResetPipelineReflection(configuration: ComputeShaderConfiguration) {
-        resetPipelineReflectionCache.removeValue(forKey: configuration)
+        _ = resetPipelineReflectionCacheQueue.sync(flags: .barrier) {
+            resetPipelineReflectionCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidateUpdatePipeline(configuration: ComputeShaderConfiguration) {
-        updatePipelineCache.removeValue(forKey: configuration)
+        _ = updatePipelineCacheQueue.sync(flags: .barrier) {
+            updatePipelineCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidateUpdatePipelineReflection(configuration: ComputeShaderConfiguration) {
-        updatePipelineReflectionCache.removeValue(forKey: configuration)
+        _ = updatePipelineReflectionCacheQueue.sync(flags: .barrier) {
+            updatePipelineReflectionCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidatePipelineParameters(configuration: ComputeShaderConfiguration) {
-        pipelineParametersCache.removeValue(forKey: configuration)
+        _ = pipelineParametersCacheQueue.sync(flags: .barrier) {
+            pipelineParametersCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func invalidatePipelineBuffers(configuration: ComputeShaderConfiguration) {
-        pipelineBuffersCache.removeValue(forKey: configuration)
+        _ = pipelineBuffersCacheQueue.sync(flags: .barrier) {
+            pipelineBuffersCache.removeValue(forKey: configuration)
+        }
     }
 
     public static func getResetPipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
-        if let pipeline = resetPipelineCache[configuration] { return pipeline }
-        else {
-            return try getPipeline(
-                functionName: configuration.resetFunctionName,
-                configuration: configuration,
-                pipelineCache: &resetPipelineCache,
-                pipelineReflectionCache: &resetPipelineReflectionCache
-            )
-        }
+        return try getResetPipeline(
+            functionName: configuration.resetFunctionName,
+            configuration: configuration
+        )
     }
 
     public static func getUpdatePipeline(configuration: ComputeShaderConfiguration) throws -> MTLComputePipelineState? {
-        if let pipeline = updatePipelineCache[configuration] { return pipeline }
-        else {
-            return try getPipeline(
-                functionName: configuration.updateFunctionName,
-                configuration: configuration,
-                pipelineCache: &updatePipelineCache,
-                pipelineReflectionCache: &updatePipelineReflectionCache
-            )
-        }
+        try getUpdatePipeline(
+            functionName: configuration.updateFunctionName,
+            configuration: configuration
+        )
     }
 
     public static func getResetPipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
-        resetPipelineReflectionCache[configuration]
+        var reflection: MTLComputePipelineReflection?
+
+        resetPipelineReflectionCacheQueue.sync {
+            reflection = resetPipelineReflectionCache[configuration]
+        }
+
+        return reflection
     }
 
     public static func getUpdatePipelineReflection(configuration: ComputeShaderConfiguration) -> MTLComputePipelineReflection? {
-        updatePipelineReflectionCache[configuration]
+        var reflection: MTLComputePipelineReflection?
+
+        updatePipelineReflectionCacheQueue.sync {
+            reflection = updatePipelineReflectionCache[configuration]
+        }
+
+        return reflection
     }
 
     public static func getPipelineParameters(configuration: ComputeShaderConfiguration) throws -> ParameterGroup? {
@@ -96,7 +119,9 @@ public actor ComputeShaderPipelineCache {
                 {
                     let parameters = parseParameters(bufferStruct: bufferStruct)
                     parameters.label = configuration.label.titleCase + " Uniforms"
-                    pipelineParametersCache[configuration] = parameters
+                    pipelineParametersCacheQueue.sync(flags: .barrier) {
+                        pipelineParametersCache[configuration] = parameters
+                    }
                     return parameters
                 }
             }
@@ -106,7 +131,9 @@ public actor ComputeShaderPipelineCache {
                 let parameters = parseParameters(source: shaderSource, key: configuration.label + "Uniforms")
         {
             parameters.label = configuration.label.titleCase + " Uniforms"
-            pipelineParametersCache[configuration] = parameters
+            pipelineParametersCacheQueue.sync(flags: .barrier) {
+                pipelineParametersCache[configuration] = parameters
+            }
             return parameters
         }
 
@@ -130,7 +157,10 @@ public actor ComputeShaderPipelineCache {
                 }
             }
 
-            pipelineBuffersCache[configuration] = parameters
+            pipelineBuffersCacheQueue.sync(flags: .barrier) {
+                pipelineBuffersCache[configuration] = parameters
+            }
+
             return parameters
         }
         else if let pipelineURL = configuration.pipelineURL,
@@ -138,20 +168,28 @@ public actor ComputeShaderPipelineCache {
                 let buffer = parseStruct(source: shaderSource, key: configuration.label.titleCase)
         {
             buffer.label = configuration.label.titleCase
-            pipelineBuffersCache[configuration] = [buffer]
+            pipelineBuffersCacheQueue.sync(flags: .barrier) {
+                pipelineBuffersCache[configuration] = [buffer]
+            }
             return [buffer]
         }
 
         return nil
     }
 
-    private static func getPipeline(
+    private static func getUpdatePipeline(
         functionName: String,
-        configuration: ComputeShaderConfiguration,
-        pipelineCache: inout [ComputeShaderConfiguration: MTLComputePipelineState],
-        pipelineReflectionCache: inout [ComputeShaderConfiguration: MTLComputePipelineReflection]
+        configuration: ComputeShaderConfiguration
     ) throws -> MTLComputePipelineState? {
-        if let pipeline = pipelineCache[configuration] { return pipeline }
+        var pipeline: MTLComputePipelineState?
+
+        updatePipelineCacheQueue.sync {
+            pipeline = updatePipelineCache[configuration]
+        }
+
+        if let pipeline {
+            return pipeline
+        }
 
 //        print("Creating Compute Shader Pipeline: \(configuration.label): \(functionName)")
 
@@ -172,14 +210,87 @@ public actor ComputeShaderPipelineCache {
         if configuration.libraryURL != nil {
             var pipelineReflection: MTLComputePipelineReflection?
             let pipeline = try device.makeComputePipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
-            pipelineCache[configuration] = pipeline
-            pipelineReflectionCache[configuration] = pipelineReflection
+
+            updatePipelineCacheQueue.sync(flags: .barrier) {
+                updatePipelineCache[configuration] = pipeline
+            }
+
+            updatePipelineReflectionCacheQueue.sync(flags: .barrier) {
+                updatePipelineReflectionCache[configuration] = pipelineReflection
+            }
+
             return pipeline
         }
         else {
             let (pipeline, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: [])
-            pipelineCache[configuration] = pipeline
-            pipelineReflectionCache[configuration] = reflection
+
+            updatePipelineCacheQueue.sync(flags: .barrier) {
+                updatePipelineCache[configuration] = pipeline
+            }
+
+            updatePipelineReflectionCacheQueue.sync(flags: .barrier) {
+                updatePipelineReflectionCache[configuration] = reflection
+            }
+
+            return pipeline
+        }
+    }
+
+    private static func getResetPipeline(
+        functionName: String,
+        configuration: ComputeShaderConfiguration
+    ) throws -> MTLComputePipelineState? {
+        var pipeline: MTLComputePipelineState?
+
+        resetPipelineCacheQueue.sync {
+            pipeline = resetPipelineCache[configuration]
+        }
+
+        if let pipeline {
+            return pipeline
+        }
+
+        //        print("Creating Compute Shader Pipeline: \(configuration.label): \(functionName)")
+
+        guard let device = configuration.device,
+              let library = try ComputeShaderLibraryCache.getLibrary(
+                  configuration: configuration.getLibraryConfiguration(),
+                  device: device
+              )
+        else { return nil }
+
+        guard let computeFunction = library.makeFunction(name: functionName) else { return nil }
+
+        let descriptor = MTLComputePipelineDescriptor()
+        descriptor.label = "\(configuration.label) \(functionName)"
+        descriptor.computeFunction = computeFunction
+        descriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = configuration.compute.threadGroupSizeIsMultipleOfThreadExecutionWidth
+
+        if configuration.libraryURL != nil {
+            var pipelineReflection: MTLComputePipelineReflection?
+            let pipeline = try device.makeComputePipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
+
+            resetPipelineCacheQueue.sync(flags: .barrier) {
+                resetPipelineCache[configuration] = pipeline
+            }
+
+            resetPipelineReflectionCacheQueue.sync(flags: .barrier) {
+                resetPipelineReflectionCache[configuration] = pipelineReflection
+            }
+
+            return pipeline
+        }
+        else {
+            let (pipeline, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: [])
+
+            resetPipelineCacheQueue.sync(flags: .barrier) {
+                resetPipelineCache[configuration] = pipeline
+            }
+
+            resetPipelineReflectionCacheQueue.sync(flags: .barrier) {
+                resetPipelineReflectionCache[configuration] = reflection
+            }
+
             return pipeline
         }
     }
