@@ -41,9 +41,22 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         let intervalsf = Float(intervals)
         let radius = Float(0.005)
         let height = intervalsf
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .x), material: BasicColorMaterial(color: simd_make_float4(1.0, 0.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(color: simd_make_float4(0.0, 1.0, 0.0, 1.0))))
-        object.add(Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(color: simd_make_float4(0.0, 0.0, 1.0, 1.0))))
+        
+        let x = Mesh(
+            geometry: CapsuleGeometry(radius: radius, height: height, axis: .x),
+            material: BasicColorMaterial(color: simd_make_float4(1.0, 0.0, 0.0, 1.0))
+        )
+        x.position.x += height * 0.5
+        object.add(x)
+
+        let y = Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .y), material: BasicColorMaterial(color: simd_make_float4(0.0, 1.0, 0.0, 1.0)))
+        y.position.y += height * 0.5
+        object.add(y)
+
+        let z = Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(color: simd_make_float4(0.0, 0.0, 1.0, 1.0)))
+        z.position.z += height * 0.5
+        object.add(z)
+        
         return object
     }()
 

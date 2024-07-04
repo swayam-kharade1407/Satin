@@ -40,10 +40,10 @@ class LiveCodeRenderer: BaseRenderer {
         device: device,
         sampleCount: sampleCount,
         colorPixelFormat: colorPixelFormat,
-        depthPixelFormat: depthPixelFormat, 
+        depthPixelFormat: depthPixelFormat,
         stencilPixelFormat: stencilPixelFormat
     )
-    
+
     lazy var renderer = Renderer(context: context)
 
     override var depthPixelFormat: MTLPixelFormat {
@@ -51,37 +51,15 @@ class LiveCodeRenderer: BaseRenderer {
     }
 
     override func setup() {
-        copySatinCore()
-        copySatinLibrary()
         startTime = getTime()
-        #if os(macOS)
+#if os(macOS)
         openEditor()
-        #endif
+#endif
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
 #endif
-    }
-
-    func copySatinCore() {
-        if let satinCore = getPipelinesSatinURL() {
-            do {
-                try FileManager.default.copyItem(at: satinCore, to: assetsURL.appendingPathComponent("Satin"))
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func copySatinLibrary() {
-        if let satinLibrary = Satin.getPipelinesLibraryURL() {
-            do {
-                try FileManager.default.copyItem(at: satinLibrary, to: assetsURL.appendingPathComponent("Library"))
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
     }
 
     override func update() {
@@ -95,7 +73,6 @@ class LiveCodeRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

@@ -47,16 +47,16 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     }
 
     // Rotation
-    public var rotationDamping: Float = 0.95
-    public var rotationScalar: Float = 0.33
+    public var rotationDamping: Float = 0.9
+    public var rotationScalar: Float = 0.25
 
     // Translation (Panning & Dolly)
-    public var translationDamping: Float = 0.95
+    public var translationDamping: Float = 0.9
     public var translationScalar: Float = 0.5
 
     // Zoom
-    public var zoomScalar: Float = 1.0
-    public var zoomDamping: Float = 0.95
+    public var zoomScalar: Float = 0.5
+    public var zoomDamping: Float = 0.9
     public var minimumZoomDistance: Float = 1.0 {
         didSet {
             if minimumZoomDistance < 1.0 {
@@ -81,7 +81,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
     // MARK: - Internal State & Event Handling
 
-    private var rotationFlip: Float = 1.0
+    private var azimuthRotationFlip: Float = 1.0
     private var rotationDelta: simd_float2 = .zero
     private var azimuthRotationTotal: Float = .zero
     private var elevationRotationTotal: Float = .zero
@@ -141,7 +141,6 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     }
 
     deinit {
-        print("deinit OrbitPerspectiveCameraController")
         disable()
     }
 
@@ -170,10 +169,9 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
         halt()
 
-        target.orientation = camera.orientation
-        camera.position = [0, 0, simd_length(camera.worldPosition - target.worldPosition)]
-        camera.orientation = simd_quatf(matrix_identity_float4x4)
         target.add(camera)
+
+        _reset()
 
         isEnabled = true
     }
@@ -199,6 +197,14 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     public func reset() {
         guard isEnabled else { return }
 
+        _reset()
+
+        onStartPublisher.send(self)
+        onChangePublisher.send(self)
+        onEndPublisher.send(self)
+    }
+
+    private func _reset() {
         halt()
 
         target.orientation = defaultOrientation
@@ -207,12 +213,11 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         camera.orientation = simd_quatf(matrix_identity_float4x4)
         camera.position = [0, 0, simd_length(defaultPosition)]
 
-        azimuthRotationTotal = .zero
-        elevationRotationTotal = .zero
+        let (azimuth, elevation) = calculateAzimuthElevationAngles()
+        azimuthRotationTotal = azimuth
+        elevationRotationTotal = elevation
 
-        onStartPublisher.send(self)
-        onChangePublisher.send(self)
-        onEndPublisher.send(self)
+        _updateRotation()
     }
 
     // MARK: - Resize
@@ -299,31 +304,102 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     // MARK: - Camera Transform Updates
 
     private func updateRotation(delta: simd_float2) {
-
-//        let azimuthRotation = simd_quatf(angle: rotationScalar * degToRad(delta.x), axis: flip * Satin.worldUpDirection)
-
-        target.orientation = defaultOrientation
-
-        azimuthRotationTotal += rotationFlip * rotationScalar * degToRad(delta.x)
-
-        let azimuthRotation = simd_quatf(angle: azimuthRotationTotal, axis: Satin.worldUpDirection)
-
-        target.orientation = azimuthRotation * target.orientation
-
-#if os(macOS)
-        let xAxis = -target.worldRightDirection
-#else
-        let xAxis = target.worldRightDirection
-#endif
-
-//        let elevationRotation = simd_quatf(angle: rotationScalar * degToRad(delta.y), axis: xAxis)
-
+        azimuthRotationTotal += azimuthRotationFlip * rotationScalar * degToRad(delta.x)
         elevationRotationTotal += rotationScalar * degToRad(delta.y)
 
-        let elevationRotation = simd_quatf(angle: elevationRotationTotal, axis: xAxis)
-        target.orientation = elevationRotation * target.orientation
+        if azimuthRotationTotal > Float.pi {
+            azimuthRotationTotal = -Float.pi + abs(azimuthRotationTotal - Float.pi)
+        } else if azimuthRotationTotal < -Float.pi {
+            azimuthRotationTotal = Float.pi - abs(Float.pi + azimuthRotationTotal)
+        }
+
+        if elevationRotationTotal > Float.pi {
+            elevationRotationTotal = -Float.pi + abs(elevationRotationTotal - Float.pi)
+        } else if elevationRotationTotal < -Float.pi {
+            elevationRotationTotal = Float.pi - abs(Float.pi + elevationRotationTotal)
+        }
+
+        _updateRotation()
+
+//        let (calculateAzimuthRotationTotal, calculateElevationRotationTotal) = calculateAzimuthElevation()
+//
+//        print()
+//
+//        print("Azimuth Rotation: \(radToDeg(azimuthRotationTotal)) : \(radToDeg(calculateAzimuthRotationTotal))")
+//        let deltaAzimuth = Int(radToDeg(azimuthRotationTotal - calculateAzimuthRotationTotal))
+//        print("Delta Azimuth: \(deltaAzimuth)")
+//
+//        print("Elevation Rotation: \(radToDeg(elevationRotationTotal)) : \(radToDeg(calculateElevationRotationTotal))")
+//        let deltaElevation = Int(radToDeg(elevationRotationTotal - calculateElevationRotationTotal))
+//        print("Delta Elevation: \(deltaElevation)")
 
         onChangePublisher.send(self)
+    }
+
+    private func _updateRotation() {
+        target.orientation = simd_quaternion(matrix_identity_float4x4)
+
+        let azimuthRotation = simd_quatf(angle: azimuthRotationTotal, axis: Satin.worldUpDirection)
+        target.orientation = azimuthRotation * target.orientation
+
+        let elevationRotation = simd_quatf(angle: elevationRotationTotal, axis: -target.worldRightDirection)
+        target.orientation = elevationRotation * target.orientation
+    }
+
+    func updateAzimuthRotationFlip(ndc: simd_float2) {
+        if (camera.worldPosition.y - target.worldPosition.y) < 0 {
+            azimuthRotationFlip = -1.0
+        } else {
+            azimuthRotationFlip = 1.0
+        }
+
+        if ndc.y > 0 {
+            azimuthRotationFlip *= -1.0
+        }
+    }
+
+    // both calculated angles vary from -pi to pi
+    func calculateAzimuthElevationAngles() -> (azimuth: Float, elevation: Float) {
+        let delta = camera.worldPosition - target.worldPosition
+        let dist = simd_length(delta)
+
+        let cameraRightDot = simd_dot(camera.worldRightDirection, Satin.worldRightDirection)
+        let cameraUpDot = simd_dot(camera.worldUpDirection, Satin.worldUpDirection)
+//        let cameraForwardDot = simd_dot(camera.worldForwardDirection, Satin.worldForwardDirection)
+
+        let cameraIsInverted = cameraRightDot > 0 && cameraUpDot < 0
+//        if cameraIsInverted {
+//            print("camera is inverted")
+//        }
+
+//        let elevationRelativeToYAxis = atan2(distXZ, delta.y)
+//        print("elevationRelativeToYAxis: \(elevationRelativeToYAxis.toDegrees)")
+
+        var azimuthAngle: Float
+
+        if cameraIsInverted {
+            azimuthAngle = -atan2(delta.x, -delta.z)
+        } else {
+            azimuthAngle = atan2(delta.x, delta.z)
+        }
+
+        if cameraUpDot < 0 && !cameraIsInverted {
+            azimuthAngle = -Float.pi + azimuthAngle
+        }
+
+        var elevationAngle: Float = asin(delta.y / dist)
+
+        if cameraUpDot < 0 {
+            if delta.y > 0 {
+                elevationAngle = Float.pi - elevationAngle
+            } else {
+                elevationAngle = -Float.pi - elevationAngle
+            }
+        }
+
+//        print("calculateElevationRotationTotal: \(calculateElevationRotationTotal.toDegrees)")
+
+        return (azimuthAngle, elevationAngle)
     }
 
     private func tweenRotation() -> Bool {
@@ -598,9 +674,13 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
             reset()
         } else {
             halt()
+
             previousPosition = view.convert(event.locationInWindow, from: nil).float2
+
             state = .rotating
-            rotationFlip = simd_dot(Satin.worldUpDirection, target.worldUpDirection) > 0 ? 1.0 : -1.0
+
+
+            updateAzimuthRotationFlip(ndc: normalizePoint(previousPosition, view.frame.size.float2))
         }
 
         return event
@@ -610,6 +690,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         guard let view = view, event.window == view.window, state == .rotating else { return event }
 
         let currentPosition = view.convert(event.locationInWindow, from: nil).float2
+
         defer { previousPosition = currentPosition }
 
         rotationDelta = previousPosition - currentPosition
@@ -617,6 +698,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
         return event
     }
+
 
     private func mouseUp(with event: NSEvent) -> NSEvent? {
         guard let view = view, event.window == view.window, state == .rotating else { return event }
@@ -728,16 +810,19 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
             halt()
             state = .rotating
             previousPosition = gestureRecognizer.location(in: view).float2
-            rotationFlip = simd_dot(Satin.worldUpDirection, target.worldUpDirection) > 0 ? 1.0 : -1.0
+            updateAzimuthRotationFlip(ndc: normalizePoint(previousPosition, view.frame.size.float2))
         }
 
         guard state == .rotating else { return }
 
         if gestureRecognizer.state == .changed {
             let currentPosition = gestureRecognizer.location(in: view).float2
+
             defer { previousPosition = currentPosition }
 
-            rotationDelta = previousPosition - currentPosition
+            rotationDelta.y = currentPosition.y - previousPosition.y
+            rotationDelta.x = previousPosition.x - currentPosition.x
+
             updateRotation(delta: rotationDelta)
 
         } else if gestureRecognizer.state == .ended {

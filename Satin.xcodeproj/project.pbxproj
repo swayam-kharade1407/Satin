@@ -237,6 +237,7 @@
 		E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
 		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
+		E1FEA9072C3737830002CD80 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FEA9062C3737830002CD80 /* Float+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -471,6 +472,7 @@
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
 		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
+		E1FEA9062C3737830002CD80 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -666,6 +668,7 @@
 				66D7DD902C06A24B00B5A6C8 /* String+Extensions.swift */,
 				66D7DD912C06A24B00B5A6C8 /* UIWindow+Extensions.swift */,
 				66D7DD922C06A24B00B5A6C8 /* Vertex+Extensions.swift */,
+				E1FEA9062C3737830002CD80 /* Float+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1222,6 +1225,7 @@
 				E101A8DC2C070E8E0055FABA /* CubemapGenerator.swift in Sources */,
 				E101A8DD2C070E8E0055FABA /* DiffuseIBLGenerator.swift in Sources */,
 				E101A8DE2C070E8E0055FABA /* RandomNoiseGenerator.swift in Sources */,
+				E1FEA9072C3737830002CD80 /* Float+Extensions.swift in Sources */,
 				E101A8DF2C070E8E0055FABA /* SpecularIBLGenerator.swift in Sources */,
 				E101A8E02C070E8E0055FABA /* AnyBufferAttribute.swift in Sources */,
 				E101A8E12C070E8E0055FABA /* Attribute.swift in Sources */,
