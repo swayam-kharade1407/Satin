@@ -245,6 +245,10 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
             let loaded = try JSONDecoder().decode(PerspectiveCameraController.self, from: data)
             target.setFrom(object: loaded.target)
             camera.setFrom(object: loaded.camera)
+
+            let (azimuth, elevation) = calculateAzimuthElevationAngles()
+            azimuthRotationTotal = azimuth
+            elevationRotationTotal = elevation
         } catch {
             print(error.localizedDescription)
         }
@@ -352,16 +356,11 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         } else {
             azimuthRotationFlip = 1.0
         }
-
-        if ndc.y > 0 {
-            azimuthRotationFlip *= -1.0
-        }
     }
 
     // both calculated angles vary from -pi to pi
     func calculateAzimuthElevationAngles() -> (azimuth: Float, elevation: Float) {
-        let delta = camera.worldPosition - target.worldPosition
-        let dist = simd_length(delta)
+        let delta = camera.worldForwardDirection
 
         let cameraRightDot = simd_dot(camera.worldRightDirection, Satin.worldRightDirection)
         let cameraUpDot = simd_dot(camera.worldUpDirection, Satin.worldUpDirection)
@@ -387,7 +386,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
             azimuthAngle = -Float.pi + azimuthAngle
         }
 
-        var elevationAngle: Float = asin(delta.y / dist)
+        var elevationAngle: Float = asin(delta.y)
 
         if cameraUpDot < 0 {
             if delta.y > 0 {
@@ -679,7 +678,6 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
             state = .rotating
 
-
             updateAzimuthRotationFlip(ndc: normalizePoint(previousPosition, view.frame.size.float2))
         }
 
@@ -698,7 +696,6 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
         return event
     }
-
 
     private func mouseUp(with event: NSEvent) -> NSEvent? {
         guard let view = view, event.window == view.window, state == .rotating else { return event }
@@ -841,8 +838,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         if gestureRecognizer.state == .changed {
             let translation = gestureRecognizer.translation(in: view)
             panCurrentPoint = simd_make_float2(Float(translation.x), Float(translation.y))
-            let delta = panCurrentPoint - panPreviousPoint
-            pan(delta)
+            pan(panCurrentPoint - panPreviousPoint)
             panPreviousPoint = panCurrentPoint
 
         } else if gestureRecognizer.state == .ended {
