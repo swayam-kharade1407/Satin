@@ -5,14 +5,15 @@ typedef struct {
 typedef struct {
     float4 position [[position]];
     float2 texcoord;
-} CustomVertexData;
+} TextVertexData;
 
-vertex CustomVertexData textVertex(
+vertex TextVertexData textVertex(
     Vertex in [[stage_in]],
     ushort amp_id [[amplification_id]],
+    // inject instancing args
     constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
 {
-    CustomVertexData out;
+    TextVertexData out;
 
 #if INSTANCING
     out.position = vertexUniforms[amp_id].viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
@@ -25,10 +26,10 @@ vertex CustomVertexData textVertex(
     return out;
 }
 
-fragment float4 textFragment(
-    CustomVertexData in [[stage_in]],
+fragment half4 textFragment(
+    TextVertexData in [[stage_in]],
     constant TextUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
-    texture2d<float> fontTexture [[texture(FragmentTextureCustom0)]])
+    texture2d<half> fontTexture [[texture(FragmentTextureCustom0)]])
 {
     constexpr sampler s = sampler(min_filter::linear, mag_filter::linear);
 
@@ -42,5 +43,5 @@ fragment float4 textFragment(
     float4 color = uniforms.color;
     color.a *= alpha;
 
-    return color;
+    return half4(color);
 }

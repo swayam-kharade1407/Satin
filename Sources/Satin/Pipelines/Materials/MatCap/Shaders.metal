@@ -31,10 +31,14 @@ vertex MatCapVertexData matCapVertex(
     return out;
 }
 
-fragment float4 matCapFragment(MatCapVertexData in [[stage_in]], constant MatCapUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]], texture2d<float> tex [[texture(FragmentTextureCustom0)]], sampler texSampler [[sampler(FragmentSamplerCustom0)]])
+fragment half4 matCapFragment(
+    MatCapVertexData in [[stage_in]],
+    constant MatCapUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
+    texture2d<float> tex [[texture(FragmentTextureCustom0)]],
+    sampler texSampler [[sampler(FragmentSamplerCustom0)]])
 {
     const float3 r = reflect(in.eye, normalize(in.normal));
     const float m = 2.0 * sqrt(pow(r.x, 2.0) + pow(r.y, 2.0) + pow(r.z + 1.0, 2.0));
     const float2 uv = r.xy / m + 0.5;
-    return uniforms.color * tex.sample(texSampler, uv);
+    return half4(uniforms.color * tex.sample(texSampler, uv));
 }

@@ -5,7 +5,7 @@ typedef struct {
     // inject shadow coords
     float3 viewPosition;
     float3 normal;
-} DiffuseVertexData;
+} BasicDiffuseVertexData;
 
 typedef struct {
     float4 color;       // color
@@ -13,7 +13,7 @@ typedef struct {
     float diffusePower; // slider,0,2,0.5
 } BasicDiffuseUniforms;
 
-vertex DiffuseVertexData basicDiffuseVertex(
+vertex BasicDiffuseVertexData basicDiffuseVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     // inject shadow vertex args
@@ -34,7 +34,7 @@ vertex DiffuseVertexData basicDiffuseVertex(
 
     const float4 screenSpaceNormal = vertexUniforms[amp_id].viewMatrix * float4(normal, 0.0);
 
-    DiffuseVertexData out;
+    BasicDiffuseVertexData out;
     out.viewPosition = viewPosition.xyz;
     out.position = vertexUniforms[amp_id].projectionMatrix * viewPosition;
     out.normal = screenSpaceNormal.xyz;
@@ -45,7 +45,7 @@ vertex DiffuseVertexData basicDiffuseVertex(
 }
 
 fragment float4 basicDiffuseFragment(
-    DiffuseVertexData in [[stage_in]],
+    BasicDiffuseVertexData in [[stage_in]],
     // inject shadow fragment args
     constant BasicDiffuseUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
 {

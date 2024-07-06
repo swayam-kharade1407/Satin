@@ -48,7 +48,9 @@ vertex DepthVertexData depthVertex(
     return out;
 }
 
-fragment float4 depthFragment(DepthVertexData in [[stage_in]], constant DepthUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
+fragment float4 depthFragment(
+    DepthVertexData in [[stage_in]],
+    constant DepthUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
 {
     const float depth = uniforms.invert ? 1.0 - in.depth : in.depth;
     float3 color = mix(float3(depth), turbo(depth), uniforms.color);

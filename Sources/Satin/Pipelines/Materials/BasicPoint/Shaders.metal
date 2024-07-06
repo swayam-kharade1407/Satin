@@ -9,19 +9,19 @@ typedef struct {
 typedef struct {
     float4 position [[position]];
     float pointSize [[point_size]];
-} CustomVertexData;
+} BasicPointCustomVertexData;
 
-vertex CustomVertexData basicPointVertex(
+vertex BasicPointCustomVertexData basicPointVertex(
     Vertex in [[stage_in]],
-    // inject instancing args
     ushort amp_id [[amplification_id]],
+    // inject instancing args
     constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
     constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
 {
 
     const float4 position = float4(in.position, 1.0);
 
-    CustomVertexData out;
+    BasicPointCustomVertexData out;
 #if INSTANCING
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
     out.position = vertexUniforms[amp_id].viewProjectionMatrix * modelMatrix * position;
@@ -38,7 +38,7 @@ struct FragOut {
 };
 
 fragment FragOut basicPointFragment(
-    CustomVertexData in [[stage_in]],
+    BasicPointCustomVertexData in [[stage_in]],
     const float2 puv [[point_coord]],
     constant BasicPointUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
 {
