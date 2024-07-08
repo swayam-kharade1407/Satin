@@ -41,7 +41,7 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         let intervalsf = Float(intervals)
         let radius = Float(0.005)
         let height = intervalsf
-        
+
         let x = Mesh(
             geometry: CapsuleGeometry(radius: radius, height: height, axis: .x),
             material: BasicColorMaterial(color: simd_make_float4(1.0, 0.0, 0.0, 1.0))
@@ -56,12 +56,21 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         let z = Mesh(geometry: CapsuleGeometry(radius: radius, height: height, axis: .z), material: BasicColorMaterial(color: simd_make_float4(0.0, 0.0, 1.0, 1.0)))
         z.position.z += height * 0.5
         object.add(z)
-        
+
         return object
     }()
 
-    lazy var targetMesh = Mesh(geometry: RoundedBoxGeometry(size: 1.0, radius: 0.25, resolution: 3), material: NormalColorMaterial(true))
-    lazy var scene = Object(label: "Scene", [grid, axisMesh])
+    let targetMesh = Mesh(
+        geometry: RoundedBoxGeometry(size: 1.0, radius: 0.25, resolution: 3),
+        material: NormalColorMaterial(true)
+    )
+
+    let targetPlane = Mesh(
+        geometry: PlaneGeometry(size: 4, orientation: .zx, centered: true),
+        material: BasicColorMaterial(color: [0, 1, 0, 0.25], blending: .alpha)
+    )
+
+    lazy var scene = Object(label: "Scene", [grid, axisMesh, targetPlane])
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
 
     lazy var camera: PerspectiveCamera = {
@@ -84,8 +93,12 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
     lazy var renderer: Renderer = .init(context: context)
 
     override func setup() {
-        scene.attach(cameraController.target)
         cameraController.target.add(targetMesh)
+
+        scene.attach(cameraController.target)
+
+        targetPlane.material?.depthWriteEnabled = false
+        targetPlane.cullMode = .none
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
@@ -100,6 +113,7 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
     override func update() {
         cameraController.update()
         targetMesh.orientation = cameraController.camera.worldOrientation.inverse
+        targetPlane.position = cameraController.target.position
         camera.update()
         scene.update()
     }
@@ -118,4 +132,3 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         renderer.resize(size)
     }
 }
-

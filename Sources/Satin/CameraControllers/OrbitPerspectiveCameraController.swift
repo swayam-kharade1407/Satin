@@ -352,9 +352,9 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
     func updateAzimuthRotationFlip(ndc: simd_float2) {
         if (camera.worldPosition.y - target.worldPosition.y) < 0 {
-            azimuthRotationFlip = -1.0
+            azimuthRotationFlip *= -1.0
         } else {
-            azimuthRotationFlip = 1.0
+            azimuthRotationFlip *= 1.0
         }
     }
 
@@ -674,11 +674,12 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         } else {
             halt()
 
-            previousPosition = view.convert(event.locationInWindow, from: nil).float2
+            let currentPosition = view.convert(event.locationInWindow, from: nil).float2
+            defer { previousPosition = currentPosition }
 
             state = .rotating
 
-            updateAzimuthRotationFlip(ndc: normalizePoint(previousPosition, view.frame.size.float2))
+            updateAzimuthRotationFlip(ndc: normalizePoint(currentPosition, view.frame.size.float2))
         }
 
         return event
@@ -688,9 +689,9 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         guard let view = view, event.window == view.window, state == .rotating else { return event }
 
         let currentPosition = view.convert(event.locationInWindow, from: nil).float2
-
         defer { previousPosition = currentPosition }
 
+        updateAzimuthRotationFlip(ndc: normalizePoint(currentPosition, view.frame.size.float2))
         rotationDelta = previousPosition - currentPosition
         updateRotation(delta: rotationDelta)
 
@@ -814,6 +815,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
         if gestureRecognizer.state == .changed {
             let currentPosition = gestureRecognizer.location(in: view).float2
+            updateAzimuthRotationFlip(ndc: normalizePoint(currentPosition, view.frame.size.float2))
 
             defer { previousPosition = currentPosition }
 
