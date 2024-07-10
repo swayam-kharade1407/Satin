@@ -177,6 +177,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         halt()
 
+        target.position = camera.worldPosition
         target.orientation = camera.orientation
         camera.position = [0, 0, simd_length(camera.worldPosition - target.worldPosition)]
         camera.orientation = simd_quatf(matrix_identity_float4x4)
@@ -209,7 +210,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         halt()
 
         target.orientation = defaultOrientation
-        target.position = .zero
+        target.position = defaultPosition
 
         camera.orientation = simd_quatf(matrix_identity_float4x4)
         camera.position = [0, 0, simd_length(defaultPosition)]
@@ -256,8 +257,6 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         camera = try values.decode(PerspectiveCamera.self, forKey: .camera)
         target = try values.decode(Object.self, forKey: .target)
-        defaultPosition = try values.decode(simd_float3.self, forKey: .defaultPosition)
-        defaultOrientation = try values.decode(simd_quatf.self, forKey: .defaultOrientation)
         mouseDeltaSensitivity = try values.decode(Float.self, forKey: .mouseDeltaSensitivity)
         scrollDeltaSensitivity = try values.decode(Float.self, forKey: .scrollDeltaSensitivity)
         rotationDamping = try values.decode(Float.self, forKey: .rotationDamping)
@@ -275,8 +274,6 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         try container.encode(camera, forKey: .camera)
         try container.encode(target, forKey: .target)
-        try container.encode(defaultPosition, forKey: .defaultPosition)
-        try container.encode(defaultOrientation, forKey: .defaultOrientation)
         try container.encode(mouseDeltaSensitivity, forKey: .mouseDeltaSensitivity)
         try container.encode(scrollDeltaSensitivity, forKey: .scrollDeltaSensitivity)
         try container.encode(rotationDamping, forKey: .rotationDamping)
@@ -292,8 +289,6 @@ public final class PerspectiveCameraController: CameraController, Codable {
     private enum CodingKeys: String, CodingKey {
         case camera
         case target
-        case defaultPosition
-        case defaultOrientation
         case mouseDeltaSensitivity
         case scrollDeltaSensitivity
         case rotationDamping
@@ -335,7 +330,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func updateZoom() {
-        let targetDistance = simd_length(camera.worldPosition - target.position)
+        let targetDistance = simd_max(simd_length(camera.worldPosition - target.position), 0.1)
 
         let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov) * pow(targetDistance, 0.5)
         let offset = simd_make_float3(camera.forwardDirection * zoomAmount)

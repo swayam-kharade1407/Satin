@@ -16,26 +16,15 @@ public final actor ShaderPipelineCache {
 
     private static let pipelineCacheQueue = DispatchQueue(label: "ShaderPipelineCacheQueue", attributes: .concurrent)
     private static let shadowPipelineCacheQueue = DispatchQueue(label: "ShaderShadowPipelineCacheQueue", attributes: .concurrent)
-    
+
     private static let pipelineReflectionCacheQueue = DispatchQueue(label: "ShaderPipelineReflectionCacheQueue", attributes: .concurrent)
     private static let pipelineParametersCacheQueue = DispatchQueue(label: "ShaderPipelineParametersCacheQueue", attributes: .concurrent)
 
     public static func invalidate(configuration: ShaderConfiguration) {
-        pipelineCacheQueue.sync(flags: .barrier) {
-            invalidatePipeline(configuration: configuration)
-        }
-
-        shadowPipelineCacheQueue.sync(flags: .barrier) {
-            invalidateShadowPipeline(configuration: configuration)
-        }
-
-        pipelineReflectionCacheQueue.sync(flags: .barrier) {
-            invalidatePipelineReflection(configuration: configuration)
-        }
-
-        pipelineParametersCacheQueue.sync(flags: .barrier) {
-            invalidatePipelineParameters(configuration: configuration)
-        }
+        invalidatePipeline(configuration: configuration)
+        invalidateShadowPipeline(configuration: configuration)
+        invalidatePipelineReflection(configuration: configuration)
+        invalidatePipelineParameters(configuration: configuration)
     }
 
     public static func invalidatePipeline(configuration: ShaderConfiguration) {
@@ -63,7 +52,6 @@ public final actor ShaderPipelineCache {
     }
 
     public static func getPipeline(configuration: ShaderConfiguration) throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
-
         var cachedPipeline: MTLRenderPipelineState?
         var cachedReflection: MTLRenderPipelineReflection?
 
@@ -114,7 +102,6 @@ public final actor ShaderPipelineCache {
     }
 
     public static func getShadowPipeline(configuration: ShaderConfiguration) throws -> MTLRenderPipelineState? {
-
         var cachedShadowPipeline: MTLRenderPipelineState?
 
         pipelineCacheQueue.sync {
@@ -168,7 +155,7 @@ public final actor ShaderPipelineCache {
            let parameters = parseParameters(source: shaderSource, key: configuration.label + "Uniforms")
         {
             parameters.label = configuration.label.titleCase + " Uniforms"
-            
+
             pipelineParametersCacheQueue.sync(flags: .barrier) {
                 pipelineParametersCache[configuration] = parameters
             }
@@ -183,11 +170,11 @@ public final actor ShaderPipelineCache {
                 {
                     let parameters = parseParameters(bufferStruct: bufferStruct)
                     parameters.label = configuration.label.titleCase + " Uniforms"
-                    
+
                     pipelineParametersCacheQueue.sync(flags: .barrier) {
                         pipelineParametersCache[configuration] = parameters
                     }
-                    
+
                     return parameters
                 }
             }

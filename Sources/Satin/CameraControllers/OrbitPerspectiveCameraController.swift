@@ -208,7 +208,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         halt()
 
         target.orientation = defaultOrientation
-        target.position = .zero
+        target.position = defaultPosition
 
         camera.orientation = simd_quatf(matrix_identity_float4x4)
         camera.position = [0, 0, simd_length(defaultPosition)]
@@ -242,7 +242,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     public func load(url: URL) {
         do {
             let data = try Data(contentsOf: url)
-            let loaded = try JSONDecoder().decode(PerspectiveCameraController.self, from: data)
+            let loaded = try JSONDecoder().decode(OrbitPerspectiveCameraController.self, from: data)
             target.setFrom(object: loaded.target)
             camera.setFrom(object: loaded.camera)
 
@@ -271,6 +271,10 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         translationScalar = try values.decode(Float.self, forKey: .translationScalar)
         zoomScalar = try values.decode(Float.self, forKey: .zoomScalar)
         zoomDamping = try values.decode(Float.self, forKey: .zoomDamping)
+
+        let (azimuth, elevation) = calculateAzimuthElevationAngles()
+        azimuthRotationTotal = azimuth
+        elevationRotationTotal = elevation
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -352,9 +356,9 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
     func updateAzimuthRotationFlip(ndc: simd_float2) {
         if (camera.worldPosition.y - target.worldPosition.y) < 0 {
-            azimuthRotationFlip *= -1.0
+            azimuthRotationFlip = -1.0
         } else {
-            azimuthRotationFlip *= 1.0
+            azimuthRotationFlip = 1.0
         }
     }
 
@@ -691,7 +695,6 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
         let currentPosition = view.convert(event.locationInWindow, from: nil).float2
         defer { previousPosition = currentPosition }
 
-        updateAzimuthRotationFlip(ndc: normalizePoint(currentPosition, view.frame.size.float2))
         rotationDelta = previousPosition - currentPosition
         updateRotation(delta: rotationDelta)
 

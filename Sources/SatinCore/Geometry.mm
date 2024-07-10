@@ -206,11 +206,15 @@ bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float
 {
     const simd_float3 l = center - origin;
     const float tca = simd_dot(l, direction);
-    if (tca < 0) { return false; }
+    if (tca < 0) {
+        return false;
+    }
 
     const float r2 = radius * radius;
     const float d2 = simd_dot(l, l) - tca * tca;
-    if (d2 < 0 || d2 > r2) { return false; }
+    if (d2 > r2) {
+        return false;
+    }
 
     const float thc = sqrt(r2 - d2);
 
