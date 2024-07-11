@@ -153,7 +153,7 @@ open class BufferComputeSystem: ComputeSystem {
     // MARK: - Buffers
 
     public func getBuffer(_ label: String) -> MTLBuffer? {
-        if let buffers = bufferMap[label] {
+        if let buffers = bufferMap[label] ?? bufferMap[label.titleCase] {
             return buffers[dstIndex]
         }
         return nil
