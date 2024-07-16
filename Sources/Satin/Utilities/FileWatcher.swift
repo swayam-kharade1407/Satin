@@ -15,7 +15,9 @@ public protocol FileWatcherDelegate: AnyObject {
 public final class FileWatcher {
     public var timeInterval: TimeInterval = 1.0 {
         didSet {
-            watch()
+            if timer != nil {
+                watch()
+            }
         }
     }
 
@@ -63,6 +65,13 @@ public final class FileWatcher {
     }
 
     public func watch() {
+        guard Thread.current == .main else {
+            DispatchQueue.main.async { [weak self] in
+                self?.watch()
+            }
+            return
+        }
+
         if timer != nil {
             unwatch()
         }

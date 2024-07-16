@@ -15,7 +15,9 @@ public final actor ShaderSourceCache {
     private static let compilerQueue = DispatchQueue(label: "ShaderSourceCacheCompilerQueue", attributes: .concurrent)
 
     public static func removeSource(url: URL) {
-        sourceCache.removeValue(forKey: url)
+        _ = sourceQueue.sync(flags: .barrier) {
+            sourceCache.removeValue(forKey: url)
+        }
     }
 
     public static func getSource(url: URL) throws -> String? {
