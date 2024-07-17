@@ -159,6 +159,8 @@ open class TextureComputeSystem: ComputeSystem {
     override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
 
+        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
+
         if textures.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
             encode(computeEncoder)
@@ -181,8 +183,6 @@ open class TextureComputeSystem: ComputeSystem {
     }
 
     private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
-        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
-
         bindUniforms(computeEncoder)
         bindTextures(computeEncoder)
 

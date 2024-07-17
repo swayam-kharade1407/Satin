@@ -85,6 +85,9 @@ open class BufferComputeSystem: ComputeSystem {
 
     override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
+
+        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
+        
         if count > 0, bufferMap.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
             encode(computeEncoder)
