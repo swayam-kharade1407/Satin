@@ -52,6 +52,10 @@ open class TextureComputeSystem: ComputeSystem {
         return results
     }
 
+    open var threadsPerGrid: MTLSize?
+    open var threadsPerThreadgroup: MTLSize?
+    open var threadGroupsPerGrid: MTLSize?
+
     public var textures: [MTLTexture] = []
     private var _setupSize = true
     private var _setupTextures = true
@@ -177,6 +181,8 @@ open class TextureComputeSystem: ComputeSystem {
     }
 
     private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
+        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
+
         bindUniforms(computeEncoder)
         bindTextures(computeEncoder)
 
@@ -216,7 +222,8 @@ open class TextureComputeSystem: ComputeSystem {
                 index += 1
                 textureIndex += 2
             }
-        } else {
+        }
+        else {
             for _ in textureDescriptors {
                 computeEncoder.setTexture(textures[textureIndex], index: index)
                 textureIndex += 1
@@ -248,8 +255,8 @@ open class TextureComputeSystem: ComputeSystem {
                                               depth: (texture.depth + w - 1) / w)
 
             return threadgroupsPerGrid
-
-        } else {
+        }
+        else {
             let w = threadExecutionWidth
             let h = maxTotalThreadsPerThreadgroup / w
 
@@ -264,15 +271,30 @@ open class TextureComputeSystem: ComputeSystem {
     open func getThreadsPerThreadgroup(_ texture: MTLTexture, _ pipeline: MTLComputePipelineState) -> MTLSize {
         let threadExecutionWidth = pipeline.threadExecutionWidth
         let maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup
+
         if texture.depth > 1 {
+            let startWidth = threadExecutionWidth/2 // 16
+            let startHeight = startWidth // 16
+            let startDepth = (maxTotalThreadsPerThreadgroup / startWidth ) / startHeight
+
+            var threadsPerThreadgroup = MTLSizeMake(startWidth, startHeight, startDepth)
+            while (threadsPerThreadgroup.width * threadsPerThreadgroup.height * threadsPerThreadgroup.depth) > maxTotalThreadsPerThreadgroup {
+                if (threadsPerThreadgroup.width/2 * threadsPerThreadgroup.height/2 * threadsPerThreadgroup.depth) < maxTotalThreadsPerThreadgroup {
+                    threadsPerThreadgroup.width /= 2
+                    threadsPerThreadgroup.height /= 2
+                }
+                else {
+                    threadsPerThreadgroup.depth /= 2
+                }
+            }
             var w = Int(pow(Float(maxTotalThreadsPerThreadgroup), 1.0 / 3.0))
             if w > threadExecutionWidth {
                 w = threadExecutionWidth
             }
-            let threadsPerThreadgroup = MTLSizeMake(w, w, w)
-            return threadsPerThreadgroup
 
-        } else if texture.height > 1 {
+            return threadsPerThreadgroup
+        }
+        else if texture.height > 1 {
             return MTLSizeMake(threadExecutionWidth, maxTotalThreadsPerThreadgroup / threadExecutionWidth, 1)
         }
         else {
@@ -284,8 +306,8 @@ open class TextureComputeSystem: ComputeSystem {
     override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
         guard let texture = textures.first else { return }
 
-        let threadPerGrid = getThreadsPerGrid(texture)
-        let threadsPerThreadgroup = getThreadsPerThreadgroup(texture, pipeline)
+        let threadPerGrid = threadsPerGrid ?? getThreadsPerGrid(texture)
+        let threadsPerThreadgroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture, pipeline)
 
         computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
     }
@@ -294,8 +316,8 @@ open class TextureComputeSystem: ComputeSystem {
     override open func dispatchThreadgroups(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
         guard let texture = textures.first else { return }
 
-        let threadsPerThreadGroup = getThreadsPerThreadgroup(texture, pipeline)
-        let threadGroupsPerGrid = getThreadGroupsPerGrid(texture, pipeline)
+        let threadGroupsPerGrid = threadGroupsPerGrid ?? getThreadGroupsPerGrid(texture, pipeline)
+        let threadsPerThreadGroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture, pipeline)
 
         computeEncoder.dispatchThreadgroups(threadGroupsPerGrid, threadsPerThreadgroup: threadsPerThreadGroup)
     }
