@@ -21,7 +21,7 @@ public final class MetalViewController: NSViewController {
 
     // MARK: - Init
 
-    init(renderer: MetalViewRenderer) {
+    public init(renderer: MetalViewRenderer) {
         self.renderer = renderer
         super.init(nibName: nil, bundle: nil)
     }
@@ -37,10 +37,7 @@ public final class MetalViewController: NSViewController {
 #if DEBUG_VIEWS
         print("\ndeinit - MetalViewController: \(renderer.id)\n")
 #endif
-        cleanupRenderer()
-        removeTracking()
-        removeEvents()
-        metalView.delegate = nil
+        cleanup()
     }
 
     // MARK: - Load View
@@ -158,10 +155,36 @@ public final class MetalViewController: NSViewController {
         )
 
         NotificationCenter.default.addObserver(
-            self, selector: #selector(self.updateAppearance),
+            self, 
+            selector: #selector(self.updateAppearance),
             name: Notification.Name("AppleInterfaceStyle"),
             object: nil
         )
+
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.willTerminate),
+            name: NSApplication.willTerminateNotification,
+            object: nil)
+    }
+
+    @objc func willTerminate() {
+#if DEBUG_VIEWS
+        print("willTerminate - MetalViewController: \(self.renderer.id)")
+#endif
+        cleanup()
+    }
+
+    func cleanup() {
+#if DEBUG_VIEWS
+        print("cleanup - MetalViewController: \(self.renderer.id)")
+#endif
+        cleanupRenderer()
+        removeEvents()
+        removeTracking()
+        removeEvents()
+        metalView.delegate = nil
     }
 
     @objc func updateAppearance() {

@@ -47,13 +47,13 @@ final class Renderer3D: BaseRenderer {
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
         #endif
-
-        tween = Tweener
-            .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
-            .easing(.inOutBack)
-            .pingPong()
-            .loop()
-            .start()
+//
+//        tween = Tweener
+//            .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
+//            .easing(.inOutBack)
+//            .pingPong()
+//            .loop()
+//            .start()
     }
 
     deinit {
@@ -64,7 +64,7 @@ final class Renderer3D: BaseRenderer {
     override func update() {
         cameraController.update()
         camera.update()
-        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
+//        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
         scene.update()
     }
 

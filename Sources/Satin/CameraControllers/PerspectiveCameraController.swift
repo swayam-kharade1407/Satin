@@ -177,9 +177,13 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         halt()
 
-        target.position = camera.worldPosition
-        target.orientation = camera.orientation
-        camera.position = [0, 0, simd_length(camera.worldPosition - target.worldPosition)]
+        // camera is at 0,0,5
+        // keep camera at 0,0,5
+        // move target in front of camera
+
+        target.position = .zero
+        target.orientation = defaultOrientation
+        camera.position = [0, 0, simd_length(defaultPosition)]
         camera.orientation = simd_quatf(matrix_identity_float4x4)
         target.add(camera)
 

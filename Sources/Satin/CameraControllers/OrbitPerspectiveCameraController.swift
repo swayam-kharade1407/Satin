@@ -207,11 +207,10 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     private func _reset() {
         halt()
 
+        target.position = .zero
         target.orientation = defaultOrientation
-        target.position = defaultPosition
-
-        camera.orientation = simd_quatf(matrix_identity_float4x4)
         camera.position = [0, 0, simd_length(defaultPosition)]
+        camera.orientation = simd_quatf(matrix_identity_float4x4)
 
         let (azimuth, elevation) = calculateAzimuthElevationAngles()
         azimuthRotationTotal = azimuth
@@ -413,18 +412,8 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     }
 
     private func updateZoom() {
-        let targetDistance = simd_length(camera.worldPosition - target.position)
-
-        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov) * pow(targetDistance, 0.5)
-        let offset = simd_make_float3(camera.forwardDirection * zoomAmount)
-        let offsetDistance = simd_length(offset)
-
-        if (targetDistance + offsetDistance * sign(zoom)) > minimumZoomDistance {
-            camera.position += offset
-        } else {
-            zoom = 0.0
-        }
-
+        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov)
+        target.position += target.forwardDirection * zoomAmount
         onChangePublisher.send(self)
     }
 

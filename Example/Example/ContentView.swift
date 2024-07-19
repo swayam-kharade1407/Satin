@@ -161,6 +161,10 @@ struct ContentView: View {
                     NavigationLink(destination: TextureComputeRendererView()) {
                         Label("Texture Compute", systemImage: "photo.stack")
                     }
+
+                    NavigationLink(destination: JumpFloodOutlineRendererView()) {
+                        Label("Jump Flood Outline", systemImage: "squareshape.split.3x3")
+                    }
                 }
 
                 Section(header: Text("Shadows")) {
@@ -237,6 +241,10 @@ struct ContentView: View {
                     NavigationLink(destination: FXAARendererView()) {
                         Label("FXAA", systemImage: "squareshape.split.2x2.dotted")
                     }
+
+                    NavigationLink(destination: ScreenCaptureRendererView()) {
+                        Label("Screen Capture", systemImage: "display.and.arrow.down")
+                    }
                 }
             }
             .navigationTitle("Satin Examples")
@@ -250,9 +258,11 @@ struct ContentView: View {
                 }
             #endif
 
-            OrbitCameraControllerRendererView()
-//            JumpFloodOutlineRendererView()
-//            Renderer3DView()
+
+            #if os(macOS)
+            ScreenCaptureRendererView()
+            #endif
+
         }
     }
 

@@ -65,27 +65,12 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         material: NormalColorMaterial(true)
     )
 
-    let targetPlane = Mesh(
-        geometry: PlaneGeometry(size: 4, orientation: .zx, centered: true),
-        material: BasicColorMaterial(color: [0, 1, 0, 0.25], blending: .alpha)
-    )
-
-    lazy var scene = Object(label: "Scene", [grid, axisMesh, targetPlane])
+    lazy var scene = Object(label: "Scene", [grid, axisMesh])
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
 
-    lazy var camera: PerspectiveCamera = {
-        let pos = simd_make_float3(5.0, 5.0, 5.0)
-        let camera = PerspectiveCamera(position: pos, near: 0.001, far: 200.0)
-
-        camera.orientation = simd_quatf(from: [0, 0, 1], to: simd_normalize(pos))
-
-        let forward = simd_normalize(camera.forwardDirection)
-        let worldUp = Satin.worldUpDirection
-        let right = -simd_normalize(simd_cross(forward, worldUp))
-        let angle = acos(simd_dot(simd_normalize(camera.rightDirection), right))
-
-        camera.orientation = simd_quatf(angle: angle, axis: forward) * camera.orientation
-
+    var camera: PerspectiveCamera = {
+        let camera = PerspectiveCamera(position: simd_make_float3(5.0, 5.0, 5.0), near: 0.001, far: 200.0)
+        camera.lookAt(target: .zero)
         return camera
     }()
 
@@ -94,11 +79,7 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
 
     override func setup() {
         cameraController.target.add(targetMesh)
-
         scene.attach(cameraController.target)
-
-        targetPlane.material?.depthWriteEnabled = false
-        targetPlane.cullMode = .none
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
@@ -113,7 +94,6 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
     override func update() {
         cameraController.update()
         targetMesh.orientation = cameraController.camera.worldOrientation.inverse
-        targetPlane.position = cameraController.target.position
         camera.update()
         scene.update()
     }

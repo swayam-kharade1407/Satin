@@ -115,6 +115,8 @@
 		E1903C172B6046B4004AB175 /* ARPeopleOcclusionRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14C122C29E5D618009D3C8C /* ARPeopleOcclusionRendererView.swift */; };
 		E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */; };
 		E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */; };
+		E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */; };
+		E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */; };
 		E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D328A6BADA00B517B6 /* ExampleApp.swift */; };
 		E1D714D628A6BADA00B517B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D528A6BADA00B517B6 /* ContentView.swift */; };
 		E1D714D828A6BADA00B517B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D714D728A6BADA00B517B6 /* Assets.xcassets */; };
@@ -216,6 +218,8 @@
 		E192F01F2485B16C00C7EE74 /* MatcapRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatcapRenderer.swift; sourceTree = "<group>"; };
 		E192F05C24874CE700C7EE74 /* TorusKnotGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TorusKnotGenerator.h; sourceTree = "<group>"; };
 		E192F05D24874CE700C7EE74 /* TorusKnotGenerator.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TorusKnotGenerator.c; sourceTree = "<group>"; };
+		E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureRenderer.swift; sourceTree = "<group>"; };
+		E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureRendererView.swift; sourceTree = "<group>"; };
 		E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferGeometryRenderer.swift; sourceTree = "<group>"; };
 		E19A7EC32A60984E00D28E89 /* BufferGeometryRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferGeometryRendererView.swift; sourceTree = "<group>"; };
 		E19B058F26BB704100D91376 /* AudioInputRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioInputRenderer.swift; sourceTree = "<group>"; };
@@ -540,6 +544,7 @@
 			children = (
 				E1E767FD28A6FCBC005D75AB /* FXAARendererView.swift */,
 				E1E767F128A6F43C005D75AB /* PostProcessingRendererView.swift */,
+				E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */,
 			);
 			path = PostProcessing;
 			sourceTree = "<group>";
@@ -574,6 +579,7 @@
 			children = (
 				E1D62565269D21C8000094C1 /* PostProcessingRenderer.swift */,
 				E105CC36252BDE7F009EE563 /* FXAARenderer.swift */,
+				E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */,
 			);
 			path = PostProcessing;
 			sourceTree = "<group>";
@@ -836,6 +842,7 @@
 				E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */,
 				E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */,
 				E103E1132B603DEA0017588F /* SDFTextRendererView.swift in Sources */,
+				E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */,
 				E1903C162B6046B4004AB175 /* ARRendererView.swift in Sources */,
 				E103E1292B603ECD0017588F /* LoadObjRendererView.swift in Sources */,
 				E103E1022B603B620017588F /* OcclusionRendererView.swift in Sources */,
@@ -926,6 +933,7 @@
 				E103E13F2B603FCA0017588F /* PBREnhancedRendererView.swift in Sources */,
 				E103E1182B603E210017588F /* TextureComputeRenderer.swift in Sources */,
 				E103E1602B60404C0017588F /* TessellatedMaterial.swift in Sources */,
+				E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */,
 				E103E11B2B603E3C0017588F /* FlockingRendererView.swift in Sources */,
 				E103E13E2B603FCA0017588F /* PBRCustomizationRendererView.swift in Sources */,
 				E1F22D1D29BD71FA0011CEAB /* Timing.swift in Sources */,
