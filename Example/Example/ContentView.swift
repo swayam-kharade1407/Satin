@@ -241,10 +241,11 @@ struct ContentView: View {
                     NavigationLink(destination: FXAARendererView()) {
                         Label("FXAA", systemImage: "squareshape.split.2x2.dotted")
                     }
-
-                    NavigationLink(destination: ScreenCaptureRendererView()) {
-                        Label("Screen Capture", systemImage: "display.and.arrow.down")
-                    }
+                    #if os(macOS)
+                        NavigationLink(destination: ScreenCaptureRendererView()) {
+                            Label("Screen Capture", systemImage: "display.and.arrow.down")
+                        }
+                    #endif
                 }
             }
             .navigationTitle("Satin Examples")
@@ -258,11 +259,9 @@ struct ContentView: View {
                 }
             #endif
 
-
             #if os(macOS)
-            ScreenCaptureRendererView()
+                ScreenCaptureRendererView()
             #endif
-
         }
     }
 
