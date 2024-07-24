@@ -50,6 +50,11 @@ public final actor ShaderLibrarySourceCache {
             shadowCount: configuration.shadowCount
         )
 
+//      injectParametersArgs(
+//            source: &source,
+//            instancing: configuration.parameters
+//        )
+
         injectShadowBuffer(
             source: &source,
             receiveShadow: configuration.receiveShadow,
@@ -85,6 +90,11 @@ public final actor ShaderLibrarySourceCache {
             source: &source,
             instancing: configuration.instancing
         )
+
+//      injectUniformParametersArgs(
+//            source: &source,
+//            instancing: configuration.parameters
+//        )
 
         injectShadowCoords(
             source: &source,

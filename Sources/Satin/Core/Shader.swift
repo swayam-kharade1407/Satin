@@ -311,6 +311,9 @@ open class Shader {
             error = nil
         } catch {
             print("\(label) Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Shader Path: \(url.path)")
+            }
             self.error = error
             pipeline = nil
             pipelineReflection = nil
@@ -325,6 +328,9 @@ open class Shader {
             shadowError = nil
         } catch {
             print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Shader Path: \(url.path)")
+            }
             shadowError = error
             shadowPipeline = nil
         }
@@ -339,6 +345,9 @@ open class Shader {
             }
         } catch {
             print("\(label) Shader Parameters: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Shader Path: \(url.path)")
+            }
         }
 
         parametersNeedsUpdate = false

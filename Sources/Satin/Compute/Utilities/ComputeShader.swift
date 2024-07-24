@@ -293,6 +293,9 @@ open class ComputeShader {
             }
         } catch {
             print("\(label) Compute Shader Parameters: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Compute Shader Path: \(url.path)")
+            }
         }
 
         parametersNeedsUpdate = false
@@ -311,6 +314,9 @@ open class ComputeShader {
             }
         } catch {
             print("\(label) Compute Shader Buffers: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Compute Shader Path: \(url.path)")
+            }
         }
 
         buffersNeedsUpdate = false

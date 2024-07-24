@@ -51,6 +51,16 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     open var isFoveationEnabled: Bool { true }
     open var layerLayout: LayerRenderer.Layout { .dedicated }
 
+    public var defaultContext: Context {
+        Context(
+            device: device,
+            sampleCount: sampleCount,
+            colorPixelFormat: colorPixelFormat,
+            depthPixelFormat: depthPixelFormat,
+            vertexAmplificationCount: layerRenderer.configuration.layout == .layered ? 2 : 1
+        )
+    }
+
     private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
 
     internal var onDisappearAction: (() -> Void)?

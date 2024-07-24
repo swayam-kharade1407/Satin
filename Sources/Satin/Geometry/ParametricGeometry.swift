@@ -14,7 +14,7 @@ import SatinCore
 #endif
 
 public final class ParametricGeometry: Geometry {
-    var rangeU: ClosedRange<Float> = 0.0 ... 1.0 {
+    public var rangeU: ClosedRange<Float> = 0.0 ... 1.0 {
         didSet {
             if oldValue != rangeV {
                 _updateGeometry = true
@@ -22,7 +22,7 @@ public final class ParametricGeometry: Geometry {
         }
     }
 
-    var rangeV: ClosedRange<Float> = 0.0 ... 1.0 {
+    public var rangeV: ClosedRange<Float> = 0.0 ... 1.0 {
         didSet {
             if oldValue != rangeV {
                 _updateGeometry = true
@@ -30,13 +30,13 @@ public final class ParametricGeometry: Geometry {
         }
     }
 
-    var generator: (Float, Float) -> simd_float3 {
+    public var generator: (Float, Float) -> simd_float3 {
         didSet {
             _updateGeometry = true
         }
     }
 
-    var resolution: simd_int2 {
+    public var resolution: simd_int2 {
         didSet {
             if oldValue != resolution {
                 _updateGeometry = true

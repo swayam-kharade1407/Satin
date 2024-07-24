@@ -230,7 +230,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     public func save(_ url: URL, baseURL _: URL? = nil) {
         do {
             let jsonEncoder = JSONEncoder()
-            jsonEncoder.outputFormatting = .prettyPrinted
+            jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let payload: Data = try jsonEncoder.encode(self)
             try payload.write(to: url)
             delegate?.saved(group: self)

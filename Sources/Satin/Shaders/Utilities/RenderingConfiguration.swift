@@ -48,14 +48,6 @@ public struct RenderingConfiguration: Hashable {
     func getDefines() -> [ShaderDefine] {
         var results = defines
 
-#if os(iOS)
-        results.append(ShaderDefine(key: "MOBILE", value: NSString(string: "true")))
-#endif
-
-#if DEBUG
-        results.append(ShaderDefine(key: "DEBUG", value: NSString(string: "true")))
-#endif
-
         for attribute in VertexAttributeIndex.allCases {
             switch vertexDescriptor.attributes[attribute.rawValue].format {
                 case .invalid:

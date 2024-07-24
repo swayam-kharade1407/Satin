@@ -234,7 +234,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
     public func save(url: URL) {
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = .prettyPrinted
+        jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         do {
             let payload: Data = try jsonEncoder.encode(self)
             try payload.write(to: url)

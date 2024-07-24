@@ -41,6 +41,7 @@ public func injectConstants(source: inout String, constants: [String]) {
 public func injectDefines(source: inout String, defines: [ShaderDefine]) {
     var injection = ""
     for define in defines { injection += define.description }
+    for define in ShaderDefine.defaultDefines { injection += define.description }
     source = source.replacingOccurrences(of: "// inject defines\n", with: injection.isEmpty ? "\n" : injection + "\n")
 }
 

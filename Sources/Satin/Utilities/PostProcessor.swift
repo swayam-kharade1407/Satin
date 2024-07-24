@@ -87,7 +87,6 @@ open class PostProcessor {
         )
     }
 
-
     open func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         renderer.resize(size)
     }

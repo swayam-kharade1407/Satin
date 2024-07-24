@@ -20,15 +20,7 @@ public struct ComputeConfiguration: Equatable, Hashable {
     }
 
     func getDefines() -> [ShaderDefine] {
-        var results = defines
-#if !os(macOS)
-        results.append(ShaderDefine(key: "MOBILE", value: NSString(string: "true")))
-#endif
-
-#if DEBUG
-        results.append(ShaderDefine(key: "DEBUG", value: NSString(string: "true")))
-#endif
-        return results
+        defines
     }
 
     func getConstants() -> [String] {

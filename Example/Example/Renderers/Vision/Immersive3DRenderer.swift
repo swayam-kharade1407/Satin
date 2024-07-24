@@ -30,12 +30,13 @@ final class Immersive3DRenderer: MetalLayerRenderer {
 
     lazy var renderer = Renderer(context: context, clearColor: .zero)
 
-    override var layerLayout: LayerRenderer.Layout { .layered }
+//    override var layerLayout: LayerRenderer.Layout { .layered }
+    override var layerLayout: LayerRenderer.Layout { .dedicated }
 
-    let planeDetectionProvider = PlaneDetectionProvider(alignments: [.horizontal])
+//    let planeDetectionProvider = PlaneDetectionProvider(alignments: [.horizontal])
     override var arSessionDataProviders: [any DataProvider] {
         var providers = super.arSessionDataProviders
-        providers.append(planeDetectionProvider)
+//        providers.append(planeDetectionProvider)
         print(providers)
         return providers
     }
@@ -44,20 +45,17 @@ final class Immersive3DRenderer: MetalLayerRenderer {
         mesh.position.y = 1.0
         mesh.position.z = -1
 
-        Task {
-            for await anchor in planeDetectionProvider.anchorUpdates {
-                print(anchor)
-            }
-        }
+//        Task {
+//            for await anchor in planeDetectionProvider.anchorUpdates {
+//                print(anchor)
+//            }
+//        }
     }
 
     override func update() {
         let theta = Float(getTime() - startTime)
         mesh.orientation = simd_quatf(angle: theta * 0.75, axis: simd_normalize(simd_make_float3(sin(theta), cos(theta), 1.0)))
         scene.update()
-
-
-
     }
 
     override func draw(

@@ -10,7 +10,7 @@ import SatinCore
 #endif
 
 public final class ExtrudedRoundedRectGeometry: SatinGeometry {
-    var size: simd_float3 {
+    public var size: simd_float3 {
         didSet {
             if oldValue != size {
                 _updateGeometryData = true
@@ -18,7 +18,7 @@ public final class ExtrudedRoundedRectGeometry: SatinGeometry {
         }
     }
 
-    var radius: Float {
+    public var radius: Float {
         didSet {
             if oldValue != radius {
                 _updateGeometryData = true
@@ -26,7 +26,7 @@ public final class ExtrudedRoundedRectGeometry: SatinGeometry {
         }
     }
 
-    var angularResolution: Int = 32 {
+    public var angularResolution: Int = 32 {
         didSet {
             if oldValue != angularResolution {
                 _updateGeometryData = true
@@ -34,7 +34,7 @@ public final class ExtrudedRoundedRectGeometry: SatinGeometry {
         }
     }
 
-    var radialResolution: Int = 32 {
+    public var radialResolution: Int = 32 {
         didSet {
             if oldValue != radialResolution {
                 _updateGeometryData = true
@@ -42,7 +42,7 @@ public final class ExtrudedRoundedRectGeometry: SatinGeometry {
         }
     }
 
-    var depthResolution: Int = 1 {
+    public var depthResolution: Int = 1 {
         didSet {
             if oldValue != depthResolution {
                 _updateGeometryData = true

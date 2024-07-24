@@ -176,8 +176,14 @@ open class Renderer {
 
     // MARK: - Drawing
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, camera: Camera, viewport: MTLViewport? = nil, renderTarget: MTLTexture)
-    {
+    public func draw(
+        renderPassDescriptor: MTLRenderPassDescriptor,
+        commandBuffer: MTLCommandBuffer,
+        scene: Object,
+        camera: Camera,
+        viewport: MTLViewport? = nil,
+        renderTarget: MTLTexture
+    ) {
         if context.sampleCount > 1 {
             let resolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
             renderPassDescriptor.colorAttachments[0].resolveTexture = renderTarget
@@ -185,7 +191,8 @@ open class Renderer {
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
                 scene: scene,
-                camera: camera
+                cameras: [camera],
+                viewports: [viewport ?? self.viewport]
             )
             renderPassDescriptor.colorAttachments[0].resolveTexture = resolveTexture
         } else {
@@ -195,7 +202,8 @@ open class Renderer {
                 renderPassDescriptor: renderPassDescriptor,
                 commandBuffer: commandBuffer,
                 scene: scene,
-                camera: camera
+                cameras: [camera],
+                viewports: [viewport ?? self.viewport]
             )
             renderPassDescriptor.colorAttachments[0].texture = renderTexture
         }

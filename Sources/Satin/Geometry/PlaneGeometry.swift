@@ -21,7 +21,7 @@ public final class PlaneGeometry: SatinGeometry {
     }
 
 
-    var width: Float {
+    public var width: Float {
         get {
             size.x
         }
@@ -30,7 +30,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    var height: Float {
+    public var height: Float {
         get {
             size.y
         }
@@ -39,7 +39,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    var size: simd_float2 = .init(repeating: 2) {
+    public var size: simd_float2 = .init(repeating: 2) {
         didSet {
             if oldValue != size {
                 _updateGeometryData = true
@@ -47,7 +47,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    var resolution: simd_int2 = .init(repeating: 1)  {
+    public var resolution: simd_int2 = .init(repeating: 1)  {
         didSet {
             if oldValue != resolution {
                 _updateGeometryData = true
@@ -55,7 +55,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    var orientation: PlaneOrientation = .xy  {
+    public var orientation: PlaneOrientation = .xy  {
         didSet {
             if oldValue != orientation {
                 _updateGeometryData = true
@@ -63,7 +63,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    var centered: Bool = true  {
+    public var centered: Bool = true  {
         didSet {
             if oldValue != centered {
                 _updateGeometryData = true
