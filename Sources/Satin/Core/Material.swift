@@ -98,7 +98,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public let parametersSetPublisher = PassthroughSubject<ParameterGroup, Never>()
     public private(set) lazy var parameters: ParameterGroup = {
-        let params = ParameterGroup(label)
+        let params = ParameterGroup("\(label) Uniforms")
         params.delegate = self
         return params
     }() {
