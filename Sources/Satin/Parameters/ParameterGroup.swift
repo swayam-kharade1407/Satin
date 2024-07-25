@@ -215,8 +215,10 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         } catch {
             print(error.localizedDescription)
         }
-        params = try container.decode([AnyParameter].self, forKey: .params).map { $0.base }
-        for param in params {
+        let baseParams = try container.decode([AnyParameter].self, forKey: .params)
+        for baseParam in baseParams {
+            let param = baseParam.base
+            params.append(param)
             paramsMap[param.label] = param
         }
     }
@@ -227,7 +229,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         try container.encode(params.map(AnyParameter.init), forKey: .params)
     }
 
-    public func save(_ url: URL, baseURL _: URL? = nil) {
+    public func save(_ url: URL) {
         do {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -239,7 +241,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    public func load(_ url: URL, append: Bool = true, baseURL _: URL? = nil) {
+    public func load(_ url: URL, append: Bool = true) {
         do {
             let jsonDecoder = JSONDecoder()
             let data = try Data(contentsOf: url)
