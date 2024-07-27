@@ -147,12 +147,12 @@ open class Mesh: Object, Renderable {
 
     public internal(set) var submeshes: [Submesh] = []
 
-    public init(label: String = "Mesh", geometry: Geometry, material: Material?, renderOrder: Int = 0, renderPass: Int = 0) {
+    public init(label: String = "Mesh", geometry: Geometry, material: Material?, visible: Bool = true, renderOrder: Int = 0, renderPass: Int = 0) {
         self.geometry = geometry
         self.material = material
         self.renderOrder = renderOrder
         self.renderPass = renderPass
-        super.init(label: label)
+        super.init(label: label, visible: visible)
     }
 
     // MARK: - Decode
