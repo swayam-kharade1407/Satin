@@ -35,9 +35,13 @@ open class BasicPointMaterial: Material {
         }
     }
 
-    public init(color: simd_float4, size: Float, blending: Blending = .alpha) {
+    public init(color: simd_float4, size: Float, blending: Blending = .alpha, depthWriteEnabled: Bool = true, depthCompareFunction: MTLCompareFunction = .greaterEqual) {
         super.init()
+
         self.blending = blending
+        self.depthWriteEnabled = depthWriteEnabled
+        self.depthCompareFunction = depthCompareFunction
+
         set("Color", color)
         set("Point Size", size)
         set("Content Scale", contentScale)
