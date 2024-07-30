@@ -2,8 +2,8 @@
 
 typedef struct {
     float4 color;       // color
-    float contentScale; // slider,1,3,1
-    float pointSize;    // slider,0,64,2
+    float size;
+    float sizeHalf;
 } BasicPointUniforms;
 
 typedef struct {
@@ -28,7 +28,7 @@ vertex BasicPointCustomVertexData basicPointVertex(
 #else
     out.position = vertexUniforms[amp_id].modelViewProjectionMatrix * position;
 #endif
-    out.pointSize = uniforms.pointSize * uniforms.contentScale;
+    out.pointSize = uniforms.size + 1.0;
     return out;
 }
 
@@ -42,10 +42,13 @@ fragment FragOut basicPointFragment(
     const float2 puv [[point_coord]],
     constant BasicPointUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
 {
-    const float2 uv = 2.0 * puv - 1.0;
-    float result = Circle(uv, 1.0);
-    result = smoothstep(0.05, 0.0 - fwidth(result), result);
-    if (result < 0.05) { discard_fragment(); }
+    const float size = uniforms.size;
+    const float sizeHalf = uniforms.sizeHalf;
+
+    const float2 uv = size * puv - sizeHalf;
+    float result = length(uv);
+    result = smoothstep(sizeHalf, sizeHalf - 1.0, result);
+
     FragOut out;
     out.color = float4(uniforms.color.rgb, uniforms.color.a * result);
     out.depth = mix(0.0, in.position.z, result);

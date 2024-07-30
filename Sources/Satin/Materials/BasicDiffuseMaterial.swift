@@ -11,7 +11,7 @@ import simd
 public final class BasicDiffuseMaterial: BasicColorMaterial {
     var hardness: Float {
         get {
-            (get("Hardness") as? FloatParameter)!.value
+            get("Hardness", as: FloatParameter.self)!.value
         }
         set {
             set("Hardness", newValue)

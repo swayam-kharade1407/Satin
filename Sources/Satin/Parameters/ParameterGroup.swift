@@ -6,9 +6,9 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import Metal
 import Combine
 import Foundation
+import Metal
 import simd
 
 public protocol ParameterGroupDelegate: AnyObject {
@@ -86,7 +86,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         let key = param.label
         paramsMap.removeValue(forKey: key)
         paramSubscriptions.removeValue(forKey: key)
-        
+
         for (i, p) in params.enumerated() {
             if p.label == key {
                 params.remove(at: i)
@@ -150,14 +150,14 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         return copy
     }
 
-    public func setFrom(_ incomingParams: ParameterGroup, setValues: Bool = false, setOptions: Bool = true) {
-        var order: [String] = []
+    public func setFrom(_ incomingParams: ParameterGroup, setValues: Bool = false, setOptions: Bool = true, setControls: Bool = true) {
+        var incomingKeysOrdered: [String] = []
         for param in incomingParams.params {
-            order.append(param.label)
+            incomingKeysOrdered.append(param.label)
         }
 
-        let incomingKeys = Set(Array(incomingParams.paramsMap.keys))
-        let exisitingKeys = Set(Array(self.paramsMap.keys))
+        let incomingKeys = Set(incomingKeysOrdered)
+        let exisitingKeys = Set(self.paramsMap.keys)
 
         let newKeys = incomingKeys.subtracting(exisitingKeys)
         let commonKeys = exisitingKeys.intersection(incomingKeys)
@@ -177,7 +177,13 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
         for key in commonKeys {
             if let inParam = incomingParams.paramsMap[key] {
-                setParameterFrom(param: inParam, setValue: setValues, setOptions: setOptions, append: false)
+                setParameterFrom(
+                    param: inParam,
+                    setValue: setValues,
+                    setOptions: setOptions,
+                    setControl: setControls,
+                    append: false
+                )
             }
         }
 
@@ -185,7 +191,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
         clear()
 
-        for key in order {
+        for key in incomingKeysOrdered {
             if let param = paramsMap[key] {
                 append(param)
             }
@@ -193,12 +199,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     public func setValuesFrom(_ incomingParams: ParameterGroup) {
-        let incomingKeys = Set(Array(incomingParams.paramsMap.keys))
-        let exisitingKeys = Set(Array(paramsMap.keys))
+        let incomingKeys = Set(incomingParams.paramsMap.keys)
+        let exisitingKeys = Set(paramsMap.keys)
         let commonKeys = exisitingKeys.intersection(incomingKeys)
         for key in commonKeys {
             if let inParam = incomingParams.paramsMap[key] {
-                setParameterFrom(param: inParam, setValue: true, setOptions: false, append: false)
+                setParameterFrom(param: inParam, setValue: true, setOptions: false, setControl: false, append: false)
             }
         }
     }
@@ -229,9 +235,10 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         try container.encode(params.map(AnyParameter.init), forKey: .params)
     }
 
-    public func save(_ url: URL) {
+    public func save(_ url: URL, ignoreControlTypeNone: Bool = false) {
         do {
             let jsonEncoder = JSONEncoder()
+            jsonEncoder.userInfo[.ignoreControlTypeNone] = ignoreControlTypeNone
             jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let payload: Data = try jsonEncoder.encode(self)
             try payload.write(to: url)
@@ -241,13 +248,19 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    public func load(_ url: URL, append: Bool = true) {
+    public func load(_ url: URL, values: Bool = true, options: Bool = true, controls: Bool = true, append: Bool = true) {
         do {
             let jsonDecoder = JSONDecoder()
             let data = try Data(contentsOf: url)
             let loaded = try jsonDecoder.decode(ParameterGroup.self, from: data)
             for param in loaded.params {
-                setParameterFrom(param: param, setValue: true, setOptions: false, append: append)
+                setParameterFrom(
+                    param: param,
+                    setValue: values,
+                    setOptions: options,
+                    setControl: controls,
+                    append: append
+                )
             }
             delegate?.loaded(group: self)
         } catch {
@@ -255,11 +268,14 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
-    func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, append: Bool = true) {
+    func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, setControl: Bool, append: Bool) {
         let label = param.label
         if append, paramsMap[label] == nil {
             self.append(param)
         } else if let mp = paramsMap[label] {
+            if setControl {
+                mp.controlType = param.controlType
+            }
             if let p = param as? FloatParameter, let mfp = mp as? FloatParameter {
                 if setValue {
                     mfp.value = p.value
@@ -267,7 +283,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mfp.min = p.min
                     mfp.max = p.max
-                    mfp.controlType = p.controlType
                 }
             } else if let p = param as? Float2Parameter, let mfp = mp as? Float2Parameter {
                 if setValue {
@@ -276,7 +291,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mfp.min = p.min
                     mfp.max = p.max
-                    mfp.controlType = p.controlType
                 }
             } else if let p = param as? Float3Parameter, let mfp = mp as? Float3Parameter {
                 if setValue {
@@ -285,7 +299,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mfp.min = p.min
                     mfp.max = p.max
-                    mfp.controlType = p.controlType
                 }
             } else if let p = param as? PackedFloat3Parameter, let mfp = mp as? PackedFloat3Parameter {
                 if setValue {
@@ -294,7 +307,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mfp.min = p.min
                     mfp.max = p.max
-                    mfp.controlType = p.controlType
                 }
             } else if let p = param as? Float4Parameter, let mfp = mp as? Float4Parameter {
                 if setValue {
@@ -303,7 +315,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mfp.min = p.min
                     mfp.max = p.max
-                    mfp.controlType = p.controlType
                 }
             } else if let p = param as? IntParameter, let mip = mp as? IntParameter {
                 if setValue {
@@ -312,8 +323,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mip.min = p.min
                     mip.max = p.max
-                    mip.controlType = p.controlType
                 }
+
             } else if let p = param as? Int2Parameter, let mip = mp as? Int2Parameter {
                 if setValue {
                     mip.value = p.value
@@ -321,8 +332,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mip.min = p.min
                     mip.max = p.max
-                    mip.controlType = p.controlType
                 }
+
             } else if let p = param as? Int3Parameter, let mip = mp as? Int3Parameter {
                 if setValue {
                     mip.value = p.value
@@ -330,8 +341,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mip.min = p.min
                     mip.max = p.max
-                    mip.controlType = p.controlType
                 }
+
             } else if let p = param as? DoubleParameter, let mdp = mp as? DoubleParameter {
                 if setValue {
                     mdp.value = p.value
@@ -339,14 +350,10 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mdp.min = p.min
                     mdp.max = p.max
-                    mdp.controlType = p.controlType
                 }
             } else if let p = param as? BoolParameter, let mbp = mp as? BoolParameter {
                 if setValue {
                     mbp.value = p.value
-                }
-                if setOptions {
-                    mbp.controlType = p.controlType
                 }
             } else if let p = param as? StringParameter, let mbp = mp as? StringParameter {
                 if setValue {
@@ -354,7 +361,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 }
                 if setOptions {
                     mbp.options = p.options
-                    mbp.controlType = p.controlType
                 }
             } else if let p = param as? UInt32Parameter, let mbp = mp as? UInt32Parameter {
                 if setValue {
@@ -363,37 +369,31 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 if setOptions {
                     mbp.min = p.min
                     mbp.max = p.max
-                    mbp.controlType = p.controlType
                 }
             } else if let p = param as? Float3x3Parameter, let mbp = mp as? Float3x3Parameter {
                 if setValue {
                     mbp.value = p.value
                 }
-                if setOptions {
-                    mbp.controlType = p.controlType
-                }
+
             } else if let p = param as? Float4x4Parameter, let mbp = mp as? Float4x4Parameter {
                 if setValue {
                     mbp.value = p.value
-                }
-                if setOptions {
-                    mbp.controlType = p.controlType
                 }
             }
         }
     }
 
-    var _size = 0
-    var _stride = 0
-    var _alignment = 0
-    var _dataAllocated = false
-    var _reallocateData = false
-    var _updateSize = true
-    var _updateStride = true
-    var _updateAlignment = true
-    var _updateData = true
+    private var _size = 0
+    private var _stride = 0
+    private var _alignment = 0
+    private var _dataAllocated = false
+    private var _reallocateData = false
+    private var _updateSize = true
+    private var _updateStride = true
+    private var _updateAlignment = true
+    private var _updateData = true
 
-    func updateSize() {
+    private func updateSize() {
         var result = 0
         for param in params {
             let size = param.size
@@ -416,7 +416,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         return _size
     }
 
-    func updateStride() {
+    private func updateStride() {
         var result = size
         let alignment = self.alignment
         let rem = result % alignment
@@ -435,7 +435,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         return _stride
     }
 
-    func updateAlignment() {
+    private func updateAlignment() {
         var result = 0
         for param in params {
             result = max(result, param.alignment)
@@ -463,12 +463,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         return source
     }
 
-    lazy var _data: UnsafeMutableRawPointer = {
+    private lazy var _data: UnsafeMutableRawPointer = {
         _dataAllocated = true
         return UnsafeMutableRawPointer.allocate(byteCount: size, alignment: alignment)
     }()
 
-    func allocateData() -> UnsafeMutableRawPointer {
+    private func allocateData() -> UnsafeMutableRawPointer {
         if _dataAllocated {
             _data.deallocate()
         }
@@ -488,7 +488,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         return UnsafeRawPointer(_data)
     }
 
-    func updateData() {
+    private func updateData() {
         var pointer = _data
         var offset = 0
         for param in params {
@@ -594,6 +594,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
         }
     }
 
+    public func set(_ name: String, _ value: UInt32) {
+        if let param = get(name), let p = param as? UInt32Parameter {
+            p.value = value
+        }
+    }
+
     public func set(_ name: String, _ value: Bool) {
         if let param = get(name), let p = param as? BoolParameter {
             p.value = value
@@ -602,6 +608,10 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
     public func get(_ name: String) -> (any Parameter)? {
         return paramsMap[name] ?? paramsMap[name.titleCase]
+    }
+
+    public func get<T>(_ name: String, as: T.Type) -> T? {
+        return get(name) as? T
     }
 
     public func updated(parameter: any Parameter) {

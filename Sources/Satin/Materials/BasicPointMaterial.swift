@@ -11,31 +11,29 @@ import simd
 open class BasicPointMaterial: Material {
     public var color: simd_float4 {
         get {
-            (get("Color") as! Float4Parameter).value
+            get("Color", as: Float4Parameter.self)!.value
         }
         set {
             set("Color", newValue)
         }
     }
 
-    public var pointSize: Float {
-        get {
-            (get("Point Size") as! FloatParameter).value
-        }
-        set {
-            set("Point Size", newValue)
+    public var pointSize: Float = 2.0 {
+        didSet {
+            updateSize()
         }
     }
 
     public var contentScale: Float = 1.0 {
         didSet {
-            if contentScale != oldValue {
-                set("Content Scale", contentScale)
-            }
+            updateSize()
         }
     }
 
     public init(color: simd_float4, size: Float, blending: Blending = .alpha, depthWriteEnabled: Bool = true, depthCompareFunction: MTLCompareFunction = .greaterEqual) {
+        
+        pointSize = size
+
         super.init()
 
         self.blending = blending
@@ -43,16 +41,19 @@ open class BasicPointMaterial: Material {
         self.depthCompareFunction = depthCompareFunction
 
         set("Color", color)
-        set("Point Size", size)
-        set("Content Scale", contentScale)
     }
 
     public required init() {
         super.init()
+
         blending = .alpha
         set("Color", simd_float4.one)
-        set("Point Size", 2.0)
-        set("Content Scale", contentScale)
+    }
+
+    private func updateSize() {
+        let size = pointSize * contentScale
+        set("Size", size)
+        set("Size Half", size * 0.5)
     }
 
     public required init(from decoder: Decoder) throws {

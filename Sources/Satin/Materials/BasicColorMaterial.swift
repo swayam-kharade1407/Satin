@@ -12,10 +12,10 @@ import simd
 open class BasicColorMaterial: Material {
     public var color: simd_float4 {
         set {
-            (get("Color") as! Float4Parameter).value = newValue
+            set("Color", newValue)
         }
         get {
-            (get("Color") as! Float4Parameter).value
+            get("Color", as: Float4Parameter.self)!.value
         }
     }
 

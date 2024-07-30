@@ -19,7 +19,7 @@ open class SkyboxMaterial: BasicTextureMaterial {
 
     public var texcoordTransform: simd_float3x3 {
         get {
-            (get("Texcoord Transform") as! Float3x3Parameter).value
+            get("Texcoord Transform", as: Float3x3Parameter.self)!.value
         }
         set {
             set("Texcoord Transform", newValue)
@@ -28,7 +28,7 @@ open class SkyboxMaterial: BasicTextureMaterial {
 
     public var environmentIntensity: Float {
         get {
-            (get("Environment Intensity") as! FloatParameter).value
+            get("Environment Intensity", as: FloatParameter.self)!.value
         }
         set {
             set("Environment Intensity", newValue)
@@ -37,7 +37,7 @@ open class SkyboxMaterial: BasicTextureMaterial {
 
     public var blur: Float {
         get {
-            (get("Blur") as! FloatParameter).value
+            get("Blur", as: FloatParameter.self)!.value
         }
         set {
             set("Blur", newValue)
@@ -54,7 +54,7 @@ open class SkyboxMaterial: BasicTextureMaterial {
 
     public var gammaCorrection: Float {
         get {
-            (get("Gamma Correction") as! FloatParameter).value
+            get("Gamma Correction", as: FloatParameter.self)!.value
         }
         set {
             set("Gamma Correction", newValue)

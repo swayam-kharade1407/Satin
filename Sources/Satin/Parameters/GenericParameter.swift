@@ -10,7 +10,7 @@ import Foundation
 
 public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObject {
     public var id: String = UUID().uuidString
-    
+
     public typealias ValueType = T
 
     // Delegate
@@ -41,29 +41,52 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
         }
     }
 
+    public var defaultValue: ValueType
+
     private enum CodingKeys: String, CodingKey {
         case controlType
         case label
         case value
+        case defaultValue
     }
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+
         controlType = try container.decode(ControlType.self, forKey: .controlType)
+
         label = try container.decode(String.self, forKey: .label)
-        value = try container.decode(ValueType.self, forKey: .value)
+
+        let value = try container.decode(ValueType.self, forKey: .value)
+        
+        self.value = value
+
+        if let defaultValue = try container.decodeIfPresent(ValueType.self, forKey: .defaultValue) {
+            self.defaultValue = defaultValue
+        }
+        else {
+            defaultValue = value
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(controlType, forKey: .controlType)
         try container.encode(label, forKey: .label)
-        try container.encode(value, forKey: .value)
+
+        var saveDefaultValueInPlaceOfValue = false
+        if controlType == .none, let ignoreControlTypeNone = encoder.userInfo[.ignoreControlTypeNone] as? Bool {
+            saveDefaultValueInPlaceOfValue = ignoreControlTypeNone
+        }
+
+        try container.encode(saveDefaultValueInPlaceOfValue ? defaultValue : value, forKey: .value)
+        try container.encode(defaultValue, forKey: .defaultValue)
     }
 
     public init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.label = label
         self.value = value
+        defaultValue = value
         self.controlType = controlType
     }
 

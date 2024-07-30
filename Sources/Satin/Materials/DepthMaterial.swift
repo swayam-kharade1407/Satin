@@ -10,7 +10,7 @@ import Metal
 public final class DepthMaterial: Material {
     public var color: Bool {
         get {
-            (get("Color") as! BoolParameter).value
+            get("Color", as: BoolParameter.self)!.value
         }
         set {
             set("Color", newValue)
@@ -19,7 +19,7 @@ public final class DepthMaterial: Material {
 
     public var invert: Bool {
         get {
-            (get("Invert") as! BoolParameter).value
+            get("Invert", as: BoolParameter.self)!.value
         }
         set {
             set("Invert", newValue)
@@ -28,7 +28,7 @@ public final class DepthMaterial: Material {
 
     public var near: Float {
         get {
-            (get("Near") as! FloatParameter).value
+            get("Near", as: FloatParameter.self)!.value
         }
         set {
             set("Near", newValue)
@@ -37,7 +37,7 @@ public final class DepthMaterial: Material {
 
     public var far: Float {
         get {
-            (get("Far") as! FloatParameter).value
+            get("Far", as: FloatParameter.self)!.value
         }
         set {
             set("Far", newValue)

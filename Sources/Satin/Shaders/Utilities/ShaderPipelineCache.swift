@@ -88,7 +88,12 @@ public final actor ShaderPipelineCache {
         setupRenderPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
         var pipelineReflection: MTLRenderPipelineReflection?
-        let pipeline = try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo], reflection: &pipelineReflection)
+        
+        let pipeline = try context.device.makeRenderPipelineState(
+            descriptor: descriptor,
+            options: [.argumentInfo, .bufferTypeInfo],
+            reflection: &pipelineReflection
+        )
 
         pipelineCacheQueue.sync(flags: .barrier) {
             pipelineCache[configuration] = pipeline

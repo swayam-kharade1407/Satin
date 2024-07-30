@@ -15,7 +15,7 @@ import simd
 open class PhysicalMaterial: StandardMaterial {
     public var subsurface: Float {
         get {
-            (get("Subsurface") as? FloatParameter)!.value
+            get("Subsurface", as: FloatParameter.self)!.value
         }
         set {
             set("Subsurface", newValue)
@@ -24,7 +24,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var anisotropic: Float {
         get {
-            (get("Anisotropic") as? FloatParameter)!.value
+            get("Anisotropic", as: FloatParameter.self)!.value
         }
         set {
             set("Anisotropic", newValue)
@@ -33,7 +33,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var anisotropicAngle: Float {
         get {
-            (get("Anisotropic Angle") as? FloatParameter)!.value
+            get("Anisotropic Angle", as: FloatParameter.self)!.value
         }
         set {
             set("Anisotropic Angle", newValue)
@@ -42,7 +42,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var specularTint: Float {
         get {
-            (get("Specular Tint") as? FloatParameter)!.value
+            get("Specular Tint", as: FloatParameter.self)!.value
         }
         set {
             set("Specular Tint", newValue)
@@ -51,7 +51,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var clearcoat: Float {
         get {
-            (get("Clearcoat") as? FloatParameter)!.value
+            get("Clearcoat", as: FloatParameter.self)!.value
         }
         set {
             set("Clearcoat", newValue)
@@ -60,7 +60,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var clearcoatRoughness: Float {
         get {
-            (get("Clearcoat Roughness") as? FloatParameter)!.value
+            get("Clearcoat Roughness", as: FloatParameter.self)!.value
         }
         set {
             set("Clearcoat Roughness", newValue)
@@ -69,7 +69,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var sheen: Float {
         get {
-            (get("Sheen") as? FloatParameter)!.value
+            get("Sheen", as: FloatParameter.self)!.value
         }
         set {
             set("Sheen", newValue)
@@ -78,7 +78,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var sheenTint: Float {
         get {
-            (get("Sheen Tint") as? FloatParameter)!.value
+            get("Sheen Tint", as: FloatParameter.self)!.value
         }
         set {
             set("Sheen Tint", newValue)
@@ -87,7 +87,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var transmission: Float {
         get {
-            (get("Transmission") as? FloatParameter)!.value
+            get("Transmission", as: FloatParameter.self)!.value
         }
         set {
             set("Transmission", newValue)
@@ -96,7 +96,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var thickness: Float {
         get {
-            (get("Thickness") as? FloatParameter)!.value
+            get("Thickness", as: FloatParameter.self)!.value
         }
         set {
             set("Thickness", newValue)
@@ -105,7 +105,7 @@ open class PhysicalMaterial: StandardMaterial {
 
     public var ior: Float {
         get {
-            (get("Ior") as? FloatParameter)!.value
+            get("Ior", as: FloatParameter.self)!.value
         }
         set {
             set("Ior", newValue)

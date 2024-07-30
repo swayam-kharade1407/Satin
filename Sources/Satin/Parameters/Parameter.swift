@@ -18,6 +18,7 @@ public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
 
     var id: String { get }
     var value: ValueType { get set }
+    var defaultValue: ValueType { get set }
 
     var type: ParameterType { get }
     var string: String { get }
@@ -45,6 +46,7 @@ public enum ControlType: String, Codable {
     case none
     case slider
     case multislider
+    case rangeslider
     case xypad
     case toggle
     case button

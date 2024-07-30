@@ -250,6 +250,16 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         }
     }
 
+    // MARK: - Textures
+
+    public func set(_ texture: MTLTexture?, index: ComputeTextureIndex) {
+        if let texture = texture {
+            computeTextures[index] = texture
+        } else {
+            computeTextures.removeValue(forKey: index)
+        }
+    }
+
     // MARK: - Parameters
 
     public func set(_ name: String, _ value: [Float]) {
@@ -279,7 +289,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: Float) {
-        if let param = parameters.get(name) as? FloatParameter {
+        if let param = parameters.get(name, as: FloatParameter.self) {
             param.value = value
         } else {
             parameters.append(FloatParameter(name, value))
@@ -287,7 +297,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_float2) {
-        if let param = parameters.get(name) as? Float2Parameter {
+        if let param = parameters.get(name, as: Float2Parameter.self) {
             param.value = value
         } else {
             parameters.append(Float2Parameter(name, value))
@@ -295,7 +305,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_float3) {
-        if let param = parameters.get(name) as? Float3Parameter {
+        if let param = parameters.get(name, as: Float3Parameter.self) {
             param.value = value
         } else {
             parameters.append(Float3Parameter(name, value))
@@ -303,15 +313,39 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_float4) {
-        if let param = parameters.get(name) as? Float4Parameter {
+        if let param = parameters.get(name, as: Float4Parameter.self) {
             param.value = value
         } else {
             parameters.append(Float4Parameter(name, value))
         }
     }
 
+    public func set(_ name: String, _ value: simd_float2x2) {
+        if let param = parameters.get(name, as: Float2x2Parameter.self) {
+            param.value = value
+        } else {
+            parameters.append(Float2x2Parameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: simd_float3x3) {
+        if let param = parameters.get(name, as: Float3x3Parameter.self) {
+            param.value = value
+        } else {
+            parameters.append(Float3x3Parameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: simd_float4x4) {
+        if let param = parameters.get(name, as: Float4x4Parameter.self) {
+            param.value = value
+        } else {
+            parameters.append(Float4x4Parameter(name, value))
+        }
+    }
+
     public func set(_ name: String, _ value: Int) {
-        if let param = parameters.get(name) as? IntParameter {
+        if let param = parameters.get(name, as: IntParameter.self) {
             param.value = value
         } else {
             parameters.append(IntParameter(name, value))
@@ -319,7 +353,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_int2) {
-        if let param = parameters.get(name) as? Int2Parameter {
+        if let param = parameters.get(name, as: Int2Parameter.self) {
             param.value = value
         } else {
             parameters.append(Int2Parameter(name, value))
@@ -327,7 +361,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_int3) {
-        if let param = parameters.get(name) as? Int3Parameter {
+        if let param = parameters.get(name, as: Int3Parameter.self) {
             param.value = value
         } else {
             parameters.append(Int3Parameter(name, value))
@@ -335,10 +369,18 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     public func set(_ name: String, _ value: simd_int4) {
-        if let param = parameters.get(name) as? Int4Parameter {
+        if let param = parameters.get(name, as: Int4Parameter.self) {
             param.value = value
         } else {
             parameters.append(Int4Parameter(name, value))
+        }
+    }
+
+    public func set(_ name: String, _ value: UInt32) {
+        if let param = parameters.get(name, as: UInt32Parameter.self) {
+            param.value = value
+        } else {
+            parameters.append(UInt32Parameter(name, value))
         }
     }
 
@@ -350,40 +392,20 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         }
     }
 
-    public func set(_ name: String, _ value: simd_float2x2) {
-        if let param = parameters.get(name) as? Float2x2Parameter {
-            param.value = value
-        } else {
-            parameters.append(Float2x2Parameter(name, value))
-        }
+    public func setParameters(from incomingParams: ParameterGroup) {
+        parameters = incomingParams.clone()
     }
 
-    public func set(_ name: String, _ value: simd_float3x3) {
-        if let param = parameters.get(name) as? Float3x3Parameter {
-            param.value = value
-        } else {
-            parameters.append(Float3x3Parameter(name, value))
-        }
-    }
-
-    public func set(_ name: String, _ value: simd_float4x4) {
-        if let param = parameters.get(name) as? Float4x4Parameter {
-            param.value = value
-        } else {
-            parameters.append(Float4x4Parameter(name, value))
-        }
-    }
-
-    public func set(_ texture: MTLTexture?, index: ComputeTextureIndex) {
-        if let texture = texture {
-            computeTextures[index] = texture
-        } else {
-            computeTextures.removeValue(forKey: index)
-        }
+    public func setParameters(from material: Material) {
+        parameters = material.parameters.clone()
     }
 
     public func get(_ name: String) -> (any Parameter)? {
-        parameters.get(name)
+        return parameters.get(name)
+    }
+
+    public func get<T>(_ name: String, as: T.Type) -> T? {
+        return parameters.get(name, as: T.self)
     }
 
     internal func updateParameters(_ newParameters: ParameterGroup) {

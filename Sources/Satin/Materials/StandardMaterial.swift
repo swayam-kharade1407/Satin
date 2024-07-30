@@ -15,7 +15,7 @@ import simd
 open class StandardMaterial: Material {
     public var baseColor: simd_float4 {
         get {
-            (get("Base Color") as? Float4Parameter)!.value
+            get("Base Color", as: Float4Parameter.self)!.value
         }
         set {
             set("Base Color", newValue)
@@ -24,7 +24,7 @@ open class StandardMaterial: Material {
 
     public var emissiveColor: simd_float4 {
         get {
-            (get("Emissive Color") as? Float4Parameter)!.value
+            get("Emissive Color", as: Float4Parameter.self)!.value
         }
         set {
             set("Emissive Color", newValue)
@@ -33,7 +33,7 @@ open class StandardMaterial: Material {
 
     public var specular: Float {
         get {
-            (get("Specular") as? FloatParameter)!.value
+            get("Specular", as: FloatParameter.self)!.value
         }
         set {
             set("Specular", newValue)
@@ -42,7 +42,7 @@ open class StandardMaterial: Material {
 
     public var metallic: Float {
         get {
-            (get("Metallic") as? FloatParameter)!.value
+            get("Metallic", as: FloatParameter.self)!.value
         }
         set {
             set("Metallic", newValue)
@@ -51,7 +51,7 @@ open class StandardMaterial: Material {
 
     public var roughness: Float {
         get {
-            (get("Roughness") as? FloatParameter)!.value
+            get("Roughness", as: FloatParameter.self)!.value
         }
         set {
             set("Roughness", newValue)
@@ -60,7 +60,7 @@ open class StandardMaterial: Material {
 
     public var occlusion: Float {
         get {
-            (get("Occlusion") as? FloatParameter)!.value
+            get("Occlusion", as: FloatParameter.self)!.value
         }
         set {
             set("Occlusion", newValue)
@@ -69,7 +69,7 @@ open class StandardMaterial: Material {
 
     public var environmentIntensity: Float {
         get {
-            (get("Environment Intensity") as? FloatParameter)!.value
+            get("Environment Intensity", as: FloatParameter.self)!.value
         }
         set {
             set("Environment Intensity", newValue)
@@ -78,7 +78,7 @@ open class StandardMaterial: Material {
 
     public var gammaCorrection: Float {
         get {
-            (get("Gamma Correction") as? FloatParameter)!.value
+            get("Gamma Correction", as: FloatParameter.self)!.value
         }
         set {
             set("Gamma Correction", newValue)

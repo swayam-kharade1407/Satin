@@ -235,6 +235,7 @@
 		E101A95A2C070EA00055FABA /* MetalViewRendererDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDB2C06A24B00B5A6C8 /* MetalViewRendererDelegate.swift */; };
 		E101A95B2C070EA00055FABA /* SatinImmersiveSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */; };
 		E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */; };
+		E10A52D52C581CE300BB537A /* CodingUserInfoKey+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
 		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
 		E1FEA9072C3737830002CD80 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FEA9062C3737830002CD80 /* Float+Extensions.swift */; };
@@ -469,6 +470,7 @@
 		66D7DEF52C06A24B00B5A6C8 /* Transforms.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Transforms.mm; sourceTree = "<group>"; };
 		66D7DEF62C06A24B00B5A6C8 /* Triangulator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Triangulator.mm; sourceTree = "<group>"; };
 		66D7DEF72C06A24B00B5A6C8 /* Types.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Types.mm; sourceTree = "<group>"; };
+		E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodingUserInfoKey+Extensions.swift"; sourceTree = "<group>"; };
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
 		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
@@ -669,6 +671,7 @@
 				66D7DD912C06A24B00B5A6C8 /* UIWindow+Extensions.swift */,
 				66D7DD922C06A24B00B5A6C8 /* Vertex+Extensions.swift */,
 				E1FEA9062C3737830002CD80 /* Float+Extensions.swift */,
+				E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1179,6 +1182,7 @@
 				E101A8AE2C070E8E0055FABA /* ComputeShaderConfiguration.swift in Sources */,
 				E101A8AF2C070E8E0055FABA /* ComputeShaderLibraryCache.swift in Sources */,
 				E101A8B02C070E8E0055FABA /* ComputeShaderLibraryConfiguration.swift in Sources */,
+				E10A52D52C581CE300BB537A /* CodingUserInfoKey+Extensions.swift in Sources */,
 				E101A8B12C070E8E0055FABA /* ComputeShaderLibrarySourceCache.swift in Sources */,
 				E101A8B22C070E8E0055FABA /* ComputeShaderPipelineCache.swift in Sources */,
 				E101A8B32C070E8E0055FABA /* BufferComputeSystem.swift in Sources */,
