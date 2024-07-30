@@ -1,7 +1,7 @@
 #include "../../Library/Shapes/Circle.metal"
 
 typedef struct {
-    float4 color;       // color
+    float4 color; // color
     float size;
     float sizeHalf;
 } BasicPointUniforms;
