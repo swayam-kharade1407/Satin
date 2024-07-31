@@ -57,7 +57,6 @@ open class TextureComputeSystem: ComputeSystem {
     open var threadGroupsPerGrid: MTLSize?
 
     public var textures: [MTLTexture] = []
-    private var _setupSize = true
     private var _setupTextures = true
     private var _setupDescriptors = true
 
@@ -75,13 +74,11 @@ open class TextureComputeSystem: ComputeSystem {
         super.setup()
         setupDescriptor()
         setupTextures()
-        setupSize()
     }
 
     override open func update() {
         updateDescriptor()
         updateTextures()
-        updateSize()
         super.update()
     }
 
@@ -132,7 +129,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Size
 
-    private func setupSize() {
+    override func updateSize() {
         guard let txDsx = textureDescriptors.first else { return }
 
         if txDsx.textureType == .type1D {
@@ -144,14 +141,10 @@ open class TextureComputeSystem: ComputeSystem {
         else if txDsx.textureType == .type3D {
             parameters.set("Size", [txDsx.width, txDsx.height, txDsx.depth])
         }
-
-        _setupSize = false
-    }
-
-    private func updateSize() {
-        if _setupSize {
-            setupSize()
+        else if txDsx.textureType == .typeCube {
+            parameters.set("Size", [txDsx.width, txDsx.height])
         }
+
     }
 
     // MARK: - Reset
@@ -159,7 +152,7 @@ open class TextureComputeSystem: ComputeSystem {
     override open func update(_ commandBuffer: MTLCommandBuffer) {
         super.update(commandBuffer)
 
-        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
+        guard (_reset && resetPipeline != nil) || updatePipeline != nil else { return }
 
         if textures.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
@@ -273,13 +266,13 @@ open class TextureComputeSystem: ComputeSystem {
         let maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup
 
         if texture.depth > 1 {
-            let startWidth = threadExecutionWidth/2 // 16
+            let startWidth = threadExecutionWidth / 2 // 16
             let startHeight = startWidth // 16
-            let startDepth = (maxTotalThreadsPerThreadgroup / startWidth ) / startHeight
+            let startDepth = (maxTotalThreadsPerThreadgroup / startWidth) / startHeight
 
             var threadsPerThreadgroup = MTLSizeMake(startWidth, startHeight, startDepth)
             while (threadsPerThreadgroup.width * threadsPerThreadgroup.height * threadsPerThreadgroup.depth) > maxTotalThreadsPerThreadgroup {
-                if (threadsPerThreadgroup.width/2 * threadsPerThreadgroup.height/2 * threadsPerThreadgroup.depth) < maxTotalThreadsPerThreadgroup {
+                if (threadsPerThreadgroup.width / 2 * threadsPerThreadgroup.height / 2 * threadsPerThreadgroup.depth) < maxTotalThreadsPerThreadgroup {
                     threadsPerThreadgroup.width /= 2
                     threadsPerThreadgroup.height /= 2
                 }
@@ -328,7 +321,6 @@ open class TextureComputeSystem: ComputeSystem {
         reset()
         _setupDescriptors = true
         _setupTextures = true
-        _setupSize = true
     }
 
     // MARK: - Deinit

@@ -43,7 +43,7 @@ public final class IBLScene: Object, IBLEnvironment {
                   let commandQueue = environment.device.makeCommandQueue() else { return }
 
             let device = environment.device
-            
+
             var _brdfTexture: MTLTexture? = nil
             var _reflectionTexture: MTLTexture? = nil
             var _irradianceTexture: MTLTexture? = nil
@@ -88,10 +88,9 @@ public final class IBLScene: Object, IBLEnvironment {
         }
     }
 
-    public func setEnvironmentCubemap(texture: MTLTexture,  qos: DispatchQoS.QoSClass = .background, reflectionSize: Int = 512, irrandianceSize: Int = 64, brdfSize: Int = 512, progress: Progress? = nil) {
-
+    public func setEnvironmentCubemap(texture: MTLTexture, qos: DispatchQoS.QoSClass = .background, reflectionSize: Int = 512, irrandianceSize: Int = 64, brdfSize: Int = 512, progress: Progress? = nil) {
         cubemapTexture = texture
-        self.cubemapSize = texture.width
+        cubemapSize = texture.width
         self.reflectionSize = reflectionSize
         irradianceSize = irrandianceSize
         self.brdfSize = brdfSize
@@ -181,12 +180,13 @@ public final class IBLScene: Object, IBLEnvironment {
 
     private func setupReflectionTexture(device: MTLDevice, commandBuffer: MTLCommandBuffer) -> MTLTexture? {
         if let cubemapTexture = cubemapTexture,
-            let texture = createCubemapTexture(
-                device: device,
-                pixelFormat: .rgba16Float,
-                size: reflectionSize,
-                mipmapped: true
-            ) {
+           let texture = createCubemapTexture(
+               device: device,
+               pixelFormat: .rgba16Float,
+               size: reflectionSize,
+               mipmapped: true
+           )
+        {
             SpecularIBLGenerator(device: device)
                 .encode(
                     commandBuffer: commandBuffer,

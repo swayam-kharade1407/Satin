@@ -43,7 +43,6 @@ open class BufferComputeSystem: ComputeSystem {
     private var bufferParametersSubscription: AnyCancellable?
 
     private var _setupBuffers = true
-    private var _setupSize: Bool = true
 
     override public internal(set) var shader: ComputeShader? {
         didSet {
@@ -72,15 +71,13 @@ open class BufferComputeSystem: ComputeSystem {
     override open func setup() {
         super.setup()
         setupBuffers()
-        setupSize()
     }
 
     // MARK: - Update
 
     override open func update() {
-        super.update()
         updateBuffers()
-        updateSize()
+        super.update()
     }
 
     override open func update(_ commandBuffer: MTLCommandBuffer) {
@@ -142,15 +139,8 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Size
 
-    private func updateSize() {
-        if _setupSize {
-            setupSize()
-        }
-    }
-
-    private func setupSize() {
+    override func updateSize() {
         parameters.set("Count", count)
-        _setupSize = false
     }
 
     // MARK: - Buffers
@@ -231,7 +221,6 @@ open class BufferComputeSystem: ComputeSystem {
     override open func reset() {
         super.reset()
         _setupBuffers = true
-        _setupSize = true
     }
 
     // MARK: - Dispatching

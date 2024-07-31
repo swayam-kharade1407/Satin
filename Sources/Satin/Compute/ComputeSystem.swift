@@ -120,6 +120,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     open func update() {
+        updateSize()
         updateShader()
         updateUniforms()
     }
@@ -154,7 +155,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     internal func updated(shader: ComputeShader) {
-        print("updated shader: \(shader.label)")
+        print("Updated Shader: \(shader.label)")
         reset()
         delegate?.updated(computeSystem: self)
     }
@@ -248,6 +249,12 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         for (index, texture) in computeTextures {
             computeEncoder.setTexture(texture, index: index.rawValue)
         }
+    }
+
+    // MARK: - Count / Size
+
+    internal func updateSize() {
+
     }
 
     // MARK: - Textures
