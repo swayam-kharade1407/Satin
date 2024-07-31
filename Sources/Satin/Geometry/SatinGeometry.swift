@@ -44,7 +44,7 @@ open class SatinGeometry: Geometry {
         createGeometryData()
     }
 
-    internal func setFrom(geometryData: GeometryData) {
+    public func setFrom(geometryData: GeometryData) {
         self.geometryData = geometryData
 
         let vertexCount = Int(geometryData.vertexCount)
