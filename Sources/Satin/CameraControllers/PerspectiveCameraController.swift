@@ -69,6 +69,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     public var rollScalar: Float = 1.0
     public var rollDamping: Float = 0.9
 
+    public var defaultForward: simd_float3 = simd_make_float3(0.0, 0.0, -1.0)
     public var defaultPosition: simd_float3 = simd_make_float3(0.0, 0.0, 1.0)
     public var defaultOrientation: simd_quatf = simd_quaternion(matrix_identity_float4x4)
 
@@ -141,6 +142,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         self.camera = camera
         self.view = view
 
+        defaultForward = camera.forwardDirection
         defaultPosition = camera.position
         defaultOrientation = camera.orientation
 
@@ -181,9 +183,10 @@ public final class PerspectiveCameraController: CameraController, Codable {
         // keep camera at 0,0,5
         // move target in front of camera
 
-        target.position = .zero
+        target.position = defaultPosition - defaultForward
         target.orientation = defaultOrientation
-        camera.position = [0, 0, simd_length(defaultPosition)]
+
+        camera.position = defaultForward
         camera.orientation = simd_quatf(matrix_identity_float4x4)
         target.add(camera)
 
@@ -213,11 +216,11 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         halt()
 
+        target.position = defaultPosition - defaultForward
         target.orientation = defaultOrientation
-        target.position = defaultPosition
 
+        camera.position = defaultForward
         camera.orientation = simd_quatf(matrix_identity_float4x4)
-        camera.position = [0, 0, simd_length(defaultPosition)]
 
         onStartPublisher.send(self)
         onChangePublisher.send(self)
