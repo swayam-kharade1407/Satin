@@ -17,14 +17,9 @@ public final class Tweener {
     #if os(macOS)
 
     private static var displayLink: CVDisplayLink?
-    private static var displaySource: DispatchSourceUserDataAdd?
 
     private class func setupDisplayLink() {
         if Tweener.displayLink == nil {
-            displaySource = DispatchSource.makeUserDataAddSource(queue: DispatchQueue.main)
-            displaySource!.setEventHandler(handler: Tweener.update)
-            displaySource!.resume()
-
             var cvReturn = CVDisplayLinkCreateWithActiveCGDisplays(&Tweener.displayLink)
 
             assert(cvReturn == kCVReturnSuccess)
@@ -46,7 +41,7 @@ public final class Tweener {
 
     private static let displayLoop: CVDisplayLinkOutputCallback = {
         displayLink, now, outputTime, flagsIn, flagsOut, displayLinkContext in
-        Tweener.displaySource!.add(data: 1)
+        Tweener.update()
         return kCVReturnSuccess
     }
 
@@ -71,8 +66,7 @@ public final class Tweener {
         pauseDisplayLink()
 
         #if os(macOS)
-        displaySource!.cancel()
-        Tweener.displaySource = nil
+
         #else
         displayLink.invalidate()
         #endif
@@ -109,7 +103,7 @@ public final class Tweener {
         Tweener.tweens = []
     }
 
-    @objc private class func update() {
+    @objc public class func update() {
         let tweenCount = tweens.count
         for i in stride(from: tweenCount - 1, through: 0, by: -1) {
             if tweens[i].update() { tweens.remove(at: i) }
