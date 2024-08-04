@@ -146,7 +146,7 @@ public class InstancedMesh: Mesh {
     }
 
     func updateInstanceBuffer() {
-        instanceMatrixBuffer?.update(data: &instanceMatricesUniforms)
+        instanceMatrixBuffer?.update(data: instanceMatricesUniforms)
         _updateInstanceMatrixBuffer = false
     }
 

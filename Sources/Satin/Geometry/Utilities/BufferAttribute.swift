@@ -141,7 +141,9 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
         guard length > 0 else { return nil }
 
         if needsUpdate {
-            buffer = device.makeBuffer(bytes: data, length: length)
+            data.withUnsafeBytes { dataPtr in
+                buffer = device.makeBuffer(bytes: dataPtr.baseAddress!, length: length)
+            }
             needsUpdate = false
         }
 
@@ -149,7 +151,11 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func getData() -> Data {
-        return Data(bytes: &data, count: length)
+        var result = Data()
+        data.withUnsafeBytes { dataPtr in
+            result = Data(bytes: dataPtr.baseAddress!, count: length)
+        }
+        return result
     }
 
     public func append(_ value: ValueType) {
@@ -183,7 +189,7 @@ public class GenericBufferAttribute<T: Codable>: BufferAttribute, Equatable {
     }
 
     public func duplicate() -> any BufferAttribute {
-        return GenericBufferAttribute<ValueType>(defaultValue: defaultValue, data: data)
+        GenericBufferAttribute<ValueType>(defaultValue: defaultValue, data: data)
     }
 
     public func duplicate(at index: Int) {

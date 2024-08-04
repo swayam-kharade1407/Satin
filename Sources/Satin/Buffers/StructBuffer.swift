@@ -26,7 +26,9 @@ public final class StructBuffer<T> {
     public func update(data: [T]) {
         index = (index + 1) % maxBuffersInFlight
         offset = alignedSize * index
-        (buffer.contents() + offset).copyMemory(from: data, byteCount: MemoryLayout<T>.size * data.count)
+        _ = data.withUnsafeBytes { dataPtr in
+            memcpy(buffer.contents().advanced(by: offset), dataPtr.baseAddress!, MemoryLayout<T>.size * data.count)
+        }
     }
 
     private var alignedSize: Int {

@@ -22,10 +22,13 @@ public final class InstanceMatrixUniformBuffer {
         self.buffer.label = "Instance Matrix Uniforms"
     }
 
-    public func update(data: inout [InstanceMatrixUniforms]) {
+    public func update(data: [InstanceMatrixUniforms]) {
         index = (index + 1) % maxBuffersInFlight
         offset = alignedSize * index
-        (buffer.contents() + offset).copyMemory(from: &data, byteCount: count * MemoryLayout<InstanceMatrixUniforms>.size)
+
+        _ = data.withUnsafeBytes { dataPtr in
+            memcpy(buffer.contents().advanced(by: offset), dataPtr.baseAddress!, MemoryLayout<InstanceMatrixUniforms>.size * data.count)
+        }
     }
 
     private var alignedSize: Int {
