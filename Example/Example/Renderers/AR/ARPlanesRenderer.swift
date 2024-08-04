@@ -110,7 +110,7 @@ class ARPlanesRenderer: BaseRenderer {
     
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Renderer(label: "Content Renderer", context: context)
+        let renderer = Renderer(label: "Content Renderer", context: defaultContext)
         renderer.colorLoadAction = .load
         return renderer
     }()

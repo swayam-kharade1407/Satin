@@ -32,8 +32,11 @@ class TessellatedMesh: Object, Renderable {
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
 
-    var drawable: Bool {
-        guard material?.pipeline != nil, geometry.vertexBuffers[.Vertices] != nil else { return false }
+    func isDrawable(renderContext: Context) -> Bool {
+        guard material?.pipeline != nil,
+              geometry.vertexBuffers[.Vertices] != nil,
+              vertexUniforms[renderContext] != nil
+        else { return false }
         return true
     }
 
@@ -54,7 +57,7 @@ class TessellatedMesh: Object, Renderable {
         fatalError("init(from:) has not been implemented")
     }
 
-    var vertexUniforms: VertexUniformBuffer?
+    var vertexUniforms: [Context: VertexUniformBuffer] = [:]
     var geometry: TessellatedGeometry
     var tessellator: Tessellator
 
@@ -79,8 +82,8 @@ class TessellatedMesh: Object, Renderable {
     }
 
     func setupVertexUniforms() {
-        guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(context: context)
+        guard let context = context, vertexUniforms[context] == nil else { return }
+        vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
     func setupGeometry() {
@@ -102,15 +105,26 @@ class TessellatedMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4, index: Int) {
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
-        super.update(camera: camera, viewport: viewport, index: index)
+    override func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms[renderContext]?.update(
+            object: self,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
+
+        super.update(
+            renderContext: renderContext,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
     }
 
     // MARK: - Draw
 
     open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
-        guard instanceCount > 0, let vertexUniforms, let material, !geometry.vertexBuffers.isEmpty else { return }
+        guard instanceCount > 0, let vertexUniforms = vertexUniforms[renderContext], let material, !geometry.vertexBuffers.isEmpty else { return }
 
         renderEncoderState.vertexVertexUniforms = vertexUniforms
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
@@ -134,5 +148,9 @@ class TessellatedMesh: Object, Renderable {
             instanceCount: 1,
             shadow: shadow
         )
+    }
+
+    func getVertexUniformBuffer(renderContext: Context) -> VertexUniformBuffer? {
+        vertexUniforms[renderContext]
     }
 }

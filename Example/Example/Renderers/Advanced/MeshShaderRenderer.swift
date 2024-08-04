@@ -218,7 +218,7 @@ private class CustomMesh: Object, Renderable {
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
 
-    var drawable: Bool {
+    func isDrawable(renderContext: Context) -> Bool {
         guard #available(macOS 13.0, iOS 16.0, *), material?.pipeline != nil else { return false }
         return true
     }
@@ -236,7 +236,7 @@ private class CustomMesh: Object, Renderable {
         return []
     }
 
-    var vertexUniforms: VertexUniformBuffer?
+    var vertexUniforms: [Context: VertexUniformBuffer] = [:]
 
     public required init(from _: Decoder) throws {
         fatalError("init(from:) has not been implemented")
@@ -257,8 +257,8 @@ private class CustomMesh: Object, Renderable {
     }
 
     func setupVertexUniforms() {
-        guard let context else { return }
-        vertexUniforms = VertexUniformBuffer(context: context)
+        guard let context, vertexUniforms[context] == nil else { return }
+        vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
     func setupGeometry() {
@@ -285,16 +285,27 @@ private class CustomMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4, index: Int) {
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
-        super.update(camera: camera, viewport: viewport, index: index)
+    override func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms[renderContext]?.update(
+            object: self,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
+
+        super.update(
+            renderContext: renderContext,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
     }
 
     // MARK: - Draw
 
     func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard #available(macOS 13.0, iOS 16.0, *),
-              let vertexUniforms,
+              let vertexUniforms = vertexUniforms[renderContext],
               let material,
               let vertexBuffer = geometry.vertexBuffers[VertexBufferIndex.Vertices]
         else { return }

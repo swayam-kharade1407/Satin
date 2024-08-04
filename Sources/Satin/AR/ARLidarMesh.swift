@@ -39,14 +39,13 @@ public class ARLidarMesh: Object, Renderable {
     public var renderOrder = 0
     public var renderPass = 0
 
-    public var drawable: Bool {
-        if material?.pipeline != nil, vertexUniforms != nil, vertexBuffer != nil, indexBuffer != nil {
-            return true
-        }
-        return false
+    public func isDrawable(renderContext: Context) -> Bool {
+        guard material?.pipeline != nil, vertexUniforms[renderContext] != nil, vertexBuffer != nil, indexBuffer != nil 
+        else { return false }
+        return true
     }
 
-    public var vertexUniforms: VertexUniformBuffer?
+    public var vertexUniforms: [Context: VertexUniformBuffer] = [:]
 
     public var material: Material?
     public var materials: [Satin.Material] {
@@ -105,8 +104,8 @@ public class ARLidarMesh: Object, Renderable {
     }
 
     func setupUniforms() {
-        guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(context: context)
+        guard let context = context, vertexUniforms[context] == nil else { return }
+        vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
     required init(from decoder: Decoder) throws {
@@ -120,16 +119,21 @@ public class ARLidarMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override public func update(camera: Camera, viewport: simd_float4, index: Int) {
+    override public func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {
         if let meshAnchor = meshAnchor { localMatrix = meshAnchor.transform }
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
-        super.update(camera: camera, viewport: viewport, index: index)
+        vertexUniforms[renderContext]?.update(object: self, camera: camera, viewport: viewport, index: index)
+        super.update(
+            renderContext: renderContext,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
     }
 
     // MARK: - Draw
 
     public func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
-        guard let vertexUniforms = vertexUniforms,
+        guard let vertexUniforms = vertexUniforms[renderContext],
               let vertexBuffer = vertexBuffer,
               let material = material,
               let _ = material.pipeline

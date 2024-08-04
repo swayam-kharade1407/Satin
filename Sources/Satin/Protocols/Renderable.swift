@@ -26,15 +26,14 @@ public protocol Renderable {
     var windingOrder: MTLWinding { get }
     var triangleFillMode: MTLTriangleFillMode { get }
 
-    var vertexUniforms: VertexUniformBuffer? { get }
-
-    var drawable: Bool { get }
+    var vertexUniforms: [Context: VertexUniformBuffer] { get }
+    func isDrawable(renderContext: Context) -> Bool
 
     var material: Material? { get set }
     var materials: [Material] { get }
 
-    var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)? { get }
+    func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int)
 
-    func update(camera: Camera, viewport: simd_float4, index: Int)
+    var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)? { get }
     func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool)
 }

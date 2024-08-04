@@ -205,7 +205,9 @@ open class Shader {
     public let parametersPublisher = PassthroughSubject<ParameterGroup, Never>()
 
     public var parameters = ParameterGroup() {
-        didSet { parametersPublisher.send(parameters) }
+        didSet {
+            parametersPublisher.send(parameters)
+        }
     }
 
     public required init(configuration: ShaderConfiguration) {

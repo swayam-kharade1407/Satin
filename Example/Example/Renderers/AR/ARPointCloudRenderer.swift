@@ -54,7 +54,7 @@ class ARPointCloudRenderer: BaseRenderer {
     
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
-        let renderer = Renderer(context: context)
+        let renderer = Renderer(context: defaultContext)
         renderer.label = "Content Renderer"
         renderer.setClearColor(.zero)
         renderer.colorLoadAction = .load
@@ -92,7 +92,7 @@ class ARPointCloudRenderer: BaseRenderer {
         }
 
         backgroundRenderer = ARBackgroundDepthRenderer(
-            context: context,
+            context: defaultContext,
             session: session,
             sessionPublisher: ARSessionPublisher(session: session),
             metalView: metalView,

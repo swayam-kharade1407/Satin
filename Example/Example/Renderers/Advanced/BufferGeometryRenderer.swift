@@ -37,14 +37,20 @@ class BufferGeometryMesh: Object, Renderable {
 
     var instanceCount: Int = 1
 
-    var drawable: Bool { material != nil && !geometry.vertexBuffers.isEmpty && instanceCount > 0 }
+    func isDrawable(renderContext: Context) -> Bool {
+        guard material != nil,
+              !geometry.vertexBuffers.isEmpty,
+              instanceCount > 0,
+              vertexUniforms[renderContext] != nil else { return false }
+        return true
+    }
 
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
 
     var material: Material?
     var materials: [Material] = []
 
-    var vertexUniforms: VertexUniformBuffer?
+    var vertexUniforms: [Context: VertexUniformBuffer] = [:]
 
     public init(label: String = "Buffer Geometry Mesh", geometry: Geometry, material: Material) {
         self.geometry = geometry
@@ -75,8 +81,8 @@ class BufferGeometryMesh: Object, Renderable {
     }
 
     func setupVertexUniforms() {
-        guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(context: context)
+        guard let context = context, vertexUniforms[context] == nil else { return }
+        vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
     override func update() {
@@ -91,19 +97,35 @@ class BufferGeometryMesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override func update(camera: Camera, viewport: simd_float4, index: Int) {
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
-        super.update(camera: camera, viewport: viewport, index: index)
+    override func update(
+        renderContext: Context,
+        camera: Camera,
+        viewport: simd_float4,
+        index: Int
+    ) {
+        vertexUniforms[renderContext]?.update(
+            object: self,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
+
+        super.update(
+            renderContext: renderContext,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
     }
 
     func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         if let material, let shader = material.shader {
             if shader.vertexWantsVertexUniforms {
-                renderEncoderState.vertexVertexUniforms = vertexUniforms
+                renderEncoderState.vertexVertexUniforms = vertexUniforms[renderContext]
             }
 
             if shader.vertexWantsMaterialUniforms {
-                renderEncoderState.fragmentVertexUniforms = vertexUniforms
+                renderEncoderState.fragmentVertexUniforms = vertexUniforms[renderContext]
             }
 
             material.bind(
@@ -189,7 +211,7 @@ class BufferGeometryRenderer: BaseRenderer {
     }()
 
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
-    
+
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
     lazy var renderer = Renderer(context: defaultContext)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)

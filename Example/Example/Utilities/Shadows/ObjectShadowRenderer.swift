@@ -14,8 +14,16 @@ import Satin
 
 class ShadowPostProcessor: PostProcessor {
     class ShadowPostMaterial: SourceMaterial {
-        public unowned var colorTexture: MTLTexture?
-        public unowned var depthTexture: MTLTexture?
+        public unowned var colorTexture: MTLTexture? {
+            didSet {
+                set(colorTexture, index: FragmentTextureIndex.Custom0)
+            }
+        }
+        public unowned var depthTexture: MTLTexture? {
+            didSet {
+                set(depthTexture, index: FragmentTextureIndex.Custom1)
+            }
+        }
 
         public required init() {
             super.init(pipelinesURL: Bundle.main.resourceURL!
@@ -28,16 +36,6 @@ class ShadowPostProcessor: PostProcessor {
 
         required init(from _: Decoder) throws {
             fatalError("init(from:) has not been implemented")
-        }
-
-        override func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
-            super.bind(
-                renderContext: renderContext,
-                renderEncoderState: renderEncoderState,
-                shadow: shadow
-            )
-            renderEncoderState.setFragmentTexture(colorTexture, index: .Custom0)
-            renderEncoderState.setFragmentTexture(depthTexture, index: .Custom1)
         }
     }
 

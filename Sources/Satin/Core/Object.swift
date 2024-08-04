@@ -544,7 +544,7 @@ open class Object: Codable, ObservableObject {
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
-    open func update(camera: Camera, viewport: simd_float4, index: Int) {}
+    open func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {}
 
     // MARK: - Inserting, Adding, Attaching & Removing
 

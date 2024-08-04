@@ -32,17 +32,28 @@ class ARBloomRenderer: BaseRenderer {
             }
         }
 
-        public var grainTexture: MTLTexture?
-        public var backgroundTexture: MTLTexture?
-        public var contentTexture: MTLTexture?
-        public var bloomTexture: MTLTexture?
+        public var backgroundTexture: MTLTexture? {
+            didSet {
+                set(backgroundTexture, index: FragmentTextureIndex.Custom0)
+            }
+        }
 
-        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            renderEncoderState.setFragmentTexture(backgroundTexture, index: .Custom0)
-            renderEncoderState.setFragmentTexture(contentTexture, index: .Custom1)
-            renderEncoderState.setFragmentTexture(bloomTexture, index: .Custom2)
-            renderEncoderState.setFragmentTexture(grainTexture, index: .Custom3)
+        public var contentTexture: MTLTexture? {
+            didSet {
+                set(contentTexture, index: FragmentTextureIndex.Custom1)
+            }
+        }
+
+        public var bloomTexture: MTLTexture? {
+            didSet {
+                set(bloomTexture, index: FragmentTextureIndex.Custom2)
+            }
+        }
+
+        public var grainTexture: MTLTexture? {
+            didSet {
+                set(grainTexture, index: FragmentTextureIndex.Custom3)
+            }
         }
     }
 

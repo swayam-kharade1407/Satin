@@ -103,7 +103,7 @@ public final class DirectionalLightShadow: Shadow {
         camera.lookAt(target: light.worldPosition + light.worldForwardDirection, up: Satin.worldUpDirection)
     }
 
-    public func draw(commandBuffer: MTLCommandBuffer, renderables: [Renderable]) {
+    public func draw(context: Context, commandBuffer: MTLCommandBuffer, renderables: [Renderable]) {
         setupTexture()
 
         let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -115,18 +115,22 @@ public final class DirectionalLightShadow: Shadow {
         renderPassDescriptor.renderTargetWidth = resolution.width
         renderPassDescriptor.renderTargetHeight = resolution.height
 
-        guard let device,
-              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         else { return }
 
         renderEncoder.label = label + " Shadow Encoder"
         renderEncoder.setViewport(viewport)
         let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
-        for renderable in renderables where renderable.drawable && renderable.castShadow {
+        for renderable in renderables where renderable.isDrawable(renderContext: context) && renderable.castShadow {
             #if DEBUG
             renderEncoder.pushDebugGroup(renderable.label)
             #endif
-            renderable.update(camera: camera, viewport: _viewport, index: 0)
+            renderable.update(
+                renderContext: context, 
+                camera: camera,
+                viewport: _viewport,
+                index: 0
+            )
 
             // consider using a renderEncoder state manager for this
 
@@ -135,11 +139,7 @@ public final class DirectionalLightShadow: Shadow {
             renderEncoderState.triangleFillMode = renderable.triangleFillMode
 
             renderable.draw(
-                renderContext: Context(
-                    device: device,
-                    sampleCount: 1,
-                    colorPixelFormat: pixelFormat
-                ),
+                renderContext: context,
                 renderEncoderState: renderEncoderState,
                 shadow: true
             )

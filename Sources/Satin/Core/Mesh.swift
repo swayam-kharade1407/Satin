@@ -16,7 +16,7 @@ import SatinCore
 
 open class Mesh: Object, Renderable {
     public var opaque: Bool { material!.blending == .disabled }
-    
+
     public let doubleSidedPublisher = PassthroughSubject<Bool, Never>()
     public var doubleSided: Bool = false {
         didSet {
@@ -72,7 +72,7 @@ open class Mesh: Object, Renderable {
             cullModePublisher.send(cullMode)
         }
     }
-    
+
     public let triangleFillModePublisher = PassthroughSubject<MTLTriangleFillMode, Never>()
     public var triangleFillMode: MTLTriangleFillMode = .fill {
         didSet {
@@ -89,8 +89,11 @@ open class Mesh: Object, Renderable {
         }
     }
 
-    open var drawable: Bool {
-        guard instanceCount > 0, !geometry.vertexBuffers.isEmpty, vertexUniforms != nil else { return false }
+    open func isDrawable(renderContext: Context) -> Bool {
+        guard instanceCount > 0,
+              !geometry.vertexBuffers.isEmpty,
+              vertexUniforms[renderContext] != nil
+        else { return false }
 
         if submeshes.isEmpty, let material = material, material.pipeline != nil {
             return true
@@ -108,7 +111,7 @@ open class Mesh: Object, Renderable {
         }
     }
 
-    public var vertexUniforms: VertexUniformBuffer?
+    public var vertexUniforms: [Context: VertexUniformBuffer] = [:]
 
     public var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
 
@@ -185,7 +188,11 @@ open class Mesh: Object, Renderable {
 
     open func setupVertexUniforms() {
         guard let context = context else { return }
-        vertexUniforms = VertexUniformBuffer(context: context)
+        vertexUniforms[context] = VertexUniformBuffer(context: context)
+    }
+
+    open func getVertexUniformBuffer(renderContext: Context) -> VertexUniformBuffer? {
+        vertexUniforms[renderContext]
     }
 
     open func setupGeometry() {
@@ -211,18 +218,18 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Binding
 
-    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        bindUniforms(renderEncoderState: renderEncoderState)
+    open func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        bindUniforms(renderContext: renderContext, renderEncoderState: renderEncoderState)
         bindGeometry(renderEncoderState: renderEncoderState, shadow: shadow)
     }
 
-    open func bindUniforms(renderEncoderState: RenderEncoderState) {
+    open func bindUniforms(renderContext: Context, renderEncoderState: RenderEncoderState) {
         guard let shader = material?.shader else { return }
         if shader.vertexWantsVertexUniforms {
-            renderEncoderState.vertexVertexUniforms = vertexUniforms
+            renderEncoderState.vertexVertexUniforms = vertexUniforms[renderContext]
         }
         if shader.fragmentWantsVertexUniforms {
-            renderEncoderState.fragmentVertexUniforms = vertexUniforms
+            renderEncoderState.fragmentVertexUniforms = vertexUniforms[renderContext]
         }
     }
 
@@ -246,9 +253,15 @@ open class Mesh: Object, Renderable {
         super.encode(commandBuffer)
     }
 
-    override open func update(camera: Camera, viewport: simd_float4, index: Int) {
-        vertexUniforms?.update(object: self, camera: camera, viewport: viewport, index: index)
-        super.update(camera: camera, viewport: viewport, index: index)
+    override open func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {
+        vertexUniforms[renderContext]?.update(object: self, camera: camera, viewport: viewport, index: index)
+
+        super.update(
+            renderContext: renderContext,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
     }
 
     // MARK: - Draw
@@ -263,7 +276,7 @@ open class Mesh: Object, Renderable {
     }
 
     open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
-        bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        bind(renderContext: renderContext, renderEncoderState: renderEncoderState, shadow: shadow)
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {

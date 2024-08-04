@@ -15,19 +15,19 @@ import SatinCore
 #endif
 
 public class InstancedMesh: Mesh {
-    override public var drawable: Bool {
+    public override func isDrawable(renderContext: Context) -> Bool {
         guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return false }
 
         if let drawCount = drawCount {
             if drawCount > 0 {
-                return super.drawable
+                return super.isDrawable(renderContext: renderContext)
             }
             else {
                 return false
             }
         }
         else {
-            return super.drawable
+            return super.isDrawable(renderContext: renderContext)
         }
     }
 
@@ -127,8 +127,12 @@ public class InstancedMesh: Mesh {
         super.update()
     }
 
-    override public func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+    override public func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        super.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
         renderEncoderState.vertexInstanceUniforms = instanceMatrixBuffer
     }
 

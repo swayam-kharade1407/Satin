@@ -264,7 +264,7 @@ open class Renderer {
         // render objects that cast shadows into the depth textures
         if !shadowCasters.isEmpty, !shadowReceivers.isEmpty {
             for light in lightList where light.castShadow {
-                light.shadow.draw(commandBuffer: commandBuffer, renderables: shadowCasters)
+                light.shadow.draw(context: context, commandBuffer: commandBuffer, renderables: shadowCasters)
             }
         }
 
@@ -592,7 +592,12 @@ open class Renderer {
                 }
             } else {
                 for i in 0..<context.vertexAmplificationCount {
-                    object.update(camera: cameras[i], viewport: viewports[i], index: i)
+                    object.update(
+                        renderContext: context,
+                        camera: cameras[i],
+                        viewport: viewports[i],
+                        index: i
+                    )
                 }
             }
 
@@ -650,7 +655,7 @@ open class Renderer {
             }
         }
 
-        for renderable in renderables where renderable.drawable {
+        for renderable in renderables where renderable.isDrawable(renderContext: context) {
             _encode(
                 renderEncoder: renderEncoder,
                 renderEncoderState: renderEncoderState,
@@ -666,7 +671,12 @@ open class Renderer {
         renderEncoder.pushDebugGroup(renderable.label)
 #endif
         for i in 0..<context.vertexAmplificationCount {
-            renderable.update(camera: cameras[i], viewport: viewports[i], index: i)
+            renderable.update(
+                renderContext: context,
+                camera: cameras[i],
+                viewport: viewports[i],
+                index: i
+            )
         }
 
         renderable.preDraw?(renderEncoder)

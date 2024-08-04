@@ -22,7 +22,7 @@ public protocol Shadow {
     var radius: Float { get set }
     
     func update(light: Object)
-    func draw(commandBuffer: MTLCommandBuffer, renderables: [Renderable])
+    func draw(context: Context, commandBuffer: MTLCommandBuffer, renderables: [Renderable])
 
     var texturePublisher: PassthroughSubject<Shadow, Never> { get }
     var resolutionPublisher: PassthroughSubject<Shadow, Never> { get }

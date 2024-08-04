@@ -666,10 +666,15 @@ public extension Material {
     func updateParameters(_ newParameters: ParameterGroup) {
         parameters.setFrom(newParameters)
         parameters.label = newParameters.label
+        
         uniformsNeedsUpdate = true
+
         objectWillChange.send()
+
         parametersSetPublisher.send(parameters)
+        
         updatedPublisher.send(self)
+        
         delegate?.updated(material: self)
     }
 }

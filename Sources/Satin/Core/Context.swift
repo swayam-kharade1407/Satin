@@ -32,6 +32,16 @@ public struct Context {
     }
 }
 
+extension Context: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(sampleCount)
+        hasher.combine(colorPixelFormat)
+        hasher.combine(depthPixelFormat)
+        hasher.combine(stencilPixelFormat)
+        hasher.combine(vertexAmplificationCount)
+    }
+}
+
 extension Context: Equatable {
     public static func == (lhs: Context, rhs: Context) -> Bool {
         lhs.sampleCount == rhs.sampleCount && lhs.colorPixelFormat == rhs.colorPixelFormat &&

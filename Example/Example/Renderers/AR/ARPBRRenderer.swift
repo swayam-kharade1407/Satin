@@ -253,17 +253,28 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
             }
         }
 
-        public var grainTexture: MTLTexture?
-        public var backgroundTexture: MTLTexture?
-        public var contentTexture: MTLTexture?
-        public var depthMaskTexture: MTLTexture?
+        public var grainTexture: MTLTexture? {
+            didSet {
+                set(grainTexture, index: FragmentTextureIndex.Custom0)
+            }
+        }
 
-        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            renderEncoderState.setFragmentTexture(backgroundTexture, index: .Custom0)
-            renderEncoderState.setFragmentTexture(contentTexture, index: .Custom1)
-            renderEncoderState.setFragmentTexture(depthMaskTexture, index: .Custom2)
-            renderEncoderState.setFragmentTexture(grainTexture, index: .Custom3)
+        public var backgroundTexture: MTLTexture? {
+            didSet {
+                set(backgroundTexture, index: FragmentTextureIndex.Custom1)
+            }
+        }
+
+        public var contentTexture: MTLTexture? {
+            didSet {
+                set(contentTexture, index: FragmentTextureIndex.Custom2)
+            }
+        }
+
+        public var depthMaskTexture: MTLTexture? {
+            didSet {
+                set(depthMaskTexture, index: FragmentTextureIndex.Custom3)
+            }
         }
     }
 
