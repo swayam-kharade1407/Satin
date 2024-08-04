@@ -30,8 +30,12 @@ class ShadowPostProcessor: PostProcessor {
             fatalError("init(from:) has not been implemented")
         }
 
-        override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-            super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        override func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+            super.bind(
+                renderContext: renderContext,
+                renderEncoderState: renderEncoderState,
+                shadow: shadow
+            )
             renderEncoderState.setFragmentTexture(colorTexture, index: .Custom0)
             renderEncoderState.setFragmentTexture(depthTexture, index: .Custom1)
         }

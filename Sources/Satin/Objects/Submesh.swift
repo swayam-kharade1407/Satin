@@ -71,11 +71,12 @@ open class Submesh {
         geometry.context = context
     }
 
-    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-    }
-
-    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int) {
+    open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+        material?.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
         geometry.draw(
             renderEncoderState: renderEncoderState,
             instanceCount: instanceCount,

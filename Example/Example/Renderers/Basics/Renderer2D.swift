@@ -14,12 +14,12 @@ import Satin
 final class Renderer2D: BaseRenderer {
     let mesh = Mesh(label: "Quad", geometry: PlaneGeometry(size: 700), material: UVColorMaterial())
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
+    
 
     var camera = OrthographicCamera()
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid

@@ -253,21 +253,37 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount, shadow: shadow)
+    open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        draw(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            instanceCount: instanceCount,
+            shadow: shadow
+        )
     }
 
-    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+    open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         bind(renderEncoderState: renderEncoderState, shadow: shadow)
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {
-                submesh.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-                submesh.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
+                submesh.draw(
+                    renderContext: renderContext,
+                    renderEncoderState: renderEncoderState,
+                    instanceCount: instanceCount,
+                    shadow: shadow
+                )
             }
         } else {
-            material?.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-            geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
+            material?.bind(
+                renderContext: renderContext,
+                renderEncoderState: renderEncoderState,
+                shadow: shadow
+            )
+            geometry.draw(
+                renderEncoderState: renderEncoderState,
+                instanceCount: instanceCount
+            )
         }
     }
 

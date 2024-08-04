@@ -125,7 +125,7 @@ open class ComputeShader {
     }
 
     var compilerSubscription: AnyCancellable?
-    private lazy var compiler: MetalFileCompiler = .init(watch: live) {
+    private lazy var compiler = MetalFileCompiler(watch: live) {
         didSet {
             compilerSubscription = compiler.onUpdatePublisher.sink { [weak self] _ in
                 guard let self = self, let pipelineURL = self.pipelineURL else { return }

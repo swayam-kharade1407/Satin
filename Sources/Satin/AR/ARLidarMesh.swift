@@ -128,7 +128,7 @@ public class ARLidarMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    public func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    public func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard let vertexUniforms = vertexUniforms,
               let vertexBuffer = vertexBuffer,
               let material = material,
@@ -137,7 +137,11 @@ public class ARLidarMesh: Object, Renderable {
 
         renderEncoderState.vertexVertexUniforms = vertexUniforms
         renderEncoderState.setVertexBuffer(vertexBuffer, offset: 0, index: .Vertices)
-        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        material.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
 
         let renderEncoder = renderEncoderState.renderEncoder
 

@@ -29,8 +29,12 @@ public class ARBackgroundDepthMaterial: Material {
         blending = .alpha
     }
 
-    override public func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+    override public func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        super.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
 
         if let upscaledSceneDepthTexture = upscaledSceneDepthTexture {
             renderEncoderState.setFragmentTexture(upscaledSceneDepthTexture, index: .Custom0)

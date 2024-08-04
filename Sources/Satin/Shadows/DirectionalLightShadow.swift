@@ -115,34 +115,43 @@ public final class DirectionalLightShadow: Shadow {
         renderPassDescriptor.renderTargetWidth = resolution.width
         renderPassDescriptor.renderTargetHeight = resolution.height
 
-        if let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        {
-            renderEncoder.label = label + " Shadow Encoder"
-            renderEncoder.setViewport(viewport)
-            let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
-            for renderable in renderables where renderable.drawable && renderable.castShadow {
-                #if DEBUG
-                renderEncoder.pushDebugGroup(renderable.label)
-                #endif
-                renderable.update(camera: camera, viewport: _viewport, index: 0)
-                
-                // consider using a renderEncoder state manager for this
-                
-                renderEncoderState.cullMode = renderable.cullMode
-                renderEncoderState.windingOrder = renderable.windingOrder
-                renderEncoderState.triangleFillMode = renderable.triangleFillMode
+        guard let device,
+              let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+        else { return }
 
-                renderable.draw(renderEncoderState: renderEncoderState, shadow: true)
-                #if DEBUG
-                renderEncoder.popDebugGroup()
-                #endif
-            }
-            renderEncoder.endEncoding()
+        renderEncoder.label = label + " Shadow Encoder"
+        renderEncoder.setViewport(viewport)
+        let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
+        for renderable in renderables where renderable.drawable && renderable.castShadow {
+            #if DEBUG
+            renderEncoder.pushDebugGroup(renderable.label)
+            #endif
+            renderable.update(camera: camera, viewport: _viewport, index: 0)
+
+            // consider using a renderEncoder state manager for this
+
+            renderEncoderState.cullMode = renderable.cullMode
+            renderEncoderState.windingOrder = renderable.windingOrder
+            renderEncoderState.triangleFillMode = renderable.triangleFillMode
+
+            renderable.draw(
+                renderContext: Context(
+                    device: device,
+                    sampleCount: 1,
+                    colorPixelFormat: pixelFormat
+                ),
+                renderEncoderState: renderEncoderState,
+                shadow: true
+            )
+            #if DEBUG
+            renderEncoder.popDebugGroup()
+            #endif
         }
+        renderEncoder.endEncoding()
     }
 
     private func setupTexture() {
-        guard let device = device, _updateTexture, pixelFormat != .invalid, resolution.width > 1, resolution.height > 1 else { return }
+        guard let device, _updateTexture, pixelFormat != .invalid, resolution.width > 1, resolution.height > 1 else { return }
 
         let descriptor = MTLTextureDescriptor
             .texture2DDescriptor(pixelFormat: pixelFormat, width: resolution.width, height: resolution.height, mipmapped: false)

@@ -109,12 +109,12 @@ class TessellatedMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+    open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         guard instanceCount > 0, let vertexUniforms, let material, !geometry.vertexBuffers.isEmpty else { return }
 
         renderEncoderState.vertexVertexUniforms = vertexUniforms
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
-        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        material.bind(renderContext: renderContext, renderEncoderState: renderEncoderState, shadow: shadow)
 
         let renderEncoder = renderEncoderState.renderEncoder
 
@@ -127,7 +127,12 @@ class TessellatedMesh: Object, Renderable {
         geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
     }
 
-    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        draw(renderEncoderState: renderEncoderState, instanceCount: 1, shadow: shadow)
+    func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        draw(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            instanceCount: 1,
+            shadow: shadow
+        )
     }
 }

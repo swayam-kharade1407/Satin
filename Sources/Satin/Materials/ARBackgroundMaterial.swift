@@ -56,8 +56,12 @@ public final class ARBackgroundMaterial: Material {
         try super.init(from: decoder)
     }
 
-    public override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+    public override func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        super.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
 
         if let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr {
             renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: .Custom0)

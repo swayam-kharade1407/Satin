@@ -32,10 +32,10 @@ final class Renderer3D: BaseRenderer {
 #endif
     }
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
-    lazy var renderer = Renderer(context: context)
+    
+    lazy var renderer = Renderer(context: defaultContext)
 
-    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.01, far: 100.0, fov: 30)
+    lazy var camera = PerspectiveCamera(position: [5, 5, 5], near: 0.01, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
     var tween: Tween?

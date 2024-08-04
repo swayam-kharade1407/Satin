@@ -69,7 +69,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
     public var rollScalar: Float = 1.0
     public var rollDamping: Float = 0.9
 
-    public var defaultForward: simd_float3 = simd_make_float3(0.0, 0.0, -1.0)
+    public var defaultDistance: Float = 3.0
     public var defaultPosition: simd_float3 = simd_make_float3(0.0, 0.0, 1.0)
     public var defaultOrientation: simd_quatf = simd_quaternion(matrix_identity_float4x4)
 
@@ -142,7 +142,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
         self.camera = camera
         self.view = view
 
-        defaultForward = camera.forwardDirection
+        defaultDistance = simd_length(camera.position)
         defaultPosition = camera.position
         defaultOrientation = camera.orientation
 
@@ -179,15 +179,8 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         halt()
 
-        // camera is at 0,0,5
-        // keep camera at 0,0,5
-        // move target in front of camera
+        resetCameraAndTarget()
 
-        target.position = defaultPosition - defaultForward
-        target.orientation = defaultOrientation
-
-        camera.position = defaultForward
-        camera.orientation = simd_quatf(matrix_identity_float4x4)
         target.add(camera)
 
         isEnabled = true
@@ -216,15 +209,21 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
         halt()
 
-        target.position = defaultPosition - defaultForward
-        target.orientation = defaultOrientation
-
-        camera.position = defaultForward
-        camera.orientation = simd_quatf(matrix_identity_float4x4)
+        resetCameraAndTarget()
 
         onStartPublisher.send(self)
         onChangePublisher.send(self)
         onEndPublisher.send(self)
+    }
+
+    private func resetCameraAndTarget() {
+        let defaultForward = simd_make_float3(0, 0, defaultDistance)
+
+        camera.position = defaultForward
+        camera.orientation = simd_quatf(matrix_identity_float4x4)
+
+        target.position = defaultPosition - defaultOrientation.act(defaultForward)
+        target.orientation = defaultOrientation
     }
 
     // MARK: - Resize
@@ -337,17 +336,8 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func updateZoom() {
-        let targetDistance = simd_max(simd_length(camera.worldPosition - target.position), 0.1)
-
-        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov) * pow(targetDistance, 0.5)
-        let offset = simd_make_float3(camera.forwardDirection * zoomAmount)
-        let offsetDistance = simd_length(offset)
-
-        if (targetDistance + offsetDistance * sign(zoom)) > minimumZoomDistance {
-            camera.position += offset
-        } else {
-            zoom = 0.0
-        }
+        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov)
+        target.position += target.forwardDirection * zoomAmount
         onChangePublisher.send(self)
     }
 

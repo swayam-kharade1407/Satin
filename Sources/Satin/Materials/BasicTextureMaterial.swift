@@ -73,10 +73,14 @@ open class BasicTextureMaterial: BasicColorMaterial {
         }
     }
 
-    override public func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    override public func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         let renderEncoder = renderEncoderState.renderEncoder
         bindTexture(renderEncoder)
         bindSampler(renderEncoder)
-        super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        super.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
     }
 }

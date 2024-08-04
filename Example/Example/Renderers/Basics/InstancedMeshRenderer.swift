@@ -13,15 +13,20 @@ import ModelIO
 import Satin
 
 final class InstancedMeshRenderer: BaseRenderer {
+    override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     // MARK: - Satin
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
-    var camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
+    var camera = {
+        let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
+        camera.lookAt(target: .zero)
+        return camera
+    }()
+
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     var scene = Object(label: "Scene")
     var container = Object(label: "Container")
     var instancedMesh: InstancedMesh?
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     // MARK: - Properties
 
@@ -30,7 +35,6 @@ final class InstancedMeshRenderer: BaseRenderer {
 
     override func setup() {
         setupScene()
-        setupCamera()
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
@@ -43,13 +47,13 @@ final class InstancedMeshRenderer: BaseRenderer {
     }
 
     func setupScene() {
-        let url = modelsURL.appendingPathComponent("spot_triangulated.obj")
+        let url = modelsURL.appendingPathComponent("Suzanne/Suzanne.obj")
         guard let model = loadAsset(url: url), let mesh = getMeshes(model, true, true).first else { return }
 
         let instancedMesh = InstancedMesh(
             label: "Spot",
             geometry: mesh.geometry,
-            material: BasicDiffuseMaterial(hardness: 0.1),
+            material: BasicDiffuseMaterial(hardness: 0.0),
             count: dim * dim * dim
         )
 
@@ -60,16 +64,12 @@ final class InstancedMeshRenderer: BaseRenderer {
         updateInstances(getTime())
     }
 
-    func setupCamera() {
-        cameraController.target.lookAt(target: [5.0, 5.0, 5.0])
-    }
-
     func updateInstances(_ time: Float) {
         guard let instancedMesh = instancedMesh else { return }
 
         let halfDim: Int = dim / 2
         let object = Object()
-        object.scale = .init(repeating: 0.66)
+        object.scale = .init(repeating: 0.5)
         var index = 0
         for z in -halfDim ... halfDim {
             for y in -halfDim ... halfDim {

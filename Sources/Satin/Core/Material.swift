@@ -407,7 +407,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    open func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    open func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         bindUniforms(renderEncoderState: renderEncoderState, shadow: shadow)
         bindDepthStates(renderEncoderState: renderEncoderState)
         bindBuffers(renderEncoderState: renderEncoderState)

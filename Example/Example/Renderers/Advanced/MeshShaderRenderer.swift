@@ -292,14 +292,18 @@ private class CustomMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard #available(macOS 13.0, iOS 16.0, *),
               let vertexUniforms,
               let material,
               let vertexBuffer = geometry.vertexBuffers[VertexBufferIndex.Vertices]
         else { return }
 
-        material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+        material.bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
 
         let renderEncoder = renderEncoderState.renderEncoder
 

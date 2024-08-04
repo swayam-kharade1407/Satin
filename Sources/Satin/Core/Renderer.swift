@@ -166,7 +166,7 @@ open class Renderer {
         self.label = label
         self.context = context
         self.sortObjects = sortObjects
-        self.clearColor = .init(clearColor)
+        self.clearColor = MTLClearColor(clearColor)
         self.clearDepth = clearDepth
     }
 
@@ -676,13 +676,25 @@ open class Renderer {
 
         if renderable.doubleSided, renderable.cullMode == .none, renderable.opaque == false {
             renderEncoderState.cullMode = .front
-            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
+            renderable.draw(
+                renderContext: context,
+                renderEncoderState: renderEncoderState,
+                shadow: false
+            )
 
             renderEncoderState.cullMode = .back
-            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
+            renderable.draw(
+                renderContext: context,
+                renderEncoderState: renderEncoderState,
+                shadow: false
+            )
         } else {
             renderEncoderState.cullMode = renderable.cullMode
-            renderable.draw(renderEncoderState: renderEncoderState, shadow: false)
+            renderable.draw(
+                renderContext: context,
+                renderEncoderState: renderEncoderState,
+                shadow: false
+            )
         }
 
 #if DEBUG

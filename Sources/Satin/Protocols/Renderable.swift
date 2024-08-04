@@ -36,5 +36,5 @@ public protocol Renderable {
     var preDraw: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)? { get }
 
     func update(camera: Camera, viewport: simd_float4, index: Int)
-    func draw(renderEncoderState: RenderEncoderState, shadow: Bool)
+    func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool)
 }

@@ -96,7 +96,7 @@ class BufferGeometryMesh: Object, Renderable {
         super.update(camera: camera, viewport: viewport, index: index)
     }
 
-    func draw(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    func draw(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         if let material, let shader = material.shader {
             if shader.vertexWantsVertexUniforms {
                 renderEncoderState.vertexVertexUniforms = vertexUniforms
@@ -106,7 +106,11 @@ class BufferGeometryMesh: Object, Renderable {
                 renderEncoderState.fragmentVertexUniforms = vertexUniforms
             }
 
-            material.bind(renderEncoderState: renderEncoderState, shadow: shadow)
+            material.bind(
+                renderContext: renderContext,
+                renderEncoderState: renderEncoderState,
+                shadow: shadow
+            )
         }
         geometry.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         geometry.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount)
@@ -185,9 +189,9 @@ class BufferGeometryRenderer: BaseRenderer {
     }()
 
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat)
+    
     lazy var camera = PerspectiveCamera(position: [0, 0, -5], near: 0.01, far: 100.0, fov: 30)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
     let interleaved = true

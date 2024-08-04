@@ -15,8 +15,7 @@ import SatinCore
 #endif
 
 public class InstancedMesh: Mesh {
-
-    public override var drawable: Bool {
+    override public var drawable: Bool {
         guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return false }
 
         if let drawCount = drawCount {
@@ -128,7 +127,7 @@ public class InstancedMesh: Mesh {
         super.update()
     }
 
-    public override func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
+    override public func bind(renderEncoderState: RenderEncoderState, shadow: Bool) {
         super.bind(renderEncoderState: renderEncoderState, shadow: shadow)
         renderEncoderState.vertexInstanceUniforms = instanceMatrixBuffer
     }
@@ -162,18 +161,28 @@ public class InstancedMesh: Mesh {
         _updateInstanceMatrixBuffer = true
     }
 
-    override public func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+    override public func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         if let drawCount = drawCount {
-            super.draw(renderEncoderState: renderEncoderState, instanceCount: min(drawCount, instanceCount), shadow: shadow)
+            super.draw(
+                renderContext: renderContext,
+                renderEncoderState: renderEncoderState,
+                instanceCount: min(drawCount, instanceCount),
+                shadow: shadow
+            )
         }
         else {
-            super.draw(renderEncoderState: renderEncoderState, instanceCount: instanceCount, shadow: shadow)
+            super.draw(
+                renderContext: renderContext,
+                renderEncoderState: renderEncoderState,
+                instanceCount: instanceCount,
+                shadow: shadow
+            )
         }
     }
 
     // MARK: - Intersections
 
-    public override func computeLocalBounds() -> Bounds {
+    override public func computeLocalBounds() -> Bounds {
         var result = createBounds()
         for i in 0 ..< instanceCount {
             result = mergeBounds(result, transformBounds(bounds, getMatrixAt(index: i)))
@@ -181,7 +190,7 @@ public class InstancedMesh: Mesh {
         return result
     }
 
-    public override func computeWorldBounds() -> Bounds {
+    override public func computeWorldBounds() -> Bounds {
         var result = createBounds()
         for i in 0 ..< instanceCount {
             result = transformBounds(bounds, getWorldMatrixAt(index: i))
