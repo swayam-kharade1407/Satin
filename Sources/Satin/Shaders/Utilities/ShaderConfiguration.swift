@@ -24,6 +24,9 @@ public struct ShaderConfiguration {
 
     public internal(set) var rendering = RenderingConfiguration()
 
+    public internal(set) var defines: [ShaderDefine] = []
+    public internal(set) var constants: [String] = []
+
     public var blending: ShaderBlending {
         rendering.blending
     }
@@ -54,8 +57,8 @@ public struct ShaderConfiguration {
             castShadow: rendering.castShadow,
             receiveShadow: rendering.receiveShadow,
             shadowCount: rendering.shadowCount,
-            defines: rendering.getDefines(),
-            constants: rendering.getConstants()
+            defines: defines + rendering.getDefines(),
+            constants: constants + rendering.getConstants()
         )
     }
 }
@@ -69,6 +72,8 @@ extension ShaderConfiguration: Equatable {
             lhs.shadowFunctionName == rhs.shadowFunctionName &&
             lhs.libraryURL == rhs.libraryURL &&
             lhs.pipelineURL == rhs.pipelineURL &&
+            lhs.defines == rhs.defines &&
+            lhs.constants == rhs.constants &&
             lhs.rendering == rhs.rendering
     }
 }
@@ -84,6 +89,8 @@ extension ShaderConfiguration: Hashable {
         if let libraryURL = libraryURL { hasher.combine(libraryURL) }
         if let pipelineURL = pipelineURL { hasher.combine(pipelineURL) }
 
+        hasher.combine(defines)
+        hasher.combine(constants)
         hasher.combine(rendering)
     }
 }
@@ -96,6 +103,8 @@ extension ShaderConfiguration: CustomStringConvertible {
         output += "\t VertexName: \(vertexFunctionName)\n"
         output += "\t FragmentName: \(fragmentFunctionName)\n"
         output += "\t ShadowName: \(shadowFunctionName)\n"
+        output += "\t Defines: \(defines)\n"
+        output += "\t Constants: \(constants)\n"
         if let libraryURL = libraryURL { output += "\t libraryURL: \(libraryURL.relativePath)\n" }
         if let pipelineURL = pipelineURL { output += "\t pipelineURL: \(pipelineURL.relativePath)\n" }
         output += "\t \(rendering.description)"

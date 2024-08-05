@@ -121,14 +121,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     public let updatedPublisher = PassthroughSubject<Material, Never>()
 
-    public var pipeline: MTLRenderPipelineState? {
-        shader?.pipeline
-    }
-
-    public var shadowPipeline: MTLRenderPipelineState? {
-        shader?.shadowPipeline
-    }
-
     public var context: Context? {
         didSet {
             if context != nil, context != oldValue {
@@ -190,7 +182,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    private var uniformsNeedsUpdate = false
+    private var uniformsNeedsUpdate = true
     private var depthNeedsUpdate = false
 
     public var depthBias: DepthBias?
@@ -292,11 +284,16 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     func setupDepthStencilState() {
-        guard let context = context, context.depthPixelFormat != .invalid else { return }
+        guard let context = context,
+              context.depthPixelFormat != .invalid,
+              depthNeedsUpdate || depthStencilState == nil
+        else { return }
+
         let depthStateDesciptor = MTLDepthStencilDescriptor()
         depthStateDesciptor.depthCompareFunction = depthCompareFunction
         depthStateDesciptor.isDepthWriteEnabled = depthWriteEnabled
         depthStencilState = context.device.makeDepthStencilState(descriptor: depthStateDesciptor)
+
         depthNeedsUpdate = false
     }
 
@@ -332,8 +329,11 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func setupUniforms() {
-        guard let context = context, parameters.size > 0 else { return }
-        uniforms = UniformBuffer(device: context.device, parameters: parameters)
+        guard let context = context, parameters.size > 0, uniformsNeedsUpdate else { return }
+        uniforms = UniformBuffer(
+            device: context.device,
+            parameters: parameters
+        )
         uniformsNeedsUpdate = false
     }
 
@@ -360,14 +360,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
 
-    open func bindPipeline(renderEncoderState: RenderEncoderState, shadow: Bool) {
-        guard let pipeline = shadow ? shadowPipeline : pipeline else { return }
+    open func bindPipeline(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
+        guard let pipeline = shader?.getPipeline(renderContext: renderContext, shadow: shadow) else { return }
         renderEncoderState.pipeline = pipeline
     }
 
     open func bindUniforms(renderEncoderState: RenderEncoderState, shadow: Bool) {
         guard let shader else { return }
-        
+
         if shader.vertexWantsMaterialUniforms {
             renderEncoderState.vertexMaterialUniforms = uniforms
         }
@@ -377,7 +377,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         }
     }
 
-    open func bindDepthStates(renderEncoderState: RenderEncoderState) {
+    open func bindDepthStates(renderContext: Context, renderEncoderState: RenderEncoderState) {
+        guard renderContext.depthPixelFormat != .invalid else { return }
         renderEncoderState.depthStencilState = depthStencilState
         renderEncoderState.depthBias = depthBias
         renderEncoderState.depthClipMode = depthClipMode
@@ -409,11 +410,22 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
 
     open func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
         bindUniforms(renderEncoderState: renderEncoderState, shadow: shadow)
-        bindDepthStates(renderEncoderState: renderEncoderState)
+        bindDepthStates(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState
+        )
         bindBuffers(renderEncoderState: renderEncoderState)
         bindTextures(renderEncoderState: renderEncoderState)
-        bindPipeline(renderEncoderState: renderEncoderState, shadow: shadow)
+        bindPipeline(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
         onBind?(renderEncoderState.renderEncoder)
+    }
+
+    public func getPipeline(renderContext: Context, shadow: Bool) -> MTLRenderPipelineState? {
+        shader?.getPipeline(renderContext: renderContext, shadow: shadow)
     }
 
     public func set(_ buffer: MTLBuffer?, index: VertexBufferIndex) {
@@ -666,15 +678,15 @@ public extension Material {
     func updateParameters(_ newParameters: ParameterGroup) {
         parameters.setFrom(newParameters)
         parameters.label = newParameters.label
-        
+
         uniformsNeedsUpdate = true
 
         objectWillChange.send()
 
         parametersSetPublisher.send(parameters)
-        
+
         updatedPublisher.send(self)
-        
+
         delegate?.updated(material: self)
     }
 }

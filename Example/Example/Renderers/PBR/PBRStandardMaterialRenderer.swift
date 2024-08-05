@@ -17,7 +17,7 @@ import CoreImage
 import ModelIO
 import UniformTypeIdentifiers
 
-class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
+class PBRStandardMaterialRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
@@ -42,11 +42,7 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 
-    lazy var material = {
-        let mat = StandardMaterial()
-        mat.delegate = self
-        return mat
-    }()
+    let material = StandardMaterial()
 
     override func setup() {
         loadHdri()
@@ -182,9 +178,5 @@ class PBRStandardMaterialRenderer: BaseRenderer, MaterialDelegate {
         if let hdr = loadHDR(device: device, url: url) {
             scene.setEnvironment(texture: hdr)
         }
-    }
-
-    func updated(material: Material) {
-        print("Material Updated: \(material.label)")
     }
 }

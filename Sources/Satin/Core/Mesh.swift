@@ -95,9 +95,9 @@ open class Mesh: Object, Renderable {
               vertexUniforms[renderContext] != nil
         else { return false }
 
-        if submeshes.isEmpty, let material = material, material.pipeline != nil {
+        if submeshes.isEmpty, let material = material, material.getPipeline(renderContext: renderContext, shadow: false) != nil {
             return true
-        } else if let submesh = submeshes.first, let material = submesh.material, material.pipeline != nil {
+        } else if let submesh = submeshes.first, let material = submesh.material, material.getPipeline(renderContext: renderContext, shadow: false) != nil {
             return true
         } else {
             return false
@@ -187,7 +187,7 @@ open class Mesh: Object, Renderable {
     // MARK: - Setup Uniforms
 
     open func setupVertexUniforms() {
-        guard let context = context else { return }
+        guard let context = context, vertexUniforms[context] == nil else { return }
         vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
@@ -276,7 +276,11 @@ open class Mesh: Object, Renderable {
     }
 
     open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
-        bind(renderContext: renderContext, renderEncoderState: renderEncoderState, shadow: shadow)
+        bind(
+            renderContext: renderContext,
+            renderEncoderState: renderEncoderState,
+            shadow: shadow
+        )
 
         if !submeshes.isEmpty {
             for submesh in submeshes where submesh.visible {

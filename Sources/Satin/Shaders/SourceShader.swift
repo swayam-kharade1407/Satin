@@ -51,7 +51,10 @@ open class SourceShader: Shader {
                 ShaderPipelineCache.invalidate(configuration: self.configuration)
 
                 // invalidate caches to recompile shader
-
+                self.pipelines.removeAll()
+                self.shadowPipelines.removeAll()
+                self.configurations.removeAll()
+                
                 self.shadowPipelineNeedsUpdate = true
                 self.pipelineNeedsUpdate = true
                 self.parametersNeedsUpdate = true

@@ -47,7 +47,6 @@ class MeshShaderRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -219,7 +218,10 @@ private class CustomMesh: Object, Renderable {
     var castShadow: Bool { material?.castShadow ?? false }
 
     func isDrawable(renderContext: Context) -> Bool {
-        guard #available(macOS 13.0, iOS 16.0, *), material?.pipeline != nil else { return false }
+        guard #available(macOS 13.0, iOS 16.0, *),
+              let material,
+              material.getPipeline(renderContext: renderContext, shadow: false) != nil
+              else { return false }
         return true
     }
 

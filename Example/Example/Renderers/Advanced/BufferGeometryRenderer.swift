@@ -200,7 +200,7 @@ class BufferGeometryMesh: Object, Renderable {
 class BufferGeometryRenderer: BaseRenderer {
     var geometryData = createGeometryData()
     var geometry = Geometry()
-    lazy var mesh = BufferGeometryMesh(geometry: geometry, material: NormalColorMaterial())
+    lazy var mesh = BufferGeometryMesh(geometry: geometry, material: NormalColorMaterial(true))
 
     var intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))

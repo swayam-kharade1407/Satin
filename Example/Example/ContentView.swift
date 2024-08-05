@@ -201,6 +201,10 @@ struct ContentView: View {
                         Label("Ray Marching", systemImage: "camera.metering.multispot")
                     }
 
+                    NavigationLink(destination: MultipleContextRendererView()) {
+                        Label("Multiple Context", systemImage: "rectangle.split.2x1")
+                    }
+
                     #if !targetEnvironment(simulator)
                         NavigationLink(destination: MultipleViewportRendererView()) {
                             Label("Vertex Amplification", systemImage: "rectangle.split.2x1")
@@ -259,8 +263,10 @@ struct ContentView: View {
                 }
             #endif
 
-            #if os(macOS)
-                ScreenCaptureRendererView()
+            #if os(macOS) && DEBUG
+            PBRStandardMaterialRendererView()
+//                MultipleContextRendererView()
+//                ScreenCaptureRendererView()
             #endif
         }
     }

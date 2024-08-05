@@ -12,6 +12,9 @@ import Metal
 open class Shader {
     // MARK: - Main Pipeline
 
+    public internal(set) var pipelines: [Context: MTLRenderPipelineState] = [:]
+    public internal(set) var error: Error?
+
     open var pipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
     open var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
@@ -39,15 +42,12 @@ open class Shader {
         }
     }
 
-    public internal(set) var pipeline: MTLRenderPipelineState?
-    public internal(set) var error: Error?
-
     // MARK: - Shadow Pipeline
 
     open var shadowPipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
     open var shadowPipelineReflection: MTLRenderPipelineReflection?
 
-    public internal(set) var shadowPipeline: MTLRenderPipelineState?
+    public internal(set) var shadowPipelines: [Context: MTLRenderPipelineState] = [:]
     public internal(set) var shadowError: Error?
 
     public internal(set) var vertexWantsVertexUniforms: Bool = false
@@ -55,128 +55,6 @@ open class Shader {
 
     public internal(set) var fragmentWantsVertexUniforms: Bool = false
     public internal(set) var fragmentWantsMaterialUniforms: Bool = false
-
-    // MARK: - Blending
-
-    public var configuration: ShaderConfiguration {
-        didSet {
-            if configuration != oldValue {
-                definesNeedsUpdate = true
-                constantsNeedsUpdate = true
-                shadowPipelineNeedsUpdate = true
-                pipelineNeedsUpdate = true
-                parametersNeedsUpdate = true
-            }
-        }
-    }
-
-    var libraryURL: URL? {
-        get { configuration.libraryURL }
-        set { configuration.libraryURL = newValue }
-    }
-
-    open var constants: [String] {
-        get { configuration.rendering.constants }
-        set { configuration.rendering.constants = newValue }
-    }
-
-    open var defines: [ShaderDefine] {
-        get { configuration.rendering.defines }
-        set { configuration.rendering.defines = newValue }
-    }
-
-    // MARK: - Blending
-
-    public var blending: Blending {
-        get { configuration.rendering.blending.type }
-        set { configuration.rendering.blending.type = newValue }
-    }
-
-    public var sourceRGBBlendFactor: MTLBlendFactor {
-        get { configuration.rendering.blending.sourceRGBBlendFactor }
-        set { configuration.rendering.blending.sourceRGBBlendFactor = newValue }
-    }
-
-    public var sourceAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.rendering.blending.sourceAlphaBlendFactor }
-        set { configuration.rendering.blending.sourceAlphaBlendFactor = newValue }
-    }
-
-    public var destinationRGBBlendFactor: MTLBlendFactor {
-        get { configuration.rendering.blending.destinationRGBBlendFactor }
-        set { configuration.rendering.blending.destinationRGBBlendFactor = newValue }
-    }
-
-    public var destinationAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.rendering.blending.destinationRGBBlendFactor }
-        set { configuration.rendering.blending.destinationRGBBlendFactor = newValue }
-    }
-
-    public var rgbBlendOperation: MTLBlendOperation {
-        get { configuration.rendering.blending.rgbBlendOperation }
-        set { configuration.rendering.blending.rgbBlendOperation = newValue }
-    }
-
-    public var alphaBlendOperation: MTLBlendOperation {
-        get { configuration.rendering.blending.alphaBlendOperation }
-        set { configuration.rendering.blending.alphaBlendOperation = newValue }
-    }
-
-    // MARK: - Instancing
-
-    public var instancing: Bool {
-        get { configuration.rendering.instancing }
-        set { configuration.rendering.instancing = newValue }
-    }
-
-    // MARK: - Lighting
-
-    public var lighting: Bool {
-        get { configuration.rendering.lighting }
-        set { configuration.rendering.lighting = newValue }
-    }
-
-    public var lightCount: Int {
-        get { configuration.rendering.lightCount }
-        set { configuration.rendering.lightCount = newValue }
-    }
-
-    // MARK: - Shadows
-
-    public var castShadow: Bool {
-        get { configuration.rendering.castShadow }
-        set { configuration.rendering.castShadow = newValue }
-    }
-
-    public var receiveShadow: Bool {
-        get { configuration.rendering.receiveShadow }
-        set { configuration.rendering.receiveShadow = newValue }
-    }
-
-    public var shadowCount: Int {
-        get { configuration.rendering.shadowCount }
-        set { configuration.rendering.shadowCount = newValue }
-    }
-
-    public var vertexDescriptor: MTLVertexDescriptor {
-        get { configuration.rendering.vertexDescriptor }
-        set { configuration.rendering.vertexDescriptor = newValue }
-    }
-
-    public var vertexFunctionName: String {
-        get { configuration.vertexFunctionName }
-        set { configuration.vertexFunctionName = newValue }
-    }
-
-    public var shadowFunctionName: String {
-        get { configuration.shadowFunctionName }
-        set { configuration.shadowFunctionName = newValue }
-    }
-
-    public var fragmentFunctionName: String {
-        get { configuration.fragmentFunctionName }
-        set { configuration.fragmentFunctionName = newValue }
-    }
 
     public var context: Context? {
         didSet {
@@ -186,17 +64,298 @@ open class Shader {
         }
     }
 
+    // MARK: - Configurations
+
+    public internal(set) var configurations: [Context: ShaderConfiguration] = [:]
+
+    public internal(set) var configuration: ShaderConfiguration
+
+    var libraryURL: URL? {
+        get {
+            configuration.libraryURL
+        }
+        set {
+            if configuration.libraryURL != newValue {
+                configuration.libraryURL = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    open var constants: [String] {
+        get {
+            configuration.rendering.constants
+        }
+        set {
+            if configuration.constants != newValue {
+                configuration.constants = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    open var defines: [ShaderDefine] {
+        get {
+            configuration.rendering.defines
+        }
+        set {
+            if configuration.defines != newValue {
+                configuration.defines = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    // MARK: - Blending
+
+    public var blending: Blending {
+        get {
+            configuration.rendering.blending.type
+        }
+        set {
+            if configuration.rendering.blending.type != newValue {
+                configuration.rendering.blending.type = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var sourceRGBBlendFactor: MTLBlendFactor {
+        get {
+            configuration.rendering.blending.sourceRGBBlendFactor
+        }
+        set {
+            if configuration.rendering.blending.sourceRGBBlendFactor != newValue {
+                configuration.rendering.blending.sourceRGBBlendFactor = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var sourceAlphaBlendFactor: MTLBlendFactor {
+        get {
+            configuration.rendering.blending.sourceAlphaBlendFactor
+        }
+        set {
+            if configuration.rendering.blending.sourceAlphaBlendFactor != newValue {
+                configuration.rendering.blending.sourceAlphaBlendFactor = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var destinationRGBBlendFactor: MTLBlendFactor {
+        get {
+            configuration.rendering.blending.destinationRGBBlendFactor
+        }
+        set {
+            if configuration.rendering.blending.destinationRGBBlendFactor != newValue {
+                configuration.rendering.blending.destinationRGBBlendFactor = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var destinationAlphaBlendFactor: MTLBlendFactor {
+        get {
+            configuration.rendering.blending.destinationRGBBlendFactor
+        }
+        set {
+            if configuration.rendering.blending.destinationRGBBlendFactor != newValue {
+                configuration.rendering.blending.destinationRGBBlendFactor = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var rgbBlendOperation: MTLBlendOperation {
+        get {
+            configuration.rendering.blending.rgbBlendOperation
+        }
+        set {
+            if configuration.rendering.blending.rgbBlendOperation != newValue {
+                configuration.rendering.blending.rgbBlendOperation = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var alphaBlendOperation: MTLBlendOperation {
+        get {
+            configuration.rendering.blending.alphaBlendOperation
+        }
+        set {
+            if configuration.rendering.blending.alphaBlendOperation != newValue {
+                configuration.rendering.blending.alphaBlendOperation = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    // MARK: - Instancing
+
+    public var instancing: Bool {
+        get {
+            configuration.rendering.instancing
+        }
+        set {
+            if configuration.rendering.instancing != newValue {
+                configuration.rendering.instancing = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    // MARK: - Lighting
+
+    public var lighting: Bool {
+        get {
+            configuration.rendering.lighting
+        }
+        set {
+            if configuration.rendering.lighting != newValue {
+                configuration.rendering.lighting = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var lightCount: Int {
+        get {
+            configuration.rendering.lightCount
+        }
+        set {
+            if configuration.rendering.lightCount != newValue {
+                configuration.rendering.lightCount = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    // MARK: - Shadows
+
+    public var castShadow: Bool {
+        get {
+            configuration.rendering.castShadow
+        }
+        set {
+            if configuration.rendering.castShadow != newValue {
+                configuration.rendering.castShadow = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var receiveShadow: Bool {
+        get {
+            configuration.rendering.receiveShadow
+        }
+        set {
+            if configuration.rendering.receiveShadow != newValue {
+                configuration.rendering.receiveShadow = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var shadowCount: Int {
+        get {
+            configuration.rendering.shadowCount
+        }
+        set {
+            if configuration.rendering.shadowCount != newValue {
+                configuration.rendering.shadowCount = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var vertexDescriptor: MTLVertexDescriptor {
+        get {
+            configuration.rendering.vertexDescriptor
+        }
+        set {
+            if configuration.rendering.vertexDescriptor != newValue {
+                configuration.rendering.vertexDescriptor = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var vertexFunctionName: String {
+        get {
+            configuration.vertexFunctionName
+        }
+        set {
+            if configuration.vertexFunctionName != newValue {
+                configuration.vertexFunctionName = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var shadowFunctionName: String {
+        get {
+            configuration.shadowFunctionName
+        }
+        set {
+            if configuration.shadowFunctionName != newValue {
+                configuration.shadowFunctionName = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var fragmentFunctionName: String {
+        get {
+            configuration.fragmentFunctionName
+        }
+        set {
+            if configuration.fragmentFunctionName != newValue {
+                configuration.fragmentFunctionName = newValue
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
     public var label: String {
         get {
             configuration.label
         }
         set {
-            configuration.label = newValue
+            if configuration.label != newValue {
+                configuration.label = newValue
+                configurationNeedsUpdate = true
+                parametersNeedsUpdate = true
+            }
         }
     }
 
-    public var definesNeedsUpdate = false
-    public var constantsNeedsUpdate = false
+    public var configurationNeedsUpdate = true {
+        didSet {
+            if configurationNeedsUpdate {
+                configurations.removeAll()
+                pipelines.removeAll()
+                shadowPipelines.removeAll()
+            }
+        }
+    }
+
+    public var definesNeedsUpdate = true {
+        didSet {
+            if definesNeedsUpdate {
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
+    public var constantsNeedsUpdate = true {
+        didSet {
+            if constantsNeedsUpdate {
+                configurationNeedsUpdate = true
+            }
+        }
+    }
 
     public var shadowPipelineNeedsUpdate = false
     public var pipelineNeedsUpdate = true
@@ -204,9 +363,11 @@ open class Shader {
 
     public let parametersPublisher = PassthroughSubject<ParameterGroup, Never>()
 
-    public var parameters = ParameterGroup() {
+    public var parameters: ParameterGroup? {
         didSet {
-            parametersPublisher.send(parameters)
+            if let parameters {
+                parametersPublisher.send(parameters)
+            }
         }
     }
 
@@ -233,114 +394,78 @@ open class Shader {
     }
 
     func setup() {
-        configuration.context = context
+        updateDefines()
+        updateConstants()
 
-        setupDefines()
-        setupConstants()
+        setupConfiguration()
 
         setupPipeline()
         setupShadowPipeline()
-        setupParameters()
+        updateParameters()
     }
 
     func update() {
         updateDefines()
         updateConstants()
 
+        updateConfiguration()
+
         updatePipeline()
         updateShadowPipeline()
         updateParameters()
     }
 
+    // MARK: - Configuration
+
+    func setupConfiguration() {
+        guard let context = context, configurations[context] == nil else { return }
+
+        configuration.context = context
+        configurations[context] = configuration
+
+        pipelineNeedsUpdate = true
+
+        if configuration.rendering.castShadow {
+            shadowPipelineNeedsUpdate = true
+        }
+
+        configurationNeedsUpdate = false
+    }
+
+    func updateConfiguration() {
+        if configurationNeedsUpdate {
+            setupConfiguration()
+        }
+    }
+
+    // MARK: - Defines
+
     open func getDefines() -> [ShaderDefine] {
         return []
     }
 
-    func setupDefines() {
+    func updateDefines() {
+        guard definesNeedsUpdate else { return }
         defines = getDefines()
         definesNeedsUpdate = false
     }
 
-    func updateDefines() {
-        if definesNeedsUpdate { setupDefines() }
-    }
+    // MARK: - Constants
 
     open func getConstants() -> [String] {
         []
     }
 
-    func setupConstants() {
+    func updateConstants() {
+        guard constantsNeedsUpdate else { return }
         constants = getConstants()
         constantsNeedsUpdate = false
     }
 
-    func updateConstants() {
-        if constantsNeedsUpdate { setupConstants() }
-    }
-
-    func updatePipeline() {
-        if pipelineNeedsUpdate { setupPipeline() }
-    }
-
-    func updateShadowPipeline() {
-        if shadowPipelineNeedsUpdate { setupShadowPipeline() }
-    }
+    // MARK: - Parameters
 
     func updateParameters() {
-        if parametersNeedsUpdate { setupParameters() }
-    }
-
-    deinit {
-        pipeline = nil
-        pipelineReflection = nil
-        error = nil
-
-        shadowPipeline = nil
-        shadowPipelineReflection = nil
-        shadowError = nil
-    }
-
-    open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
-        try ShaderPipelineCache.getPipeline(configuration: configuration)
-    }
-
-    func setupPipeline() {
-        guard context != nil else { return }
-        do {
-            let result = try makePipeline()
-            pipeline = result.pipeline
-            pipelineReflection = result.reflection
-            error = nil
-        } catch {
-            print("\(label) Shader Pipeline: \(error.localizedDescription)")
-            if let url = configuration.pipelineURL {
-                print("\(label) Shader Path: \(url.path)")
-            }
-            self.error = error
-            pipeline = nil
-            pipelineReflection = nil
-        }
-        pipelineNeedsUpdate = false
-    }
-
-    func setupShadowPipeline() {
-        guard context != nil, castShadow else { return }
-        do {
-            shadowPipeline = try ShaderPipelineCache.getShadowPipeline(configuration: configuration)
-            shadowError = nil
-        } catch {
-            print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
-            if let url = configuration.pipelineURL {
-                print("\(label) Shader Path: \(url.path)")
-            }
-            shadowError = error
-            shadowPipeline = nil
-        }
-
-        shadowPipelineNeedsUpdate = false
-    }
-
-    func setupParameters() {
+        guard parametersNeedsUpdate else { return }
         do {
             if let pipelineParameters = try ShaderPipelineCache.getPipelineParameters(configuration: configuration) {
                 parameters = pipelineParameters
@@ -353,6 +478,80 @@ open class Shader {
         }
 
         parametersNeedsUpdate = false
+    }
+
+    // MARK: - Pipelines
+
+    open func getPipeline(renderContext: Context, shadow: Bool) -> MTLRenderPipelineState? {
+        shadow ? shadowPipelines[renderContext] : pipelines[renderContext]
+    }
+
+    func updatePipeline() {
+        if pipelineNeedsUpdate {
+            setupPipeline()
+        }
+    }
+
+    open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
+        try ShaderPipelineCache.getPipeline(configuration: configuration)
+    }
+
+    func setupPipeline() {
+        guard let context, pipelines[context] == nil else { return }
+        do {
+            let result = try makePipeline()
+            pipelines[context] = result.pipeline
+            pipelineReflection = result.reflection
+            error = nil
+        } catch {
+            print("\(label) Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Shader Path: \(url.path)")
+            }
+            self.error = error
+            pipelineReflection = nil
+            pipelines[context] = nil
+        }
+        pipelineNeedsUpdate = false
+    }
+
+    func updateShadowPipeline() {
+        if shadowPipelineNeedsUpdate {
+            setupShadowPipeline()
+        }
+    }
+
+    open func makeShadowPipeline() throws -> MTLRenderPipelineState? {
+        try ShaderPipelineCache.getShadowPipeline(configuration: configuration)
+    }
+
+    func setupShadowPipeline() {
+        guard let context, shadowPipelines[context] == nil, castShadow else { return }
+        do {
+            shadowPipelines[context] = try makeShadowPipeline()
+            shadowError = nil
+        } catch {
+            print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Shader Path: \(url.path)")
+            }
+            shadowError = error
+            shadowPipelines[context] = nil
+        }
+
+        shadowPipelineNeedsUpdate = false
+    }
+
+    deinit {
+        configurations.removeAll()
+
+        pipelines.removeAll()
+        pipelineReflection = nil
+        error = nil
+
+        shadowPipelines.removeAll()
+        shadowPipelineReflection = nil
+        shadowError = nil
     }
 
     public func clone() -> Shader {
