@@ -32,9 +32,9 @@ class TessellatedMesh: Object, Renderable {
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
 
-    func isDrawable(renderContext: Context) -> Bool {
+    func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
         guard let material,
-              material.getPipeline(renderContext: renderContext, shadow: false) != nil,
+              material.getPipeline(renderContext: renderContext, shadow: shadow) != nil,
               geometry.vertexBuffers[.Vertices] != nil,
               vertexUniforms[renderContext] != nil
         else { return false }

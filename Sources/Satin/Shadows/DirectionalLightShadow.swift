@@ -121,7 +121,7 @@ public final class DirectionalLightShadow: Shadow {
         renderEncoder.label = label + " Shadow Encoder"
         renderEncoder.setViewport(viewport)
         let renderEncoderState = RenderEncoderState(renderEncoder: renderEncoder)
-        for renderable in renderables where renderable.isDrawable(renderContext: context) && renderable.castShadow {
+        for renderable in renderables where renderable.isDrawable(renderContext: context, shadow: true) && renderable.castShadow {
             #if DEBUG
             renderEncoder.pushDebugGroup(renderable.label)
             #endif

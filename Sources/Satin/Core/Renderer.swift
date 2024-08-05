@@ -655,7 +655,7 @@ open class Renderer {
             }
         }
 
-        for renderable in renderables where renderable.isDrawable(renderContext: context) {
+        for renderable in renderables where renderable.isDrawable(renderContext: context, shadow: false) {
             _encode(
                 renderEncoder: renderEncoder,
                 renderEncoderState: renderEncoderState,

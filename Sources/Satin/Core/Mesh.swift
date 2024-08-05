@@ -89,13 +89,13 @@ open class Mesh: Object, Renderable {
         }
     }
 
-    open func isDrawable(renderContext: Context) -> Bool {
+    open func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
         guard instanceCount > 0,
               !geometry.vertexBuffers.isEmpty,
               vertexUniforms[renderContext] != nil
         else { return false }
 
-        if submeshes.isEmpty, let material = material, material.getPipeline(renderContext: renderContext, shadow: false) != nil {
+        if submeshes.isEmpty, let material = material, material.getPipeline(renderContext: renderContext, shadow: shadow) != nil {
             return true
         } else if let submesh = submeshes.first, let material = submesh.material, material.getPipeline(renderContext: renderContext, shadow: false) != nil {
             return true

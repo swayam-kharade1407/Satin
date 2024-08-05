@@ -217,10 +217,10 @@ private class CustomMesh: Object, Renderable {
     var receiveShadow: Bool { material?.receiveShadow ?? false }
     var castShadow: Bool { material?.castShadow ?? false }
 
-    func isDrawable(renderContext: Context) -> Bool {
+    func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
         guard #available(macOS 13.0, iOS 16.0, *),
               let material,
-              material.getPipeline(renderContext: renderContext, shadow: false) != nil
+              material.getPipeline(renderContext: renderContext, shadow: shadow) != nil
               else { return false }
         return true
     }

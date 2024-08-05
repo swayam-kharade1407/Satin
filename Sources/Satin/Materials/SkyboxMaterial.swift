@@ -113,8 +113,8 @@ open class SkyboxMaterial: BasicTextureMaterial {
         initalizeParameters()
     }
 
-    override public func setupShaderConfiguration(_ shader: Shader) {
-        super.setupShaderConfiguration(shader)
+    override public func setupShaderRenderingConfiguration(_ shader: Shader) {
+        super.setupShaderRenderingConfiguration(shader)
         guard let skyboxShader = shader as? SkyboxShader else { return }
         skyboxShader.tonemapping = tonemapping
     }

@@ -27,7 +27,7 @@ public protocol Renderable {
     var triangleFillMode: MTLTriangleFillMode { get }
 
     var vertexUniforms: [Context: VertexUniformBuffer] { get }
-    func isDrawable(renderContext: Context) -> Bool
+    func isDrawable(renderContext: Context, shadow: Bool) -> Bool
 
     var material: Material? { get set }
     var materials: [Material] { get }

@@ -214,8 +214,8 @@ open class StandardMaterial: Material {
         initalize()
     }
 
-    override open func setupShaderConfiguration(_ shader: Shader) {
-        super.setupShaderConfiguration(shader)
+    override open func setupShaderRenderingConfiguration(_ shader: Shader) {
+        super.setupShaderRenderingConfiguration(shader)
         guard let pbrShader = shader as? PBRShader else { return }
         pbrShader.maps = maps.filter { $0.value != nil }
         pbrShader.samplers = samplers.filter { $0.value != nil }

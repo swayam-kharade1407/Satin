@@ -37,8 +37,9 @@ class BufferGeometryMesh: Object, Renderable {
 
     var instanceCount: Int = 1
 
-    func isDrawable(renderContext: Context) -> Bool {
-        guard material != nil,
+    func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
+        guard let material,
+              material.getPipeline(renderContext: renderContext, shadow: shadow) != nil,
               !geometry.vertexBuffers.isEmpty,
               instanceCount > 0,
               vertexUniforms[renderContext] != nil else { return false }

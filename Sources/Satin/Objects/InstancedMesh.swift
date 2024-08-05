@@ -15,19 +15,19 @@ import SatinCore
 #endif
 
 public class InstancedMesh: Mesh {
-    public override func isDrawable(renderContext: Context) -> Bool {
+    public override func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
         guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return false }
 
         if let drawCount = drawCount {
             if drawCount > 0 {
-                return super.isDrawable(renderContext: renderContext)
+                return super.isDrawable(renderContext: renderContext, shadow: shadow)
             }
             else {
                 return false
             }
         }
         else {
-            return super.isDrawable(renderContext: renderContext)
+            return super.isDrawable(renderContext: renderContext, shadow: shadow)
         }
     }
 

@@ -50,7 +50,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public private(set) var shader: Shader? {
         didSet {
             if shader != oldValue, let shader = shader {
-                setupShaderConfiguration(shader)
+                setupShaderRenderingConfiguration(shader)
                 setupShaderParametersSubscription(shader)
             }
         }
@@ -89,7 +89,7 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     private var configuration = RenderingConfiguration() {
         didSet {
             if configuration != oldValue, let shader = shader {
-                setupShaderConfiguration(shader)
+                setupShaderRenderingConfiguration(shader)
             }
         }
     }
@@ -318,8 +318,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         shader?.context = context
     }
 
-    open func setupShaderConfiguration(_ shader: Shader) {
-        shader.configuration.rendering = configuration
+    open func setupShaderRenderingConfiguration(_ shader: Shader) {
+        shader.renderingConfiguration = configuration
     }
 
     open func setupShaderParametersSubscription(_ shader: Shader) {

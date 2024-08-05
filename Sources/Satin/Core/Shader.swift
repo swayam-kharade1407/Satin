@@ -68,6 +68,15 @@ open class Shader {
 
     public internal(set) var configurations: [Context: ShaderConfiguration] = [:]
 
+    public internal(set) var renderingConfiguration = RenderingConfiguration() {
+        didSet {
+            if renderingConfiguration != configuration.rendering {
+                configuration.rendering = renderingConfiguration
+                configurationNeedsUpdate = true
+            }
+        }
+    }
+
     public internal(set) var configuration: ShaderConfiguration
 
     var libraryURL: URL? {
@@ -78,13 +87,14 @@ open class Shader {
             if configuration.libraryURL != newValue {
                 configuration.libraryURL = newValue
                 configurationNeedsUpdate = true
+                parametersNeedsUpdate = true
             }
         }
     }
 
     open var constants: [String] {
         get {
-            configuration.rendering.constants
+            configuration.constants
         }
         set {
             if configuration.constants != newValue {
@@ -96,7 +106,7 @@ open class Shader {
 
     open var defines: [ShaderDefine] {
         get {
-            configuration.rendering.defines
+            configuration.defines
         }
         set {
             if configuration.defines != newValue {
@@ -110,49 +120,37 @@ open class Shader {
 
     public var blending: Blending {
         get {
-            configuration.rendering.blending.type
+            renderingConfiguration.blending.type
         }
         set {
-            if configuration.rendering.blending.type != newValue {
-                configuration.rendering.blending.type = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.type = newValue
         }
     }
 
     public var sourceRGBBlendFactor: MTLBlendFactor {
         get {
-            configuration.rendering.blending.sourceRGBBlendFactor
+            renderingConfiguration.blending.sourceRGBBlendFactor
         }
         set {
-            if configuration.rendering.blending.sourceRGBBlendFactor != newValue {
-                configuration.rendering.blending.sourceRGBBlendFactor = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.sourceRGBBlendFactor = newValue
         }
     }
 
     public var sourceAlphaBlendFactor: MTLBlendFactor {
         get {
-            configuration.rendering.blending.sourceAlphaBlendFactor
+            renderingConfiguration.blending.sourceAlphaBlendFactor
         }
         set {
-            if configuration.rendering.blending.sourceAlphaBlendFactor != newValue {
-                configuration.rendering.blending.sourceAlphaBlendFactor = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.sourceAlphaBlendFactor = newValue
         }
     }
 
     public var destinationRGBBlendFactor: MTLBlendFactor {
         get {
-            configuration.rendering.blending.destinationRGBBlendFactor
+            renderingConfiguration.blending.destinationRGBBlendFactor
         }
         set {
-            if configuration.rendering.blending.destinationRGBBlendFactor != newValue {
-                configuration.rendering.blending.destinationRGBBlendFactor = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.destinationRGBBlendFactor = newValue
         }
     }
 
@@ -161,34 +159,25 @@ open class Shader {
             configuration.rendering.blending.destinationRGBBlendFactor
         }
         set {
-            if configuration.rendering.blending.destinationRGBBlendFactor != newValue {
-                configuration.rendering.blending.destinationRGBBlendFactor = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.destinationRGBBlendFactor = newValue
         }
     }
 
     public var rgbBlendOperation: MTLBlendOperation {
         get {
-            configuration.rendering.blending.rgbBlendOperation
+            renderingConfiguration.blending.rgbBlendOperation
         }
         set {
-            if configuration.rendering.blending.rgbBlendOperation != newValue {
-                configuration.rendering.blending.rgbBlendOperation = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.rgbBlendOperation = newValue
         }
     }
 
     public var alphaBlendOperation: MTLBlendOperation {
         get {
-            configuration.rendering.blending.alphaBlendOperation
+            renderingConfiguration.blending.alphaBlendOperation
         }
         set {
-            if configuration.rendering.blending.alphaBlendOperation != newValue {
-                configuration.rendering.blending.alphaBlendOperation = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.blending.alphaBlendOperation = newValue
         }
     }
 
@@ -196,13 +185,10 @@ open class Shader {
 
     public var instancing: Bool {
         get {
-            configuration.rendering.instancing
+            renderingConfiguration.instancing
         }
         set {
-            if configuration.rendering.instancing != newValue {
-                configuration.rendering.instancing = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.instancing = newValue
         }
     }
 
@@ -210,25 +196,19 @@ open class Shader {
 
     public var lighting: Bool {
         get {
-            configuration.rendering.lighting
+            renderingConfiguration.lighting
         }
         set {
-            if configuration.rendering.lighting != newValue {
-                configuration.rendering.lighting = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.lighting = newValue
         }
     }
 
     public var lightCount: Int {
         get {
-            configuration.rendering.lightCount
+            renderingConfiguration.lightCount
         }
         set {
-            if configuration.rendering.lightCount != newValue {
-                configuration.rendering.lightCount = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.lightCount = newValue
         }
     }
 
@@ -236,49 +216,37 @@ open class Shader {
 
     public var castShadow: Bool {
         get {
-            configuration.rendering.castShadow
+            renderingConfiguration.castShadow
         }
         set {
-            if configuration.rendering.castShadow != newValue {
-                configuration.rendering.castShadow = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.castShadow = newValue
         }
     }
 
     public var receiveShadow: Bool {
         get {
-            configuration.rendering.receiveShadow
+            renderingConfiguration.receiveShadow
         }
         set {
-            if configuration.rendering.receiveShadow != newValue {
-                configuration.rendering.receiveShadow = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.receiveShadow = newValue
         }
     }
 
     public var shadowCount: Int {
         get {
-            configuration.rendering.shadowCount
+            renderingConfiguration.shadowCount
         }
         set {
-            if configuration.rendering.shadowCount != newValue {
-                configuration.rendering.shadowCount = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.shadowCount = newValue
         }
     }
 
     public var vertexDescriptor: MTLVertexDescriptor {
         get {
-            configuration.rendering.vertexDescriptor
+            renderingConfiguration.vertexDescriptor
         }
         set {
-            if configuration.rendering.vertexDescriptor != newValue {
-                configuration.rendering.vertexDescriptor = newValue
-                configurationNeedsUpdate = true
-            }
+            renderingConfiguration.vertexDescriptor = newValue
         }
     }
 
@@ -424,10 +392,7 @@ open class Shader {
         configurations[context] = configuration
 
         pipelineNeedsUpdate = true
-
-        if configuration.rendering.castShadow {
-            shadowPipelineNeedsUpdate = true
-        }
+        shadowPipelineNeedsUpdate = true
 
         configurationNeedsUpdate = false
     }
