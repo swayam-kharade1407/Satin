@@ -12,20 +12,24 @@ import MetalKit
 import Satin
 
 final class Renderer2D: BaseRenderer {
-    let mesh = Mesh(label: "Quad", geometry: PlaneGeometry(size: 700), material: UVColorMaterial())
-
-    
-
+    let mesh = Mesh(label: "Quad", geometry: IcoSphereGeometry(radius: 500, resolution: 1), material: BasicDiffuseMaterial(color: .one))
     var camera = OrthographicCamera()
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
-    lazy var scene = Object(label: "Scene", [mesh])
+    lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
     lazy var renderer = Renderer(context: defaultContext)
 
-    override var depthPixelFormat: MTLPixelFormat {
-        .invalid
-    }
+    var intersectionMesh: Mesh = {
+        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 10, resolution: 1), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
+        mesh.label = "Intersection Mesh"
+        mesh.renderPass = 1
+        mesh.visible = false
+        return mesh
+    }()
 
     override func setup() {
+        camera.near = 1
+        camera.far = 1000
+        camera.position = [0, 0, 500]
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
@@ -72,8 +76,8 @@ final class Renderer2D: BaseRenderer {
     func intersect(coordinate: simd_float2) {
         let results = raycast(camera: camera, coordinate: coordinate, object: scene)
         if let result = results.first {
-            print(result.object.label)
-            print(result.position)
+            intersectionMesh.position = result.position
+            intersectionMesh.visible = true
         }
     }
 
