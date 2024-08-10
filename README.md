@@ -69,7 +69,7 @@ import MetalKit
 
 import Satin
 
-// Subclass Forge's Renderer to get triple buffered rendering and
+// Subclass Satin's Renderer to get triple buffered rendering and
 // callbacks for Setup, Update, Draw, Resize and Events
 class SimpleRenderer: MetalViewRenderer {
     // A Satin Renderer handles setting the Content on all the objects in the scene graph

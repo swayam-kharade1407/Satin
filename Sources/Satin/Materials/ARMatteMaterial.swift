@@ -7,7 +7,7 @@
 
 import Metal
 
-public class ARMatteMaterial: SourceMaterial {
+public class ARMatteMaterial: Material {
     public var alphaTexture: MTLTexture? {
         didSet {
             alphaTexture?.label = "ARMatteAlpha Texture"

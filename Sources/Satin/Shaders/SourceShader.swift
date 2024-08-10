@@ -55,7 +55,10 @@ open class SourceShader: Shader {
                 self.shadowPipelines.removeAll()
                 self.configurations.removeAll()
                 
-                self.shadowPipelineNeedsUpdate = true
+                if self.castShadow {
+                    self.shadowPipelineNeedsUpdate = true
+                }
+
                 self.pipelineNeedsUpdate = true
                 self.parametersNeedsUpdate = true
 

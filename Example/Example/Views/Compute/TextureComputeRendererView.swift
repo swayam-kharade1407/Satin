@@ -15,6 +15,7 @@ struct TextureComputeRendererView: View {
             .ignoresSafeArea()
             .navigationTitle("Texture Compute")
     }
+
 }
 
 struct TextureComputeRendererView_Previews: PreviewProvider {

@@ -44,6 +44,8 @@ public func parseParameters(bufferStruct: MTLStructType) -> ParameterGroup {
             params.append(Float3x3Parameter(name, matrix_identity_float3x3))
         case .float4x4:
             params.append(Float4x4Parameter(name, matrix_identity_float4x4))
+        case .uint:
+            params.append(UInt32Parameter(name, .zero))
         case .int:
             params.append(IntParameter(name, .zero))
         case .int2:
@@ -145,6 +147,8 @@ func addParameter(group: ParameterGroup, type: String, name: String, control: Co
         group.append(Float3Parameter(name, .zero, control))
     case "float4":
         group.append(Float4Parameter(name, .zero, control))
+    case "uint":
+        group.append(UInt32Parameter(name, .zero, control))
     case "int":
         group.append(IntParameter(name, .zero, control))
     case "int2":
@@ -338,6 +342,127 @@ func parseParameters(source: String) -> ParameterGroup? {
                             success = true
                         }
                     }
+                }
+                if uiType == "xypad", vType == "float2" || vType == "int2" {
+                    let controlType: ControlType = .xypad
+
+                    var success = false
+                    var subPattern = #" *?(-?\d*?\.?\d*?) *?, *?(-?\d*?\.?\d*?) *?, *?(-?\d*?\.?\d*?) *?, *(.*)"#
+                    var subRegex = NSRegularExpression()
+                    do {
+                        subRegex = try NSRegularExpression(pattern: subPattern, options: [])
+                    } catch {
+                        print(error)
+                    }
+
+                    var subRange = NSRange(uiDetails.startIndex ..< uiDetails.endIndex, in: uiDetails)
+                    var subMatches = subRegex.matches(in: uiDetails, options: [], range: subRange)
+
+                    if let subMatch = subMatches.first {
+                        var min: String?
+                        var max: String?
+                        var value: String?
+                        var label: String?
+
+                        if let r1 = Range(subMatch.range(at: 1), in: uiDetails) {
+                            min = String(uiDetails[r1])
+                        }
+
+                        if let r2 = Range(subMatch.range(at: 2), in: uiDetails) {
+                            max = String(uiDetails[r2])
+                        }
+
+                        if let r3 = Range(subMatch.range(at: 3), in: uiDetails) {
+                            value = String(uiDetails[r3])
+                        }
+
+                        if let r4 = Range(subMatch.range(at: 4), in: uiDetails) {
+                            label = String(uiDetails[r4])
+                        }
+
+                        if let min = min, let max = max, let value = value, let label = label {
+                            if let fMin = Float(min), let fMax = Float(max), let fValue = Float(value) {
+                                var parameter: (any Parameter)?
+
+                                if vType == "float2" {
+                                    parameter = Float2Parameter(label.titleCase, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), controlType)
+                                } else if vType == "int2" {
+                                    parameter = Int2Parameter(label.titleCase, .init(repeating: Int32(fValue)), .init(repeating: Int32(fMin)), .init(repeating: Int32(fMax)), controlType)
+                                }
+
+                                if let parameter = parameter {
+                                    params.append(parameter)
+                                    success = true
+                                }
+                            }
+                        }
+                    }
+
+                    if !success {
+                        subPattern = #" *?(-?\d*?\.?\d*?) *?, *?(-?\d*?\.?\d*?) *?, *?(-?\d*?\.?\d*?) *?$"#
+                        do {
+                            subRegex = try NSRegularExpression(pattern: subPattern, options: [])
+                        } catch {
+                            print(error)
+                        }
+                        subRange = NSRange(uiDetails.startIndex ..< uiDetails.endIndex, in: uiDetails)
+                        subMatches = subRegex.matches(in: uiDetails, options: [], range: subRange)
+
+                        if let subMatch = subMatches.first {
+                            var min: String?
+                            var max: String?
+                            var value: String?
+
+                            if let r1 = Range(subMatch.range(at: 1), in: uiDetails) {
+                                min = String(uiDetails[r1])
+                            }
+
+                            if let r2 = Range(subMatch.range(at: 2), in: uiDetails) {
+                                max = String(uiDetails[r2])
+                            }
+
+                            if let r3 = Range(subMatch.range(at: 3), in: uiDetails) {
+                                value = String(uiDetails[r3])
+                            }
+
+                            if let min = min, let max = max, let value = value, let label = vName {
+                                if let fMin = Float(min), let fMax = Float(max), let fValue = Float(value) {
+                                    var parameter: (any Parameter)?
+
+                                    if vType == "float2" {
+                                        parameter = Float2Parameter(label.titleCase, .init(repeating: fValue), .init(repeating: fMin), .init(repeating: fMax), controlType)
+                                    } else if vType == "int2" {
+                                        parameter = Int2Parameter(label.titleCase, .init(repeating: Int32(fValue)), .init(repeating: Int32(fMin)), .init(repeating: Int32(fMax)), controlType)
+                                    }
+
+                                    if let parameter = parameter {
+                                        params.append(parameter)
+                                        success = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if !success, let name = vName {
+                        var label = uiDetails.count > 0 ? uiDetails : name
+                        label = label.replacingOccurrences(of: ",", with: "", options: .literal, range: nil)
+                        let firstChar = String(label[label.startIndex])
+                        label = label.replacingCharacters(in: ...label.startIndex, with: firstChar.uppercased())
+
+                        var parameter: (any Parameter)?
+
+                        if vType == "float2" {
+                            parameter = Float2Parameter(label.titleCase, .init(repeating: 0.5), .zero, .one, controlType)
+                        } else if vType == "int2" {
+                            parameter = Int2Parameter(label.titleCase, .init(repeating: 50), .init(repeating: Int32(0)), .init(repeating: Int32(100)), controlType)
+                        }
+
+                        if let parameter = parameter {
+                            params.append(parameter)
+                            success = true
+                        }
+                    }
                 } else if uiType == "input" {
                     let controlType: ControlType = .inputfield
 
@@ -399,7 +524,6 @@ func parseParameters(source: String) -> ParameterGroup? {
                     }
 
                     if !success, uiDetails.count > 0 {
-                        print(uiDetails)
                         subPattern = #" *?(-?\d*?\.?\d*?) *?$"#
                         do {
                             subRegex = try NSRegularExpression(pattern: subPattern, options: [])

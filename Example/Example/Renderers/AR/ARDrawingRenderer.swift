@@ -78,6 +78,11 @@ class ARDrawingRenderer: BaseRenderer {
             near: camera.near,
             far: camera.far
         )
+
+//        backgroundRenderer = ARBackgroundRenderer(
+//            context: defaultContext,
+//            session: session
+//        )
     }
 
     // MARK: - Update

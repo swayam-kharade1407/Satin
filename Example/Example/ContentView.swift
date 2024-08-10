@@ -264,9 +264,10 @@ struct ContentView: View {
             #endif
 
             #if os(macOS) && DEBUG
-            PBRStandardMaterialRendererView()
+//            PBRStandardMaterialRendererView()
 //                MultipleContextRendererView()
 //                ScreenCaptureRendererView()
+//                TextureComputeRendererView()
             #endif
         }
     }

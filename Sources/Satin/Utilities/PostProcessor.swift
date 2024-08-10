@@ -30,10 +30,6 @@ open class PostProcessor {
 
         mesh = Mesh(geometry: QuadGeometry(), material: material)
         scene = Object(label: "Scene", [mesh])
-        scene.apply { [weak self] object in
-            guard let self else { return }
-            object.context = self.context
-        }
     }
 
     open func update() {

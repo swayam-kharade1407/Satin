@@ -26,7 +26,7 @@ public struct DepthBias: Codable, Equatable {
     }
 }
 
-open class Material: Codable, ObservableObject, ParameterGroupDelegate {
+open class Material: Codable, ObservableObject {
     @Published open var id: String = UUID().uuidString
 
     var prefix: String {
@@ -97,13 +97,14 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public var uniforms: UniformBuffer?
 
     public let parametersSetPublisher = PassthroughSubject<ParameterGroup, Never>()
+    private var parameterGroupSubscriptions = Set<AnyCancellable>()
     public private(set) lazy var parameters: ParameterGroup = {
         let params = ParameterGroup("\(label) Uniforms")
-        params.delegate = self
+        setupParameterGroupSubscriptions(params)
         return params
     }() {
         didSet {
-            parameters.delegate = self
+            setupParameterGroupSubscriptions(parameters)
             uniformsNeedsUpdate = true
             objectWillChange.send()
             parametersSetPublisher.send(parameters)
@@ -194,11 +195,8 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     public init(shader: Shader) {
         self.shader = shader
         label = shader.label
-
         configuration = shader.configuration.rendering
-        parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
-            self?.updateParameters(parameters)
-        }
+        setupShaderParametersSubscription(shader)
     }
 
     // MARK: - CodingKeys
@@ -283,6 +281,39 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         objectWillChange.send()
     }
 
+    private func setupParameterGroupSubscriptions(_ parameterGroup: ParameterGroup) {
+        parameterGroupSubscriptions.removeAll()
+
+        parameterGroup.parameterAddedPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            self.uniformsNeedsUpdate = true
+            self.objectWillChange.send()
+        }.store(in: &parameterGroupSubscriptions)
+
+        parameterGroup.parameterRemovedPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            self.uniformsNeedsUpdate = true
+            self.objectWillChange.send()
+        }.store(in: &parameterGroupSubscriptions)
+
+        parameterGroup.parameterUpdatedPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            self.objectWillChange.send()
+        }.store(in: &parameterGroupSubscriptions)
+
+        parameterGroup.loadedPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            self.uniformsNeedsUpdate = true
+            self.objectWillChange.send()
+        }.store(in: &parameterGroupSubscriptions)
+
+        parameterGroup.clearedPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            self.uniformsNeedsUpdate = true
+            self.objectWillChange.send()
+        }.store(in: &parameterGroupSubscriptions)
+    }
+
     func setupDepthStencilState() {
         guard let context = context,
               context.depthPixelFormat != .invalid,
@@ -323,8 +354,22 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     open func setupShaderParametersSubscription(_ shader: Shader) {
-        parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
-            self?.updateParameters(parameters)
+        parametersSubscription = shader.parametersPublisher.sink { [weak self] newParameters in
+            guard let self else { return }
+
+            self.parameters.setFrom(newParameters)
+
+            self.parameters.label = newParameters.label
+
+            self.uniformsNeedsUpdate = true
+
+            self.objectWillChange.send()
+
+            self.parametersSetPublisher.send(self.parameters)
+
+            self.updatedPublisher.send(self)
+
+            self.delegate?.updated(material: self)
         }
     }
 
@@ -607,7 +652,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
     }
 
     deinit {
-        parameters.delegate = nil
         delegate = nil
         shader = nil
     }
@@ -643,51 +687,6 @@ open class Material: Codable, ObservableObject, ParameterGroupDelegate {
         clone.depthStencilState = depthStencilState
         clone.depthCompareFunction = depthCompareFunction
         clone.depthWriteEnabled = depthWriteEnabled
-    }
-}
-
-public extension Material {
-    func added(parameter: any Parameter, from: ParameterGroup) {
-        uniformsNeedsUpdate = true
-        objectWillChange.send()
-    }
-
-    func removed(parameter: any Parameter, from: ParameterGroup) {
-        uniformsNeedsUpdate = true
-        objectWillChange.send()
-    }
-
-    func loaded(group: ParameterGroup) {
-        uniformsNeedsUpdate = true
-        objectWillChange.send()
-    }
-
-    func saved(group: ParameterGroup) {}
-
-    func cleared(group: ParameterGroup) {
-        uniformsNeedsUpdate = true
-        objectWillChange.send()
-    }
-
-    func update(parameter: any Parameter, from: ParameterGroup) {
-        objectWillChange.send()
-    }
-}
-
-public extension Material {
-    func updateParameters(_ newParameters: ParameterGroup) {
-        parameters.setFrom(newParameters)
-        parameters.label = newParameters.label
-
-        uniformsNeedsUpdate = true
-
-        objectWillChange.send()
-
-        parametersSetPublisher.send(parameters)
-
-        updatedPublisher.send(self)
-
-        delegate?.updated(material: self)
     }
 }
 

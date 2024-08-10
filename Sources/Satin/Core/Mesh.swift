@@ -90,6 +90,7 @@ open class Mesh: Object, Renderable {
     }
 
     open func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
+
         guard instanceCount > 0,
               !geometry.vertexBuffers.isEmpty,
               vertexUniforms[renderContext] != nil

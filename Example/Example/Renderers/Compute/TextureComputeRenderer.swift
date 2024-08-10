@@ -6,68 +6,88 @@
 //  Copyright © 2020 Hi-Rez. All rights reserved.
 //
 
+import Combine
 import Metal
 import MetalKit
-
 import Satin
 
 class TextureComputeRenderer: BaseRenderer {
-    class BasicTextureComputeSystem: TextureComputeSystem {}
+    class ReactionDiffusionComputeSystem: TextureComputeSystem {}
 
-    lazy var textureCompute: BasicTextureComputeSystem = {
+    final class DisplacementMaterial: SourceMaterial {}
+
+    lazy var textureCompute: ReactionDiffusionComputeSystem = {
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.width = 512
         textureDescriptor.height = 512
         textureDescriptor.depth = 1
-        textureDescriptor.pixelFormat = .bgra8Unorm
+        textureDescriptor.pixelFormat = .rgba32Float
         textureDescriptor.resourceOptions = .storageModePrivate
         textureDescriptor.sampleCount = 1
         textureDescriptor.textureType = .type2D
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        return BasicTextureComputeSystem(
+        return ReactionDiffusionComputeSystem(
             device: device,
             pipelinesURL: pipelinesURL,
             textureDescriptors: [textureDescriptor],
+            feedback: true,
             live: true
         )
     }()
 
-    var material = BasicTextureMaterial(texture: nil)
-    lazy var mesh = Mesh(geometry: BoxGeometry(), material: material)
+    lazy var material = DisplacementMaterial(pipelinesURL: pipelinesURL, live: true)
+    lazy var mesh = Mesh(geometry: PlaneGeometry(size: 2.0, resolution: 512, orientation: .xy), material: material)
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
 
-    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
+    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: context)
 
-    lazy var startTime: CFAbsoluteTime = getTime()
+    override var paramKeys: [String] {
+        return [
+            "Reaction Diffusion",
+            "Displacement Material"
+        ]
+    }
+
+    override var params: [String: ParameterGroup?] {
+        return [
+            "Reaction Diffusion": textureCompute.parameters,
+            "Displacement Material": material.parameters
+        ]
+    }
+
+    var subscriptions = Set<AnyCancellable>()
 
     override func setup() {
-        material.texture = textureCompute.dstTexture
+        textureCompute.parameters.parameterUpdatedPublisher.sink { [weak self] _ in
+            self?.textureCompute.reset()
+        }.store(in: &subscriptions)
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
 #endif
+        super.setup()
     }
 
     deinit {
         cameraController.disable()
     }
-    
+
     override func update() {
-        material.texture = textureCompute.dstTexture
+//        print(mesh.material?.parameters)
         cameraController.update()
-        textureCompute.set("Time", Float(getTime() - startTime))
         camera.update()
         scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        textureCompute.update(commandBuffer)
-        
+        textureCompute.update(commandBuffer, iterations: 30)
+        material.set(textureCompute.dstTexture, index: VertexTextureIndex.Custom0)
+
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -79,9 +99,5 @@ class TextureComputeRenderer: BaseRenderer {
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
-    }
-
-    func getTime() -> CFAbsoluteTime {
-        return CFAbsoluteTimeGetCurrent()
     }
 }

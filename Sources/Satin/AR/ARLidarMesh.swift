@@ -39,8 +39,12 @@ public class ARLidarMesh: Object, Renderable {
     public var renderOrder = 0
     public var renderPass = 0
 
-    public func isDrawable(renderContext: Context) -> Bool {
-        guard material?.getPipeline(renderContext: renderContext, shadow: false) != nil, vertexUniforms[renderContext] != nil, vertexBuffer != nil, indexBuffer != nil
+    public func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
+        guard let material,
+              material.getPipeline(renderContext: renderContext, shadow: shadow) != nil,
+              vertexUniforms[renderContext] != nil,
+              vertexBuffer != nil,
+              indexBuffer != nil
         else { return false }
         return true
     }

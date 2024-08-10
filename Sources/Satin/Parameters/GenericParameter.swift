@@ -113,14 +113,20 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
 public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParameter<T> {
     public typealias ValueType = T
 
+    public let minValuePublisher = PassthroughSubject<ValueType, Never>()
+
     @Published public var min: ValueType {
         didSet {
+            minValuePublisher.send(min)
             valuePublisher.send(value)
         }
     }
 
+    public let maxValuePublisher = PassthroughSubject<ValueType, Never>()
+
     @Published public var max: ValueType {
         didSet {
+            maxValuePublisher.send(max)
             valuePublisher.send(value)
         }
     }

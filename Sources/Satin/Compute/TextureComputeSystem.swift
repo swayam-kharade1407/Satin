@@ -149,23 +149,23 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override open func update(_ commandBuffer: MTLCommandBuffer) {
+    override open func update(_ commandBuffer: MTLCommandBuffer, iterations: Int = 1) {
         super.update(commandBuffer)
 
         guard (_reset && resetPipeline != nil) || updatePipeline != nil else { return }
 
         if textures.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
-            encode(computeEncoder)
+            encode(computeEncoder, iterations: iterations)
             computeEncoder.endEncoding()
         }
     }
 
-    override open func update(_ computeEncoder: MTLComputeCommandEncoder) {
+    override open func update(_ computeEncoder: MTLComputeCommandEncoder, iterations: Int = 1) {
         super.update(computeEncoder)
 
         if textures.count > 0 {
-            encode(computeEncoder)
+            encode(computeEncoder, iterations: iterations)
         }
     }
 
@@ -175,7 +175,7 @@ open class TextureComputeSystem: ComputeSystem {
         bindTextures(computeEncoder, ComputeTextureIndex.Custom0.rawValue)
     }
 
-    private func encode(_ computeEncoder: MTLComputeCommandEncoder) {
+    private func encode(_ computeEncoder: MTLComputeCommandEncoder, iterations: Int = 1) {
         bindUniforms(computeEncoder)
         bindTextures(computeEncoder)
 
@@ -195,11 +195,13 @@ open class TextureComputeSystem: ComputeSystem {
 
         if let pipeline = updatePipeline {
             computeEncoder.setComputePipelineState(pipeline)
-            var offset = bind(computeEncoder)
-            preUpdate?(computeEncoder, &offset)
-            preCompute?(computeEncoder, &offset)
-            dispatch(computeEncoder, pipeline)
-            swapSrdDstIndex()
+            for _ in 0..<iterations {
+                var offset = bind(computeEncoder)
+                preUpdate?(computeEncoder, &offset)
+                preCompute?(computeEncoder, &offset)
+                dispatch(computeEncoder, pipeline)
+                swapSrdDstIndex()
+            }
         }
     }
 

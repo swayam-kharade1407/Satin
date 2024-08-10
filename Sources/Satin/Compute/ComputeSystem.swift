@@ -182,11 +182,11 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Update
 
-    open func update(_ commandBuffer: MTLCommandBuffer) {
+    open func update(_ commandBuffer: MTLCommandBuffer, iterations: Int = 1) {
         update()
     }
 
-    open func update(_ computeEncoder: MTLComputeCommandEncoder) {
+    open func update(_ computeEncoder: MTLComputeCommandEncoder, iterations: Int = 1) {
         update()
     }
 

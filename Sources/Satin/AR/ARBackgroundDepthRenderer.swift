@@ -124,6 +124,9 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
     func update(_ commandBuffer: MTLCommandBuffer) {
         super.update()
 
+        depthCamera.update()
+        depthScene.update()
+
         if upscaleDepth,
            let capturedImageTextureY = capturedImageTextureY,
            let yTexture = CVMetalTextureGetTexture(capturedImageTextureY),

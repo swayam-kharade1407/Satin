@@ -52,7 +52,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
     // Translation (Panning & Dolly)
     public var translationDamping: Float = 0.9
-    public var translationScalar: Float = 0.5
+    public var translationScalar: Float = 1.0
 
     // Zoom
     public var zoomScalar: Float = 1.0
@@ -336,8 +336,8 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func updateZoom() {
-        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov)
-        target.position += target.forwardDirection * zoomAmount
+        let zoomAmount = zoom * zoomScalar * (180.0 / camera.fov) * (pow(simd_length(camera.worldPosition), 0.5) + 1.0)
+        camera.position.z += zoomAmount
         onChangePublisher.send(self)
     }
 
@@ -349,9 +349,9 @@ public final class PerspectiveCameraController: CameraController, Codable {
     }
 
     private func updateTranslation() {
-        target.position = target.position + simd_make_float3(target.forwardDirection * translation.z)
-        target.position = target.position - simd_make_float3(target.rightDirection * translation.x)
-        target.position = target.position + simd_make_float3(target.upDirection * translation.y)
+        target.position = translationScalar * target.position + simd_make_float3(target.forwardDirection * translation.z)
+        target.position = translationScalar * target.position - simd_make_float3(target.rightDirection * translation.x)
+        target.position = translationScalar * target.position + simd_make_float3(target.upDirection * translation.y)
         onChangePublisher.send(self)
     }
 
@@ -373,15 +373,11 @@ public final class PerspectiveCameraController: CameraController, Codable {
         pan.x /= width
         pan.y /= height
 
-        let ctd = simd_length(camera.worldPosition - target.position)
-        let imagePlaneHeight = 2.0 * ctd * tan(degToRad(camera.fov * 0.5))
+        let imagePlaneHeight = (180.0 / camera.fov) * (pow(simd_length(camera.worldPosition), 0.25) + 1.0)
         let imagePlaneWidth = aspect * imagePlaneHeight
 
-        let up = pan.y * imagePlaneHeight
-        let right = pan.x * imagePlaneWidth
-
-        translation.x = right
-        translation.y = up
+        translation.x = pan.x * imagePlaneWidth
+        translation.y = pan.y * imagePlaneHeight
         updateTranslation()
     }
 

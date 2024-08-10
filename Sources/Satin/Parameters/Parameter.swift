@@ -9,10 +9,6 @@
 import Combine
 import Foundation
 
-public protocol ParameterDelegate: AnyObject {
-    func updated(parameter: any Parameter)
-}
-
 public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
     associatedtype ValueType: Codable & Equatable
 
@@ -56,7 +52,6 @@ public enum ControlType: String, Codable {
     case colorpalette
     case dropdown
     case label
-    case filepicker
 }
 
 public enum ParameterType: String, Codable {

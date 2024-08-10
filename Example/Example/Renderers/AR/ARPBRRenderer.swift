@@ -255,25 +255,25 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
         public var grainTexture: MTLTexture? {
             didSet {
-                set(grainTexture, index: FragmentTextureIndex.Custom0)
+                set(grainTexture, index: FragmentTextureIndex.Custom3)
             }
         }
 
         public var backgroundTexture: MTLTexture? {
             didSet {
-                set(backgroundTexture, index: FragmentTextureIndex.Custom1)
+                set(backgroundTexture, index: FragmentTextureIndex.Custom0)
             }
         }
 
         public var contentTexture: MTLTexture? {
             didSet {
-                set(contentTexture, index: FragmentTextureIndex.Custom2)
+                set(contentTexture, index: FragmentTextureIndex.Custom1)
             }
         }
 
         public var depthMaskTexture: MTLTexture? {
             didSet {
-                set(depthMaskTexture, index: FragmentTextureIndex.Custom3)
+                set(depthMaskTexture, index: FragmentTextureIndex.Custom2)
             }
         }
     }
@@ -340,9 +340,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     lazy var startTime = getTime()
 
-    override var depthPixelFormat: MTLPixelFormat {
-        .invalid
-    }
+    override var depthPixelFormat: MTLPixelFormat { .invalid }
 
     override init() {
         super.init()

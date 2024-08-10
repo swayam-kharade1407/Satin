@@ -119,6 +119,31 @@
 		E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */; };
 		E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */; };
 		E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */; };
+		E1D43BB12C65855A0063E2C9 /* ParameterGroupHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */; };
+		E1D43BB22C65855A0063E2C9 /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B942C6585590063E2C9 /* InputViewController.swift */; };
+		E1D43BB32C65855A0063E2C9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B952C6585590063E2C9 /* LabelViewController.swift */; };
+		E1D43BB52C65855A0063E2C9 /* HandleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B972C6585590063E2C9 /* HandleButton.swift */; };
+		E1D43BB72C65855A0063E2C9 /* ControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B992C6585590063E2C9 /* ControlViewController.swift */; };
+		E1D43BB82C65855A0063E2C9 /* DisclosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B9A2C6585590063E2C9 /* DisclosureButton.swift */; };
+		E1D43BBA2C65855A0063E2C9 /* UISpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B9C2C6585590063E2C9 /* UISpacer.swift */; };
+		E1D43BBB2C65855A0063E2C9 /* SliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B9D2C6585590063E2C9 /* SliderViewController.swift */; };
+		E1D43BBC2C65855A0063E2C9 /* InspectorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B9E2C6585590063E2C9 /* InspectorWindow.swift */; };
+		E1D43BBD2C65855A0063E2C9 /* NumberInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B9F2C6585590063E2C9 /* NumberInputViewController.swift */; };
+		E1D43BBE2C65855A0063E2C9 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA02C6585590063E2C9 /* ColorPickerViewController.swift */; };
+		E1D43BBF2C65855A0063E2C9 /* TranslucentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA12C6585590063E2C9 /* TranslucentView.swift */; };
+		E1D43BC02C65855A0063E2C9 /* InspectorHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA22C6585590063E2C9 /* InspectorHeaderViewController.swift */; };
+		E1D43BC12C65855A0063E2C9 /* StringInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA32C6585590063E2C9 /* StringInputViewController.swift */; };
+		E1D43BC32C65855A0063E2C9 /* MultiNumberInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA52C6585590063E2C9 /* MultiNumberInputViewController.swift */; };
+		E1D43BC62C65855A0063E2C9 /* InspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BA82C6585590063E2C9 /* InspectorViewController.swift */; };
+		E1D43BC82C65855A0063E2C9 /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAA2C65855A0063E2C9 /* ColorPaletteViewController.swift */; };
+		E1D43BC92C65855A0063E2C9 /* DropDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAB2C65855A0063E2C9 /* DropDownViewController.swift */; };
+		E1D43BCA2C65855A0063E2C9 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAC2C65855A0063E2C9 /* ButtonViewController.swift */; };
+		E1D43BCB2C65855A0063E2C9 /* ToggleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAD2C65855A0063E2C9 /* ToggleViewController.swift */; };
+		E1D43BCC2C65855A0063E2C9 /* ParameterGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAE2C65855A0063E2C9 /* ParameterGroupViewController.swift */; };
+		E1D43BCD2C65855A0063E2C9 /* WidgetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BAF2C65855A0063E2C9 /* WidgetViewController.swift */; };
+		E1D43BD02C6589000063E2C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D43BCF2C6589000063E2C9 /* Assets.xcassets */; };
+		E1D43BD42C65B1910063E2C9 /* ControlViewController+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BD32C65B1910063E2C9 /* ControlViewController+Shared.swift */; };
+		E1D43BDC2C66A5ED0063E2C9 /* XYPadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43BDB2C66A5ED0063E2C9 /* XYPadViewController.swift */; };
 		E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D328A6BADA00B517B6 /* ExampleApp.swift */; };
 		E1D714D628A6BADA00B517B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D714D528A6BADA00B517B6 /* ContentView.swift */; };
 		E1D714D828A6BADA00B517B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1D714D728A6BADA00B517B6 /* Assets.xcassets */; };
@@ -245,6 +270,31 @@
 		E1CC099D2489797300B92285 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		E1CC099E2489797300B92285 /* IcosahedronGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IcosahedronGenerator.h; sourceTree = "<group>"; };
 		E1CC099F2489797300B92285 /* IcosahedronGenerator.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = IcosahedronGenerator.c; sourceTree = "<group>"; };
+		E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterGroupHeaderViewController.swift; sourceTree = "<group>"; };
+		E1D43B942C6585590063E2C9 /* InputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
+		E1D43B952C6585590063E2C9 /* LabelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
+		E1D43B972C6585590063E2C9 /* HandleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandleButton.swift; sourceTree = "<group>"; };
+		E1D43B992C6585590063E2C9 /* ControlViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlViewController.swift; sourceTree = "<group>"; };
+		E1D43B9A2C6585590063E2C9 /* DisclosureButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisclosureButton.swift; sourceTree = "<group>"; };
+		E1D43B9C2C6585590063E2C9 /* UISpacer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UISpacer.swift; sourceTree = "<group>"; };
+		E1D43B9D2C6585590063E2C9 /* SliderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderViewController.swift; sourceTree = "<group>"; };
+		E1D43B9E2C6585590063E2C9 /* InspectorWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InspectorWindow.swift; sourceTree = "<group>"; };
+		E1D43B9F2C6585590063E2C9 /* NumberInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberInputViewController.swift; sourceTree = "<group>"; };
+		E1D43BA02C6585590063E2C9 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
+		E1D43BA12C6585590063E2C9 /* TranslucentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslucentView.swift; sourceTree = "<group>"; };
+		E1D43BA22C6585590063E2C9 /* InspectorHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InspectorHeaderViewController.swift; sourceTree = "<group>"; };
+		E1D43BA32C6585590063E2C9 /* StringInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringInputViewController.swift; sourceTree = "<group>"; };
+		E1D43BA52C6585590063E2C9 /* MultiNumberInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiNumberInputViewController.swift; sourceTree = "<group>"; };
+		E1D43BA82C6585590063E2C9 /* InspectorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InspectorViewController.swift; sourceTree = "<group>"; };
+		E1D43BAA2C65855A0063E2C9 /* ColorPaletteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewController.swift; sourceTree = "<group>"; };
+		E1D43BAB2C65855A0063E2C9 /* DropDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownViewController.swift; sourceTree = "<group>"; };
+		E1D43BAC2C65855A0063E2C9 /* ButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
+		E1D43BAD2C65855A0063E2C9 /* ToggleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleViewController.swift; sourceTree = "<group>"; };
+		E1D43BAE2C65855A0063E2C9 /* ParameterGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterGroupViewController.swift; sourceTree = "<group>"; };
+		E1D43BAF2C65855A0063E2C9 /* WidgetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WidgetViewController.swift; sourceTree = "<group>"; };
+		E1D43BCF2C6589000063E2C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E1D43BD32C65B1910063E2C9 /* ControlViewController+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControlViewController+Shared.swift"; sourceTree = "<group>"; };
+		E1D43BDB2C66A5ED0063E2C9 /* XYPadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYPadViewController.swift; sourceTree = "<group>"; };
 		E1D62565269D21C8000094C1 /* PostProcessingRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostProcessingRenderer.swift; sourceTree = "<group>"; };
 		E1D714D128A6BAD900B517B6 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D714D328A6BADA00B517B6 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -313,6 +363,7 @@
 		66E67880243EC73A0070B294 = {
 			isa = PBXGroup;
 			children = (
+				E1D43BCF2C6589000063E2C9 /* Assets.xcassets */,
 				E183102B2C20D7390067E62D /* Satin.xcodeproj */,
 				E1E767D828A6D808005D75AB /* Assets */,
 				E1D714D228A6BADA00B517B6 /* Example */,
@@ -685,10 +736,90 @@
 			path = Text;
 			sourceTree = "<group>";
 		};
+		E1D43B922C65848E0063E2C9 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43BD92C65BBCE0063E2C9 /* macOS */,
+				E1D43BD82C65BAEF0063E2C9 /* Containers */,
+				E1D43BD72C65BAD50063E2C9 /* Components */,
+				E1D43BD22C65AF820063E2C9 /* Helpers */,
+				E1D43BD12C65AF730063E2C9 /* iOS */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		E1D43BD12C65AF730063E2C9 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43BDA2C65BD730063E2C9 /* InspectorComponents */,
+				E1D43BAF2C65855A0063E2C9 /* WidgetViewController.swift */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		E1D43BD22C65AF820063E2C9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43B9C2C6585590063E2C9 /* UISpacer.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		E1D43BD72C65BAD50063E2C9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43BDB2C66A5ED0063E2C9 /* XYPadViewController.swift */,
+				E1D43BAB2C65855A0063E2C9 /* DropDownViewController.swift */,
+				E1D43BA32C6585590063E2C9 /* StringInputViewController.swift */,
+				E1D43BAD2C65855A0063E2C9 /* ToggleViewController.swift */,
+				E1D43B9D2C6585590063E2C9 /* SliderViewController.swift */,
+				E1D43B9F2C6585590063E2C9 /* NumberInputViewController.swift */,
+				E1D43BA52C6585590063E2C9 /* MultiNumberInputViewController.swift */,
+				E1D43B952C6585590063E2C9 /* LabelViewController.swift */,
+				E1D43BAA2C65855A0063E2C9 /* ColorPaletteViewController.swift */,
+				E1D43BA02C6585590063E2C9 /* ColorPickerViewController.swift */,
+				E1D43BAC2C65855A0063E2C9 /* ButtonViewController.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E1D43BD82C65BAEF0063E2C9 /* Containers */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43B9E2C6585590063E2C9 /* InspectorWindow.swift */,
+				E1D43BA82C6585590063E2C9 /* InspectorViewController.swift */,
+				E1D43B992C6585590063E2C9 /* ControlViewController.swift */,
+				E1D43BD32C65B1910063E2C9 /* ControlViewController+Shared.swift */,
+				E1D43BAE2C65855A0063E2C9 /* ParameterGroupViewController.swift */,
+			);
+			path = Containers;
+			sourceTree = "<group>";
+		};
+		E1D43BD92C65BBCE0063E2C9 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43BA12C6585590063E2C9 /* TranslucentView.swift */,
+				E1D43B942C6585590063E2C9 /* InputViewController.swift */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		E1D43BDA2C65BD730063E2C9 /* InspectorComponents */ = {
+			isa = PBXGroup;
+			children = (
+				E1D43BA22C6585590063E2C9 /* InspectorHeaderViewController.swift */,
+				E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */,
+				E1D43B972C6585590063E2C9 /* HandleButton.swift */,
+				E1D43B9A2C6585590063E2C9 /* DisclosureButton.swift */,
+			);
+			path = InspectorComponents;
+			sourceTree = "<group>";
+		};
 		E1D714D228A6BADA00B517B6 /* Example */ = {
 			isa = PBXGroup;
 			children = (
 				E1E7ADCA2A14349700180894 /* Info.plist */,
+				E1D43B922C65848E0063E2C9 /* UI */,
 				E192F05F24875D6E00C7EE74 /* Utilities */,
 				66E678CD243EE2190070B294 /* Renderers */,
 				E1E767C028A6D313005D75AB /* Views */,
@@ -813,6 +944,7 @@
 			files = (
 				E1D714DC28A6BADA00B517B6 /* Preview Assets.xcassets in Resources */,
 				E1E767D928A6D808005D75AB /* Assets in Resources */,
+				E1D43BD02C6589000063E2C9 /* Assets.xcassets in Resources */,
 				E1D714D828A6BADA00B517B6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -842,15 +974,19 @@
 				E103E1342B603F9A0017588F /* VertexAttributesRendererView.swift in Sources */,
 				E103E1412B603FF40017588F /* PostProcessingRendererView.swift in Sources */,
 				E103E14E2B60400B0017588F /* DirectionalShadowRenderer.swift in Sources */,
+				E1D43BC12C65855A0063E2C9 /* StringInputViewController.swift in Sources */,
 				E103E0FE2B5F490B0017588F /* Renderer2D.swift in Sources */,
 				E103E1162B603E210017588F /* FlockingRenderer.swift in Sources */,
 				E1DDD3552C2FA6B400012A44 /* OrbitCameraControllerRenderer.swift in Sources */,
+				E1D43BD42C65B1910063E2C9 /* ControlViewController+Shared.swift in Sources */,
 				E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */,
 				E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */,
 				E103E1132B603DEA0017588F /* SDFTextRendererView.swift in Sources */,
 				E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */,
 				E1903C162B6046B4004AB175 /* ARRendererView.swift in Sources */,
+				E1D43BCB2C65855A0063E2C9 /* ToggleViewController.swift in Sources */,
 				E103E1292B603ECD0017588F /* LoadObjRendererView.swift in Sources */,
+				E1D43BB72C65855A0063E2C9 /* ControlViewController.swift in Sources */,
 				E103E1022B603B620017588F /* OcclusionRendererView.swift in Sources */,
 				E103E10D2B603DBD0017588F /* ARPointCloudRenderer.swift in Sources */,
 				E103E1622B60404C0017588F /* MeshShaderRenderer.swift in Sources */,
@@ -871,24 +1007,33 @@
 				E103E1312B603F940017588F /* CustomInstancingRenderer.swift in Sources */,
 				E103E1202B603E760017588F /* MatcapRenderer.swift in Sources */,
 				E1E767E228A6E84A005D75AB /* TorusKnotGenerator.c in Sources */,
+				E1D43BBA2C65855A0063E2C9 /* UISpacer.swift in Sources */,
 				E103E1002B60348C0017588F /* InstancedMeshRenderer.swift in Sources */,
 				E103E13C2B603FCA0017588F /* PBRStandardMaterialRendererView.swift in Sources */,
 				E1903C122B6046B4004AB175 /* ARPointCloudRendererView.swift in Sources */,
+				E1D43BCC2C65855A0063E2C9 /* ParameterGroupViewController.swift in Sources */,
 				E103E1442B603FF70017588F /* ContactShadowRendererView.swift in Sources */,
 				E103E1432B603FF70017588F /* DirectionalShadowRendererView.swift in Sources */,
 				E103E12E2B603ED30017588F /* OctasphereRenderer.swift in Sources */,
 				E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */,
 				E1903C142B6046B4004AB175 /* ARDrawingRendererView.swift in Sources */,
 				E103E1212B603E760017588F /* DepthMaterialRenderer.swift in Sources */,
+				E1D43BCA2C65855A0063E2C9 /* ButtonViewController.swift in Sources */,
 				E103E1382B603FC50017588F /* PBREnhancedRenderer.swift in Sources */,
 				E103E1092B603DBD0017588F /* ARContactShadowRenderer.swift in Sources */,
 				E103E1492B6040010017588F /* MeshShaderRendererView.swift in Sources */,
 				E1DDD35B2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift in Sources */,
+				E1D43BC82C65855A0063E2C9 /* ColorPaletteViewController.swift in Sources */,
+				E1D43BBC2C65855A0063E2C9 /* InspectorWindow.swift in Sources */,
 				E103E1612B60404C0017588F /* RayMarchingRenderer.swift in Sources */,
+				E1D43BC02C65855A0063E2C9 /* InspectorHeaderViewController.swift in Sources */,
+				E1D43BB32C65855A0063E2C9 /* LabelViewController.swift in Sources */,
 				E103E14D2B60400B0017588F /* ProjectedShadowRenderer.swift in Sources */,
 				E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */,
+				E1D43BBF2C65855A0063E2C9 /* TranslucentView.swift in Sources */,
 				E1903C102B6046B4004AB175 /* ARPBRRendererView.swift in Sources */,
 				E103E1032B603B620017588F /* InstancedMeshRendererView.swift in Sources */,
+				E1D43BB12C65855A0063E2C9 /* ParameterGroupHeaderViewController.swift in Sources */,
 				E103E1362B603F9A0017588F /* InstancingRendererView.swift in Sources */,
 				E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */,
 				E103E14F2B60400E0017588F /* PostProcessingRenderer.swift in Sources */,
@@ -902,21 +1047,29 @@
 				E103E1112B603DE30017588F /* TextRenderer.swift in Sources */,
 				E1DDD29F2C2B531300012A44 /* ImmersivePostRenderer.swift in Sources */,
 				E1DDD35D2C3105F100012A44 /* JumpFloodOutlineRendererView.swift in Sources */,
+				E1D43BBD2C65855A0063E2C9 /* NumberInputViewController.swift in Sources */,
 				E11D04E02C605348003BDC36 /* MultipleContextRenderer.swift in Sources */,
 				E103E1302B603ED30017588F /* ExportGeometryRenderer.swift in Sources */,
 				E103E1262B603E7C0017588F /* LiveCodeRendererView.swift in Sources */,
+				E1D43BC62C65855A0063E2C9 /* InspectorViewController.swift in Sources */,
 				E1903C112B6046B4004AB175 /* ARLidarMeshRendererView.swift in Sources */,
+				E1D43BC32C65855A0063E2C9 /* MultiNumberInputViewController.swift in Sources */,
+				E1D43BB22C65855A0063E2C9 /* InputViewController.swift in Sources */,
 				E103E10B2B603DBD0017588F /* ARDrawingRenderer.swift in Sources */,
 				E103E1062B603DBD0017588F /* ARPBRRenderer.swift in Sources */,
 				E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */,
 				E1E7681328A736BB005D75AB /* AudioInput.swift in Sources */,
+				E1D43BBE2C65855A0063E2C9 /* ColorPickerViewController.swift in Sources */,
 				E103E1472B6040010017588F /* AudioInputRendererView.swift in Sources */,
 				E103E1392B603FC50017588F /* PBRSubmeshRenderer.swift in Sources */,
 				E103E1332B603F940017588F /* VertexAttributesRenderer.swift in Sources */,
+				E1D43BC92C65855A0063E2C9 /* DropDownViewController.swift in Sources */,
 				E103E1102B603DE30017588F /* SDFTextRenderer.swift in Sources */,
 				E103E1082B603DBD0017588F /* ARRenderer.swift in Sources */,
 				E103E13B2B603FC50017588F /* PBRRenderer.swift in Sources */,
 				E103E10E2B603DBD0017588F /* ARPeopleOcclusionRenderer.swift in Sources */,
+				E1D43BDC2C66A5ED0063E2C9 /* XYPadViewController.swift in Sources */,
+				E1D43BB82C65855A0063E2C9 /* DisclosureButton.swift in Sources */,
 				E103E1372B603FC50017588F /* PBRCustomizationRenderer.swift in Sources */,
 				E103E15F2B60404C0017588F /* Tessellator.swift in Sources */,
 				E103E1012B603B620017588F /* CameraControllerRendererView.swift in Sources */,
@@ -931,11 +1084,14 @@
 				E103E1242B603E760017588F /* CubemapRenderer.swift in Sources */,
 				E103E1122B603DE30017588F /* ExtrudedTextRenderer.swift in Sources */,
 				E103E14C2B60400B0017588F /* ContactShadowRenderer.swift in Sources */,
+				E1D43BCD2C65855A0063E2C9 /* WidgetViewController.swift in Sources */,
 				E103E1172B603E210017588F /* BufferComputeRenderer.swift in Sources */,
 				E103E1502B60400E0017588F /* FXAARenderer.swift in Sources */,
 				E103E0FF2B5F498A0017588F /* Renderer2DView.swift in Sources */,
 				E103E15D2B60404C0017588F /* TessellationComputeSystem.swift in Sources */,
+				E1D43BBB2C65855A0063E2C9 /* SliderViewController.swift in Sources */,
 				E103E1152B603DEA0017588F /* TextRendererView.swift in Sources */,
+				E1D43BB52C65855A0063E2C9 /* HandleButton.swift in Sources */,
 				E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */,
 				E1903C172B6046B4004AB175 /* ARPeopleOcclusionRendererView.swift in Sources */,
 				E103E13F2B603FCA0017588F /* PBREnhancedRendererView.swift in Sources */,

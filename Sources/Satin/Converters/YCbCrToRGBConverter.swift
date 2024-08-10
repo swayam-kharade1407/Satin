@@ -9,7 +9,7 @@ import Foundation
 import Metal
 
 public final class YCbCrToRGBConverter {
-    class YCbCrToRGBComputeSystem: TextureComputeSystem {
+    final class YCbCrToRGBComputeSystem: TextureComputeSystem {
         var yTexture: MTLTexture?
         var cbcrTexture: MTLTexture?
 

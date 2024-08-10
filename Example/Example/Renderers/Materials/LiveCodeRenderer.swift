@@ -14,7 +14,7 @@ import Satin
 class LiveCodeRenderer: BaseRenderer {
     // Material names must not be the target name, i.e. LiveCodeMaterial won't work
 
-    class CustomMaterial: SourceMaterial {
+    final class CustomMaterial: SourceMaterial {
         override init(pipelinesURL: URL, live: Bool = true) {
             super.init(pipelinesURL: pipelinesURL, live: true)
             self.blending = .alpha
@@ -35,20 +35,9 @@ class LiveCodeRenderer: BaseRenderer {
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: CustomMaterial(pipelinesURL: pipelinesURL))
     lazy var scene = Object(label: "Scene", [mesh])
+    lazy var renderer = Renderer(context: defaultContext)
 
-    lazy var context = Context(
-        device: device,
-        sampleCount: sampleCount,
-        colorPixelFormat: colorPixelFormat,
-        depthPixelFormat: depthPixelFormat,
-        stencilPixelFormat: stencilPixelFormat
-    )
-
-    lazy var renderer = Renderer(context: context)
-
-    override var depthPixelFormat: MTLPixelFormat {
-        .invalid
-    }
+    override var depthPixelFormat: MTLPixelFormat { .invalid }
 
     override func setup() {
         startTime = getTime()

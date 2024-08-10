@@ -16,7 +16,11 @@ public final class CubemapGenerator {
         var sourceTexture: MTLTexture?
 
         init(device: MTLDevice) {
-            super.init(device: device, pipelinesURL: getPipelinesComputeURL()!, textureDescriptors: [])
+            super.init(
+                device: device,
+                pipelinesURL: getPipelinesComputeURL()!,
+                textureDescriptors: []
+            )
         }
 
         override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {

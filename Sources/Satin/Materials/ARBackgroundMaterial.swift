@@ -29,8 +29,27 @@ public final class ARBackgroundMaterial: Material {
         }
     }
 
-    public var capturedImageTextureY: CVMetalTexture?
-    public var capturedImageTextureCbCr: CVMetalTexture?
+    public var capturedImageTextureY: CVMetalTexture? {
+        didSet {
+            if let textureY = capturedImageTextureY {
+                set(CVMetalTextureGetTexture(textureY), index: FragmentTextureIndex.Custom0)
+            }
+            else {
+                set(nil, index: FragmentTextureIndex.Custom0)
+            }
+        }
+    }
+
+    public var capturedImageTextureCbCr: CVMetalTexture? {
+        didSet {
+            if let textureCbCr = capturedImageTextureCbCr {
+                set(CVMetalTextureGetTexture(textureCbCr), index: FragmentTextureIndex.Custom1)
+            }
+            else {
+                set(nil, index: FragmentTextureIndex.Custom1)
+            }
+        }
+    }
 
     public init(color: simd_float4 = simd_float4(repeating: 1.0), srgb: Bool = false) {
         super.init()
@@ -54,19 +73,6 @@ public final class ARBackgroundMaterial: Material {
 
     public required init(from decoder: Decoder) throws {
         try super.init(from: decoder)
-    }
-
-    public override func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
-        super.bind(
-            renderContext: renderContext,
-            renderEncoderState: renderEncoderState,
-            shadow: shadow
-        )
-
-        if let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr {
-            renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(textureY), index: .Custom0)
-            renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr), index: .Custom1)
-        }
     }
 }
 

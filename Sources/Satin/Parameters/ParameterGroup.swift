@@ -11,16 +11,7 @@ import Foundation
 import Metal
 import simd
 
-public protocol ParameterGroupDelegate: AnyObject {
-    func added(parameter: any Parameter, from group: ParameterGroup)
-    func removed(parameter: any Parameter, from group: ParameterGroup)
-    func update(parameter: any Parameter, from group: ParameterGroup)
-    func loaded(group: ParameterGroup)
-    func saved(group: ParameterGroup)
-    func cleared(group: ParameterGroup)
-}
-
-public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDelegate, ObservableObject {
+public final class ParameterGroup: Codable, CustomStringConvertible, ObservableObject {
     public let id: String = UUID().uuidString
 
     public var description: String {
@@ -43,16 +34,22 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
     }
 
     @Published public var paramsMap: [String: any Parameter] = [:]
-    public weak var delegate: ParameterGroupDelegate? = nil
 
     private var paramSubscriptions: [String: AnyCancellable] = [:]
+
+    public let parameterAddedPublisher = PassthroughSubject<any Parameter, Never>()
+    public let parameterRemovedPublisher = PassthroughSubject<any Parameter, Never>()
+    public let parameterUpdatedPublisher = PassthroughSubject<any Parameter, Never>()
+
+    public let loadedPublisher = PassthroughSubject<ParameterGroup, Never>()
+    public let savedPublisher = PassthroughSubject<ParameterGroup, Never>()
+    public let clearedPublisher = PassthroughSubject<ParameterGroup, Never>()
 
     deinit {
         params = []
         paramsMap = [:]
         paramSubscriptions = [:]
 
-        delegate = nil
         if _dataAllocated {
             _data.deallocate()
         }
@@ -76,10 +73,10 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             guard let self = self, let param else { return }
             self._updateData = true
             self.objectWillChange.send()
-            self.delegate?.update(parameter: param, from: self)
+            self.parameterUpdatedPublisher.send(param)
         }
 
-        delegate?.added(parameter: param, from: self)
+        parameterAddedPublisher.send(param)
     }
 
     public func remove(_ param: any Parameter) {
@@ -93,14 +90,15 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                 break
             }
         }
-        delegate?.removed(parameter: param, from: self)
+
+        parameterRemovedPublisher.send(param)
     }
 
     public func clear() {
         params = []
         paramsMap = [:]
         paramSubscriptions = [:]
-        delegate?.cleared(group: self)
+        clearedPublisher.send(self)
     }
 
     public func copy(_ incomingParams: ParameterGroup) {
@@ -242,7 +240,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
             jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let payload: Data = try jsonEncoder.encode(self)
             try payload.write(to: url)
-            delegate?.saved(group: self)
+            savedPublisher.send(self)
         } catch {
             print(error.localizedDescription)
         }
@@ -262,7 +260,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
                     append: append
                 )
             }
-            delegate?.loaded(group: self)
+
+            loadedPublisher.send(self)
         } catch {
             print(error.localizedDescription)
         }
@@ -612,12 +611,6 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ParameterDe
 
     public func get<T>(_ name: String, as: T.Type) -> T? {
         return get(name) as? T
-    }
-
-    public func updated(parameter: any Parameter) {
-        _updateData = true
-        objectWillChange.send()
-        delegate?.update(parameter: parameter, from: self)
     }
 }
 

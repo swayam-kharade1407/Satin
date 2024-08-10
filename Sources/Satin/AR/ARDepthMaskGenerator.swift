@@ -12,17 +12,14 @@ import Foundation
 import Metal
 
 public class ARDepthMaskGenerator {
-    class DepthMaskComputeSystem: TextureComputeSystem {
+    final class ARDepthMaskComputeSystem: TextureComputeSystem {
         var realDepthTexture: MTLTexture?
         var virtualDepthTexture: MTLTexture?
 
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,
-                pipelinesURL: Bundle.main.resourceURL!
-                    .appendingPathComponent("Assets")
-                    .appendingPathComponent("Shared")
-                    .appendingPathComponent("Pipelines"),
+                pipelinesURL: getPipelinesComputeURL()!,
                 textureDescriptors: [textureDescriptor]
             )
         }
@@ -37,7 +34,7 @@ public class ARDepthMaskGenerator {
         }
     }
 
-    private var compute: DepthMaskComputeSystem
+    private var compute: ARDepthMaskComputeSystem
     private var pixelFormat: MTLPixelFormat
 
     public init(device: MTLDevice, width: Int, height: Int, pixelFormat: MTLPixelFormat = .r16Float) {
@@ -48,7 +45,7 @@ public class ARDepthMaskGenerator {
             height: height,
             mipmapped: false
         )
-        compute = DepthMaskComputeSystem(device: device, textureDescriptor: textureDescriptor)
+        compute = ARDepthMaskComputeSystem(device: device, textureDescriptor: textureDescriptor)
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, realDepthTexture: MTLTexture, virtualDepthTexture: MTLTexture) -> MTLTexture? {

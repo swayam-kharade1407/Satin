@@ -11,8 +11,19 @@ import ARKit
 import Metal
 
 public class ARBackgroundDepthMaterial: Material {
-    public var upscaledSceneDepthTexture: MTLTexture?
-    public var sceneDepthTexture: CVMetalTexture?
+    public var upscaledSceneDepthTexture: MTLTexture? {
+        didSet {
+            set(upscaledSceneDepthTexture, index: FragmentTextureIndex.Custom0)
+        }
+    }
+    
+    public var sceneDepthTexture: CVMetalTexture? {
+        didSet {
+            if let sceneDepthTexture {
+                set(CVMetalTextureGetTexture(sceneDepthTexture), index: FragmentTextureIndex.Custom0)
+            }
+        }
+    }
 
     public required init() {
         super.init()
@@ -27,21 +38,6 @@ public class ARBackgroundDepthMaterial: Material {
     private func configure() {
         depthWriteEnabled = true
         blending = .alpha
-    }
-
-    override public func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
-        super.bind(
-            renderContext: renderContext,
-            renderEncoderState: renderEncoderState,
-            shadow: shadow
-        )
-
-        if let upscaledSceneDepthTexture = upscaledSceneDepthTexture {
-            renderEncoderState.setFragmentTexture(upscaledSceneDepthTexture, index: .Custom0)
-        }
-        else if let sceneDepthTexture = sceneDepthTexture {
-            renderEncoderState.setFragmentTexture(CVMetalTextureGetTexture(sceneDepthTexture), index: .Custom0)
-        }
     }
 }
 
