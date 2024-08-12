@@ -280,6 +280,12 @@ simd_float3 projectPointOnPlane(simd_float3 origin, simd_float3 normal, simd_flo
     return point - pn * normal;
 }
 
+float pointPlaneDistance(simd_float3 origin, simd_float3 normal, simd_float3 point)
+{
+    simd_float3 v = point - origin;
+    return simd_dot(v, normal);
+}
+
 float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point)
 {
     simd_float2 ab = simd_normalize(end - start);

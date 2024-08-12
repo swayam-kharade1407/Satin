@@ -73,6 +73,7 @@ bool rayTriangleIntersect(simd_float3 origin, simd_float3 direction, simd_float3
                           simd_float3 *intersection, simd_float3 *normal, simd_float3 *bc);
 
 simd_float3 projectPointOnPlane(simd_float3 origin, simd_float3 normal, simd_float3 point);
+float pointPlaneDistance(simd_float3 origin, simd_float3 normal, simd_float3 point);
 simd_float2 projectedPointOnLine2(simd_float2 start, simd_float2 end, simd_float2 point);
 
 float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point);
