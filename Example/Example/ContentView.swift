@@ -162,6 +162,10 @@ struct ContentView: View {
                         Label("Texture Compute", systemImage: "photo.stack")
                     }
 
+                    NavigationLink(destination: WaveSimulationRendererView()) {
+                        Label("Wave Simulation", systemImage: "water.waves")
+                    }
+
                     NavigationLink(destination: JumpFloodOutlineRendererView()) {
                         Label("Jump Flood Outline", systemImage: "squareshape.split.3x3")
                     }
@@ -264,6 +268,7 @@ struct ContentView: View {
             #endif
 
             #if os(macOS) && DEBUG
+            WaveSimulationRendererView()
 //            PBRStandardMaterialRendererView()
 //                MultipleContextRendererView()
 //                ScreenCaptureRendererView()

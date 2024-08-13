@@ -741,7 +741,9 @@ func parseParameters(source: String) -> ParameterGroup? {
                             success = true
                         }
                     }
-                } else if uiType == "toggle", vType == "bool" {
+                } else if (uiType == "toggle" || uiType == "button"), vType == "bool" {
+                    let controlType: ControlType = uiType == "toggle" ? .toggle : .button
+
                     var success = false
                     let subPattern = #" *?(\w*) *?, *(.*)"#
                     var subRegex = NSRegularExpression()
@@ -766,7 +768,7 @@ func parseParameters(source: String) -> ParameterGroup? {
                         }
 
                         if let value = value, let label = label {
-                            params.append(BoolParameter(label.titleCase, value == "true" ? true : false, .toggle))
+                            params.append(BoolParameter(label.titleCase, value == "true" ? true : false, controlType))
                             success = true
                         }
                     }
@@ -777,7 +779,7 @@ func parseParameters(source: String) -> ParameterGroup? {
 
                         if uiDetails.count > 0 {
                             let value = uiDetails
-                            params.append(BoolParameter(label.titleCase, value == "true" ? true : false, .toggle))
+                            params.append(BoolParameter(label.titleCase, value == "true" ? true : false, controlType))
                         } else {
                             params.append(BoolParameter(label.titleCase, true, .toggle))
                         }
