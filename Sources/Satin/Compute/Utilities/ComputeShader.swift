@@ -26,8 +26,7 @@ open class ComputeShader {
                 if binding.index == ComputeBufferIndex.Uniforms.rawValue {
                     resetWantsUniforms = binding.isUsed
                 }
-
-                if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
                     bufferBindingIsUsed.insert(bindingIndex)
                 }
             }
@@ -46,8 +45,7 @@ open class ComputeShader {
                 if binding.index == ComputeBufferIndex.Uniforms.rawValue {
                     updateWantsUniforms = binding.isUsed
                 }
-
-                if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
                     bufferBindingIsUsed.insert(bindingIndex)
                 }
             }

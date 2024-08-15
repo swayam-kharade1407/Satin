@@ -32,12 +32,10 @@ open class Shader {
                 if binding.index == VertexBufferIndex.VertexUniforms.rawValue {
                     vertexWantsVertexUniforms = binding.isUsed
                 }
-
-                if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
+                else if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
                     vertexWantsMaterialUniforms = binding.isUsed
                 }
-
-                if let bindingIndex = VertexBufferIndex(rawValue: binding.index) {
+                else if let bindingIndex = VertexBufferIndex(rawValue: binding.index) {
                     vertexBufferBindingIsUsed.append(bindingIndex)
                 }
             }
@@ -46,12 +44,10 @@ open class Shader {
                 if binding.index == FragmentBufferIndex.VertexUniforms.rawValue {
                     fragmentWantsVertexUniforms = binding.isUsed
                 }
-
-                if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
+                else if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
                     fragmentWantsMaterialUniforms = binding.isUsed
                 }
-
-                if let bindingIndex = FragmentBufferIndex(rawValue: binding.index) {
+                else if let bindingIndex = FragmentBufferIndex(rawValue: binding.index) {
                     fragmentBufferBindingIsUsed.append(bindingIndex)
                 }
             }
