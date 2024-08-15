@@ -177,6 +177,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     private func encode(_ computeEncoder: MTLComputeCommandEncoder, iterations: Int = 1) {
         bindUniforms(computeEncoder)
+        bindBuffers(computeEncoder)
         bindTextures(computeEncoder)
 
         if _reset, let pipeline = resetPipeline {

@@ -5,8 +5,8 @@
 //  Created by Reza Ali on 1/9/24.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 import Metal
 import simd
@@ -38,6 +38,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     public var preReset: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
     public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
 
+    public private(set) var computeBuffers: [ComputeBufferIndex: MTLBuffer?] = [:]
     public private(set) var computeTextures: [ComputeTextureIndex: MTLTexture?] = [:]
 
     public internal(set) var shader: ComputeShader? {
@@ -241,8 +242,18 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     open func bindUniforms(_ computeEncoder: MTLComputeCommandEncoder) {
-        guard let uniforms = uniforms else { return }
+        guard let uniforms, let shader, shader.resetWantsUniforms || shader.updateWantsUniforms else { return }
         computeEncoder.setBuffer(uniforms.buffer, offset: uniforms.offset, index: ComputeBufferIndex.Uniforms.rawValue)
+    }
+
+    internal func bindBuffers(_ computeEncoder: MTLComputeCommandEncoder) {
+        guard let shader else { return }
+
+        for index in shader.bufferBindingIsUsed {
+            if let buffer = computeBuffers[index] {
+                computeEncoder.setBuffer(buffer, offset: 0, index: index.rawValue)
+            }
+        }
     }
 
     internal func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
@@ -253,8 +264,16 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Count / Size
 
-    internal func updateSize() {
+    internal func updateSize() {}
 
+    // MARK: - Buffers
+
+    public func set(_ buffer: MTLBuffer?, index: ComputeBufferIndex) {
+        if let buffer = buffer {
+            computeBuffers[index] = buffer
+        } else {
+            computeBuffers.removeValue(forKey: index)
+        }
     }
 
     // MARK: - Textures
@@ -424,6 +443,8 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     deinit {
+        computeBuffers.removeAll()
+        computeTextures.removeAll()
         shader = nil
         delegate = nil
     }

@@ -18,6 +18,14 @@ open class Shader {
     open var pipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
     open var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
+            vertexBufferBindingIsUsed.removeAll()
+            vertexWantsVertexUniforms = false
+            vertexWantsMaterialUniforms = false
+
+            fragmentBufferBindingIsUsed.removeAll()
+            fragmentWantsVertexUniforms = false
+            fragmentWantsMaterialUniforms = false
+
             guard let pipelineReflection else { return }
 
             for binding in pipelineReflection.vertexBindings where binding.type == .buffer {
@@ -28,6 +36,10 @@ open class Shader {
                 if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
                     vertexWantsMaterialUniforms = binding.isUsed
                 }
+
+                if let bindingIndex = VertexBufferIndex(rawValue: binding.index) {
+                    vertexBufferBindingIsUsed.append(bindingIndex)
+                }
             }
 
             for binding in pipelineReflection.fragmentBindings where binding.type == .buffer {
@@ -37,6 +49,10 @@ open class Shader {
 
                 if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
                     fragmentWantsMaterialUniforms = binding.isUsed
+                }
+
+                if let bindingIndex = FragmentBufferIndex(rawValue: binding.index) {
+                    fragmentBufferBindingIsUsed.append(bindingIndex)
                 }
             }
         }
@@ -50,9 +66,11 @@ open class Shader {
     public internal(set) var shadowPipelines: [Context: MTLRenderPipelineState] = [:]
     public internal(set) var shadowError: Error?
 
+    public internal(set) var vertexBufferBindingIsUsed: [VertexBufferIndex] = []
     public internal(set) var vertexWantsVertexUniforms: Bool = false
     public internal(set) var vertexWantsMaterialUniforms: Bool = false
 
+    public internal(set) var fragmentBufferBindingIsUsed: [FragmentBufferIndex] = []
     public internal(set) var fragmentWantsVertexUniforms: Bool = false
     public internal(set) var fragmentWantsMaterialUniforms: Bool = false
 
@@ -520,7 +538,6 @@ open class Shader {
     }
 
     public func clone() -> Shader {
-        print("Cloning Shader: \(label)")
         let clone: Shader = type(of: self).init(configuration: configuration)
         return clone
     }

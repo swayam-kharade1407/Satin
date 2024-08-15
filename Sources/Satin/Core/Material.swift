@@ -41,8 +41,8 @@ open class Material: Codable, ObservableObject {
     public lazy var label: String = prefix
 
     public var vertexDescriptor: MTLVertexDescriptor {
-        get { configuration.vertexDescriptor }
-        set { configuration.vertexDescriptor = newValue }
+        get { renderingConfiguration.vertexDescriptor }
+        set { renderingConfiguration.vertexDescriptor = newValue }
     }
 
     private var parametersSubscription: AnyCancellable?
@@ -57,38 +57,38 @@ open class Material: Codable, ObservableObject {
     }
 
     public var sourceRGBBlendFactor: MTLBlendFactor {
-        get { configuration.blending.sourceRGBBlendFactor }
-        set { configuration.blending.sourceRGBBlendFactor = newValue }
+        get { renderingConfiguration.blending.sourceRGBBlendFactor }
+        set { renderingConfiguration.blending.sourceRGBBlendFactor = newValue }
     }
 
     public var sourceAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.blending.sourceAlphaBlendFactor }
-        set { configuration.blending.sourceAlphaBlendFactor = newValue }
+        get { renderingConfiguration.blending.sourceAlphaBlendFactor }
+        set { renderingConfiguration.blending.sourceAlphaBlendFactor = newValue }
     }
 
     public var destinationRGBBlendFactor: MTLBlendFactor {
-        get { configuration.blending.destinationRGBBlendFactor }
-        set { configuration.blending.destinationRGBBlendFactor = newValue }
+        get { renderingConfiguration.blending.destinationRGBBlendFactor }
+        set { renderingConfiguration.blending.destinationRGBBlendFactor = newValue }
     }
 
     public var destinationAlphaBlendFactor: MTLBlendFactor {
-        get { configuration.blending.destinationAlphaBlendFactor }
-        set { configuration.blending.destinationAlphaBlendFactor = newValue }
+        get { renderingConfiguration.blending.destinationAlphaBlendFactor }
+        set { renderingConfiguration.blending.destinationAlphaBlendFactor = newValue }
     }
 
     public var rgbBlendOperation: MTLBlendOperation {
-        get { configuration.blending.rgbBlendOperation }
-        set { configuration.blending.rgbBlendOperation = newValue }
+        get { renderingConfiguration.blending.rgbBlendOperation }
+        set { renderingConfiguration.blending.rgbBlendOperation = newValue }
     }
 
     public var alphaBlendOperation: MTLBlendOperation {
-        get { configuration.blending.alphaBlendOperation }
-        set { configuration.blending.alphaBlendOperation = newValue }
+        get { renderingConfiguration.blending.alphaBlendOperation }
+        set { renderingConfiguration.blending.alphaBlendOperation = newValue }
     }
 
-    private var configuration = RenderingConfiguration() {
+    private var renderingConfiguration = RenderingConfiguration() {
         didSet {
-            if configuration != oldValue, let shader = shader {
+            if renderingConfiguration != oldValue, let shader = shader {
                 setupShaderRenderingConfiguration(shader)
             }
         }
@@ -111,11 +111,11 @@ open class Material: Codable, ObservableObject {
         }
     }
 
-    public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer?] = [:]
-    public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture?] = [:]
+    public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer] = [:]
+    public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture] = [:]
 
-    public private(set) var fragmentBuffers: [FragmentBufferIndex: MTLBuffer?] = [:]
-    public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture?] = [:]
+    public private(set) var fragmentBuffers: [FragmentBufferIndex: MTLBuffer] = [:]
+    public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture] = [:]
 
     public internal(set) var isClone = false
     public weak var delegate: MaterialDelegate?
@@ -131,38 +131,38 @@ open class Material: Codable, ObservableObject {
     }
 
     public var instancing: Bool {
-        get { configuration.instancing }
-        set { configuration.instancing = newValue }
+        get { renderingConfiguration.instancing }
+        set { renderingConfiguration.instancing = newValue }
     }
 
     public var castShadow: Bool {
-        get { configuration.castShadow }
-        set { configuration.castShadow = newValue }
+        get { renderingConfiguration.castShadow }
+        set { renderingConfiguration.castShadow = newValue }
     }
 
     public var receiveShadow: Bool {
-        get { configuration.receiveShadow }
-        set { configuration.receiveShadow = newValue }
+        get { renderingConfiguration.receiveShadow }
+        set { renderingConfiguration.receiveShadow = newValue }
     }
 
     public var lighting: Bool {
-        get { configuration.lighting }
-        set { configuration.lighting = newValue }
+        get { renderingConfiguration.lighting }
+        set { renderingConfiguration.lighting = newValue }
     }
 
     public var shadowCount: Int {
-        get { configuration.shadowCount }
-        set { configuration.shadowCount = newValue }
+        get { renderingConfiguration.shadowCount }
+        set { renderingConfiguration.shadowCount = newValue }
     }
 
     public var lightCount: Int {
-        get { configuration.lightCount }
-        set { configuration.lightCount = newValue }
+        get { renderingConfiguration.lightCount }
+        set { renderingConfiguration.lightCount = newValue }
     }
 
     public var blending: Blending {
-        get { configuration.blending.type }
-        set { configuration.blending.type = newValue }
+        get { renderingConfiguration.blending.type }
+        set { renderingConfiguration.blending.type = newValue }
     }
 
     public var depthClipMode: MTLDepthClipMode = .clip
@@ -195,7 +195,7 @@ open class Material: Codable, ObservableObject {
     public init(shader: Shader) {
         self.shader = shader
         label = shader.label
-        configuration = shader.configuration.rendering
+        renderingConfiguration = shader.configuration.rendering
         setupShaderParametersSubscription(shader)
     }
 
@@ -321,8 +321,10 @@ open class Material: Codable, ObservableObject {
         else { return }
 
         let depthStateDesciptor = MTLDepthStencilDescriptor()
+        depthStateDesciptor.label = "\(label) Depth Stencil State"
         depthStateDesciptor.depthCompareFunction = depthCompareFunction
         depthStateDesciptor.isDepthWriteEnabled = depthWriteEnabled
+
         depthStencilState = context.device.makeDepthStencilState(descriptor: depthStateDesciptor)
 
         depthNeedsUpdate = false
@@ -341,7 +343,7 @@ open class Material: Codable, ObservableObject {
         if shader == nil {
             shader = createShader()
             isClone = false
-        } else if let shader = shader, isClone, shader.configuration.rendering != configuration {
+        } else if let shader = shader, isClone, shader.configuration.rendering != renderingConfiguration {
             self.shader = shader.clone()
             isClone = false
         }
@@ -350,7 +352,8 @@ open class Material: Codable, ObservableObject {
     }
 
     open func setupShaderRenderingConfiguration(_ shader: Shader) {
-        shader.renderingConfiguration = configuration
+        shader.renderingConfiguration = renderingConfiguration
+        self.objectWillChange.send()
     }
 
     open func setupShaderParametersSubscription(_ shader: Shader) {
@@ -375,10 +378,9 @@ open class Material: Codable, ObservableObject {
 
     open func setupUniforms() {
         guard let context = context, parameters.size > 0, uniformsNeedsUpdate else { return }
-        uniforms = UniformBuffer(
-            device: context.device,
-            parameters: parameters
-        )
+
+        uniforms = UniformBuffer(device: context.device, parameters: parameters)
+        
         uniformsNeedsUpdate = false
     }
 
@@ -430,14 +432,16 @@ open class Material: Codable, ObservableObject {
     }
 
     open func bindBuffers(renderEncoderState: RenderEncoderState) {
-        for (index, buffer) in vertexBuffers {
-            if let buffer {
+        guard let shader else { return }
+
+        for index in shader.vertexBufferBindingIsUsed {
+            if let buffer = vertexBuffers[index] {
                 renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
             }
         }
 
-        for (index, buffer) in fragmentBuffers {
-            if let buffer {
+        for index in shader.fragmentBufferBindingIsUsed {
+            if let buffer = fragmentBuffers[index] {
                 renderEncoderState.setFragmentBuffer(buffer, offset: 0, index: index)
             }
         }

@@ -18,11 +18,45 @@ open class ComputeShader {
 
     public internal(set) var resetPipeline: MTLComputePipelineState?
     public internal(set) var resetPipelineError: Error?
+    public internal(set) var resetPipelineReflection: MTLComputePipelineReflection? {
+        didSet {
+            guard let resetPipelineReflection else { return }
+
+            for binding in resetPipelineReflection.bindings where binding.type == .buffer {
+                if binding.index == ComputeBufferIndex.Uniforms.rawValue {
+                    resetWantsUniforms = binding.isUsed
+                }
+
+                if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                    bufferBindingIsUsed.insert(bindingIndex)
+                }
+            }
+        }
+    }
 
     // MARK: - Update Pipeline
 
     public internal(set) var updatePipeline: MTLComputePipelineState?
     public internal(set) var updatePipelineError: Error?
+    public internal(set) var updatePipelineReflection: MTLComputePipelineReflection? {
+        didSet {
+            guard let updatePipelineReflection else { return }
+
+            for binding in updatePipelineReflection.bindings where binding.type == .buffer {
+                if binding.index == ComputeBufferIndex.Uniforms.rawValue {
+                    updateWantsUniforms = binding.isUsed
+                }
+
+                if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                    bufferBindingIsUsed.insert(bindingIndex)
+                }
+            }
+        }
+    }
+
+    public internal(set) var bufferBindingIsUsed: Set<ComputeBufferIndex> = []
+    public internal(set) var resetWantsUniforms: Bool = false
+    public internal(set) var updateWantsUniforms: Bool = false
 
     // MARK: - Blending
 
@@ -190,8 +224,7 @@ open class ComputeShader {
         setupDefines()
         setupConstants()
 
-        setupResetPipeline()
-        setupUpdatePipeline()
+        setupPipelines()
 
         setupParameters()
         setupBuffers()
@@ -201,6 +234,7 @@ open class ComputeShader {
         updateDefines()
         updateConstants()
 
+        updatePipelines()
         updateResetPipeline()
         updateUpdatePipeline()
 
@@ -238,18 +272,41 @@ open class ComputeShader {
         if constantsNeedsUpdate { setupConstants() }
     }
 
+    // MARK: - Setup Pipelines
+
+    func setupPipelines() {
+        setupResetPipeline()
+        setupUpdatePipeline()
+    }
+
+    // MARK: - Update Pipelines
+
+    func updatePipelines() {
+        if resetPipelineNeedsUpdate || updatePipelineNeedsUpdate {
+            bufferBindingIsUsed.removeAll()
+        }
+
+        updateResetPipeline()
+        updateUpdatePipeline()
+    }
+
     // MARK: - Reset Pipeline
 
-    open func makeResetPipeline() throws -> MTLComputePipelineState? {
+    open func makeResetPipeline() throws -> (MTLComputePipelineState?, MTLComputePipelineReflection?) {
         try ComputeShaderPipelineCache.getResetPipeline(configuration: configuration)
     }
 
     func setupResetPipeline() {
         do {
-            resetPipeline = try makeResetPipeline()
+            let (pipeline, reflection) = try makeResetPipeline()
+            resetPipeline = pipeline
+            resetPipelineReflection = reflection
             resetPipelineError = nil
         } catch {
             print("\(label) Reset Compute Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Compute Shader Path: \(url.path)")
+            }
             resetPipelineError = error
             resetPipeline = nil
         }
@@ -263,16 +320,21 @@ open class ComputeShader {
 
     // MARK: - Update Pipeline
 
-    open func makeUpdatePipeline() throws -> MTLComputePipelineState? {
+    open func makeUpdatePipeline() throws -> (MTLComputePipelineState?, MTLComputePipelineReflection?) {
         try ComputeShaderPipelineCache.getUpdatePipeline(configuration: configuration)
     }
 
     func setupUpdatePipeline() {
         do {
-            updatePipeline = try makeUpdatePipeline()
+            let (pipeline, reflection) = try makeUpdatePipeline()
+            updatePipeline = pipeline
+            updatePipelineReflection = reflection
             updatePipelineError = nil
         } catch {
             print("\(label) Update Compute Shader Pipeline: \(error.localizedDescription)")
+            if let url = configuration.pipelineURL {
+                print("\(label) Compute Shader Path: \(url.path)")
+            }
             updatePipelineError = error
             updatePipeline = nil
         }
@@ -325,7 +387,6 @@ open class ComputeShader {
     func updateBuffers() {
         if buffersNeedsUpdate { setupBuffers() }
     }
-
 
     // MARK: - Live / Compiler
 
