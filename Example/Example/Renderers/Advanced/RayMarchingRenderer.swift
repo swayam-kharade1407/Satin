@@ -12,12 +12,9 @@ import MetalKit
 import Satin
 
 class RayMarchingRenderer: BaseRenderer {
-    class RayMarchedMaterial: SourceMaterial {
-        var camera: PerspectiveCamera?
-
-        init(pipelinesURL: URL, camera: PerspectiveCamera?) {
-            self.camera = camera
-            super.init(pipelinesURL: pipelinesURL)
+    final class RayMarchedMaterial: SourceMaterial {
+        init(pipelinesURL: URL) {
+            super.init(pipelinesURL: pipelinesURL, live: true)
             blending = .disabled
         }
 
@@ -28,30 +25,20 @@ class RayMarchingRenderer: BaseRenderer {
         required init(from decoder: Decoder) throws {
             try super.init(from: decoder)
         }
-
-        override func bind(renderContext: Context, renderEncoderState: RenderEncoderState, shadow: Bool) {
-            super.bind(
-                renderContext: renderContext,
-                renderEncoderState: renderEncoderState,
-                shadow: shadow
-            )
-
-            if let camera = camera {
-                var view = camera.viewMatrix
-                renderEncoderState.renderEncoder.setFragmentBytes(&view, length: MemoryLayout<float4x4>.size, index: FragmentBufferIndex.Custom0.rawValue)
-            }
-        }
     }
 
     var mesh = Mesh(geometry: BoxGeometry(size: 2.0), material: BasicDiffuseMaterial(hardness: 0.7))
-    var camera = PerspectiveCamera(position: [0.0, 0.0, 5.0], near: 0.001, far: 100.0, fov: 45)
+    var camera = {
+        let c = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.1, far: 100.0, fov: 45)
+        c.lookAt(target: .zero)
+        return c
+    }()
 
-    lazy var rayMarchedMaterial = RayMarchedMaterial(pipelinesURL: pipelinesURL, camera: camera)
+    lazy var rayMarchedMaterial = RayMarchedMaterial(pipelinesURL: pipelinesURL)
     lazy var rayMarchedMesh = Mesh(geometry: QuadGeometry(), material: rayMarchedMaterial)
     lazy var scene = Object(label: "Scene", [mesh, rayMarchedMesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     deinit {
         cameraController.disable()

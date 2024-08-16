@@ -65,8 +65,8 @@ open class PerspectiveCamera: Camera {
             aspect = col1.y / col0.x
             let sz = col2.z
             let sw = col3.z
-            near = sw / sz
-            far = sw / (1.0 + sz)
+            far = sw / sz
+            near = sw / (1.0 + sz)
         }
     }
 

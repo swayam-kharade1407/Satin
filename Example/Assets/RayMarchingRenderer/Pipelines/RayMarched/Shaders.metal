@@ -1,12 +1,11 @@
-#include "../Library/Pi.metal"
-#include "../Library/Gamma.metal"
-#include "../Library/Dither.metal"
+// See https://www.iquilezles.org/www/articles/raypolys/raypolys.htm
+
 #include "../Library/Shapes.metal"
 #include "../Library/Csg.metal"
 
 #define MAX_STEPS 64
 #define MIN_DIST 0.0
-#define MAX_DIST 100.0
+#define MAX_DIST 400.0
 #define SURF_DIST 0.0001
 #define EPSILON 0.001
 
@@ -18,7 +17,6 @@ typedef struct {
     float4 position [[position]];
     float4 far;
     float3 cameraPosition [[flat]];
-    float2 cameraDepth [[flat]];
 } RayMarchedData;
 
 struct FragOut {
@@ -28,11 +26,12 @@ struct FragOut {
 
 float scene( float3 p )
 {
-    const float lw = 0.02;
+    const float lw = 0.1;
     float line = Line( abs( p ), 1.0, float3( 1.0, 1.0, -1.0 ) ) - lw;
     line = unionHard( line, Line( abs( p ), 1.0, float3( 1.0, -1.0, 1.0 ) ) - lw );
     line = unionHard( line, Line( abs( p ), 1.0, float3( -1.0, 1.0, 1.0 ) ) - lw );
     return line;
+    // return Box( p, float3( 1.0, 1.0, 1.0 ) );
 }
 
 float3 getNormal( float3 p )
@@ -57,58 +56,51 @@ float render( float3 ro, float3 rd )
     return d;
 }
 
-
-vertex RayMarchedData rayMarchedVertex( Vertex in [[stage_in]],
-    constant VertexUniforms &uniforms [[buffer( VertexBufferVertexUniforms )]] )
+vertex RayMarchedData rayMarchedVertex(
+                                       Vertex in [[stage_in]],
+                                       ushort amp_id [[amplification_id]],
+                                       constant VertexUniforms *vertexUniforms [[buffer( VertexBufferVertexUniforms )]] )
 {
-    const float4x4 projectionMatrix = uniforms.projectionMatrix;
-    const float4x4 inverseViewMatrix = uniforms.inverseViewMatrix;
-    const float4x4 inverseModelViewProjectionMatrix = uniforms.inverseModelViewProjectionMatrix;
-
-    // See https://www.iquilezles.org/www/articles/raypolys/raypolys.htm
-
-    const float c = projectionMatrix[2].z;
-    const float d = projectionMatrix[3].z;
-    const float near = d / c;
-    const float far = d / (1.0 + c);
-
-    const float cameraDelta = far - near;
-    const float cameraA = far / cameraDelta;
-    const float cameraB = (far * near) / cameraDelta;
+    const float4x4 inverseModelViewProjectionMatrix = vertexUniforms[amp_id].inverseModelViewProjectionMatrix;
 
     RayMarchedData out;
-    out.position = float4(in.position, 1.0);
-    auto pos = out.position.xy / out.position.w;
-    out.far = inverseModelViewProjectionMatrix * float4(pos, +1.0, 1.0);
-    out.cameraDepth = float2(cameraA, cameraB);
-    out.cameraPosition = inverseViewMatrix[3].xyz;
-
+    out.position = float4( in.position, 1.0 );
+    out.far = inverseModelViewProjectionMatrix * float4( out.position.xy, 0.5, 1.0 );
+    out.cameraPosition = vertexUniforms[amp_id].worldCameraPosition;
     return out;
 }
 
-fragment FragOut rayMarchedFragment( RayMarchedData in [[stage_in]],
-    constant RayMarchedUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
-    constant float4x4 *view [[buffer( FragmentBufferCustom0 )]] )
+fragment FragOut rayMarchedFragment(
+                                    RayMarchedData in [[stage_in]],
+                                    ushort amp_id [[amplification_id]],
+                                    constant RayMarchedUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
+                                    constant VertexUniforms *vertexUniforms [[buffer( FragmentBufferVertexUniforms )]] )
 {
     const float3 ro = in.cameraPosition;
     const float3 rd = normalize( in.far.xyz / in.far.w - ro );
 
+    // float2 uv = 2.0 * in.texcoord - 1.0;
+    // uv.y *= -1.0;
+    // const float3 rd = normalize( uniforms.cameraRight * uv.x + uniforms.cameraUp * uv.y + uniforms.cameraForward );
+
     const float d = render( ro, rd );
-    const float3 p = ro + rd * d;
 
     if( d >= MAX_DIST ) {
         discard_fragment();
     }
 
+    const float3 p = ro + rd * d;
+    const float3 normal = getNormal( p );
+
     FragOut out;
-    const float2 cameraDepth = in.cameraDepth;
-    const float a = cameraDepth.x;
-    const float b = cameraDepth.y;
 
-    const float4 ep = ( *view ) * float4( p, 1.0 );
-    out.depth = ( a + b / ep.z );
+    const float4 ep = vertexUniforms[amp_id].viewProjectionMatrix * float4( p, 1.0 );
+    out.depth = ep.z / ep.w;
 
-    const float3 color = float3( 1.00000, 0.52941, 0.19216 );
-    out.color = float4( color, 1.0 );
+    if( out.depth >= 1 || out.depth <= 0 ) {
+        discard_fragment();
+    }
+
+    out.color = float4( normal, 1.0 );
     return out;
 }

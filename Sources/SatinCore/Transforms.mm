@@ -8,6 +8,7 @@
 #include "Conversions.h"
 #include "Transforms.h"
 #include <stdio.h>
+#include <iostream>
 
 simd_float4x4 translationMatrixf(float x, float y, float z)
 {
@@ -70,8 +71,8 @@ simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, 
 
     const float farMinusNear = far - near;
 
-    const float sz = near / farMinusNear;
-    const float sw = (far * near) / farMinusNear;
+    const float sz = ( 0.5 * ( ( far + near ) / ( farMinusNear ) ) ) - 0.5;
+    const float sw = 0.5 * (2.0 * far * near) / ( farMinusNear );
 
     const simd_float4 col0 = simd_make_float4(sx, 0.0, 0.0, 0.0);
     const simd_float4 col1 = simd_make_float4(0.0, sy, 0.0, 0.0);
@@ -84,12 +85,14 @@ simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, 
 simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
 {
     const float angle = degToRad(0.5 * fov);
+    const float farMinusNear = far - near;
 
     const float sy = 1.0 / tanf(angle);
     const float sx = sy / aspect;
-    const float farMinusNear = far - near;
-    const float sz = near / farMinusNear;
-    const float sw = (far * near) / farMinusNear;
+
+    // Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is applied)
+    const float sz = ( 0.5 * ( ( far + near ) / ( farMinusNear ) ) ) - 0.5;
+    const float sw = 0.5 * (2.0 * far * near) / ( farMinusNear );
 
     const simd_float4 col0 = simd_make_float4(sx, 0.0, 0.0, 0.0);
     const simd_float4 col1 = simd_make_float4(0.0, sy, 0.0, 0.0);
@@ -97,6 +100,19 @@ simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
     const simd_float4 col3 = simd_make_float4(0.0, 0.0, sw, 0.0);
 
     return simd_matrix(col0, col1, col2, col3);
+}
+
+simd_float4x4 reverseZMatrixf() {
+    simd_float4x4 result = matrix_identity_float4x4;
+    result.columns[2].z = -1.0;
+    return result;
+}
+
+simd_float4x4 normalizeDepth()
+{
+    simd_float4x4 result = matrix_identity_float4x4;
+    result.columns[2].z = 0.5;
+    return result;
 }
 
 simd_float4x4 lookAtMatrix3f(simd_float3 eye, simd_float3 at, simd_float3 up)
