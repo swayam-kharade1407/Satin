@@ -26,9 +26,12 @@ public final actor ShaderLibrarySourceCache {
         }
 
         if let cachedSource {
+//            print("Returning Cached Shader Library Source: \n\(configuration)")
             return cachedSource
         }
-        
+
+//        print("Creating Shader Library Source: \(configuration)")
+
         guard let pipelineURL = configuration.pipelineURL,
               var source = RenderIncludeSource.get(),
               let shaderSource = try ShaderSourceCache.getSource(url: pipelineURL)
@@ -134,6 +137,8 @@ public final actor ShaderLibrarySourceCache {
             cache[configuration] = source
         }
 
+//        print(source)
+        
         return source
     }
 }

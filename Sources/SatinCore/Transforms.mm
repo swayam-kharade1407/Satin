@@ -71,8 +71,8 @@ simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, 
 
     const float farMinusNear = far - near;
 
-    const float sz = ( 0.5 * ( ( far + near ) / ( farMinusNear ) ) ) - 0.5;
-    const float sw = 0.5 * (2.0 * far * near) / ( farMinusNear );
+    const float sz = (0.5 * ((far + near) / (farMinusNear))) - 0.5;
+    const float sw = 0.5 * (2.0 * far * near) / (farMinusNear);
 
     const simd_float4 col0 = simd_make_float4(sx, 0.0, 0.0, 0.0);
     const simd_float4 col1 = simd_make_float4(0.0, sy, 0.0, 0.0);
@@ -91,8 +91,8 @@ simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
     const float sx = sy / aspect;
 
     // Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is applied)
-    const float sz = ( 0.5 * ( ( far + near ) / ( farMinusNear ) ) ) - 0.5;
-    const float sw = 0.5 * (2.0 * far * near) / ( farMinusNear );
+    const float sz = (0.5 * ((far + near) / (farMinusNear))) - 0.5;
+    const float sw = 0.5 * (2.0 * far * near) / (farMinusNear);
 
     const simd_float4 col0 = simd_make_float4(sx, 0.0, 0.0, 0.0);
     const simd_float4 col1 = simd_make_float4(0.0, sy, 0.0, 0.0);
@@ -102,7 +102,8 @@ simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
     return simd_matrix(col0, col1, col2, col3);
 }
 
-simd_float4x4 reverseZMatrixf() {
+simd_float4x4 reverseZMatrixf()
+{
     simd_float4x4 result = matrix_identity_float4x4;
     result.columns[2].z = -1.0;
     return result;

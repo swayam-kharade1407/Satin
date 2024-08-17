@@ -268,10 +268,11 @@ struct ContentView: View {
             #endif
 
             #if os(macOS) && DEBUG
-//            Renderer3DView()
-//            RayMarchingRendererView()
-//            WaveSimulationRendererView()
-//            PBRStandardMaterialRendererView()
+//                DirectionalShadowRendererView()
+//                Renderer3DView()
+//                RayMarchingRendererView()
+//                WaveSimulationRendererView()
+//                PBRStandardMaterialRendererView()
 //                MultipleContextRendererView()
 //                ScreenCaptureRendererView()
 //                TextureComputeRendererView()

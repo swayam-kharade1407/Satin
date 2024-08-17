@@ -11,8 +11,7 @@ import MetalKit
 import Satin
 
 final class Renderer3D: BaseRenderer {
-//    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
-    let mesh = Mesh(geometry: BoxGeometry(size: 1), material: BasicDiffuseMaterial(hardness: 0.7))
+    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
 
     var intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
@@ -36,46 +35,27 @@ final class Renderer3D: BaseRenderer {
     
     lazy var renderer = Renderer(context: defaultContext)
 
-    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 30)
+    lazy var camera = PerspectiveCamera(position: [5, 5, 5], near: 0.1, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
-    var tween: Tween?
-
     override func setup() {
-//        camera.lookAt(target: .zero)
+        camera.lookAt(target: .zero)
 
         #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
         #endif
-
-//        mesh.cullMode = .none
-//        mesh.material?.depthWriteEnabled = false
-//        mesh.material?.depthCompareFunction = .always
-//
-//        tween = Tweener
-//            .tweenScale(duration: 2.0, object: mesh, from: .one, to: .init(repeating: 2.0))
-//            .easing(.inOutBack)
-//            .pingPong()
-//            .loop()
-//            .start()
     }
 
     deinit {
         cameraController.disable()
-        tween?.remove()
     }
 
     override func update() {
         cameraController.update()
         camera.update()
-//        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
+        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
         scene.update()
-
-//        renderer.invertViewportNearFar = true
-
-//        let result = simd_mul(camera.viewProjectionMatrix, simd_make_float4(1, 1, 1, 1.0))
-//        print(result.z/result.w)
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

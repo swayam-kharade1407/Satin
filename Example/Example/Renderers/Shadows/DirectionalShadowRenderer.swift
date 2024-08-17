@@ -41,10 +41,9 @@ class DirectionalShadowRenderer: BaseRenderer {
     var light1 = DirectionalLight(color: [1.0, 1.0, 1.0], intensity: 1.0)
 
     lazy var scene = IBLScene(label: "Scene", [light0, light1, floorMesh, baseMesh, sphereMesh, torusMesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: .init(repeating: 5.0), near: 0.01, far: 500.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override init() {
         super.init()
@@ -131,7 +130,6 @@ class DirectionalShadowRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -144,4 +142,23 @@ class DirectionalShadowRenderer: BaseRenderer {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }
+
+    #if os(macOS)
+    override func keyDown(with event: NSEvent) -> Bool {
+        if !super.keyDown(with: event) {
+            if event.characters == " " {
+                print("Toggling Lighting & Shadows")
+                let meshes = [baseMesh]
+                for mesh in meshes {
+                    mesh.material?.lighting.toggle()
+                    mesh.material?.castShadow.toggle()
+                    mesh.material?.receiveShadow.toggle()
+                }
+                return true
+            }
+            return false
+        }
+        return false
+    }
+    #endif
 }

@@ -64,13 +64,17 @@ public final actor ShaderPipelineCache {
         }
 
         if let cachedPipeline, let cachedReflection {
+//            print("Returning Cached Shader Pipeline: \(configuration)")
             return (cachedPipeline, cachedReflection)
         }
 
 //        print("Creating Shader Pipeline: \(configuration)")
 
         guard let context = configuration.context,
-              let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device)
+              let library = try ShaderLibraryCache.getLibrary(
+                  configuration: configuration.getLibraryConfiguration(),
+                  device: context.device
+              )
         else { return (nil, nil) }
 
         guard let vertexFunction = library.makeFunction(name: configuration.vertexFunctionName),
@@ -88,7 +92,7 @@ public final actor ShaderPipelineCache {
         setupRenderPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
         var pipelineReflection: MTLRenderPipelineReflection?
-        
+
         let pipeline = try context.device.makeRenderPipelineState(
             descriptor: descriptor,
             options: [.argumentInfo, .bufferTypeInfo],

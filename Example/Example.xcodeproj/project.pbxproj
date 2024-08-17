@@ -387,6 +387,7 @@
 		66E678CD243EE2190070B294 /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
+				E1BCF34129DA3E910076C163 /* Tessellated */,
 				E19D4C4029F9C23900DF993D /* Advanced */,
 				E152372029CBA8DA00D96D46 /* AR */,
 				E19D4C4129F9C23F00DF993D /* Basics */,
@@ -394,7 +395,6 @@
 				E19D4C4729F9C2F200DF993D /* Customization */,
 				E19D4C4529F9C27800DF993D /* Geometry */,
 				E19D4C4329F9C25900DF993D /* Materials */,
-				E11D04DF2C605348003BDC36 /* MultipleContextRenderer.swift */,
 				E1BEFC4729EDBE5A00F9CE60 /* PBR */,
 				E19D4C4229F9C24500DF993D /* PostProcessing */,
 				E19D4C4629F9C28700DF993D /* Shadows */,
@@ -614,7 +614,7 @@
 		E19D4C4029F9C23900DF993D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
-				E1BCF34129DA3E910076C163 /* Tessellated */,
+				E11D04DF2C605348003BDC36 /* MultipleContextRenderer.swift */,
 				E1EC55D8268785630097C140 /* RayMarchingRenderer.swift */,
 				E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */,
 				E19B058F26BB704100D91376 /* AudioInputRenderer.swift */,
