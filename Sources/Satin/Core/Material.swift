@@ -124,8 +124,11 @@ open class Material: Codable, ObservableObject {
 
     public var context: Context? {
         didSet {
-            if context != nil, context != oldValue {
+            if let context, context != oldValue {
                 setup()
+                if oldValue != nil {
+                    update()
+                }
             }
         }
     }
@@ -353,7 +356,7 @@ open class Material: Codable, ObservableObject {
 
     open func setupShaderRenderingConfiguration(_ shader: Shader) {
         shader.renderingConfiguration = renderingConfiguration
-        self.objectWillChange.send()
+        objectWillChange.send()
     }
 
     open func setupShaderParametersSubscription(_ shader: Shader) {
@@ -380,7 +383,7 @@ open class Material: Codable, ObservableObject {
         guard let context = context, parameters.size > 0, uniformsNeedsUpdate else { return }
 
         uniforms = UniformBuffer(device: context.device, parameters: parameters)
-        
+
         uniformsNeedsUpdate = false
     }
 
@@ -448,12 +451,18 @@ open class Material: Codable, ObservableObject {
     }
 
     open func bindTextures(renderEncoderState: RenderEncoderState) {
-        for (index, texture) in vertexTextures {
-            renderEncoderState.setVertexTexture(texture, index: index)
+        guard let shader else { return }
+
+        for index in shader.vertexTextureBindingIsUsed {
+            if let texture = vertexTextures[index] {
+                renderEncoderState.setVertexTexture(texture, index: index)
+            }
         }
 
-        for (index, texture) in fragmentTextures {
-            renderEncoderState.setFragmentTexture(texture, index: index)
+        for index in shader.fragmentTextureBindingIsUsed {
+            if let texture = fragmentTextures[index] {
+                renderEncoderState.setFragmentTexture(texture, index: index)
+            }
         }
     }
 

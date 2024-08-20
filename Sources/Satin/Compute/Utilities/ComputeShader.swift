@@ -22,12 +22,15 @@ open class ComputeShader {
         didSet {
             guard let resetPipelineReflection else { return }
 
-            for binding in resetPipelineReflection.bindings where binding.type == .buffer {
-                if binding.index == ComputeBufferIndex.Uniforms.rawValue {
-                    resetWantsUniforms = binding.isUsed
-                }
-                else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
-                    bufferBindingIsUsed.insert(bindingIndex)
+            for binding in resetPipelineReflection.bindings {
+                if binding.type == .buffer {
+                    if binding.index == ComputeBufferIndex.Uniforms.rawValue {
+                        resetWantsUniforms = binding.isUsed
+                    } else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                        bufferBindingIsUsed.insert(bindingIndex)
+                    }
+                } else if binding.type == .texture, let bindingIndex = ComputeTextureIndex(rawValue: binding.index) {
+                    textureBindingIsUsed.insert(bindingIndex)
                 }
             }
         }
@@ -41,18 +44,22 @@ open class ComputeShader {
         didSet {
             guard let updatePipelineReflection else { return }
 
-            for binding in updatePipelineReflection.bindings where binding.type == .buffer {
-                if binding.index == ComputeBufferIndex.Uniforms.rawValue {
-                    updateWantsUniforms = binding.isUsed
-                }
-                else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
-                    bufferBindingIsUsed.insert(bindingIndex)
+            for binding in updatePipelineReflection.bindings {
+                if binding.type == .buffer {
+                    if binding.index == ComputeBufferIndex.Uniforms.rawValue {
+                        updateWantsUniforms = binding.isUsed
+                    } else if let bindingIndex = ComputeBufferIndex(rawValue: binding.index) {
+                        bufferBindingIsUsed.insert(bindingIndex)
+                    }
+                } else if binding.type == .texture, let bindingIndex = ComputeTextureIndex(rawValue: binding.index) {
+                    textureBindingIsUsed.insert(bindingIndex)
                 }
             }
         }
     }
 
     public internal(set) var bufferBindingIsUsed: Set<ComputeBufferIndex> = []
+    public internal(set) var textureBindingIsUsed: Set<ComputeTextureIndex> = []
     public internal(set) var resetWantsUniforms: Bool = false
     public internal(set) var updateWantsUniforms: Bool = false
 
@@ -282,6 +289,7 @@ open class ComputeShader {
     func updatePipelines() {
         if resetPipelineNeedsUpdate || updatePipelineNeedsUpdate {
             bufferBindingIsUsed.removeAll()
+            textureBindingIsUsed.removeAll()
         }
 
         updateResetPipeline()

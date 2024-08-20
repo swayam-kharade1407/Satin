@@ -257,8 +257,12 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     }
 
     internal func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
-        for (index, texture) in computeTextures {
-            computeEncoder.setTexture(texture, index: index.rawValue)
+        guard let shader else { return }
+
+        for index in shader.textureBindingIsUsed {
+            if let texture = computeTextures[index] {
+                computeEncoder.setTexture(texture, index: index.rawValue)
+            }
         }
     }
 

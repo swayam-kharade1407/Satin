@@ -15,40 +15,55 @@ open class Shader {
     public internal(set) var pipelines: [Context: MTLRenderPipelineState] = [:]
     public internal(set) var error: Error?
 
-    open var pipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
     open var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
             vertexBufferBindingIsUsed.removeAll()
+            vertexTextureBindingIsUsed.removeAll()
             vertexWantsVertexUniforms = false
             vertexWantsMaterialUniforms = false
 
             fragmentBufferBindingIsUsed.removeAll()
+            fragmentTextureBindingIsUsed.removeAll()
             fragmentWantsVertexUniforms = false
             fragmentWantsMaterialUniforms = false
 
             guard let pipelineReflection else { return }
 
-            for binding in pipelineReflection.vertexBindings where binding.type == .buffer {
-                if binding.index == VertexBufferIndex.VertexUniforms.rawValue {
-                    vertexWantsVertexUniforms = binding.isUsed
+            for binding in pipelineReflection.vertexBindings {
+                if binding.type == .buffer {
+                    if binding.index == VertexBufferIndex.VertexUniforms.rawValue {
+                        vertexWantsVertexUniforms = binding.isUsed
+                    }
+                    else if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
+                        vertexWantsMaterialUniforms = binding.isUsed
+                    }
+                    else if let bindingIndex = VertexBufferIndex(rawValue: binding.index) {
+                        vertexBufferBindingIsUsed.append(bindingIndex)
+                    }
                 }
-                else if binding.index == VertexBufferIndex.MaterialUniforms.rawValue {
-                    vertexWantsMaterialUniforms = binding.isUsed
-                }
-                else if let bindingIndex = VertexBufferIndex(rawValue: binding.index) {
-                    vertexBufferBindingIsUsed.append(bindingIndex)
+                else if binding.type == .texture {
+                    if let bindingIndex = VertexTextureIndex(rawValue: binding.index) {
+                        vertexTextureBindingIsUsed.append(bindingIndex)
+                    }
                 }
             }
 
-            for binding in pipelineReflection.fragmentBindings where binding.type == .buffer {
-                if binding.index == FragmentBufferIndex.VertexUniforms.rawValue {
-                    fragmentWantsVertexUniforms = binding.isUsed
+            for binding in pipelineReflection.fragmentBindings {
+                if binding.type == .buffer {
+                    if binding.index == FragmentBufferIndex.VertexUniforms.rawValue {
+                        fragmentWantsVertexUniforms = binding.isUsed
+                    }
+                    else if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
+                        fragmentWantsMaterialUniforms = binding.isUsed
+                    }
+                    else if let bindingIndex = FragmentBufferIndex(rawValue: binding.index) {
+                        fragmentBufferBindingIsUsed.append(bindingIndex)
+                    }
                 }
-                else if binding.index == FragmentBufferIndex.MaterialUniforms.rawValue {
-                    fragmentWantsMaterialUniforms = binding.isUsed
-                }
-                else if let bindingIndex = FragmentBufferIndex(rawValue: binding.index) {
-                    fragmentBufferBindingIsUsed.append(bindingIndex)
+                else if binding.type == .texture {
+                    if let bindingIndex = FragmentTextureIndex(rawValue: binding.index) {
+                        fragmentTextureBindingIsUsed.append(bindingIndex)
+                    }
                 }
             }
         }
@@ -56,24 +71,28 @@ open class Shader {
 
     // MARK: - Shadow Pipeline
 
-    open var shadowPipelineOptions: MTLPipelineOption = [.argumentInfo, .bufferTypeInfo]
     open var shadowPipelineReflection: MTLRenderPipelineReflection?
 
     public internal(set) var shadowPipelines: [Context: MTLRenderPipelineState] = [:]
     public internal(set) var shadowError: Error?
 
     public internal(set) var vertexBufferBindingIsUsed: [VertexBufferIndex] = []
+    public internal(set) var vertexTextureBindingIsUsed: [VertexTextureIndex] = []
     public internal(set) var vertexWantsVertexUniforms: Bool = false
     public internal(set) var vertexWantsMaterialUniforms: Bool = false
 
     public internal(set) var fragmentBufferBindingIsUsed: [FragmentBufferIndex] = []
+    public internal(set) var fragmentTextureBindingIsUsed: [FragmentTextureIndex] = []
     public internal(set) var fragmentWantsVertexUniforms: Bool = false
     public internal(set) var fragmentWantsMaterialUniforms: Bool = false
 
     public var context: Context? {
         didSet {
-            if context != nil, context != oldValue {
+            if let context, context != oldValue {
                 setup()
+                if oldValue != nil {
+                    update()
+                }
             }
         }
     }
@@ -449,7 +468,8 @@ open class Shader {
             if let pipelineParameters = try ShaderPipelineCache.getPipelineParameters(configuration: configuration) {
                 parameters = pipelineParameters
             }
-        } catch {
+        }
+        catch {
             print("\(label) Shader Parameters: \(error.localizedDescription)")
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
@@ -482,7 +502,8 @@ open class Shader {
             pipelines[context] = result.pipeline
             pipelineReflection = result.reflection
             error = nil
-        } catch {
+        }
+        catch {
             print("\(label) Shader Pipeline: \(error.localizedDescription)")
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
@@ -509,7 +530,8 @@ open class Shader {
         do {
             shadowPipelines[context] = try makeShadowPipeline()
             shadowError = nil
-        } catch {
+        }
+        catch {
             print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
