@@ -52,9 +52,13 @@ open class SourceShader: Shader {
 
                 // invalidate caches to recompile shader
                 self.pipelines.removeAll()
+                self.pipelineError = nil
+
                 self.shadowPipelines.removeAll()
-                self.configurations.removeAll()
+                self.shadowPipelineError = nil
                 
+                self.configurations.removeAll()
+
                 if self.castShadow {
                     self.shadowPipelineNeedsUpdate = true
                 }

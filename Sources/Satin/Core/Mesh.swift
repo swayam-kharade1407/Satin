@@ -188,7 +188,7 @@ open class Mesh: Object, Renderable {
     // MARK: - Setup Uniforms
 
     open func setupVertexUniforms() {
-        guard let context = context, vertexUniforms[context] == nil else { return }
+        guard let context, vertexUniforms[context] == nil else { return }
         vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 

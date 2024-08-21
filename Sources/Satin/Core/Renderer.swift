@@ -437,8 +437,8 @@ open class Renderer {
                 let renderables = renderList.getRenderables(sorted: sortObjects)
 
                 if !renderables.isEmpty, let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
-#if DEBUG
                     renderEncoder.label = label + " Pass \(pass)"
+#if DEBUG
                     renderEncoder.pushDebugGroup("Pass \(pass)")
 #endif
                     renderEncoder.setViewports(viewports)

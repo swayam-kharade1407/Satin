@@ -38,8 +38,9 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     public var preReset: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
     public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
 
-    public private(set) var computeBuffers: [ComputeBufferIndex: MTLBuffer?] = [:]
-    public private(set) var computeTextures: [ComputeTextureIndex: MTLTexture?] = [:]
+    public private(set) var computeUniformBuffers: [ComputeBufferIndex: UniformBuffer] = [:]
+    public private(set) var computeBuffers: [ComputeBufferIndex: MTLBuffer] = [:]
+    public private(set) var computeTextures: [ComputeTextureIndex: MTLTexture] = [:]
 
     public internal(set) var shader: ComputeShader? {
         didSet {
@@ -250,7 +251,10 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
         guard let shader else { return }
 
         for index in shader.bufferBindingIsUsed {
-            if let buffer = computeBuffers[index] {
+            if let uniformBuffer = computeUniformBuffers[index] {
+                computeEncoder.setBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index.rawValue)
+            }
+            else if let buffer = computeBuffers[index] {
                 computeEncoder.setBuffer(buffer, offset: 0, index: index.rawValue)
             }
         }
@@ -273,10 +277,19 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     // MARK: - Buffers
 
     public func set(_ buffer: MTLBuffer?, index: ComputeBufferIndex) {
-        if let buffer = buffer {
+        if let buffer {
             computeBuffers[index] = buffer
         } else {
             computeBuffers.removeValue(forKey: index)
+        }
+    }
+
+
+    public func set(_ uniformBuffer: UniformBuffer?, index: ComputeBufferIndex) {
+        if let uniformBuffer {
+            computeUniformBuffers[index] = uniformBuffer
+        } else {
+            computeUniformBuffers.removeValue(forKey: index)
         }
     }
 

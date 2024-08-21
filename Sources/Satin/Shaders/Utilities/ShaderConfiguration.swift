@@ -65,7 +65,17 @@ public struct ShaderConfiguration {
 
 extension ShaderConfiguration: Equatable {
     public static func == (lhs: ShaderConfiguration, rhs: ShaderConfiguration) -> Bool {
-        lhs.context == rhs.context &&
+        var contextPipelineEquivalence = true
+        if let lhsContext = lhs.context, let rhsContext = rhs.context {
+            contextPipelineEquivalence =
+                lhsContext.sampleCount == rhsContext.sampleCount &&
+                lhsContext.colorPixelFormat == rhsContext.colorPixelFormat &&
+                lhsContext.depthPixelFormat == rhsContext.depthPixelFormat &&
+                lhsContext.stencilPixelFormat == rhsContext.stencilPixelFormat &&
+                lhsContext.vertexAmplificationCount == rhsContext.vertexAmplificationCount
+        }
+
+        return contextPipelineEquivalence &&
             lhs.label == rhs.label &&
             lhs.vertexFunctionName == rhs.vertexFunctionName &&
             lhs.fragmentFunctionName == rhs.fragmentFunctionName &&

@@ -111,9 +111,11 @@ open class Material: Codable, ObservableObject {
         }
     }
 
+    public private(set) var vertexUniformBuffers: [VertexBufferIndex: UniformBuffer] = [:]
     public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer] = [:]
     public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture] = [:]
 
+    public private(set) var fragmentUniformBuffers: [FragmentBufferIndex: UniformBuffer] = [:]
     public private(set) var fragmentBuffers: [FragmentBufferIndex: MTLBuffer] = [:]
     public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture] = [:]
 
@@ -382,7 +384,11 @@ open class Material: Codable, ObservableObject {
     open func setupUniforms() {
         guard let context = context, parameters.size > 0, uniformsNeedsUpdate else { return }
 
-        uniforms = UniformBuffer(device: context.device, parameters: parameters)
+        uniforms = UniformBuffer(
+            device: context.device,
+            parameters: parameters,
+            maxBuffersInFlight: context.maxBuffersInFlight
+        )
 
         uniformsNeedsUpdate = false
     }
@@ -438,13 +444,19 @@ open class Material: Codable, ObservableObject {
         guard let shader else { return }
 
         for index in shader.vertexBufferBindingIsUsed {
-            if let buffer = vertexBuffers[index] {
+            if let uniformBuffer = vertexUniformBuffers[index] {
+                renderEncoderState.setVertexBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index)
+            }
+            else if let buffer = vertexBuffers[index] {
                 renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
             }
         }
 
         for index in shader.fragmentBufferBindingIsUsed {
-            if let buffer = fragmentBuffers[index] {
+            if let uniformBuffer = fragmentUniformBuffers[index] {
+                renderEncoderState.setFragmentBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index)
+            }
+            else if let buffer = fragmentBuffers[index] {
                 renderEncoderState.setFragmentBuffer(buffer, offset: 0, index: index)
             }
         }
@@ -494,11 +506,27 @@ open class Material: Codable, ObservableObject {
         }
     }
 
+    public func set(_ uniformBuffer: UniformBuffer?, index: VertexBufferIndex) {
+        if let uniformBuffer {
+            vertexUniformBuffers[index] = uniformBuffer
+        } else {
+            vertexUniformBuffers.removeValue(forKey: index)
+        }
+    }
+
     public func set(_ texture: MTLTexture?, index: VertexTextureIndex) {
         if let texture = texture {
             vertexTextures[index] = texture
         } else {
             vertexTextures.removeValue(forKey: index)
+        }
+    }
+
+    public func set(_ uniformBuffer: UniformBuffer?, index: FragmentBufferIndex) {
+        if let uniformBuffer {
+            fragmentUniformBuffers[index] = uniformBuffer
+        } else {
+            fragmentUniformBuffers.removeValue(forKey: index)
         }
     }
 

@@ -16,27 +16,26 @@ func align256(size: Int) -> Int {
 }
 
 public final class UniformBuffer {
-    public private(set) weak var parameters: ParameterGroup?
-    public private(set) var buffer: MTLBuffer?
+    public private(set) var parameters: ParameterGroup
+    public private(set) var buffer: MTLBuffer
     public private(set) var index: Int = -1
     public private(set) var offset = 0
     public private(set) var alignedSize: Int
+    public private(set) var maxBuffersInFlight: Int
 
-    public init(device: MTLDevice, parameters: ParameterGroup, options: MTLResourceOptions = [.cpuCacheModeWriteCombined]) {
+    public init(device: MTLDevice, parameters: ParameterGroup, options: MTLResourceOptions = [.cpuCacheModeWriteCombined], maxBuffersInFlight: Int = Satin.maxBuffersInFlight) {
         self.parameters = parameters
+        self.maxBuffersInFlight = maxBuffersInFlight
         self.alignedSize = align256(size: parameters.size)
+        let length = alignedSize * maxBuffersInFlight
 
-        let length = alignedSize * Satin.maxBuffersInFlight
-
-        if let buffer = device.makeBuffer(length: length, options: options) {
-            buffer.label = parameters.label
-            self.buffer = buffer
-            update()
-        }
+        let buffer = device.makeBuffer(length: length, options: options)!
+        buffer.label = parameters.label
+        self.buffer = buffer
+        update()
     }
 
     public func update() {
-        guard let parameters = parameters, let buffer = buffer else { return }
         index = (index + 1) % maxBuffersInFlight
         offset = alignedSize * index
         (buffer.contents() + offset).copyMemory(from: parameters.data, byteCount: parameters.size)

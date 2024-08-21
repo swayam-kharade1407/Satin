@@ -13,9 +13,8 @@ open class Shader {
     // MARK: - Main Pipeline
 
     public internal(set) var pipelines: [Context: MTLRenderPipelineState] = [:]
-    public internal(set) var error: Error?
-
-    open var pipelineReflection: MTLRenderPipelineReflection? {
+    public internal(set) var pipelineError: Error?
+    public internal(set) var pipelineReflection: MTLRenderPipelineReflection? {
         didSet {
             vertexBufferBindingIsUsed.removeAll()
             vertexTextureBindingIsUsed.removeAll()
@@ -71,10 +70,9 @@ open class Shader {
 
     // MARK: - Shadow Pipeline
 
-    open var shadowPipelineReflection: MTLRenderPipelineReflection?
-
     public internal(set) var shadowPipelines: [Context: MTLRenderPipelineState] = [:]
-    public internal(set) var shadowError: Error?
+    public internal(set) var shadowPipelineError: Error?
+    public internal(set) var shadowPipelineReflection: MTLRenderPipelineReflection?
 
     public internal(set) var vertexBufferBindingIsUsed: [VertexBufferIndex] = []
     public internal(set) var vertexTextureBindingIsUsed: [VertexTextureIndex] = []
@@ -496,19 +494,19 @@ open class Shader {
     }
 
     func setupPipeline() {
-        guard let context, pipelines[context] == nil else { return }
+        guard let context, pipelines[context] == nil, pipelineError == nil else { return }
         do {
             let result = try makePipeline()
             pipelines[context] = result.pipeline
             pipelineReflection = result.reflection
-            error = nil
+            pipelineError = nil
         }
         catch {
             print("\(label) Shader Pipeline: \(error.localizedDescription)")
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
             }
-            self.error = error
+            self.pipelineError = error
             pipelineReflection = nil
             pipelines[context] = nil
         }
@@ -526,17 +524,17 @@ open class Shader {
     }
 
     func setupShadowPipeline() {
-        guard let context, shadowPipelines[context] == nil, castShadow else { return }
+        guard let context, shadowPipelines[context] == nil, shadowPipelineError == nil, castShadow else { return }
         do {
             shadowPipelines[context] = try makeShadowPipeline()
-            shadowError = nil
+            shadowPipelineError = nil
         }
         catch {
             print("\(label) Shadow Shader Pipeline: \(error.localizedDescription)")
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
             }
-            shadowError = error
+            shadowPipelineError = error
             shadowPipelines[context] = nil
         }
 
@@ -548,11 +546,11 @@ open class Shader {
 
         pipelines.removeAll()
         pipelineReflection = nil
-        error = nil
+        pipelineError = nil
 
         shadowPipelines.removeAll()
         shadowPipelineReflection = nil
-        shadowError = nil
+        shadowPipelineError = nil
     }
 
     public func clone() -> Shader {
