@@ -128,9 +128,6 @@ open class Material: Codable, ObservableObject {
         didSet {
             if let context, context != oldValue {
                 setup()
-                if oldValue != nil {
-                    update()
-                }
             }
         }
     }
@@ -717,13 +714,7 @@ open class Material: Codable, ObservableObject {
         clone.onUpdate = onUpdate
         clone.onBind = onBind
 
-        clone.blending = blending
-        clone.sourceRGBBlendFactor = sourceRGBBlendFactor
-        clone.sourceAlphaBlendFactor = sourceAlphaBlendFactor
-        clone.destinationRGBBlendFactor = destinationRGBBlendFactor
-        clone.destinationAlphaBlendFactor = destinationAlphaBlendFactor
-        clone.rgbBlendOperation = rgbBlendOperation
-        clone.alphaBlendOperation = alphaBlendOperation
+        clone.renderingConfiguration = renderingConfiguration
 
         clone.depthStencilState = depthStencilState
         clone.depthCompareFunction = depthCompareFunction

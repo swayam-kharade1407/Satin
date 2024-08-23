@@ -36,9 +36,6 @@ open class Object: Codable, ObservableObject {
         didSet {
             if let context, context != oldValue {
                 setup()
-                if oldValue != nil {
-                    update()
-                }
                 objectWillChange.send()
             }
         }

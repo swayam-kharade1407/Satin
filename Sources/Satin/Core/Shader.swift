@@ -88,9 +88,6 @@ open class Shader {
         didSet {
             if let context, context != oldValue {
                 setup()
-                if oldValue != nil {
-                    update()
-                }
             }
         }
     }
