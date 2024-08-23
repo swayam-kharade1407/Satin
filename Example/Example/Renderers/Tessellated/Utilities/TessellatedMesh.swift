@@ -83,17 +83,17 @@ class TessellatedMesh: Object, Renderable {
     }
 
     func setupVertexUniforms() {
-        guard let context = context, vertexUniforms[context] == nil else { return }
+        guard let context, vertexUniforms[context] == nil else { return }
         vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 
     func setupGeometry() {
-        guard let context = context else { return }
+        guard let context else { return }
         geometry.context = context
     }
 
     func setupMaterial() {
-        guard let context = context, let material = material else { return }
+        guard let context, let material else { return }
         material.vertexDescriptor = geometry.vertexDescriptor
         material.context = context
     }

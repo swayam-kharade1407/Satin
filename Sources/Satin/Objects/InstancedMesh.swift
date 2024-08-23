@@ -139,7 +139,7 @@ public class InstancedMesh: Mesh {
     // MARK: - Private Instancing
 
     func setupInstanceBuffer() {
-        guard let context = context, instanceCount > 0 else { return }
+        guard let context, instanceCount > 0 else { return }
         instanceMatrixBuffer = InstanceMatrixUniformBuffer(device: context.device, count: instanceCount)
         _setupInstanceMatrixBuffer = false
         _updateInstanceMatrixBuffer = true

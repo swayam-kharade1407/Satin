@@ -40,7 +40,6 @@ public struct Context {
 
 extension Context: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
         hasher.combine(sampleCount)
         hasher.combine(colorPixelFormat)
         hasher.combine(depthPixelFormat)

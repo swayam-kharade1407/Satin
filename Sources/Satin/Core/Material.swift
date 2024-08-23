@@ -320,7 +320,7 @@ open class Material: Codable, ObservableObject {
     }
 
     func setupDepthStencilState() {
-        guard let context = context,
+        guard let context,
               context.depthPixelFormat != .invalid,
               depthNeedsUpdate || depthStencilState == nil
         else { return }
@@ -382,7 +382,7 @@ open class Material: Codable, ObservableObject {
     }
 
     open func setupUniforms() {
-        guard let context = context, parameters.size > 0, uniformsNeedsUpdate else { return }
+        guard let context, parameters.size > 0, uniformsNeedsUpdate else { return }
 
         uniforms = UniformBuffer(
             device: context.device,

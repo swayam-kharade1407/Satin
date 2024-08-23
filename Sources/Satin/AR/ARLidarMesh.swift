@@ -103,12 +103,12 @@ public class ARLidarMesh: Object, Renderable {
     }
 
     func setupMaterial() {
-        guard let context = context, let material = material else { return }
+        guard let context, let material else { return }
         material.context = context
     }
 
     func setupUniforms() {
-        guard let context = context, vertexUniforms[context] == nil else { return }
+        guard let context, vertexUniforms[context] == nil else { return }
         vertexUniforms[context] = VertexUniformBuffer(context: context)
     }
 

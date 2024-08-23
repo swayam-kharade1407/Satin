@@ -417,7 +417,7 @@ open class Shader {
     // MARK: - Configuration
 
     func setupConfiguration() {
-        guard let context = context, configurations[context] == nil else { return }
+        guard let context, configurations[context] == nil else { return }
 
         configuration.context = context
         configurations[context] = configuration

@@ -345,7 +345,7 @@ class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     }
 
     func createAudioTexture() {
-        guard let context = context else { return }
+        guard let context else { return }
 
         let descriptor = MTLTextureDescriptor()
         descriptor.pixelFormat = .r32Float

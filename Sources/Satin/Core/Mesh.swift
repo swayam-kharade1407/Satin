@@ -128,7 +128,6 @@ open class Mesh: Object, Renderable {
     open var material: Material? {
         didSet {
             if material != oldValue {
-                material?.vertexDescriptor = geometry.vertexDescriptor
                 setupMaterial()
             }
         }
@@ -197,7 +196,7 @@ open class Mesh: Object, Renderable {
     }
 
     open func setupGeometry() {
-        guard let context = context else { return }
+        guard let context else { return }
         geometrySubscription = geometry.onUpdate.sink { [weak self] geo in
             guard let self = self else { return }
             self.updateBounds = true
@@ -207,12 +206,12 @@ open class Mesh: Object, Renderable {
     }
 
     open func setupSubmeshes() {
-        guard let context = context else { return }
+        guard let context else { return }
         for submesh in submeshes { submesh.context = context }
     }
 
     open func setupMaterial() {
-        guard let context = context, let material = material else { return }
+        guard let context, let material else { return }
         material.vertexDescriptor = geometry.vertexDescriptor
         material.context = context
     }
@@ -255,7 +254,12 @@ open class Mesh: Object, Renderable {
     }
 
     override open func update(renderContext: Context, camera: Camera, viewport: simd_float4, index: Int) {
-        vertexUniforms[renderContext]?.update(object: self, camera: camera, viewport: viewport, index: index)
+        vertexUniforms[renderContext]?.update(
+            object: self,
+            camera: camera,
+            viewport: viewport,
+            index: index
+        )
 
         super.update(
             renderContext: renderContext,

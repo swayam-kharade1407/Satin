@@ -84,7 +84,7 @@ private class CustomShader: SourceShader {
 
     override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         if #available(macOS 13.0, iOS 16.0, *) {
-            if let context = context,
+            if let context,
                let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
                let objectFunction = library.makeFunction(name: objectFunctionName),
                let meshFunction = library.makeFunction(name: meshFunctionName),
@@ -264,12 +264,12 @@ private class CustomMesh: Object, Renderable {
     }
 
     func setupGeometry() {
-        guard let context = context else { return }
+        guard let context else { return }
         geometry.context = context
     }
 
     func setupMaterial() {
-        guard let context = context, let material = material else { return }
+        guard let context, let material else { return }
         material.context = context
     }
 

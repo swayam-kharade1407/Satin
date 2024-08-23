@@ -558,6 +558,7 @@ open class Renderer {
             }
 
             if let renderable = object as? Renderable {
+
                 for material in renderable.materials {
                     if material.lighting {
                         material.lightCount = lightCount
@@ -590,7 +591,17 @@ open class Renderer {
                         skyboxMaterial.update()
                     }
                 }
+
+                // Update context after setting properties to reduce calls to shader compiler
+                
+                object.context = context
+
             } else {
+
+                // Update context here before update in case you need to setup vertex uniforms, etc for non-renderables
+
+                object.context = context
+
                 for i in 0..<context.vertexAmplificationCount {
                     object.update(
                         renderContext: context,
@@ -601,7 +612,6 @@ open class Renderer {
                 }
             }
 
-            object.context = context
             object.encode(commandBuffer)
         }
     }

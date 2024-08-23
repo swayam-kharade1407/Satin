@@ -61,13 +61,13 @@ open class Submesh {
     }
 
     open func setupMaterial() {
-        guard let context = context, let material = material, let parent = parent else { return }
+        guard let context, let material, let parent else { return }
         material.vertexDescriptor = parent.geometry.vertexDescriptor
         material.context = context
     }
 
     open func setupGeometry() {
-        guard let context = context else { return }
+        guard let context else { return }
         geometry.context = context
     }
 

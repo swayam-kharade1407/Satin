@@ -23,7 +23,7 @@ class TessellatedShader: SourceShader {
     }
 
     override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
-        guard let context = context,
+        guard let context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
               let vertexFunction = library.makeFunction(name: vertexFunctionName),
               let fragmentFunction = library.makeFunction(name: fragmentFunctionName) else { return (nil, nil) }
