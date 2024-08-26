@@ -61,13 +61,13 @@ public final class MetalFileCompiler {
 
         guard !files.contains(fileURLResolved) else { return "" }
 
-
         let baseURL = fileURL.deletingLastPathComponent()
-
+        var watchFile = false
         var content = ""
 
         do {
             content = try String(contentsOf: fileURLResolved, encoding: .utf8)
+            watchFile = true
         } catch {
             let pathComponents = fileURLResolved.pathComponents
 
@@ -81,6 +81,7 @@ public final class MetalFileCompiler {
                 if !files.contains(frameworkFileURL) {
                     content = try String(contentsOf: frameworkFileURL, encoding: .utf8)
                     fileURLResolved = frameworkFileURL
+                    watchFile = true
                 }
 
             } else if let index = pathComponents.lastIndex(of: "Chunks"),
@@ -93,6 +94,7 @@ public final class MetalFileCompiler {
                 if !files.contains(frameworkFileURL) {
                     content = try String(contentsOf: frameworkFileURL, encoding: .utf8)
                     fileURLResolved = frameworkFileURL
+                    watchFile = true
                 }
 
             } else if let index = pathComponents.lastIndex(of: "Library"),
@@ -105,25 +107,27 @@ public final class MetalFileCompiler {
                 if !files.contains(frameworkFileURL) {
                     content = try String(contentsOf: frameworkFileURL, encoding: .utf8)
                     fileURLResolved = frameworkFileURL
+                    watchFile = true
                 }
-
             } else {
                 throw MetalFileCompilerError.invalidFile(fileURLResolved)
             }
         }
 
-        watchers.append(
-            FileWatcher(
-                filePath: fileURLResolved.path,
-                timeInterval: 0.25,
-                active: watch
-            ) { [weak self] in
-                ShaderSourceCache.removeSource(url: fileURL)
-                self?.onUpdatePublisher.send()
-            }
-        )
+        if watchFile {
+            watchers.append(
+                FileWatcher(
+                    filePath: fileURLResolved.path,
+                    timeInterval: 0.25,
+                    active: watch
+                ) { [weak self] in
+                    ShaderSourceCache.removeSource(url: fileURL)
+                    self?.onUpdatePublisher.send()
+                }
+            )
 
-        files.append(fileURLResolved)
+            files.append(fileURLResolved)
+        }
 
         let pattern = #"^#include\s+\"(.*)\"\n"#
         let regex = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])

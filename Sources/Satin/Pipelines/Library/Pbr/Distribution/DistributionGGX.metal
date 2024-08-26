@@ -1,4 +1,4 @@
-#include "Library/Pi.metal"
+#include "../../Pi.metal"
 
 float GTR1(float NdotH, float a)
 {
