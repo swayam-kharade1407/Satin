@@ -268,6 +268,7 @@ struct ContentView: View {
             #endif
 
             #if os(macOS) && DEBUG
+//                LiveCodeRendererView()
 //                DirectionalShadowRendererView()
 //                Renderer3DView()
 //                RayMarchingRendererView()

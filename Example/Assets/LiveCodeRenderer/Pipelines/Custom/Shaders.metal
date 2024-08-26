@@ -1,4 +1,7 @@
-#include "Library/Shapes.metal"
+#include "Library/Colors.metal"
+#include "Library/Gaussian.metal"
+#include "Library/Gamma.metal"
+#include "Library/Shapes/Circle.metal"
 #include "Library/Noise3D.metal"
 
 typedef struct {
@@ -13,9 +16,13 @@ fragment float4 customFragment( VertexData in [[stage_in]],
     uv.x *= uniforms.appResolution.z;
     float2 norm = normalize( uv );
 
-    const float radius = 0.75 + 0.125 * snoise( 0.5 * float3( norm, uniforms.time ) );
+    const float n = snoise( float3( uv, uniforms.time ) );
+    const float radius = 0.5 + 0.175 * n;
     float result = Circle( uv, radius );
+    float sdf = result;
     result /= fwidth( result );
     result = 1.0 - saturate( result );
-    return float4( float3( result ), 0.75 );
+    float rimLight = saturate( gaussian( sdf, 0.4, 0.4 ) * step( sdf, 0.1 ) );
+    float3 color = mix( ( iridescence( uv.y + uv.x + n * sdf ) ), 1.0, rimLight );
+    return float4( color, result );
 }
