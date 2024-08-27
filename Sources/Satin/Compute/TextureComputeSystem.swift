@@ -132,6 +132,8 @@ open class TextureComputeSystem: ComputeSystem {
     override func updateSize() {
         guard let txDsx = textureDescriptors.first else { return }
 
+
+
         if txDsx.textureType == .type1D {
             parameters.set("Size", txDsx.width)
         }

@@ -10,7 +10,7 @@ import Foundation
 import Metal
 
 public final class BrdfGenerator {
-    class BrdfComputeSystem: TextureComputeSystem {
+    final class BrdfComputeSystem: TextureComputeSystem {
         init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
             super.init(
                 device: device,

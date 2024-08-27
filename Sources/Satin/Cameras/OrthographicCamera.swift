@@ -91,8 +91,8 @@ open class OrthographicCamera: Camera {
         right = 1
         bottom = -1
         top = 1
-        near = -1
-        far = 1
+        near = 0.01
+        far = 100
     }
 
     public init(label: String = "Orthographic Camera", left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {

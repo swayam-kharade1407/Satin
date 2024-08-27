@@ -44,19 +44,21 @@ simd_float4x4 scaleMatrix3f(simd_float3 p)
 
 simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float top, float near, float far)
 {
-    simd_float4x4 result = matrix_identity_float4x4;
 
-    const float nearMinusFar = near - far;
+    const float sx = 2.0 / (right - left);
+    const float sy = 2.0 / (top - bottom);
+    const float sz = 1.0 / (far - near);
 
-    result.columns[0].x = 2.0 / (right - left);
-    result.columns[1].y = 2.0 / (top - bottom);
-    result.columns[2].z = -1.0 / nearMinusFar;
+    const float px = -(right + left) / (right - left);
+    const float py = -(bottom + top) / (top - bottom);
+    const float pz = (far * near) / (far - near);
 
-    result.columns[3].x = (left + right) / (left - right);
-    result.columns[3].y = (top + bottom) / (bottom - top);
-    result.columns[3].z = -far / nearMinusFar;
+    const simd_float4 col0 = simd_make_float4(sx, 0.0, 0.0, 0.0);
+    const simd_float4 col1 = simd_make_float4(0.0, sy, 0.0, 0.0);
+    const simd_float4 col2 = simd_make_float4(0.0, 0.0, sz, 0.0);
+    const simd_float4 col3 = simd_make_float4(px, py, pz, 1.0);
 
-    return result;
+    return simd_matrix(col0, col1, col2, col3);
 }
 
 simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, float near, float far)

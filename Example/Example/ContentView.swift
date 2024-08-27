@@ -270,7 +270,7 @@ struct ContentView: View {
             #if os(macOS) && DEBUG
 //                LiveCodeRendererView()
 //                DirectionalShadowRendererView()
-//                Renderer3DView()
+                Renderer2DView()
 //                RayMarchingRendererView()
 //                WaveSimulationRendererView()
 //                PBRStandardMaterialRendererView()

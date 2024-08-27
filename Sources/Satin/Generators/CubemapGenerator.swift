@@ -11,7 +11,7 @@ import Metal
 import MetalPerformanceShaders
 
 public final class CubemapGenerator {
-    class CubemapComputeSystem: TextureComputeSystem {
+    final class CubemapComputeSystem: TextureComputeSystem {
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?
 

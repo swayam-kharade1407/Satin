@@ -28,8 +28,8 @@ final class Renderer2D: BaseRenderer {
 
     override func setup() {
         camera.near = 1
-        camera.far = 1000
-        camera.position = [0, 0, 500]
+        camera.far = 11
+        camera.position = [0, 0, 11]
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear

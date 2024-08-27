@@ -10,7 +10,7 @@ import Foundation
 import Metal
 
 public final class SpecularIBLGenerator {
-    class SpecularIBLComputeSystem: TextureComputeSystem {
+    final class SpecularIBLComputeSystem: TextureComputeSystem {
         var roughness: Float = 0.0
         var face: UInt32 = 0
         var sourceTexture: MTLTexture?
