@@ -48,7 +48,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 
     // Rotation
     public var rotationDamping: Float = 0.9
-    public var rotationScalar: Float = 2.0
+    public var rotationScalar: Float = 3.0
 
     // Translation (Panning & Dolly)
     public var translationDamping: Float = 0.9

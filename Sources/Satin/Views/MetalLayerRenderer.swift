@@ -87,7 +87,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
             let renderThread = Thread {
                 self.renderLoop()
             }
-            renderThread.name = "Satin Render Thread"
+            renderThread.name = "\(id) Render Thread"
             renderThread.start()
         }
     }

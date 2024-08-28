@@ -574,7 +574,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
     }
 
     private func disableEvents() {
-        guard let view = view else { return }
+        guard let view else { return }
 
 #if os(macOS)
 

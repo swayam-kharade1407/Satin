@@ -98,7 +98,7 @@ class ARBloomRenderer: BaseRenderer {
     // handles depth (lidar depth map, lidar mesh & horizontal & vertical planes)
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    lazy var bloomRenderer = Renderer(context: context)
+    lazy var bloomRenderer = Renderer(context: context, frameBufferOnly: false)
     var bloomedScene = Object(label: "Bloomed Objects")
 
     var contentTexture: MTLTexture?

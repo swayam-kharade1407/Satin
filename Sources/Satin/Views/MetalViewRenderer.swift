@@ -53,7 +53,10 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     open var stencilPixelFormat: MTLPixelFormat { .invalid }
 
     open var colorTextureStorageMode: MTLStorageMode { .memoryless }
+    open var colorTextureUsage: MTLTextureUsage { .renderTarget }
+    
     open var depthTextureStorageMode: MTLStorageMode { .memoryless }
+    open var depthTextureUsage: MTLTextureUsage { .renderTarget }
 
     public var defaultContext: Context {
         Context(
@@ -230,7 +233,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
             descriptor.height = height
             descriptor.sampleCount = sampleCount
             descriptor.textureType = multiSample ? .type2DMultisample : .type2D
-            descriptor.usage = [.renderTarget, .shaderRead]
+            descriptor.usage = depthTextureUsage
             descriptor.storageMode = depthTextureStorageMode
             descriptor.resourceOptions = .storageModePrivate
 
@@ -263,7 +266,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
             descriptor.textureType = .type2DMultisample
             descriptor.width = width
             descriptor.height = height
-            descriptor.usage = [.renderTarget, .shaderRead]
+            descriptor.usage = colorTextureUsage
             descriptor.storageMode = colorTextureStorageMode
             descriptor.resourceOptions = .storageModePrivate
             colorTexture = device.makeTexture(descriptor: descriptor)
