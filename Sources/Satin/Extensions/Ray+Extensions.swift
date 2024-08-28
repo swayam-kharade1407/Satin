@@ -23,10 +23,10 @@ public extension Ray {
         if camera is PerspectiveCamera {
             _origin = camera.worldPosition
             let unproject = camera.unProject(coordinate)
-            _direction = normalize(simd_make_float3(unproject.x - _origin.x, unproject.y - _origin.y, unproject.z - _origin.z))
+            _direction = simd_normalize(simd_make_float3(unproject.x - _origin.x, unproject.y - _origin.y, unproject.z - _origin.z))
         } else {
             _origin = camera.unProject(coordinate)
-            _direction = normalize(simd_make_float3(camera.worldMatrix * simd_float4(0.0, 0.0, -1.0, 0.0)))
+            _direction = camera.viewDirection
         }
 
         self = Ray(origin: _origin, direction: _direction)

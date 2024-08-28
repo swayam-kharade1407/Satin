@@ -24,18 +24,9 @@ final class Renderer3D: BaseRenderer {
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
 
-    override var sampleCount: Int { 
-#if targetEnvironment(simulator)
-        return 1
-#else
-        return 1
-#endif
-    }
-
-    
     lazy var renderer = Renderer(context: defaultContext)
 
-    lazy var camera = PerspectiveCamera(position: [5, 5, 5], near: 0.1, far: 100.0, fov: 30)
+    lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
     override func setup() {

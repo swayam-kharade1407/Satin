@@ -91,7 +91,7 @@ open class OrthographicCamera: Camera {
         right = 1
         bottom = -1
         top = 1
-        near = 0.01
+        near = 0.0
         far = 100
     }
 
@@ -151,12 +151,6 @@ open class OrthographicCamera: Camera {
         case top
         case near
         case far
-    }
-
-    // Projects a point from the camera's normalized device coordinate (NDC) space into world space, the returned point is at a distance equal to the near property of the camera
-    override open func unProject(_ ndcCoordinate: simd_float2) -> simd_float3 {
-        let wc = worldMatrix * projectionMatrix.inverse * simd_make_float4(ndcCoordinate.x, ndcCoordinate.y, -far / (near - far), 1.0)
-        return simd_make_float3(wc) / wc.w
     }
 
     override public func setFrom(object: Object, world: Bool = false) {

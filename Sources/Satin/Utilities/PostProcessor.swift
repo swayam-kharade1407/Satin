@@ -19,7 +19,7 @@ open class PostProcessor {
     public var context: Context
     public var scene: Object
     public var mesh: Mesh
-    public var camera = OrthographicCamera(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1)
+    public var camera = OrthographicCamera()
 
     public var renderer: Renderer
 

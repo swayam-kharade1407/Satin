@@ -19,7 +19,7 @@ final class Renderer2D: BaseRenderer {
     lazy var renderer = Renderer(context: defaultContext)
 
     var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 10, resolution: 1), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
+        let mesh = Mesh(geometry: CircleGeometry(radius: 10), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1
         mesh.visible = false
@@ -27,9 +27,10 @@ final class Renderer2D: BaseRenderer {
     }()
 
     override func setup() {
-        camera.near = 1
-        camera.far = 11
-        camera.position = [0, 0, 11]
+        camera.near = 0.0
+        camera.far = 40.96
+        camera.position = [0, 0, 10.0]
+//        camera.lookAt(target: .zero)
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear

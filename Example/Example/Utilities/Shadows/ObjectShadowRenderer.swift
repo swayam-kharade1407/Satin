@@ -19,6 +19,7 @@ class ShadowPostProcessor: PostProcessor {
                 set(colorTexture, index: FragmentTextureIndex.Custom0)
             }
         }
+
         public unowned var depthTexture: MTLTexture? {
             didSet {
                 set(depthTexture, index: FragmentTextureIndex.Custom1)
@@ -129,14 +130,11 @@ class ObjectShadowRenderer {
         self.far = far
         self.color = color
 
-        renderer = Renderer(context: context)
+        renderer = Renderer(context: context, clearColor: .zero, depthStoreAction: .store, frameBufferOnly: false)
         renderer.label = "Object Shadow Renderer"
 
         processor = ShadowPostProcessor(context: Context(device: context.device, sampleCount: 1, colorPixelFormat: .rgba16Float))
         camera = OrthographicCamera()
-
-        renderer.setClearColor(.zero)
-        renderer.depthStoreAction = .store
 
         let size = (Float(resolution), Float(resolution))
         renderer.resize(size)

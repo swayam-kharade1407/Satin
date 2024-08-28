@@ -13,8 +13,7 @@ open class Camera: Object {
     private var _viewDirection = ValueCache<simd_float3>()
     public var viewDirection: simd_float3 {
         _viewDirection.get {
-            let q = simd_quatf(worldMatrix)
-            return simd_normalize(simd_matrix3x3(q) * simd_make_float3(0.0, 0.0, -1.0))
+            simd_normalize(simd_make_float3(worldMatrix * simd_make_float4(0.0, 0.0, -1.0, 0.0)))
         }
     }
 
@@ -132,8 +131,8 @@ open class Camera: Object {
 
     // Projects a point from the camera's normalized device coordinate (NDC) space into world space.
     open func unProject(_ ndcCoordinate: simd_float2) -> simd_float3 {
-        let origin = worldMatrix * projectionMatrix.inverse * simd_float4(ndcCoordinate.x, ndcCoordinate.y, 0.5, 1.0)
-        return simd_make_float3(origin)
+        let wc = worldMatrix * projectionMatrix.inverse * simd_make_float4(ndcCoordinate.x, ndcCoordinate.y, far / (far - near), 1.0)
+        return simd_make_float3(wc) / wc.w
     }
 
     override public func setFrom(object: Object, world: Bool = false) {
