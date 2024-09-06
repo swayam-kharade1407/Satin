@@ -34,10 +34,11 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     public internal(set) var device: MTLDevice!
     public internal(set) var commandQueue: MTLCommandQueue!
-    public internal(set) var colorTextureNeedsUpdate = true
-    public internal(set) var colorTexture: MTLTexture?
-    public internal(set) var depthTextureNeedsUpdate = true
-    public internal(set) var depthTexture: MTLTexture?
+
+    public internal(set) var colorMultisampleTextures: [MTLTexture?] = []
+
+    public internal(set) var depthTextures: [MTLTexture?] = []
+    public internal(set) var depthMultisampleTextures: [MTLTexture?] = []
 
     public internal(set) var isSetup = false
 
@@ -54,7 +55,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     open var colorTextureStorageMode: MTLStorageMode { .memoryless }
     open var colorTextureUsage: MTLTextureUsage { .renderTarget }
-    
+
     open var depthTextureStorageMode: MTLStorageMode { .memoryless }
     open var depthTextureUsage: MTLTextureUsage { .renderTarget }
 
@@ -71,6 +72,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
     private var inFlightSemaphoreWait = 0
     private var inFlightSemaphoreRelease = 0
+    public var frameIndex: Int = -1
 
     public init() {}
 
@@ -102,6 +104,9 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     open func preDraw() -> MTLCommandBuffer? {
         _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
+
+        frameIndex += 1
+
         if let commandBuffer = commandQueue.makeCommandBuffer() {
             inFlightSemaphoreWait += 1
             commandBuffer.addCompletedHandler { [weak self] _ in
@@ -185,103 +190,165 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     // MARK: - ForgeMetalViewRenderDelegate
 
     internal func draw(metalLayer: CAMetalLayer) {
-        updateColorTexture()
-        updateDepthTexture()
-
         update()
 
         guard let drawable = metalLayer.nextDrawable(), let commandBuffer = preDraw() else { return }
 
         let renderPassDescriptor = MTLRenderPassDescriptor()
 
+        let index = frameIndex % maxBuffersInFlight
         if sampleCount > 1 {
-            renderPassDescriptor.colorAttachments[0].texture = colorTexture
+            renderPassDescriptor.colorAttachments[0].texture = getMultisampleColorTexture(ref: drawable.texture, index: index)
             renderPassDescriptor.colorAttachments[0].resolveTexture = drawable.texture
-            renderPassDescriptor.renderTargetWidth = colorTexture?.width ?? 0
-            renderPassDescriptor.renderTargetHeight = colorTexture?.height ?? 0
+            renderPassDescriptor.renderTargetWidth = drawable.texture.width
+            renderPassDescriptor.renderTargetHeight = drawable.texture.height
+            renderPassDescriptor.depthAttachment.texture = getMultisampleDepthTexture(ref: drawable.texture, index: index)
+            renderPassDescriptor.depthAttachment.resolveTexture = getDepthTexture(ref: drawable.texture, index: index)
         }
         else {
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.renderTargetWidth = drawable.texture.width
             renderPassDescriptor.renderTargetHeight = drawable.texture.height
+            renderPassDescriptor.depthAttachment.texture = getDepthTexture(ref: drawable.texture, index: index)
         }
-        renderPassDescriptor.depthAttachment.texture = depthTexture
 
         draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
         postDraw(drawable: drawable, commandBuffer: commandBuffer)
     }
 
-    internal func updateDepthTexture() {
-        guard depthPixelFormat != .invalid, depthTextureNeedsUpdate else { return }
-        let width = Int(metalView.drawableSize.width)
-        let height = Int(metalView.drawableSize.height)
+    internal func getDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+        guard depthPixelFormat != .invalid else { return nil }
 
-        guard width > 0, height > 0 else { return }
+        guard ref.width > 0, ref.height > 0 else { return nil }
 
-        if let depthTexture, width == depthTexture.width, height == depthTexture.height {
-            depthTextureNeedsUpdate = false
+        var replace = false
+
+        if depthTextures.count > index,
+           let depthTexture = depthTextures[index]
+        {
+            if depthTexture.width == ref.width && depthTexture.height == ref.height {
+                return depthTexture
+            }
+            else {
+                replace = true
+            }
         }
 
-        if depthTextureNeedsUpdate {
-#if DEBUG_VIEWS
-            print("Creating Depth Texture - MetalViewRenderer: \(id)")
-#endif
-            let multiSample = sampleCount > 1
-            let descriptor = MTLTextureDescriptor()
-            descriptor.pixelFormat = depthPixelFormat
-            descriptor.width = width
-            descriptor.height = height
-            descriptor.sampleCount = sampleCount
-            descriptor.textureType = multiSample ? .type2DMultisample : .type2D
-            descriptor.usage = depthTextureUsage
-            descriptor.storageMode = depthTextureStorageMode
-            descriptor.resourceOptions = .storageModePrivate
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = depthPixelFormat
+        descriptor.width = ref.width
+        descriptor.height = ref.height
 
-            depthTexture = device.makeTexture(descriptor: descriptor)
-            depthTexture?.label = "\(id) \(multiSample ? "MultiSample" : "") Depth Texture"
+        descriptor.sampleCount = 1
+        descriptor.textureType = .type2D
+
+        descriptor.usage = depthTextureUsage
+        descriptor.storageMode = depthTextureStorageMode
+        descriptor.allowGPUOptimizedContents = true
+        descriptor.resourceOptions = .storageModePrivate
+
+        let texture = device.makeTexture(descriptor: descriptor)
+        texture?.label = "\(id) Depth Texture \(index + 1)/\(maxBuffersInFlight)"
+
+        if replace {
+            depthTextures[index] = texture
+        }
+        else {
+            depthTextures.append(texture)
         }
 
-        depthTextureNeedsUpdate = depthTexture == nil
+        return texture
     }
 
-    internal func updateColorTexture() {
-        guard sampleCount > 1, colorTextureNeedsUpdate else { return }
+    internal func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+        guard sampleCount > 1, depthPixelFormat != .invalid else { return nil }
 
-        let width = Int(metalView.drawableSize.width)
-        let height = Int(metalView.drawableSize.height)
+        guard ref.width > 0, ref.height > 0 else { return nil }
 
-        guard width > 0, height > 0 else { return }
+        var replace = false
 
-        if let colorTexture, width == colorTexture.width, height == colorTexture.height {
-            colorTextureNeedsUpdate = false
+        if depthMultisampleTextures.count > index,
+           let depthMultisampleTexture = depthMultisampleTextures[index]
+        {
+            if depthMultisampleTexture.width == ref.width && depthMultisampleTexture.height == ref.height {
+                return depthMultisampleTexture
+            }
+            else {
+                replace = true
+            }
         }
 
-        if colorTextureNeedsUpdate {
-#if DEBUG_VIEWS
-            print("Creating Color Texture - MetalViewRenderer: \(id)")
-#endif
-            let descriptor = MTLTextureDescriptor()
-            descriptor.pixelFormat = colorPixelFormat
-            descriptor.sampleCount = sampleCount
-            descriptor.textureType = .type2DMultisample
-            descriptor.width = width
-            descriptor.height = height
-            descriptor.usage = colorTextureUsage
-            descriptor.storageMode = colorTextureStorageMode
-            descriptor.resourceOptions = .storageModePrivate
-            colorTexture = device.makeTexture(descriptor: descriptor)
-            colorTexture?.label = "\(id) Multisample Color Texture"
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = depthPixelFormat
+        descriptor.sampleCount = sampleCount
+        descriptor.textureType = .type2DMultisample
+
+        descriptor.width = ref.width
+        descriptor.height = ref.height
+
+        descriptor.usage = depthTextureUsage
+        descriptor.storageMode = depthTextureStorageMode
+        descriptor.allowGPUOptimizedContents = true
+        descriptor.resourceOptions = .storageModePrivate
+
+        let texture = device.makeTexture(descriptor: descriptor)
+        texture?.label = "\(id) Multisample Depth Texture \(index + 1)/\(maxBuffersInFlight)"
+
+        if replace {
+            depthMultisampleTextures[index] = texture
+        }
+        else {
+            depthMultisampleTextures.append(texture)
         }
 
-        colorTextureNeedsUpdate = colorTexture == nil
+        return texture
+    }
+
+    internal func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+        var replace = false
+
+        if colorMultisampleTextures.count > index,
+           let colorMultisampleTexture = colorMultisampleTextures[index]
+        {
+            if colorMultisampleTexture.width == ref.width && colorMultisampleTexture.height == ref.height {
+                return colorMultisampleTexture
+            }
+            else {
+                replace = true
+            }
+        }
+
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = colorPixelFormat
+        descriptor.sampleCount = sampleCount
+        descriptor.textureType = .type2DMultisample
+        
+        descriptor.width = ref.width
+        descriptor.height = ref.height
+
+        descriptor.usage = colorTextureUsage
+        descriptor.storageMode = colorTextureStorageMode
+        descriptor.resourceOptions = .storageModePrivate
+
+        descriptor.allowGPUOptimizedContents = true
+
+        let texture = device.makeTexture(descriptor: descriptor)
+        texture?.label = "\(id) Multisample Color Texture \(index + 1)/\(maxBuffersInFlight)"
+
+        if replace {
+            colorMultisampleTextures[index] = texture
+        }
+        else {
+            colorMultisampleTextures.append(texture)
+        }
+
+        return texture
     }
 
     internal func drawableResized(size: CGSize, scaleFactor: CGFloat) {
 #if DEBUG_VIEWS
         print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(id)")
 #endif
-        depthTextureNeedsUpdate = true
-        colorTextureNeedsUpdate = true
         resize(size: (Float(size.width), Float(size.height)), scaleFactor: Float(scaleFactor))
     }
 }

@@ -13,7 +13,7 @@ import MetalKit
 
 import Satin
 
-open class IcosahedronGeometry: SatinGeometry {
+final class IcosahedronGeometry: SatinGeometry {
     var size: Float = 2
     var resolution: Int = 1
 
@@ -23,18 +23,17 @@ open class IcosahedronGeometry: SatinGeometry {
         super.init()
     }
 
-    override open func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateIcosahedronGeometryData(size, Int32(resolution))
     }
 }
 
-class CustomGeometryRenderer: BaseRenderer {
+final class CustomGeometryRenderer: BaseRenderer {
     var scene = Object(label: "Scene")
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     var mesh: Mesh!
 

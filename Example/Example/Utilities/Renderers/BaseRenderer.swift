@@ -107,7 +107,7 @@ class BaseRenderer: MetalViewRenderer {
 #if os(macOS)
             let inspectorWindow = InspectorWindow("Inspector")
             inspectorWindow.setIsVisible(true)
-#elseif os(iOS)
+#else
             let inspectorWindow = InspectorWindow("Inspector", edge: .right)
             metalView.addSubview(inspectorWindow.view)
 #endif

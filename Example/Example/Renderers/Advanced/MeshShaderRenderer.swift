@@ -17,18 +17,15 @@ class MeshShaderRenderer: BaseRenderer {
     fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
+
     lazy var camera = PerspectiveCamera(position: .init(0.0, 0.0, 8.0), near: 0.01, far: 100.0, fov: 45)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
     lazy var startTime = getTime()
 
     override func setup() {
         mesh.triangleFillMode = .lines
         mesh.add(meshNormals)
-
-        renderer.setClearColor(.one)
-
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear

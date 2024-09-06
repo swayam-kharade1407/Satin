@@ -47,9 +47,20 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
     open var sampleCount: Int { 1 }
     open var colorPixelFormat: MTLPixelFormat { .bgra8Unorm_srgb }
+    open var colorTextureUsage: MTLTextureUsage { [.renderTarget, .shaderRead] }
+
     open var depthPixelFormat: MTLPixelFormat { .depth32Float }
+    open var depthTextureUsage: MTLTextureUsage { [.renderTarget, .shaderRead] }
+
     open var isFoveationEnabled: Bool { true }
+
+#if targetEnvironment(simulator)
     open var layerLayout: LayerRenderer.Layout { .dedicated }
+#else
+    open var layerLayout: LayerRenderer.Layout { .layered }
+#endif
+
+    public var frameIndex: Int = -1
 
     public var defaultContext: Context {
         Context(
@@ -110,8 +121,11 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     }
 
     open func makeConfiguration(capabilities: LayerRenderer.Capabilities, configuration: inout LayerRenderer.Configuration) {
-        configuration.depthFormat = depthPixelFormat
         configuration.colorFormat = colorPixelFormat
+        configuration.colorUsage = colorTextureUsage
+
+        configuration.depthFormat = depthPixelFormat
+        configuration.depthUsage = depthTextureUsage
 
         let foveationEnabled = isFoveationEnabled && capabilities.supportsFoveation
         configuration.isFoveationEnabled = foveationEnabled
@@ -146,11 +160,16 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     ) {}
 
     open func preDraw(frame: LayerRenderer.Frame) -> (drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer, cameras: [PerspectiveCamera])? {
-        guard let commandBuffer = commandQueue.makeCommandBuffer() else { fatalError("Failed to create command buffer") }
+        
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            fatalError("Failed to create command buffer")
+        }
 
         guard let drawable = frame.queryDrawable() else { return nil }
 
         _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
+
+        frameIndex += 1
 
         frame.startSubmission()
 
@@ -175,17 +194,41 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         )
     }
 
-    open func draw(frame: LayerRenderer.Frame, drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer, cameras: [PerspectiveCamera]) {
+    open func draw(
+        frame: LayerRenderer.Frame,
+        drawable: LayerRenderer.Drawable,
+        commandBuffer: MTLCommandBuffer,
+        cameras: [PerspectiveCamera]
+    ) {
         if layerRenderer.configuration.layout == .dedicated {
+            let indexOffset = (frameIndex % maxBuffersInFlight) * 2 // 0 1 2
             for i in 0 ..< drawable.views.count {
                 let renderPassDescriptor = MTLRenderPassDescriptor()
-                renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[i]
-                renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[i]
+                if sampleCount > 1 {
+                    renderPassDescriptor.colorAttachments[0].texture = getMultisampleColorTexture(
+                        ref: drawable.colorTextures[i],
+                        index: i + indexOffset
+                    )
+                    renderPassDescriptor.colorAttachments[0].resolveTexture = drawable.colorTextures[i]
+
+                    renderPassDescriptor.depthAttachment.texture = getMultisampleDepthTexture(
+                        ref: drawable.depthTextures[i],
+                        index: i + indexOffset
+                    )
+                    renderPassDescriptor.depthAttachment.resolveTexture = drawable.depthTextures[i]
+                } else {
+                    renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[i]
+                    renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[i]
+                }
+
+                if layerRenderer.configuration.isFoveationEnabled {
 #if targetEnvironment(simulator)
-                renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
+                    renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
 #else
-                renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps[i]
+                    renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps[i]
 #endif
+                }
+
                 drawView(
                     view: i,
                     frame: frame,
@@ -197,22 +240,39 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
             }
         } else {
             let renderPassDescriptor = MTLRenderPassDescriptor()
-            renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[0]
-            renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[0]
-            renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
 
-            let viewCount = drawable.views.count
+            if sampleCount > 1 {
+                let indexOffset = frameIndex % maxBuffersInFlight
+                renderPassDescriptor.colorAttachments[0].texture = getMultisampleColorTexture(
+                    ref: drawable.colorTextures[0],
+                    index: indexOffset
+                )
+                renderPassDescriptor.colorAttachments[0].resolveTexture = drawable.colorTextures[0]
 
-            if layerRenderer.configuration.layout == .layered {
-                renderPassDescriptor.renderTargetArrayLength = viewCount
+                renderPassDescriptor.depthAttachment.texture = getMultisampleDepthTexture(
+                    ref: drawable.depthTextures[0],
+                    index: indexOffset
+                )
+                renderPassDescriptor.depthAttachment.resolveTexture = drawable.depthTextures[0]
+            } else {
+                renderPassDescriptor.colorAttachments[0].texture = drawable.colorTextures[0]
+                renderPassDescriptor.depthAttachment.texture = drawable.depthTextures[0]
             }
+
+            renderPassDescriptor.rasterizationRateMap = drawable.rasterizationRateMaps.first
+            renderPassDescriptor.renderTargetArrayLength = drawable.views.count
 
             var viewports = [MTLViewport]()
             var viewMappings = [MTLVertexAmplificationViewMapping]()
 
-            for i in 0 ..< viewCount {
-                viewports.append(drawable.views[i].textureMap.viewport)
-                viewMappings.append(MTLVertexAmplificationViewMapping(viewportArrayIndexOffset: UInt32(i), renderTargetArrayIndexOffset: UInt32(i)))
+            for (index, view) in drawable.views.enumerated() {
+                viewports.append(view.textureMap.viewport)
+                viewMappings.append(
+                    MTLVertexAmplificationViewMapping(
+                        viewportArrayIndexOffset: UInt32(index),
+                        renderTargetArrayIndexOffset: UInt32(view.textureMap.sliceIndex)
+                    )
+                )
             }
 
             draw(
@@ -253,13 +313,113 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
         postDraw(frame: frame, drawable: drawable, commandBuffer: commandBuffer)
     }
+
+    internal var colorMultisampleTextures: [MTLTexture?] = []
+
+    internal func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+        var replace = false
+
+        if colorMultisampleTextures.count > index,
+           let colorMultisampleTexture = colorMultisampleTextures[index]
+        {
+            if colorMultisampleTexture.width == ref.width && colorMultisampleTexture.height == ref.height {
+                return colorMultisampleTexture
+            }
+            else {
+                replace = true
+            }
+        }
+
+        let dedicated = layerRenderer.configuration.layout == .dedicated
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = colorPixelFormat
+        descriptor.width = ref.width
+        descriptor.height = ref.height
+        descriptor.sampleCount = sampleCount
+        descriptor.textureType = dedicated ? .type2DMultisample : .type2DMultisampleArray
+        descriptor.arrayLength = dedicated ? 1 : 2
+        descriptor.usage = [.renderTarget, .shaderRead]
+        descriptor.storageMode = .memoryless
+        descriptor.allowGPUOptimizedContents = true
+        descriptor.resourceOptions = .storageModePrivate
+
+        let texture = device.makeTexture(descriptor: descriptor)
+
+        if layerLayout == .dedicated {
+            texture?.label = "\(id) Multisample Color Texture \(index % 2 == 1 ? "Right" : "Left") \(index/2)/\(maxBuffersInFlight)"
+        }
+        else {
+            texture?.label = "\(id) Multisample Color Texture \(index + 1)/\(maxBuffersInFlight)"
+        }
+
+        if replace {
+            colorMultisampleTextures[index] = texture
+        }
+        else {
+            colorMultisampleTextures.append(texture)
+        }
+
+        return texture
+    }
+
+    internal var depthMultisampleTextures: [MTLTexture?] = []
+
+    internal func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+        var replace = false
+
+        if depthMultisampleTextures.count > index,
+           let depthMultisampleTexture = depthMultisampleTextures[index]
+        {
+            if depthMultisampleTexture.width == ref.width && depthMultisampleTexture.height == ref.height {
+                return depthMultisampleTexture
+            }
+            else {
+                replace = true
+            }
+        }
+
+        let dedicated = layerRenderer.configuration.layout == .dedicated
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = depthPixelFormat
+        descriptor.width = ref.width
+        descriptor.height = ref.height
+        descriptor.sampleCount = sampleCount
+        descriptor.textureType = dedicated ? .type2DMultisample : .type2DMultisampleArray
+        descriptor.arrayLength = dedicated ? 1 : 2
+        descriptor.usage = [.renderTarget, .shaderRead]
+        descriptor.storageMode = .memoryless
+        descriptor.allowGPUOptimizedContents = true
+        descriptor.resourceOptions = .storageModePrivate
+
+        let texture = device.makeTexture(descriptor: descriptor)
+
+        if layerLayout == .dedicated {
+            texture?.label = "\(id) Multisample Depth Texture \(index % 2 == 1 ? "Right" : "Left") \(index/2)/\(maxBuffersInFlight)"
+        }
+        else {
+            texture?.label = "\(id) Multisample Depth Texture \(index + 1)/\(maxBuffersInFlight)"
+        }
+
+        if replace {
+            depthMultisampleTextures[index] = texture
+        }
+        else {
+            depthMultisampleTextures.append(texture)
+        }
+
+        return texture
+    }
 }
 
 fileprivate func updateCameras(drawable: LayerRenderer.Drawable, deviceAnchor: simd_float4x4) -> [PerspectiveCamera] {
     var cameras = [PerspectiveCamera]()
 
     for i in 0 ..< drawable.views.count {
-        let info = getCameraInfo(drawable: drawable, deviceAnchor: deviceAnchor, forViewIndex: i)
+        let info = getCameraInfo(
+            drawable: drawable,
+            deviceAnchor: deviceAnchor,
+            forViewIndex: i
+        )
 
         let camera = PerspectiveCamera()
 
@@ -278,17 +438,18 @@ fileprivate func updateCameras(drawable: LayerRenderer.Drawable, deviceAnchor: s
 fileprivate func getCameraInfo(drawable: LayerRenderer.Drawable, deviceAnchor: simd_float4x4, forViewIndex viewIndex: Int) -> (view: simd_float4x4, projection: simd_float4x4) {
     let view = drawable.views[viewIndex]
 
-    let projection = ProjectiveTransform3D(
-        leftTangent: Double(view.tangents[0]),
-        rightTangent: Double(view.tangents[1]),
-        topTangent: Double(view.tangents[2]),
-        bottomTangent: Double(view.tangents[3]),
-        nearZ: Double(drawable.depthRange.y),
-        farZ: Double(drawable.depthRange.x),
-        reverseZ: true
+    return (
+        (deviceAnchor * view.transform).inverse,
+        .init(ProjectiveTransform3D(
+            leftTangent: Double(view.tangents[0]),
+            rightTangent: Double(view.tangents[1]),
+            topTangent: Double(view.tangents[2]),
+            bottomTangent: Double(view.tangents[3]),
+            nearZ: Double(drawable.depthRange.y),
+            farZ: Double(drawable.depthRange.x),
+            reverseZ: true
+        ))
     )
-
-    return ((deviceAnchor * view.transform).inverse, .init(projection))
 }
 
 #endif

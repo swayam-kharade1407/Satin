@@ -14,7 +14,7 @@ import MetalKit
 import Satin
 
 class AudioInputRenderer: BaseRenderer {
-    lazy var audioInput: AudioInput = .init(context: context)
+    lazy var audioInput: AudioInput = .init(context: defaultContext)
 
     lazy var audioMaterial: BasicTextureMaterial = {
         let mat = BasicTextureMaterial()
@@ -23,7 +23,7 @@ class AudioInputRenderer: BaseRenderer {
         desc.label = "Audio Texture Sampler"
         desc.minFilter = .nearest
         desc.magFilter = .nearest
-        mat.sampler = context.device.makeSamplerState(descriptor: desc)
+        mat.sampler = device.makeSamplerState(descriptor: desc)
 
         mat.onUpdate = { [weak self, weak mat] in
             guard let self = self, let mat = mat else { return }
@@ -33,13 +33,9 @@ class AudioInputRenderer: BaseRenderer {
     }()
 
     lazy var mesh: Mesh = .init(geometry: PlaneGeometry(size: 700), material: audioMaterial)
-
     var camera = OrthographicCamera()
-
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
-//    lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid

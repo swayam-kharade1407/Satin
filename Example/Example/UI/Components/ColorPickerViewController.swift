@@ -129,7 +129,7 @@ public final class ColorPickerViewController: NSViewController {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

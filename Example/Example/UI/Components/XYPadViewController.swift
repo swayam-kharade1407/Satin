@@ -334,7 +334,7 @@ final class XYPadViewController: InputViewController {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

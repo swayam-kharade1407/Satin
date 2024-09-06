@@ -10,6 +10,16 @@ float3 aces(float3 x)
     return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
 
+half3 acesh(half3 x)
+{
+    const half a = 2.51h;
+    const half b = 0.03h;
+    const half c = 2.43h;
+    const half d = 0.59h;
+    const half e = 0.14h;
+    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0h, 1.0h);
+}
+
 float aces(float x)
 {
     const float a = 2.51;

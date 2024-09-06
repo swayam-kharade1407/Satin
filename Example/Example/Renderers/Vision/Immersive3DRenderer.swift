@@ -13,43 +13,61 @@ import Metal
 import Satin
 import ARKit
 
-final class Immersive3DRenderer: MetalLayerRenderer {
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: NormalColorMaterial(true))
-    let floor = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: NormalColorMaterial(true))
+final class Immersive3DRenderer: ImmersiveBaseRenderer {
+    final class GridMaterial: SourceMaterial {}
 
-    lazy var startTime = getTime()
-    lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(
-        device: device,
-        sampleCount: sampleCount,
-        colorPixelFormat: colorPixelFormat,
-        depthPixelFormat: depthPixelFormat,
-        vertexAmplificationCount: layerRenderer.configuration.layout == .layered ? 2 : 1
+    let mesh = Mesh(
+        label: "Blob",
+        geometry: IcoSphereGeometry(radius: 0.5, resolution: 0),
+        material: NormalColorMaterial(true)
     )
 
+    lazy var background = Mesh(
+        label: "Background",
+        geometry: SkyboxGeometry(size: 200),
+        material: GridMaterial(pipelinesURL: pipelinesURL, live: true)
+    )
 
-    lazy var renderer = Renderer(context: context, clearColor: .zero)
+    let floor = Mesh(
+        label: "Floor",
+        geometry: PlaneGeometry(size: 3.0, orientation: .zx, centered: true),
+        material: UVColorMaterial(),
+        visible: false
+    )
 
-//    override var layerLayout: LayerRenderer.Layout { .layered }
+    lazy var startTime = getTime()
+    lazy var scene = Object(label: "Scene", [background, mesh, floor])
+
+    lazy var renderer = Renderer(context: defaultContext)
+
+#if targetEnvironment(simulator)
     override var layerLayout: LayerRenderer.Layout { .dedicated }
+#else
+    override var layerLayout: LayerRenderer.Layout { .layered }
+#endif
 
-//    let planeDetectionProvider = PlaneDetectionProvider(alignments: [.horizontal])
+#if !targetEnvironment(simulator)
+    let planeDetectionProvider = PlaneDetectionProvider(alignments: [.horizontal])
     override var arSessionDataProviders: [any DataProvider] {
         var providers = super.arSessionDataProviders
-//        providers.append(planeDetectionProvider)
-        print(providers)
+        providers.append(planeDetectionProvider)
         return providers
     }
+#endif
 
     override func setup() {
-        mesh.position.y = 1.0
-        mesh.position.z = -1
+        mesh.position = [0, 1, -3]
 
-//        Task {
-//            for await anchor in planeDetectionProvider.anchorUpdates {
-//                print(anchor)
-//            }
-//        }
+#if !targetEnvironment(simulator)
+        Task {
+            for await update in planeDetectionProvider.anchorUpdates {
+                if update.anchor.classification == .floor {
+                    floor.visible = true
+                    floor.worldMatrix = update.anchor.originFromAnchorTransform
+                }
+            }
+        }
+#endif
     }
 
     override func update() {

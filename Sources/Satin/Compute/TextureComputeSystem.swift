@@ -132,21 +132,18 @@ open class TextureComputeSystem: ComputeSystem {
     override func updateSize() {
         guard let txDsx = textureDescriptors.first else { return }
 
-
-
-        if txDsx.textureType == .type1D {
+        if txDsx.textureType == .type1D || txDsx.textureType == .type1DArray {
             parameters.set("Size", txDsx.width)
         }
-        else if txDsx.textureType == .type2D {
+        else if txDsx.textureType == .type2D || txDsx.textureType == .type2DArray {
             parameters.set("Size", [txDsx.width, txDsx.height])
         }
         else if txDsx.textureType == .type3D {
             parameters.set("Size", [txDsx.width, txDsx.height, txDsx.depth])
         }
-        else if txDsx.textureType == .typeCube {
+        else if txDsx.textureType == .typeCube || txDsx.textureType == .typeCubeArray {
             parameters.set("Size", [txDsx.width, txDsx.height])
         }
-
     }
 
     // MARK: - Reset
@@ -173,7 +170,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Binding & Encoding
 
-    open func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
+    open func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
         bindTextures(computeEncoder, ComputeTextureIndex.Custom0.rawValue)
     }
 
@@ -186,10 +183,9 @@ open class TextureComputeSystem: ComputeSystem {
             computeEncoder.setComputePipelineState(pipeline)
 
             for _ in 0 ..< feedbackCount {
-                var offset = bind(computeEncoder)
-                preReset?(computeEncoder, &offset)
-                preCompute?(computeEncoder, &offset)
-                dispatch(computeEncoder, pipeline)
+                var offset = bind(computeEncoder: computeEncoder, iteration: 0)
+                preCompute?(computeEncoder, &offset, 0)
+                dispatch(computeEncoder: computeEncoder, pipeline: pipeline, iteration: 0)
                 swapSrdDstIndex()
             }
 
@@ -198,11 +194,10 @@ open class TextureComputeSystem: ComputeSystem {
 
         if let pipeline = updatePipeline {
             computeEncoder.setComputePipelineState(pipeline)
-            for _ in 0..<iterations {
-                var offset = bind(computeEncoder)
-                preUpdate?(computeEncoder, &offset)
-                preCompute?(computeEncoder, &offset)
-                dispatch(computeEncoder, pipeline)
+            for iteration in 0 ..< iterations {
+                var offset = bind(computeEncoder: computeEncoder, iteration: iteration)
+                preCompute?(computeEncoder, &offset, iteration)
+                dispatch(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
                 swapSrdDstIndex()
             }
         }
@@ -234,11 +229,11 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Dispatching
 
-    open func getThreadsPerGrid(_ texture: MTLTexture) -> MTLSize {
+    open func getThreadsPerGrid(texture: MTLTexture, iteration: Int) -> MTLSize {
         MTLSize(width: texture.width, height: texture.height, depth: texture.depth)
     }
 
-    open func getThreadGroupsPerGrid(_ texture: MTLTexture, _ pipeline: MTLComputePipelineState) -> MTLSize {
+    open func getThreadGroupsPerGrid(texture: MTLTexture, pipeline: MTLComputePipelineState, iteration: Int) -> MTLSize {
         let threadExecutionWidth = pipeline.threadExecutionWidth
         let maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup
 
@@ -266,7 +261,7 @@ open class TextureComputeSystem: ComputeSystem {
         }
     }
 
-    open func getThreadsPerThreadgroup(_ texture: MTLTexture, _ pipeline: MTLComputePipelineState) -> MTLSize {
+    open func getThreadsPerThreadgroup(texture: MTLTexture, pipeline: MTLComputePipelineState, iteration: Int) -> MTLSize {
         let threadExecutionWidth = pipeline.threadExecutionWidth
         let maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup
 
@@ -301,21 +296,21 @@ open class TextureComputeSystem: ComputeSystem {
     }
 
     #if os(macOS) || os(iOS) || os(visionOS)
-    override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
+    override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         guard let texture = textures.first else { return }
 
-        let threadPerGrid = threadsPerGrid ?? getThreadsPerGrid(texture)
-        let threadsPerThreadgroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture, pipeline)
+        let threadPerGrid = threadsPerGrid ?? getThreadsPerGrid(texture: texture, iteration: iteration)
+        let threadsPerThreadgroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture: texture, pipeline: pipeline, iteration: iteration)
 
         computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
     }
     #endif
 
-    override open func dispatchThreadgroups(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
+    override open func dispatchThreadgroups(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         guard let texture = textures.first else { return }
 
-        let threadGroupsPerGrid = threadGroupsPerGrid ?? getThreadGroupsPerGrid(texture, pipeline)
-        let threadsPerThreadGroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture, pipeline)
+        let threadGroupsPerGrid = threadGroupsPerGrid ?? getThreadGroupsPerGrid(texture: texture, pipeline: pipeline, iteration: iteration)
+        let threadsPerThreadGroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture: texture, pipeline: pipeline, iteration: iteration)
 
         computeEncoder.dispatchThreadgroups(threadGroupsPerGrid, threadsPerThreadgroup: threadsPerThreadGroup)
     }

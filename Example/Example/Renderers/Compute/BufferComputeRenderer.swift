@@ -10,7 +10,7 @@ import Metal
 import MetalKit
 import Satin
 
-class BufferComputeRenderer: BaseRenderer {
+final class BufferComputeRenderer: BaseRenderer {
     class ParticleComputeSystem: BufferComputeSystem {}
 
     class SpriteMaterial: SourceMaterial {}
@@ -39,9 +39,8 @@ class BufferComputeRenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0.0, 0.0, 100.0], near: 0.001, far: 1000.0)
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     var startTime: CFAbsoluteTime = 0.0
 
@@ -53,7 +52,7 @@ class BufferComputeRenderer: BaseRenderer {
     lazy var chromaMaterial = ChromaMaterial(pipelinesURL: pipelinesURL)
 
     lazy var chromaticProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(device: context.device, sampleCount: context.sampleCount, colorPixelFormat: context.colorPixelFormat), material: chromaMaterial)
+        let pp = PostProcessor(context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: chromaMaterial)
         pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
             renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
         }
@@ -90,7 +89,7 @@ class BufferComputeRenderer: BaseRenderer {
 
         renderTexture = createTexture(
             label: "Render Texture",
-            pixelFormat: context.colorPixelFormat,
+            pixelFormat: colorPixelFormat,
             width: width,
             height: height
         )
@@ -135,7 +134,7 @@ class BufferComputeRenderer: BaseRenderer {
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             descriptor.storageMode = .private
             descriptor.resourceOptions = .storageModePrivate
-            guard let texture = context.device.makeTexture(descriptor: descriptor) else { return nil }
+            guard let texture = device.makeTexture(descriptor: descriptor) else { return nil }
             texture.label = label
             return texture
         }

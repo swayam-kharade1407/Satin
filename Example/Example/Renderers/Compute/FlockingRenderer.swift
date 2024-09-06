@@ -8,14 +8,12 @@
 
 import Combine
 import Metal
-import MetalKit
-
 import Satin
 
-class FlockingRenderer: BaseRenderer {
-    class FlockingComputeSystem: BufferComputeSystem {}
-    class InstanceMaterial: SourceMaterial {}
-    class SpriteMaterial: SourceMaterial {}
+final class FlockingRenderer: BaseRenderer {
+    final class FlockingComputeSystem: BufferComputeSystem {}
+    final class InstanceMaterial: SourceMaterial {}
+    final class SpriteMaterial: SourceMaterial {}
 
     lazy var startTime = CFAbsoluteTimeGetCurrent()
 
@@ -35,8 +33,7 @@ class FlockingRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [sprite])
     var camera = OrthographicCamera()
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
     lazy var particleSystem = FlockingComputeSystem(device: device, pipelinesURL: pipelinesURL, count: particleCountParam.value, feedback: true, live: true)
 
     lazy var spriteMaterial: SpriteMaterial = {

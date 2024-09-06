@@ -104,7 +104,7 @@ final class StringInputViewController: InputViewController, NSTextFieldDelegate 
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

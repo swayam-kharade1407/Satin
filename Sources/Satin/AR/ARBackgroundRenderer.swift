@@ -46,6 +46,7 @@ public class ARBackgroundRenderer: PostProcessor {
         super.init(context: context, material: backgroundMaterial)
 
         renderer.setClearColor(.zero)
+        renderer.frameBufferOnly = false
         setupTextureCache()
 
         NotificationCenter.default.addObserver(self, selector: #selector(ARBackgroundRenderer.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)

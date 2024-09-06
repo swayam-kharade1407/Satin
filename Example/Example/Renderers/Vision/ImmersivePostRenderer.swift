@@ -13,20 +13,27 @@ import CompositorServices
 import Metal
 import Satin
 
-class ImmersiveBaseRenderer: MetalLayerRenderer {
-    var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }
-    var sharedAssetsURL: URL { assetsURL.appendingPathComponent("Shared") }
-    var rendererAssetsURL: URL { assetsURL.appendingPathComponent(String(describing: type(of: self))) }
-    var dataURL: URL { rendererAssetsURL.appendingPathComponent("Data") }
-    var pipelinesURL: URL { rendererAssetsURL.appendingPathComponent("Pipelines") }
-    var texturesURL: URL { rendererAssetsURL.appendingPathComponent("Textures") }
-    var modelsURL: URL { rendererAssetsURL.appendingPathComponent("Models") }
-}
-
 final class ImmersivePostRenderer: ImmersiveBaseRenderer {
-    let background = Mesh(geometry: SkyboxGeometry(size: 10), material: BasicColorMaterial(color: [0, 0, 0, 0]))
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial())
-    let floor = Mesh(geometry: PlaneGeometry(size: 3.0, orientation: .zx, centered: true), material: UVColorMaterial())
+    final class GridMaterial: SourceMaterial {}
+
+    lazy var background = Mesh(
+        label: "Background",
+        geometry: SkyboxGeometry(size: 200),
+        material: GridMaterial(pipelinesURL: pipelinesURL, live: true)
+    )
+
+    let mesh = Mesh(
+        label: "Blob",
+        geometry: IcoSphereGeometry(radius: 0.5, resolution: 0),
+        material: BasicDiffuseMaterial()
+    )
+
+    let floor = Mesh(
+        label: "Floor",
+        geometry: PlaneGeometry(size: 3.0, orientation: .zx, centered: true),
+        material: UVColorMaterial(),
+        visible: false
+    )
 
     final class PostMaterial: SourceMaterial {}
 
@@ -34,17 +41,13 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
 
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [background, floor, mesh])
-    lazy var context = Context(
-        device: device,
-        sampleCount: sampleCount,
-        colorPixelFormat: colorPixelFormat,
-        depthPixelFormat: depthPixelFormat,
-        vertexAmplificationCount: layerRenderer.configuration.layout == .layered ? 2 : 1
-    )
 
     var renderTexture: MTLTexture?
 
-    lazy var renderer = Renderer(context: context, clearColor: .zero)
+    lazy var renderer = Renderer(
+        context: defaultContext,
+        depthStoreAction: sampleCount > 1 ? .multisampleResolve : .store
+    )
 
     lazy var postProcessor = PostProcessor(
         context: Context(
@@ -56,22 +59,29 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
         material: postMaterial
     )
 
-    override var layerLayout: LayerRenderer.Layout { .layered }
+#if targetEnvironment(simulator)
+    override var sampleCount: Int { 1 } // sample count > 1 doenst resolve properly in the simulator
+    override var layerLayout: LayerRenderer.Layout { .dedicated }
     override var isFoveationEnabled: Bool { false }
+#else
+    override var sampleCount: Int { 1 }
+    override var layerLayout: LayerRenderer.Layout { .layered }
+    override var isFoveationEnabled: Bool { true }
+#endif
 
+#if !targetEnvironment(simulator)
     let planeDetectionProvider = PlaneDetectionProvider(alignments: [.horizontal])
     override var arSessionDataProviders: [any DataProvider] {
         var providers = super.arSessionDataProviders
         providers.append(planeDetectionProvider)
         return providers
     }
+#endif
 
     override func setup() {
-        renderer.colorStoreAction = .store
-        mesh.position.y = 1.0
-        mesh.position.z = -1
-        floor.visible = false
+        mesh.position = [0, 1, -3]
 
+#if !targetEnvironment(simulator)
         Task {
             for await update in planeDetectionProvider.anchorUpdates {
                 if update.anchor.classification == .floor {
@@ -80,6 +90,7 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
                 }
             }
         }
+#endif
     }
 
     override func update() {
@@ -88,6 +99,7 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
         scene.update()
     }
 
+    // Layered
     override func draw(
         frame: LayerRenderer.Frame,
         renderPassDescriptor: MTLRenderPassDescriptor,
@@ -96,8 +108,10 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
         viewports: [MTLViewport],
         viewMappings: [MTLVertexAmplificationViewMapping]
     ) {
-        if renderTexture == nil, let refTexture = renderPassDescriptor.colorAttachments[0].texture {
-            renderTexture = duplicateTexture(ref: refTexture, rateMap: nil /*renderPassDescriptor.rasterizationRateMap*/)
+        guard let refTexture = renderPassDescriptor.colorAttachments[0].texture else { return }
+
+        if renderTexture == nil || renderTexture?.width != refTexture.width || renderTexture?.height != refTexture.height {
+            renderTexture = duplicateTexture(ref: refTexture, sampleCount: 1)
         }
 
         guard let renderTexture else { return }
@@ -112,58 +126,82 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
             renderTarget: renderTexture
         )
 
-        if let refTexture = renderPassDescriptor.colorAttachments[0].texture {
-            postProcessor.resize(size: (Float(viewports[0].width), Float(viewports[0].height)), scaleFactor: 1)
-            postMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
+        postMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
 
-            let postRenderPassDescriptor = MTLRenderPassDescriptor()
-            postRenderPassDescriptor.colorAttachments[0].texture = refTexture
-            postRenderPassDescriptor.renderTargetArrayLength = viewports.count
-            postRenderPassDescriptor.rasterizationRateMap = renderPassDescriptor.rasterizationRateMap
+        let postRenderPassDescriptor = MTLRenderPassDescriptor()
 
-//            if let rateMap = renderPassDescriptor.rasterizationRateMap {
-//                // Create a buffer for the rate map.
-//                let rateMapParamSize = rateMap.parameterDataSizeAndAlign
-//                if let rateMapData = device.makeBuffer(
-//                    length: rateMapParamSize.size,
-//                    options: MTLResourceOptions.storageModeShared
-//                ) {
-//                    rateMap.copyParameterData(buffer: rateMapData, offset: 0)
-//                    postMaterial.set(rateMapData, index: FragmentBufferIndex.Custom0)
-//                }
-//            }
-
-            postProcessor.draw(
-                renderPassDescriptor: postRenderPassDescriptor,
-                commandBuffer: commandBuffer,
-                viewports: viewports,
-                viewMappings: viewMappings
-            )
+        if sampleCount > 1 {
+            postRenderPassDescriptor.colorAttachments[0].texture = renderPassDescriptor.colorAttachments[0].texture
+            postRenderPassDescriptor.colorAttachments[0].resolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
         }
+        else {
+            postRenderPassDescriptor.colorAttachments[0].texture = refTexture
+        }
+
+        postRenderPassDescriptor.renderTargetArrayLength = viewports.count
+        postRenderPassDescriptor.renderTargetWidth = refTexture.width
+        postRenderPassDescriptor.renderTargetHeight = refTexture.height
+
+        postProcessor.draw(
+            renderPassDescriptor: postRenderPassDescriptor,
+            commandBuffer: commandBuffer,
+            viewports: viewports,
+            viewMappings: viewMappings
+        )
     }
 
+    // Dedicated
     override func drawView(view: Int, frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
+        guard let refTexture = renderPassDescriptor.colorAttachments[0].texture,
+              let refResolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture else { return }
+
+        if renderTexture == nil || renderTexture?.width != refTexture.width || renderTexture?.height != refTexture.height {
+            renderTexture = duplicateTexture(ref: refTexture, sampleCount: 1)
+        }
+
+        guard let renderTexture else { return }
+
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
             scene: scene,
             camera: camera,
-            viewport: viewport
+            viewport: viewport,
+            renderTarget: renderTexture
+        )
+
+        let postRenderPassDescriptor = MTLRenderPassDescriptor()
+
+        if sampleCount > 1 {
+            postRenderPassDescriptor.colorAttachments[0].texture = refResolveTexture
+        }
+        else {
+            postRenderPassDescriptor.colorAttachments[0].texture = refTexture
+        }
+
+        postRenderPassDescriptor.renderTargetArrayLength = 1
+        postRenderPassDescriptor.renderTargetWidth = refTexture.width
+        postRenderPassDescriptor.renderTargetHeight = refTexture.height
+
+        postMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
+        postProcessor.resize(size: (Float(refTexture.width), Float(refTexture.height)), scaleFactor: 1)
+
+        postProcessor.draw(
+            renderPassDescriptor: postRenderPassDescriptor,
+            commandBuffer: commandBuffer
         )
     }
 
-    func duplicateTexture(ref: MTLTexture, rateMap: MTLRasterizationRateMap?) -> MTLTexture? {
-        let textureSize: MTLSize = rateMap?.physicalSize(layer: 0) ?? MTLSize(width: ref.width, height: ref.height, depth: ref.depth)
+    func duplicateTexture(ref: MTLTexture, sampleCount: Int) -> MTLTexture? {
         let desc = MTLTextureDescriptor()
-        desc.textureType = ref.textureType
+        desc.textureType = defaultContext.vertexAmplificationCount > 1 ? .type2DArray : .type2D
         desc.pixelFormat = ref.pixelFormat
-        desc.width = textureSize.width
-        desc.height = textureSize.height
-        desc.depth = textureSize.depth
-        desc.sampleCount = ref.sampleCount
+        desc.width = ref.width
+        desc.height = ref.height
+        desc.depth = ref.depth
+        desc.sampleCount = sampleCount
         desc.usage = [.renderTarget, .shaderRead]
         desc.arrayLength = ref.arrayLength
-
         let texture = device.makeTexture(descriptor: desc)
         texture?.label = "Render Texture"
         return texture

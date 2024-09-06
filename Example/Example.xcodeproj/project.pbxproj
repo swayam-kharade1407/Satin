@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E102D07E2C8A129700DD255C /* ImmersiveBaseRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E102D07D2C8A129700DD255C /* ImmersiveBaseRenderer.swift */; };
 		E103E0532B5DDEDF0017588F /* VisionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E103E0522B5DDEDF0017588F /* VisionsView.swift */; };
 		E103E0DC2B5F41570017588F /* Renderer3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F1B32724BAA93300563923 /* Renderer3D.swift */; };
 		E103E0FD2B5F476A0017588F /* Renderer3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E767BE28A6D2A2005D75AB /* Renderer3DView.swift */; };
@@ -119,6 +120,10 @@
 		E1903C1D2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */; };
 		E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */; };
 		E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */; };
+		E19B2D622C8783F800A31650 /* BloomGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D612C8783F800A31650 /* BloomGenerator.swift */; };
+		E19B2D662C8793F300A31650 /* Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D652C8793F300A31650 /* Paths.swift */; };
+		E19B2D6A2C87DBBE00A31650 /* GridRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D692C87DBBE00A31650 /* GridRenderer.swift */; };
+		E19B2D6C2C87DCBD00A31650 /* GridRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D6B2C87DCBD00A31650 /* GridRendererView.swift */; };
 		E1D43BB12C65855A0063E2C9 /* ParameterGroupHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */; };
 		E1D43BB22C65855A0063E2C9 /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B942C6585590063E2C9 /* InputViewController.swift */; };
 		E1D43BB32C65855A0063E2C9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B952C6585590063E2C9 /* LabelViewController.swift */; };
@@ -157,6 +162,8 @@
 		E1DDD3572C2FA6DF00012A44 /* OrbitCameraControllerRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3562C2FA6DF00012A44 /* OrbitCameraControllerRendererView.swift */; };
 		E1DDD35B2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD35A2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift */; };
 		E1DDD35D2C3105F100012A44 /* JumpFloodOutlineRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD35C2C3105F100012A44 /* JumpFloodOutlineRendererView.swift */; };
+		E1DEB76D2C8659B400D58D21 /* BloomRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEB76C2C8659B400D58D21 /* BloomRenderer.swift */; };
+		E1DEB7702C8659D700D58D21 /* BloomRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEB76F2C8659D700D58D21 /* BloomRendererView.swift */; };
 		E1E767D928A6D808005D75AB /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = E1E767D828A6D808005D75AB /* Assets */; };
 		E1E767E228A6E84A005D75AB /* TorusKnotGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E192F05D24874CE700C7EE74 /* TorusKnotGenerator.c */; };
 		E1E7681328A736BB005D75AB /* AudioInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17D2C1126BBB7DF005A136A /* AudioInput.swift */; };
@@ -189,6 +196,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E102D07D2C8A129700DD255C /* ImmersiveBaseRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveBaseRenderer.swift; sourceTree = "<group>"; };
 		E103E0522B5DDEDF0017588F /* VisionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionsView.swift; sourceTree = "<group>"; };
 		E105CC36252BDE7F009EE563 /* FXAARenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXAARenderer.swift; sourceTree = "<group>"; };
 		E1077F4C2A096ABD00C2FB89 /* ARPointCloudRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPointCloudRenderer.swift; sourceTree = "<group>"; };
@@ -254,6 +262,10 @@
 		E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferGeometryRenderer.swift; sourceTree = "<group>"; };
 		E19A7EC32A60984E00D28E89 /* BufferGeometryRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferGeometryRendererView.swift; sourceTree = "<group>"; };
 		E19B058F26BB704100D91376 /* AudioInputRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioInputRenderer.swift; sourceTree = "<group>"; };
+		E19B2D612C8783F800A31650 /* BloomGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomGenerator.swift; sourceTree = "<group>"; };
+		E19B2D652C8793F300A31650 /* Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paths.swift; sourceTree = "<group>"; };
+		E19B2D692C87DBBE00A31650 /* GridRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridRenderer.swift; sourceTree = "<group>"; };
+		E19B2D6B2C87DCBD00A31650 /* GridRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridRendererView.swift; sourceTree = "<group>"; };
 		E19D4C3329F9C00500DF993D /* ARBloomRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBloomRenderer.swift; sourceTree = "<group>"; };
 		E19D4C3529F9C02A00DF993D /* ARBloomRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBloomRendererView.swift; sourceTree = "<group>"; };
 		E1B625BE2492C03400C774D1 /* TextureComputeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureComputeRenderer.swift; sourceTree = "<group>"; };
@@ -311,6 +323,8 @@
 		E1DDD3562C2FA6DF00012A44 /* OrbitCameraControllerRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrbitCameraControllerRendererView.swift; sourceTree = "<group>"; };
 		E1DDD35A2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpFloodOutlineRenderer.swift; sourceTree = "<group>"; };
 		E1DDD35C2C3105F100012A44 /* JumpFloodOutlineRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpFloodOutlineRendererView.swift; sourceTree = "<group>"; };
+		E1DEB76C2C8659B400D58D21 /* BloomRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomRenderer.swift; sourceTree = "<group>"; };
+		E1DEB76F2C8659D700D58D21 /* BloomRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomRendererView.swift; sourceTree = "<group>"; };
 		E1E69D1624A4711E00EDA686 /* DepthMaterialRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthMaterialRenderer.swift; sourceTree = "<group>"; };
 		E1E767BE28A6D2A2005D75AB /* Renderer3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer3DView.swift; sourceTree = "<group>"; };
 		E1E767C128A6D341005D75AB /* Renderer2DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer2DView.swift; sourceTree = "<group>"; };
@@ -404,6 +418,15 @@
 			path = Renderers;
 			sourceTree = "<group>";
 		};
+		E102D07F2C8A12AC00DD255C /* Renderers */ = {
+			isa = PBXGroup;
+			children = (
+				E152371E29CBA22B00D96D46 /* BaseRenderer.swift */,
+				E102D07D2C8A129700DD255C /* ImmersiveBaseRenderer.swift */,
+			);
+			path = Renderers;
+			sourceTree = "<group>";
+		};
 		E10CC11827F1061100E04B2B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -488,9 +511,9 @@
 		E1903C192B608BF1004AB175 /* Vision */ = {
 			isa = PBXGroup;
 			children = (
+				E1DDD29E2C2B531300012A44 /* ImmersivePostRenderer.swift */,
 				E1903C1A2B608C01004AB175 /* Immersive3DRenderer.swift */,
 				E1903C1C2B609493004AB175 /* ImmersiveSuperShapesRenderer.swift */,
-				E1DDD29E2C2B531300012A44 /* ImmersivePostRenderer.swift */,
 			);
 			path = Vision;
 			sourceTree = "<group>";
@@ -498,14 +521,24 @@
 		E192F05F24875D6E00C7EE74 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E152371E29CBA22B00D96D46 /* BaseRenderer.swift */,
+				E102D07F2C8A12AC00DD255C /* Renderers */,
+				E19B2D602C8783E900A31650 /* Generators */,
 				E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */,
 				E17D2C1126BBB7DF005A136A /* AudioInput.swift */,
 				E1F22D1C29BD71FA0011CEAB /* Timing.swift */,
 				E14198C529D10A8500E486EE /* Geometry */,
 				E14198C629D10A9100E486EE /* Shadows */,
+				E19B2D652C8793F300A31650 /* Paths.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		E19B2D602C8783E900A31650 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				E19B2D612C8783F800A31650 /* BloomGenerator.swift */,
+			);
+			path = Generators;
 			sourceTree = "<group>";
 		};
 		E19D4C3729F9C0F100DF993D /* PBR */ = {
@@ -540,6 +573,7 @@
 				E1E767C628A6D41B005D75AB /* DepthRendererView.swift */,
 				E1E767F628A6FA4C005D75AB /* LiveCodeRendererView.swift */,
 				E1E767DF28A6E7DD005D75AB /* CubemapRendererView.swift */,
+				E19B2D6B2C87DCBD00A31650 /* GridRendererView.swift */,
 			);
 			path = Materials;
 			sourceTree = "<group>";
@@ -607,6 +641,7 @@
 				E1E767FD28A6FCBC005D75AB /* FXAARendererView.swift */,
 				E1E767F128A6F43C005D75AB /* PostProcessingRendererView.swift */,
 				E19417042C499FD200FE2E2B /* ScreenCaptureRendererView.swift */,
+				E1DEB76F2C8659D700D58D21 /* BloomRendererView.swift */,
 			);
 			path = PostProcessing;
 			sourceTree = "<group>";
@@ -642,6 +677,7 @@
 				E1D62565269D21C8000094C1 /* PostProcessingRenderer.swift */,
 				E105CC36252BDE7F009EE563 /* FXAARenderer.swift */,
 				E19417022C499FAA00FE2E2B /* ScreenCaptureRenderer.swift */,
+				E1DEB76C2C8659B400D58D21 /* BloomRenderer.swift */,
 			);
 			path = PostProcessing;
 			sourceTree = "<group>";
@@ -654,6 +690,7 @@
 				E1919A32248D9BC3008FD392 /* CubemapRenderer.swift */,
 				E172B49129720A1C00341985 /* OcclusionRenderer.swift */,
 				E192F01F2485B16C00C7EE74 /* MatcapRenderer.swift */,
+				E19B2D692C87DBBE00A31650 /* GridRenderer.swift */,
 			);
 			path = Materials;
 			sourceTree = "<group>";
@@ -985,6 +1022,7 @@
 				E103E0FE2B5F490B0017588F /* Renderer2D.swift in Sources */,
 				E103E1162B603E210017588F /* FlockingRenderer.swift in Sources */,
 				E1DDD3552C2FA6B400012A44 /* OrbitCameraControllerRenderer.swift in Sources */,
+				E19B2D6C2C87DCBD00A31650 /* GridRendererView.swift in Sources */,
 				E1D43BD42C65B1910063E2C9 /* ControlViewController+Shared.swift in Sources */,
 				E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */,
 				E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */,
@@ -1030,6 +1068,7 @@
 				E103E1092B603DBD0017588F /* ARContactShadowRenderer.swift in Sources */,
 				E103E1492B6040010017588F /* MeshShaderRendererView.swift in Sources */,
 				E1DDD35B2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift in Sources */,
+				E1DEB76D2C8659B400D58D21 /* BloomRenderer.swift in Sources */,
 				E1D43BC82C65855A0063E2C9 /* ColorPaletteViewController.swift in Sources */,
 				E1D43BBC2C65855A0063E2C9 /* InspectorWindow.swift in Sources */,
 				E103E1612B60404C0017588F /* RayMarchingRenderer.swift in Sources */,
@@ -1037,6 +1076,7 @@
 				E1D43BB32C65855A0063E2C9 /* LabelViewController.swift in Sources */,
 				E103E14D2B60400B0017588F /* ProjectedShadowRenderer.swift in Sources */,
 				E1903C1B2B608C01004AB175 /* Immersive3DRenderer.swift in Sources */,
+				E102D07E2C8A129700DD255C /* ImmersiveBaseRenderer.swift in Sources */,
 				E1D43BBF2C65855A0063E2C9 /* TranslucentView.swift in Sources */,
 				E1903C102B6046B4004AB175 /* ARPBRRendererView.swift in Sources */,
 				E103E1032B603B620017588F /* InstancedMeshRendererView.swift in Sources */,
@@ -1047,6 +1087,7 @@
 				E103E1422B603FF40017588F /* FXAARendererView.swift in Sources */,
 				E103E12B2B603ECD0017588F /* ExportGeometryRendererView.swift in Sources */,
 				E103E1462B6040010017588F /* TessellationRendererView.swift in Sources */,
+				E19B2D662C8793F300A31650 /* Paths.swift in Sources */,
 				E1DDD3572C2FA6DF00012A44 /* OrbitCameraControllerRendererView.swift in Sources */,
 				E103E1272B603E7C0017588F /* MatcapRendererView.swift in Sources */,
 				E103E1232B603E760017588F /* LiveCodeRenderer.swift in Sources */,
@@ -1096,13 +1137,16 @@
 				E103E1172B603E210017588F /* BufferComputeRenderer.swift in Sources */,
 				E103E1502B60400E0017588F /* FXAARenderer.swift in Sources */,
 				E103E0FF2B5F498A0017588F /* Renderer2DView.swift in Sources */,
+				E19B2D6A2C87DBBE00A31650 /* GridRenderer.swift in Sources */,
 				E103E15D2B60404C0017588F /* TessellationComputeSystem.swift in Sources */,
 				E1D43BBB2C65855A0063E2C9 /* SliderViewController.swift in Sources */,
 				E103E1152B603DEA0017588F /* TextRendererView.swift in Sources */,
 				E1D43BB52C65855A0063E2C9 /* HandleButton.swift in Sources */,
 				E1D714D428A6BADA00B517B6 /* ExampleApp.swift in Sources */,
 				E1903C172B6046B4004AB175 /* ARPeopleOcclusionRendererView.swift in Sources */,
+				E1DEB7702C8659D700D58D21 /* BloomRendererView.swift in Sources */,
 				E103E13F2B603FCA0017588F /* PBREnhancedRendererView.swift in Sources */,
+				E19B2D622C8783F800A31650 /* BloomGenerator.swift in Sources */,
 				E103E1182B603E210017588F /* TextureComputeRenderer.swift in Sources */,
 				E103E1602B60404C0017588F /* TessellatedMaterial.swift in Sources */,
 				E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */,

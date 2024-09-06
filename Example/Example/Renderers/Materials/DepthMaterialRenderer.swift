@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class DepthMaterialRenderer: BaseRenderer {
+final class DepthMaterialRenderer: BaseRenderer {
     lazy var depthMaterial: DepthMaterial = {
         let material = DepthMaterial()
         // Options to play with
@@ -103,17 +103,10 @@ class DepthMaterialRenderer: BaseRenderer {
         return obj
     }()
 
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
-
     lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 13.0], near: 0.001, far: 20.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+    lazy var renderer = Renderer(context: defaultContext, clearColor: [0.137254902, 0.09411764706, 0.1058823529, 1.0])
 
-    lazy var renderer: Renderer = {
-        let renderer = Renderer(context: context)
-        renderer.clearColor = .init(red: 0.137254902, green: 0.09411764706, blue: 0.1058823529, alpha: 1.0)
-        return renderer
-    }()
-    
     override func setup() {
 //        // Setup things here
 //        let mat = UvColorMaterial()

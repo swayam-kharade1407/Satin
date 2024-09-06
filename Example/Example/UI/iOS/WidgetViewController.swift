@@ -7,7 +7,7 @@
 
 import Satin
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
 import UIKit
 

@@ -12,15 +12,13 @@ import ModelIO
 
 import Satin
 
-class LoadObjRenderer: BaseRenderer {
+final class LoadObjRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
     var scene = Object(label: "Scene")
     var camera = PerspectiveCamera(position: [0.0, 0.0, 9.0], near: 0.001, far: 100.0)
-
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override func setup() {
         loadOBJ(url: modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj"))
@@ -36,7 +34,7 @@ class LoadObjRenderer: BaseRenderer {
     }
 
     func loadOBJ(url: URL) {
-        let asset = MDLAsset(url: url, vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: context.device))
+        let asset = MDLAsset(url: url, vertexDescriptor: SatinModelIOVertexDescriptor(), bufferAllocator: MTKMeshBufferAllocator(device: device))
         let geometry = Geometry()
         let mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(hardness: 0.0))
         mesh.label = "Suzanne"

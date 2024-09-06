@@ -13,23 +13,27 @@ import Satin
 final class Renderer3D: BaseRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
 
-    var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.05, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
-        mesh.label = "Intersection Mesh"
-        mesh.renderPass = 1
-        mesh.visible = false
-        return mesh
-    }()
+    let intersectionMesh = Mesh(
+        label: "Intersection Mesh",
+        geometry: IcoSphereGeometry(radius: 0.05, resolution: 2),
+        material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled),
+        visible: false,
+        renderPass: 1
+    )
 
     lazy var startTime = getTime()
-    lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])
+    lazy var scene = Object(label: "Scene", [mesh])
 
     lazy var renderer = Renderer(context: defaultContext)
 
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
+    override var sampleCount: Int { 4 }
+
     override func setup() {
+        mesh.add(intersectionMesh)
+
         camera.lookAt(target: .zero)
 
         #if os(visionOS)
@@ -79,7 +83,7 @@ final class Renderer3D: BaseRenderer {
     func intersect(camera: Camera, coordinate: simd_float2) {
         let results = raycast(camera: camera, coordinate: coordinate, object: scene)
         if let result = results.first {
-            intersectionMesh.position = result.position
+            intersectionMesh.worldPosition = result.position
             intersectionMesh.visible = true
         }
     }

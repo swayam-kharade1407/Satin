@@ -21,8 +21,7 @@ class MultipleViewportRenderer: BaseRenderer {
     lazy var material = ViewportMaterial(pipelinesURL: pipelinesURL)
     lazy var mesh = Mesh(geometry: QuadGeometry(size: 2.0), material: material)
     lazy var startTime = getTime()
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     var camera = OrthographicCamera()
 

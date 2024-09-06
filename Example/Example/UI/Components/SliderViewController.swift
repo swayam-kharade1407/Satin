@@ -195,7 +195,7 @@ final class SliderViewController: InputViewController, NSTextFieldDelegate {
     deinit {}
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

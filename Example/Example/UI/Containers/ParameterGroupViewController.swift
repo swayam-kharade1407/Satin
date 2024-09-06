@@ -205,7 +205,7 @@ public final class ParameterGroupViewController: ControlViewController {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

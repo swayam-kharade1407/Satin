@@ -102,7 +102,7 @@ final class LabelViewController: NSViewController, NSTextFieldDelegate {
     deinit {}
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

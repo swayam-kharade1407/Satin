@@ -89,7 +89,7 @@ public final class ButtonViewController: NSViewController {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

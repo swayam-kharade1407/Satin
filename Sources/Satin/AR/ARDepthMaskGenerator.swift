@@ -24,8 +24,8 @@ public class ARDepthMaskGenerator {
             )
         }
 
-        override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
-            var index = super.bind(computeEncoder)
+        override func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
+            var index = super.bind(computeEncoder: computeEncoder, iteration: iteration)
             computeEncoder.setTexture(realDepthTexture, index: index)
             index += 1
             computeEncoder.setTexture(virtualDepthTexture, index: index)

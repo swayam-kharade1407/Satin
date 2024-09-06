@@ -113,9 +113,8 @@ open class BufferComputeSystem: ComputeSystem {
 
             for _ in 0 ..< feedbackCount {
                 var offset = bind(computeEncoder)
-                preReset?(computeEncoder, &offset)
-                preCompute?(computeEncoder, &offset)
-                dispatch(computeEncoder, pipeline)
+                preCompute?(computeEncoder, &offset, 0)
+                dispatch(computeEncoder: computeEncoder, pipeline: pipeline, iteration: 0)
                 swapSrdDstIndex()
             }
 
@@ -124,11 +123,10 @@ open class BufferComputeSystem: ComputeSystem {
 
         if let pipeline = updatePipeline {
             computeEncoder.setComputePipelineState(pipeline)
-            for _ in 0..<iterations {
+            for iteration in 0..<iterations {
                 var offset = bind(computeEncoder)
-                preUpdate?(computeEncoder, &offset)
-                preCompute?(computeEncoder, &offset)
-                dispatch(computeEncoder, pipeline)
+                preCompute?(computeEncoder, &offset, iteration)
+                dispatch(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
                 swapSrdDstIndex()
             }
         }
@@ -229,7 +227,7 @@ open class BufferComputeSystem: ComputeSystem {
     // MARK: - Dispatching
 
     #if os(macOS) || os(iOS) || os(visionOS)
-    override open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
+    override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         let gridSize = MTLSizeMake(_count, 1, 1)
 
         var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup
@@ -240,7 +238,7 @@ open class BufferComputeSystem: ComputeSystem {
     }
     #endif
 
-    override open func dispatchThreadgroups(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
+    override open func dispatchThreadgroups(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         let m = pipeline.maxTotalThreadsPerThreadgroup
         let threadsPerThreadgroup = MTLSizeMake(m, 1, 1)
         let threadgroupsPerGrid = MTLSize(width: (_count + m - 1) / m, height: 1, depth: 1)

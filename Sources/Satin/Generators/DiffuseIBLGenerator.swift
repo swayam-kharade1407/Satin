@@ -22,8 +22,8 @@ public final class DiffuseIBLGenerator {
             )
         }
 
-        override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
-            let index = super.bind(computeEncoder)
+        override func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
+            let index = super.bind(computeEncoder: computeEncoder, iteration: iteration)
             computeEncoder.setTexture(sourceTexture, index: index)
             return index + 1
         }

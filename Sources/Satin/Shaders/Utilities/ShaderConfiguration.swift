@@ -47,7 +47,14 @@ public struct ShaderConfiguration {
     }
 
     public func getLibraryConfiguration() -> ShaderLibraryConfiguration {
-        ShaderLibraryConfiguration(
+        var resolvedDefines = defines + rendering.getDefines()
+        if let context {
+            resolvedDefines += context.getDefines()
+        }
+
+        let resolvedConstants = constants + rendering.getConstants()
+
+        return ShaderLibraryConfiguration(
             label: label,
             libraryURL: libraryURL,
             pipelineURL: pipelineURL,
@@ -57,8 +64,8 @@ public struct ShaderConfiguration {
             castShadow: rendering.castShadow,
             receiveShadow: rendering.receiveShadow,
             shadowCount: rendering.shadowCount,
-            defines: defines + rendering.getDefines(),
-            constants: constants + rendering.getConstants()
+            defines: resolvedDefines,
+            constants: resolvedConstants
         )
     }
 }

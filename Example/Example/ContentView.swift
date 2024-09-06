@@ -100,6 +100,10 @@ struct ContentView: View {
                         Label("Skybox Material", systemImage: "map")
                     }
 
+                    NavigationLink(destination: GridRendererView()) {
+                        Label("Grid Material", systemImage: "grid")
+                    }
+
                     NavigationLink(destination: MatcapRendererView()) {
                         Label("Matcap Material", systemImage: "graduationcap")
                     }
@@ -246,6 +250,10 @@ struct ContentView: View {
                         Label("Post Processing", systemImage: "checkerboard.rectangle")
                     }
 
+                    NavigationLink(destination: BloomRendererView()) {
+                        Label("Bloom", systemImage: "sun.max.fill")
+                    }
+
                     NavigationLink(destination: FXAARendererView()) {
                         Label("FXAA", systemImage: "squareshape.split.2x2.dotted")
                     }
@@ -268,6 +276,8 @@ struct ContentView: View {
             #endif
 
             #if os(macOS) && DEBUG
+//            GridRendererView()
+//            BloomRendererView()
 //                LiveCodeRendererView()
 //                DirectionalShadowRendererView()
 //                Renderer2DView()

@@ -11,8 +11,8 @@ import MetalKit
 
 import Satin
 
-class FXAARenderer: BaseRenderer {
-    class FxaaMaterial: SourceMaterial {}
+final class FXAARenderer: BaseRenderer {
+    final class FxaaMaterial: SourceMaterial {}
 
     // MARK: Render to Texture
 
@@ -22,7 +22,7 @@ class FXAARenderer: BaseRenderer {
     lazy var fxaaMaterial = FxaaMaterial(pipelinesURL: pipelinesURL)
 
     lazy var fxaaProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(device: context.device, sampleCount: context.sampleCount, colorPixelFormat: context.colorPixelFormat), material: fxaaMaterial)
+        let pp = PostProcessor(context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: fxaaMaterial)
         pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
             renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
         }
@@ -48,9 +48,8 @@ class FXAARenderer: BaseRenderer {
     var camera = PerspectiveCamera(position: [0, 0, 9], near: 0.001, far: 100.0)
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     deinit {
         cameraController.disable()
@@ -58,7 +57,7 @@ class FXAARenderer: BaseRenderer {
 
     override func update() {
         if updateRenderTexture {
-            renderTexture = createTexture("Render Texture", context.colorPixelFormat)
+            renderTexture = createTexture("Render Texture", colorPixelFormat)
             updateRenderTexture = false
         }
 
@@ -98,7 +97,7 @@ class FXAARenderer: BaseRenderer {
             descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             descriptor.storageMode = .private
             descriptor.resourceOptions = .storageModePrivate
-            guard let texture = context.device.makeTexture(descriptor: descriptor) else { return nil }
+            guard let texture = device.makeTexture(descriptor: descriptor) else { return nil }
             texture.label = label
             return texture
         }

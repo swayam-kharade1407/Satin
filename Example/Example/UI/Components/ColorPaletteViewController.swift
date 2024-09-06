@@ -150,7 +150,7 @@ public final class ColorPaletteViewController: NSViewController, NSWindowDelegat
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

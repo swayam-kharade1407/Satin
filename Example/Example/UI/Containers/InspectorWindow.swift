@@ -47,7 +47,7 @@ public final class InspectorWindow: NSWindow {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 
@@ -101,7 +101,7 @@ public final class InspectorWindow: UIViewController {
     }
 
     func setupView() {
-        view = UIView(frame: CGRect(x: -width - 12.0, y: 16.0, width: width, height: UIScreen.main.bounds.height - 32.0))
+        view = UIView(frame: CGRect(x: -width - 12.0, y: 16.0, width: width, height: 256))
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
         view.backgroundColor = .clear
@@ -245,7 +245,7 @@ public final class InspectorWindow: UIViewController {
             }
 
             if button == nil {
-                let button = HandleButton(frame: CGRect(x: -12, y: UIScreen.main.bounds.height * 0.5 - 96 * 0.5, width: 6, height: 96))
+                let button = HandleButton(frame: CGRect(x: -12, y: 0, width: 6, height: 96))
                 superView.addSubview(button)
                 button.centerYAnchor.constraint(equalTo: superView.centerYAnchor).isActive = true
 

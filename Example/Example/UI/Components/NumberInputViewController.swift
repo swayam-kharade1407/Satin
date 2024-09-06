@@ -147,7 +147,7 @@ final class NumberInputViewController: InputViewController, NSTextFieldDelegate 
     deinit {}
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

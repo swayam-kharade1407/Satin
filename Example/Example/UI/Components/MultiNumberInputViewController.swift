@@ -247,7 +247,7 @@ final class MultiNumberInputViewController: InputViewController, NSTextFieldDele
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

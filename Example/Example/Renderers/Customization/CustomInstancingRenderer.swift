@@ -30,9 +30,8 @@ class CustomInstancingRenderer: BaseRenderer {
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: instanceMaterial)
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView, defaultZoom: 2.0)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid
@@ -73,7 +72,7 @@ class CustomInstancingRenderer: BaseRenderer {
             print(error.localizedDescription)
         }
         guard data.count > 0 else { return }
-        dataBuffer = context.device.makeBuffer(bytes: &data, length: MemoryLayout<simd_bool>.stride * data.count)
+        dataBuffer = device.makeBuffer(bytes: &data, length: MemoryLayout<simd_bool>.stride * data.count)
         // data.count/2 because we are representing each character a = 0 c = 1 g = 2 t = 3 using two bools (00, 01, 10, 11)
         mesh.instanceCount = data.count / 2
         instanceMaterial.set("Instance Count", Int(data.count / 2))

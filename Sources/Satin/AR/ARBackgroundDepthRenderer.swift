@@ -88,7 +88,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         self.usePlaneDepth = usePlaneDepth
         self.useMeshDepth = useMeshDepth
 
-        depthRenderer = Renderer(context: context)
+        depthRenderer = Renderer(context: context, frameBufferOnly: false)
         depthRenderer.label = "AR Background"
 
         depthRenderer.colorLoadAction = .clear

@@ -30,7 +30,7 @@ final class UISpacer: NSView {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

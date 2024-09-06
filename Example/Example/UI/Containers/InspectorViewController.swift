@@ -293,7 +293,7 @@ public final class InspectorViewController: NSViewController, ParameterGroupView
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

@@ -12,7 +12,7 @@ import simd
 
 import Satin
 
-class PostProcessingRenderer: BaseRenderer {
+final class PostProcessingRenderer: BaseRenderer {
     var size = simd_int2(repeating: 0)
 
     class PostMaterial: SourceMaterial {}
@@ -50,10 +50,9 @@ class PostProcessingRenderer: BaseRenderer {
         return processor
     }()
 
-    var camera = PerspectiveCamera(position: [0.0, 0.0, 10.0], near: 0.001, far: 100.0, fov: 30.0)
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 10.0], near: 0.001, far: 100.0, fov: 30.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     deinit {
         cameraController.disable()
@@ -61,7 +60,7 @@ class PostProcessingRenderer: BaseRenderer {
 
     override func update() {
         if size.x != Int(metalView.drawableSize.width) || size.y != Int(metalView.drawableSize.height) {
-            renderTexture = createTexture("Render Texture", Int(metalView.drawableSize.width), Int(metalView.drawableSize.height), colorPixelFormat, context.device)
+            renderTexture = createTexture("Render Texture", Int(metalView.drawableSize.width), Int(metalView.drawableSize.height), colorPixelFormat, device)
             size = simd_make_int2(Int32(Int(metalView.drawableSize.width)), Int32(metalView.drawableSize.height))
         }
 

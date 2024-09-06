@@ -73,7 +73,7 @@ public class ControlViewController: InputViewController {
     }
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

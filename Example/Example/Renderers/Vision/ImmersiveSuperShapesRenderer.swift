@@ -13,7 +13,15 @@ import Metal
 import CompositorServices
 import Combine
 
-final class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
+final class ImmersiveSuperShapesRenderer: ImmersiveBaseRenderer {
+    final class GridMaterial: SourceMaterial {}
+
+    lazy var background = Mesh(
+        label: "Background",
+        geometry: SkyboxGeometry(size: 200),
+        material: GridMaterial(pipelinesURL: pipelinesURL, live: true)
+    )
+
     var wireframe = false {
         didSet {
             mesh.triangleFillMode = wireframe ? .lines : .fill
@@ -77,16 +85,20 @@ final class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
     )
 
     lazy var startTime = getTime()
-    lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(hardness: 0.2))
-    lazy var scene = Object(label: "Scene", [mesh])
+    lazy var mesh = Mesh(geometry: geometry, material: NormalColorMaterial(true))
+    lazy var scene = Object(label: "Scene", [background, mesh])
     
-    lazy var renderer = Renderer(context: context, clearColor: .zero)
+    lazy var renderer = Renderer(context: defaultContext)
 
+#if targetEnvironment(simulator)
     override var layerLayout: LayerRenderer.Layout { .dedicated }
+#else
+    override var layerLayout: LayerRenderer.Layout { .layered }
+#endif
 
     override func setup() {
-        mesh.position.y = 1
-        mesh.position.z = -1
+        mesh.position = [0, 1, -2]
+
         mesh.scale = .init(repeating: 0.25)
         mesh.cullMode = .none
 
@@ -100,6 +112,24 @@ final class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
         scene.update()
     }
 
+    override func draw(
+        frame: LayerRenderer.Frame,
+        renderPassDescriptor: MTLRenderPassDescriptor,
+        commandBuffer: MTLCommandBuffer,
+        cameras: [PerspectiveCamera],
+        viewports: [MTLViewport],
+        viewMappings: [MTLVertexAmplificationViewMapping]
+    ) {
+        renderer.draw(
+            renderPassDescriptor: renderPassDescriptor,
+            commandBuffer: commandBuffer,
+            scene: scene,
+            cameras: cameras,
+            viewports: viewports,
+            viewMappings: viewMappings
+        )
+    }
+
     override func drawView(view: Int, frame: LayerRenderer.Frame, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, camera: PerspectiveCamera, viewport: MTLViewport) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
@@ -109,7 +139,6 @@ final class ImmersiveSuperShapesRenderer: MetalLayerRenderer {
             viewport: viewport
         )
     }
-
     private func updateGeometry() {
         geometry.r1 = r1Param.value
         geometry.a1 = a1Param.value

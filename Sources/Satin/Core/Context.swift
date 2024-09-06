@@ -36,6 +36,14 @@ public struct Context {
         self.vertexAmplificationCount = vertexAmplificationCount
         self.maxBuffersInFlight = maxBuffersInFlight
     }
+
+    func getDefines() -> [ShaderDefine] { 
+        var defines = [ShaderDefine]()
+        if vertexAmplificationCount > 1 {
+            defines.append(ShaderDefine(key: "LAYERED", value: NSString(string: "true")))
+        }
+        return defines
+    }
 }
 
 extension Context: Hashable {

@@ -31,11 +31,15 @@ class MatcapRenderer: BaseRenderer {
         }
     }()
 
-    var camera = PerspectiveCamera(position: [0.0, 0.0, 8.0], near: 0.001, far: 100.0, fov: 45)
-
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 8.0], near: 0.001, far: 100.0, fov: 45)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
+
+#if targetEnvironment(simulator)
+    override var sampleCount: Int { 1 }
+#else
+    override var sampleCount: Int { 4 }
+#endif
 
     override func setup() {
         loadModel()
@@ -111,7 +115,6 @@ class MatcapRenderer: BaseRenderer {
                     }
                 }
             } else { // seperate buffers for each attribute
-                
             }
 
             guard let submeshes = object.submeshes, let first = submeshes.firstObject, let sub: MDLSubmesh = first as? MDLSubmesh else { return }
@@ -157,7 +160,6 @@ class MatcapRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

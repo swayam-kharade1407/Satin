@@ -21,8 +21,8 @@ public final class YCbCrToRGBConverter {
             )
         }
 
-        override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
-            let index = super.bind(computeEncoder)
+        override func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
+            let index = super.bind(computeEncoder: computeEncoder, iteration: iteration)
             computeEncoder.setTexture(yTexture, index: index)
             computeEncoder.setTexture(cbcrTexture, index: index)
             return index + 1

@@ -195,25 +195,9 @@ open class Object: Codable, ObservableObject {
                 _localMatrix.clear()
                 _localMatrixInverse.clear()
 
-                _normalMatrix.clear()
-                _worldMatrix.clear()
-                _worldMatrixInverse.clear()
-
-                _worldPosition.clear()
-                _worldOrientation.clear()
-                _worldScale.clear()
-
-                _worldRightDirection.clear()
-                _worldUpDirection.clear()
-                _worldForwardDirection.clear()
-
-                transformPublisher.send(self)
-
                 updateLocalMatrix = false
 
-                for child in children {
-                    child.updateWorldMatrix = true
-                }
+                updateWorldMatrix = true
             }
         }
     }

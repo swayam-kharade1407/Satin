@@ -79,7 +79,7 @@ final class ToggleViewController: NSViewController {
     deinit {}
 }
 
-#elseif os(iOS)
+#else
 
 import UIKit
 

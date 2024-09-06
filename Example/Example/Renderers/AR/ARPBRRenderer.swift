@@ -321,7 +321,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     fileprivate lazy var scene = ARScene(label: "Scene", [modelContainer], session: session)
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: context, frameBufferOnly: false)
 
     var backgroundRenderer: ARBackgroundDepthRenderer!
     var featheredDepthMaskGenerator: ARFeatheredDepthMaskGenerator!

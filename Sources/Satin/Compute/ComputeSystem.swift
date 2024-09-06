@@ -34,9 +34,9 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     public var dstIndex: Int { (_index + 1) % feedbackCount }
     public var feedbackCount: Int { feedback ? 2 : 1 }
 
-    public var preUpdate: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
-    public var preReset: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
-    public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int) -> Void)?
+    public var preUpdate: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int, _ iteration: Int) -> Void)?
+    public var preReset: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int, _ iteration: Int) -> Void)?
+    public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int, _ iteration: Int) -> Void)?
 
     public private(set) var computeUniformBuffers: [ComputeBufferIndex: UniformBuffer] = [:]
     public private(set) var computeBuffers: [ComputeBufferIndex: MTLBuffer] = [:]
@@ -205,23 +205,23 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Dispatch
 
-    internal func dispatch(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {
+    internal func dispatch(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
 #if os(macOS) || os(iOS) || os(visionOS)
         if _useDispatchThreads {
-            dispatchThreads(computeEncoder, pipeline)
+            dispatchThreads(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
         } else {
-            dispatchThreadgroups(computeEncoder, pipeline)
+            dispatchThreadgroups(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
         }
 #elseif os(tvOS)
-        _dispatchThreadgroups(computeEncoder, pipeline)
+        _dispatchThreadgroups(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
 #endif
     }
 
 #if os(macOS) || os(iOS) || os(visionOS)
-    open func dispatchThreads(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {}
+    open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {}
 #endif
 
-    open func dispatchThreadgroups(_ computeEncoder: MTLComputeCommandEncoder, _ pipeline: MTLComputePipelineState) {}
+    open func dispatchThreadgroups(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {}
 
     // MARK: - Ping / Pong
 

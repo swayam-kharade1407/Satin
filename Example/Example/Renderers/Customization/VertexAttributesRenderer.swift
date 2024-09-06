@@ -25,9 +25,8 @@ class VertexAttributesRenderer: BaseRenderer {
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var scene = Object(label: "Scene", [intersectionMesh])
-    lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: depthPixelFormat, stencilPixelFormat: stencilPixelFormat)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(context: defaultContext)
 
     override func setup() {
         let url = modelsURL.appendingPathComponent("Suzanne").appendingPathComponent("Suzanne.obj")
