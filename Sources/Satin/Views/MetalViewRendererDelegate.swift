@@ -14,6 +14,6 @@ import AppKit
 
 internal protocol MetalViewRendererDelegate: AnyObject {
     var id: String { get }
-    func draw(metalLayer: CAMetalLayer)
+    func draw(metalLayer: CAMetalLayer, drawable: CAMetalDrawable)
     func drawableResized(size: CGSize, scaleFactor: CGFloat)
 }

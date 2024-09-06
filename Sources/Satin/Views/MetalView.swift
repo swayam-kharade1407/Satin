@@ -108,6 +108,7 @@ public final class MetalView: NSView, CALayerDelegate {
 
         wantsLayer = true
         layerContentsRedrawPolicy = .duringViewResize
+        metalLayer.maximumDrawableCount = maxBuffersInFlight
         metalLayer.delegate = self
     }
 
@@ -148,7 +149,8 @@ public final class MetalView: NSView, CALayerDelegate {
     // MARK: - Layer Rendering
 
     private func render() {
-        delegate?.draw(metalLayer: metalLayer)
+        guard let delegate, let drawable = metalLayer.nextDrawable() else { return }
+        delegate.draw(metalLayer: metalLayer, drawable: drawable)
     }
 
     // MARK: - Event Based Rendering
@@ -451,6 +453,7 @@ public final class MetalView: UIView {
 #endif
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
+        metalLayer.maximumDrawableCount = maxBuffersInFlight
         metalLayer.delegate = self
     }
 
@@ -553,7 +556,8 @@ public final class MetalView: UIView {
     // MARK: - Render
 
     @objc private func render() {
-        delegate?.draw(metalLayer: metalLayer)
+        guard let drawable = metalLayer.nextDrawable() else { return }
+        delegate?.draw(metalLayer: metalLayer, drawable: drawable)
     }
     
     // MARK: - Event Based Rendering
