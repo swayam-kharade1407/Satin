@@ -38,7 +38,7 @@ kernel void diffuseIBLUpdate(
     float3 irradiance = 0.0;
     float sinPhi, cosPhi, sinTheta, cosTheta;
 
-    for(uint face = 0; face < 6; face++) {
+    for (uint face = 0; face < 6; face++) {
         const float4 rotation = rotations[face];
         const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
         float3 UP = abs(N.z) < 0.999 ? WORLD_FORWARD : WORLD_UP;

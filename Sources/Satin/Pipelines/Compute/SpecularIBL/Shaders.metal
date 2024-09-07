@@ -11,7 +11,6 @@ static constant float4 rotations[6] = {
     float4(0.0, 1.0, 0.0, PI)
 };
 
-
 #define SAMPLE_COUNT 1024u
 
 typedef struct {
@@ -36,7 +35,7 @@ kernel void specularIBLUpdate(
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
 
-    for(uint face = 0; face < 6; face++) {
+    for (uint face = 0; face < 6; face++) {
         const float4 rotation = rotations[face];
         const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
 

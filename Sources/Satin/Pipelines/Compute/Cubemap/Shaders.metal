@@ -20,13 +20,11 @@ typedef struct {
 
 constexpr sampler cubeSampler(filter::linear, address::repeat);
 
-kernel void cubemapUpdate
-(
+kernel void cubemapUpdate(
     uint2 gid [[thread_position_in_grid]],
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texture2d<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
-    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]]
-)
+    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]])
 {
     const uint2 size = uint2(uniforms.size);
 
@@ -37,7 +35,7 @@ kernel void cubemapUpdate
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
 
-    for(uint face = 0; face < 6; face++) {
+    for (uint face = 0; face < 6; face++) {
         const float4 rotation = rotations[face];
         const float3 dir = normalize(float3(ruv, 1.0)) * rotateAxisAngle(rotation.xyz, rotation.w);
         const float2 tuv = float2((atan2(dir.z, dir.x) / TWO_PI) + 0.5, acos(dir.y) / PI);
