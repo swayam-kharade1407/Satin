@@ -9,11 +9,9 @@
 #if !os(visionOS)
 
 import Metal
-import MetalKit
-
 import Satin
 
-class AudioInputRenderer: BaseRenderer {
+final class AudioInputRenderer: BaseRenderer {
     lazy var audioInput: AudioInput = .init(context: defaultContext)
 
     lazy var audioMaterial: BasicTextureMaterial = {
@@ -46,7 +44,6 @@ class AudioInputRenderer: BaseRenderer {
     }
 
     override func update() {
-//        cameraController.update()
         camera.update()
         scene.update()
     }
@@ -61,7 +58,6 @@ class AudioInputRenderer: BaseRenderer {
     }
 
     override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
-//        cameraController.resize(size)
         renderer.resize(size)
     }
 }

@@ -9,17 +9,13 @@
 #if os(iOS)
 
 import ARKit
-
 import Metal
 import MetalKit
-import MetalPerformanceShaders
-
 import Combine
-
 import Satin
 
-class ARBloomRenderer: BaseRenderer {
-    class BloomMaterial: SourceMaterial {
+final class ARBloomRenderer: BaseRenderer {
+    final class BloomMaterial: SourceMaterial {
         public var grainIntensity: Float = 0.0 {
             didSet {
                 set("Grain Intensity", grainIntensity)
@@ -32,27 +28,15 @@ class ARBloomRenderer: BaseRenderer {
             }
         }
 
-        public var backgroundTexture: MTLTexture? {
-            didSet {
-                set(backgroundTexture, index: FragmentTextureIndex.Custom0)
-            }
-        }
-
-        public var contentTexture: MTLTexture? {
-            didSet {
-                set(contentTexture, index: FragmentTextureIndex.Custom1)
-            }
-        }
-
         public var bloomTexture: MTLTexture? {
             didSet {
-                set(bloomTexture, index: FragmentTextureIndex.Custom2)
+                set(bloomTexture, index: FragmentTextureIndex.Custom0)
             }
         }
 
         public var grainTexture: MTLTexture? {
             didSet {
-                set(grainTexture, index: FragmentTextureIndex.Custom3)
+                set(grainTexture, index: FragmentTextureIndex.Custom1)
             }
         }
     }
@@ -60,23 +44,20 @@ class ARBloomRenderer: BaseRenderer {
     // MARK: - UI
 
     override var paramKeys: [String] {
-        return ["Post Material"]
+        ["Post Material"]
     }
 
     override var params: [String: ParameterGroup?] {
-        return [
-            "Post Material": postMaterial.parameters,
-        ]
+        ["Post Material": postMaterial.parameters]
     }
 
     // MARK: - Glow Blur
 
-    var blurFilter: MPSImageGaussianBlur!
-    var scaleEffect: MPSImageBilinearScale!
+    lazy var bloomGenerator = BloomGenerator(device: device, levels: 6)
 
     // MARK: - AR
 
-    var session = ARSession()
+    let session = ARSession()
     lazy var sessionPublisher = ARSessionPublisher(session: session)
     var sessionSubscriptions = Set<AnyCancellable>()
 
@@ -93,30 +74,41 @@ class ARBloomRenderer: BaseRenderer {
 
     lazy var context = Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat, depthPixelFormat: .depth32Float)
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
-    lazy var renderer = Renderer(context: context)
+    lazy var renderer = Renderer(
+        label: "Renderer",
+        context: context,
+        colorLoadAction: .load,
+        depthLoadAction: .load
+    )
 
     // handles depth (lidar depth map, lidar mesh & horizontal & vertical planes)
     var backgroundRenderer: ARBackgroundDepthRenderer!
 
-    lazy var bloomRenderer = Renderer(context: context, frameBufferOnly: false)
-    var bloomedScene = Object(label: "Bloomed Objects")
+    lazy var bloomRenderer = Renderer(
+        label: "Bloom Renderer",
+        context: context,
+        clearColor: .zero,
+        depthLoadAction: .load,
+        depthStoreAction: .store,
+        frameBufferOnly: false
+    )
 
-    var contentTexture: MTLTexture?
-    var bloomTexture: MTLTexture?
-    var backgroundTexture: MTLTexture?
-    var _updateTextures = true
-    var bloomTextureScale: Int = 3
+    let bloomedScene = Object(label: "Bloomed Objects")
 
     lazy var startTime = getTime()
 
     lazy var postMaterial: BloomMaterial = {
         let material = BloomMaterial(pipelinesURL: pipelinesURL)
         material.depthWriteEnabled = false
-        material.blending = .alpha
+        material.blending = .additive
         return material
     }()
 
-    lazy var postProcessor = PostProcessor(context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat), material: postMaterial)
+    lazy var postProcessor = PostProcessor(
+        label: "Bloom Post Processor",
+        context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
+        material: postMaterial
+    )
 
     override init() {
         super.init()
@@ -129,20 +121,7 @@ class ARBloomRenderer: BaseRenderer {
     }
 
     override func setup() {
-        metalView.preferredFramesPerSecond = 60
-
-        setupBlurFilter()
-
         setupSessionObservers()
-
-        renderer.label = "Renderer"
-        renderer.depthLoadAction = .load
-        renderer.setClearColor([1, 1, 1, 0.0])
-
-        bloomRenderer.label = "Bloom Renderer"
-        bloomRenderer.depthLoadAction = .load
-        bloomRenderer.depthStoreAction = .store
-        bloomRenderer.setClearColor([1, 1, 1, 0.0])
 
         geometry.context = context
 
@@ -154,89 +133,45 @@ class ARBloomRenderer: BaseRenderer {
             near: camera.near,
             far: camera.far
         )
-
-        postProcessor.renderer.setClearColor(.one)
     }
 
     override func update() {
-        if _updateTextures {
-            bloomTexture = createTexture("Bloom Texture", colorPixelFormat, bloomTextureScale)
-            backgroundTexture = createTexture("Background Texture", colorPixelFormat, 1)
-            contentTexture = createTexture("Content Texture", colorPixelFormat, 1)
-            _updateTextures = false
-        }
         camera.update()
         scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        guard let contentTexture, let backgroundTexture, var bloomTexture else { return }
-
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,
-            commandBuffer: commandBuffer,
-            renderTarget: backgroundTexture
+            commandBuffer: commandBuffer
         )
 
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
             scene: scene,
-            camera: camera,
-            renderTarget: contentTexture
+            camera: camera
         )
-
-        // cache materials for meshes that are not bloomed
-        var materialMap: [Mesh: Material?] = [:]
-        scene.traverse { child in
-            if !bloomedScene.children.contains(child),
-               let mesh = child as? Mesh
-            {
-                materialMap[mesh] = mesh.material
-                mesh.material = occlusionMaterial
-            }
-        }
 
         let brpd = MTLRenderPassDescriptor()
         brpd.depthAttachment.texture = renderPassDescriptor.depthAttachment.texture
         bloomRenderer.draw(
             renderPassDescriptor: brpd,
             commandBuffer: commandBuffer,
-            scene: scene,
+            scene: bloomedScene,
             camera: camera
         )
 
         if let colorTexture = bloomRenderer.colorTexture {
-            // save some gpu compute cycles by scaling to 1/4
-            scaleEffect.encode(
-                commandBuffer: commandBuffer,
-                sourceTexture: colorTexture,
-                destinationTexture: bloomTexture
-            )
-
-            // blur the texture further
-            blurFilter.encode(
-                commandBuffer: commandBuffer,
-                inPlaceTexture: &bloomTexture
-            )
+            postMaterial.bloomTexture = bloomGenerator.encode(commandBuffer: commandBuffer, sourceTexture: colorTexture)
         }
 
-        scene.traverse { child in
-            if !bloomedScene.children.contains(child),
-               let mesh = child as? Mesh,
-               let material = materialMap[mesh]
-            {
-                mesh.material = material
-            }
-        }
-
-        postMaterial.backgroundTexture = backgroundTexture
-        postMaterial.contentTexture = contentTexture
-        postMaterial.bloomTexture = bloomTexture
         postMaterial.grainTexture = session.currentFrame?.cameraGrainTexture
         postMaterial.grainIntensity = session.currentFrame?.cameraGrainIntensity ?? 0
         postMaterial.time = Float(getTime() - startTime)
 
+        postProcessor.renderer.colorLoadAction = .load
+        
         postProcessor.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -248,7 +183,6 @@ class ARBloomRenderer: BaseRenderer {
         backgroundRenderer.resize(size: size, scaleFactor: scaleFactor)
         bloomRenderer.resize(size)
         postProcessor.resize(size: size, scaleFactor: scaleFactor)
-        _updateTextures = true
     }
 
     override func cleanup() {
@@ -299,12 +233,6 @@ class ARBloomRenderer: BaseRenderer {
                 }
             }
         }.store(in: &sessionSubscriptions)
-    }
-
-    internal func setupBlurFilter() {
-        blurFilter = MPSImageGaussianBlur(device: device, sigma: 32)
-        blurFilter.edgeMode = .clamp
-        scaleEffect = MPSImageBilinearScale(device: device)
     }
 
     private func normalizePoint(_ point: CGPoint, _ size: CGSize) -> simd_float2 {

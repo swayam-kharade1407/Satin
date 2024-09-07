@@ -8,10 +8,9 @@
 
 import Metal
 import MetalKit
-
 import Satin
 
-class PBRSubmeshRenderer: BaseRenderer {
+final class PBRSubmeshRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 

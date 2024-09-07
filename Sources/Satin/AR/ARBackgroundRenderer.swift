@@ -43,15 +43,13 @@ public class ARBackgroundRenderer: PostProcessor {
 
         backgroundMaterial = ARBackgroundMaterial(srgb: false)
 
-        super.init(context: context, material: backgroundMaterial)
+        super.init(label: "AR Background Renderer", context: context, material: backgroundMaterial)
 
         renderer.setClearColor(.zero)
         renderer.frameBufferOnly = false
         setupTextureCache()
 
         NotificationCenter.default.addObserver(self, selector: #selector(ARBackgroundRenderer.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
-
-        label = "AR Background"
 
         mesh.label = "AR Background Color Mesh"
         mesh.visible = false

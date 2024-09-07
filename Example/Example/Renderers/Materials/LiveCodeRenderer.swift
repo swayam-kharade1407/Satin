@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class LiveCodeRenderer: BaseRenderer {
+final class LiveCodeRenderer: BaseRenderer {
     // Material names must not be the target name, i.e. LiveCodeMaterial won't work
 
     final class CustomMaterial: SourceMaterial {
@@ -31,7 +31,7 @@ class LiveCodeRenderer: BaseRenderer {
 
     var startTime: CFAbsoluteTime = 0.0
 
-    var camera = OrthographicCamera()
+    let camera = OrthographicCamera()
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: CustomMaterial(pipelinesURL: pipelinesURL))
     lazy var scene = Object(label: "Scene", [mesh])

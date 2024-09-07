@@ -46,10 +46,11 @@ public class ARCompositor: ARPostProcessor {
     }
 
     override public required init(
+        label: String,
         context: Context,
         session: ARSession
     ) {
-        super.init(context: context, session: session)
+        super.init(label: label, context: context, session: session)
 
         mesh.material = ARCompositorMaterial()
 
@@ -60,8 +61,6 @@ public class ARCompositor: ARPostProcessor {
 
         renderer.depthLoadAction = .clear
         renderer.depthStoreAction = .store
-
-        label = "AR Compositor"
     }
 }
 

@@ -23,7 +23,8 @@ open class PostProcessor {
 
     public var renderer: Renderer
 
-    public init(context: Context, material: Material?) {
+    public init(label: String = "Post Processor", context: Context, material: Material?) {
+        self.label = label
         self.context = context
         renderer = Renderer(context: context)
         renderer.label = label + " Processor"

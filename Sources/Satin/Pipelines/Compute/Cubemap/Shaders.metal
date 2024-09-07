@@ -18,34 +18,38 @@ typedef struct {
     bool gammaCorrected; // toggle,false
 } CubemapUniforms;
 
-constexpr sampler cubeSampler(mag_filter::linear, min_filter::linear, address::repeat);
+constexpr sampler cubeSampler(filter::linear, address::repeat);
 
-kernel void cubemapUpdate(
+kernel void cubemapUpdate
+(
     uint2 gid [[thread_position_in_grid]],
-    texture2d<float, access::write> tex [[texture(ComputeTextureCustom0)]],
+    texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texture2d<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
-    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint &face [[buffer(ComputeBufferCustom0)]])
+    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]]
+)
 {
-    if (gid.x >= tex.get_width() || gid.y >= tex.get_height()) { return; }
+    const uint2 size = uint2(uniforms.size);
 
-    const float2 size = float2(tex.get_width(), tex.get_height()) - 1.0;
-    const float2 uv = float2(gid) / size;
+    if (gid.x >= size.x || gid.y >= size.y) { return; }
+
+    const float2 uv = (float2(gid) + 0.5) / float2(size);
 
     float2 ruv = 2.0 * uv - 1.0;
     ruv.y *= -1.0;
 
-    const float4 rotation = rotations[face];
-    const float3 dir = normalize(float3(ruv, 1.0)) * rotateAxisAngle(rotation.xyz, rotation.w);
-    const float2 tuv = float2((atan2(dir.z, dir.x) / TWO_PI) + 0.5, acos(dir.y) / PI);
+    for(uint face = 0; face < 6; face++) {
+        const float4 rotation = rotations[face];
+        const float3 dir = normalize(float3(ruv, 1.0)) * rotateAxisAngle(rotation.xyz, rotation.w);
+        const float2 tuv = float2((atan2(dir.z, dir.x) / TWO_PI) + 0.5, acos(dir.y) / PI);
 
-    float3 color = ref.sample(cubeSampler, tuv).rgb;
+        float3 color = ref.sample(cubeSampler, tuv).rgb;
 
-    // HDR Tonemapping
-    color = uniforms.toneMapped ? aces(color) : color;
+        // HDR Tonemapping
+        color = uniforms.toneMapped ? aces(color) : color;
 
-    // Gamma Correction
-    color = uniforms.gammaCorrected ? gamma(color) : color;
+        // Gamma Correction
+        color = uniforms.gammaCorrected ? gamma(color) : color;
 
-    tex.write(float4(color, 1.0), gid);
+        tex.write(float4(color, 1.0), gid, face);
+    }
 }

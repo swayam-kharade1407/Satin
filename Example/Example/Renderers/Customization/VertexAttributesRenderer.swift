@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class VertexAttributesRenderer: BaseRenderer {
+final class VertexAttributesRenderer: BaseRenderer {
     var intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.01, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
@@ -19,11 +19,11 @@ class VertexAttributesRenderer: BaseRenderer {
         return mesh
     }()
 
-    class CustomMaterial: SourceMaterial {}
+    final class CustomMaterial: SourceMaterial {}
 
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
-    var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var scene = Object(label: "Scene", [intersectionMesh])
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)

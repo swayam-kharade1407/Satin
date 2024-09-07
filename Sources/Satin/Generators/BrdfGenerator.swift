@@ -10,33 +10,33 @@ import Foundation
 import Metal
 
 public final class BrdfGenerator {
-    final class BrdfComputeSystem: TextureComputeSystem {
-        init(device: MTLDevice, textureDescriptor: MTLTextureDescriptor) {
-            super.init(
-                device: device,
-                pipelinesURL: getPipelinesComputeURL()!,
-                textureDescriptors: [textureDescriptor]
-            )
+    final class BrdfComputeProcessor: TextureComputeProcessor {
+        init(device: MTLDevice) {
+            super.init(device: device, pipelinesURL: getPipelinesComputeURL()!)
         }
     }
 
-    private var compute: BrdfComputeSystem
+    private var compute: BrdfComputeProcessor
 
     public init(device: MTLDevice, size: Int) {
-        let textureDescriptor: MTLTextureDescriptor = .texture2DDescriptor(
-            pixelFormat: .rg16Float,
-            width: size,
-            height: size,
-            mipmapped: false
-        )
-        compute = BrdfComputeSystem(device: device, textureDescriptor: textureDescriptor)
+        let descriptor = MTLTextureDescriptor()
+        descriptor.pixelFormat = .rg16Float
+        descriptor.width = size
+        descriptor.height = size
+        descriptor.usage = [.shaderRead, .shaderWrite]
+        descriptor.storageMode = .shared
+        descriptor.allowGPUOptimizedContents = true
+
+        let texture = device.makeTexture(descriptor: descriptor)
+        texture?.label = "BRDF LUT"
+
+        compute = BrdfComputeProcessor(device: device)
+        compute.set(texture, index: ComputeTextureIndex.Custom0)
     }
 
     public func encode(commandBuffer: MTLCommandBuffer) -> MTLTexture? {
         commandBuffer.label = "\(compute.label) Compute Command Buffer"
         compute.update(commandBuffer)
-        let texture = compute.dstTextures[0]
-        texture.label = "BRDF LUT"
-        return texture
+        return compute.computeTextures[.Custom0]
     }
 }

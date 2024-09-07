@@ -7,11 +7,9 @@
 //
 
 import Metal
-import MetalKit
-
 import Satin
 
-class RayMarchingRenderer: BaseRenderer {
+final class RayMarchingRenderer: BaseRenderer {
     final class RayMarchedMaterial: SourceMaterial {
         init(pipelinesURL: URL) {
             super.init(pipelinesURL: pipelinesURL, live: true)
@@ -27,18 +25,18 @@ class RayMarchingRenderer: BaseRenderer {
         }
     }
 
-    var mesh = Mesh(geometry: BoxGeometry(size: 2.0), material: BasicDiffuseMaterial(hardness: 0.7))
-    var camera = {
-        let c = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.1, far: 100.0, fov: 45)
-        c.lookAt(target: .zero)
-        return c
-    }()
+    let mesh = Mesh(geometry: BoxGeometry(size: 2.0), material: BasicDiffuseMaterial(hardness: 0.7))
+    let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.1, far: 100.0, fov: 45)
 
     lazy var rayMarchedMaterial = RayMarchedMaterial(pipelinesURL: pipelinesURL)
     lazy var rayMarchedMesh = Mesh(geometry: QuadGeometry(), material: rayMarchedMaterial)
     lazy var scene = Object(label: "Scene", [mesh, rayMarchedMesh])
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
+
+    override func setup() {
+        camera.lookAt(target: .zero)
+    }
 
     deinit {
         cameraController.disable()

@@ -16,8 +16,8 @@ import Satin
 
 import SwiftUI
 
-class ARDrawingRenderer: BaseRenderer {
-    class RainbowMaterial: SourceMaterial {}
+final class ARDrawingRenderer: BaseRenderer {
+    final class RainbowMaterial: SourceMaterial {}
 
     // MARK: - AR
 

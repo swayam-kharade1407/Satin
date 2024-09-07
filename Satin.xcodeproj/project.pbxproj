@@ -236,6 +236,8 @@
 		E101A95B2C070EA00055FABA /* SatinImmersiveSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */; };
 		E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */; };
 		E10A52D52C581CE300BB537A /* CodingUserInfoKey+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */; };
+		E14638662C8CB4C4005E36E9 /* TextureComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */; };
+		E14638682C8CB4EF005E36E9 /* ComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
 		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
 		E1FEA9072C3737830002CD80 /* Float+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FEA9062C3737830002CD80 /* Float+Extensions.swift */; };
@@ -472,6 +474,8 @@
 		66D7DEF72C06A24B00B5A6C8 /* Types.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Types.mm; sourceTree = "<group>"; };
 		E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodingUserInfoKey+Extensions.swift"; sourceTree = "<group>"; };
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
+		E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureComputeProcessor.swift; sourceTree = "<group>"; };
+		E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeProcessor.swift; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
 		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
 		E1FEA9062C3737830002CD80 /* Float+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+Extensions.swift"; sourceTree = "<group>"; };
@@ -596,6 +600,8 @@
 				66D7DD652C06A24B00B5A6C8 /* BufferComputeSystem.swift */,
 				66D7DD662C06A24B00B5A6C8 /* ComputeSystem.swift */,
 				66D7DD672C06A24B00B5A6C8 /* TextureComputeSystem.swift */,
+				E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */,
+				E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */,
 			);
 			path = Compute;
 			sourceTree = "<group>";
@@ -1094,6 +1100,7 @@
 			files = (
 				E101A85E2C07061D0055FABA /* Types.mm in Sources */,
 				E101A8542C07061D0055FABA /* Bezier.mm in Sources */,
+				E14638682C8CB4EF005E36E9 /* ComputeProcessor.swift in Sources */,
 				E101A8552C07061D0055FABA /* Bounds.mm in Sources */,
 				E101A8562C07061D0055FABA /* Bvh.mm in Sources */,
 				E101A8572C07061D0055FABA /* Conversions.mm in Sources */,
@@ -1148,6 +1155,7 @@
 				E101A9582C070EA00055FABA /* MetalViewController.swift in Sources */,
 				E101A9592C070EA00055FABA /* MetalViewRenderer.swift in Sources */,
 				E101A95A2C070EA00055FABA /* MetalViewRendererDelegate.swift in Sources */,
+				E14638662C8CB4C4005E36E9 /* TextureComputeProcessor.swift in Sources */,
 				E101A95B2C070EA00055FABA /* SatinImmersiveSpace.swift in Sources */,
 				E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */,
 				E101A8832C0709940055FABA /* Bounds+Extensions.swift in Sources */,

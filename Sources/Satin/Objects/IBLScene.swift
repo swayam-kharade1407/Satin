@@ -6,9 +6,7 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import Combine
 import Metal
-import ModelIO
 import simd
 
 public final class IBLScene: Object, IBLEnvironment {
@@ -16,6 +14,7 @@ public final class IBLScene: Object, IBLEnvironment {
 
     public internal(set) var environment: MTLTexture?
     public internal(set) var cubemapTexture: MTLTexture?
+    public internal(set) var brdfTexture: MTLTexture?
 
     public internal(set) var irradianceTexture: MTLTexture?
     public var irradianceTexcoordTransform = matrix_identity_float3x3
@@ -23,116 +22,60 @@ public final class IBLScene: Object, IBLEnvironment {
     public internal(set) var reflectionTexture: MTLTexture?
     public var reflectionTexcoordTransform = matrix_identity_float3x3
 
-    public internal(set) var brdfTexture: MTLTexture?
+    static let cubemapGenerator = CubemapGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.023512959480285645
+    static let diffuseIBLGenerator = DiffuseIBLGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.3512990474700928
+    static let specularIBLGenerator = SpecularIBLGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.09427797794342041
+    static let brdfGenerator = BrdfGenerator(device: MTLCreateSystemDefaultDevice()!, size: 512) // 0.012279033660888672
 
-    private var qos: DispatchQoS.QoSClass = .background
+    private var qos: DispatchQoS.QoSClass = .userInitiated
     private var cubemapSize: Int = 512
     private var reflectionSize: Int = 512
     private var irradianceSize: Int = 64
-    private var brdfSize: Int = 512
 
-    public func setEnvironment(texture: MTLTexture, qos: DispatchQoS.QoSClass = .background, cubemapSize: Int = 512, reflectionSize: Int = 512, irrandianceSize: Int = 64, brdfSize: Int = 512, progress: Progress? = nil) {
+    public func setEnvironment(texture: MTLTexture, qos: DispatchQoS.QoSClass = .userInitiated, cubemapSize: Int = 512, reflectionSize: Int = 512, irradianceSize: Int = 64) {
         environment = texture
         self.cubemapSize = cubemapSize
         self.reflectionSize = reflectionSize
-        irradianceSize = irrandianceSize
-        self.brdfSize = brdfSize
+        self.irradianceSize = irradianceSize
 
-        DispatchQueue.global(qos: qos).async {
+        DispatchQueue.global(qos: qos).async { [unowned self] in
             guard let environment = self.environment,
-                  let commandQueue = environment.device.makeCommandQueue() else { return }
+                  let commandQueue = environment.device.makeCommandQueue(),
+                  let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 
             let device = environment.device
 
-            var _brdfTexture: MTLTexture? = nil
-            var _reflectionTexture: MTLTexture? = nil
-            var _irradianceTexture: MTLTexture? = nil
+            self.cubemapTexture = self.setupCubemapTexture(device: device, commandBuffer: commandBuffer)
+            self.irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
+            self.reflectionTexture = self.setupReflectionTexture(device: device, commandBuffer: commandBuffer)
 
-            progress?.completedUnitCount = 0
-            progress?.totalUnitCount = 4
-
-            if let commandBuffer = commandQueue.makeCommandBuffer() {
-                commandBuffer.addCompletedHandler { _ in
-                    progress?.completedUnitCount += 1
-                }
-                self.cubemapTexture = self.setupCubemapTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.commit()
+            if self.brdfTexture == nil {
+                self.brdfTexture = self.setupBrdfTexture(device: device, commandBuffer: commandBuffer)
             }
 
-            if let commandBuffer = commandQueue.makeCommandBuffer() {
-                _irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.irradianceTexture = _irradianceTexture
-                }
-                commandBuffer.commit()
-            }
-
-            if let commandBuffer = commandQueue.makeCommandBuffer() {
-                _reflectionTexture = self.setupReflectionTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.reflectionTexture = _reflectionTexture
-                }
-                commandBuffer.commit()
-            }
-
-            if self.brdfTexture == nil, let commandBuffer = commandQueue.makeCommandBuffer() {
-                _brdfTexture = self.setupBrdfTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.brdfTexture = _brdfTexture
-                }
-                commandBuffer.commit()
-            }
+            commandBuffer.commit()
         }
     }
 
-    public func setEnvironmentCubemap(texture: MTLTexture, qos: DispatchQoS.QoSClass = .background, reflectionSize: Int = 512, irrandianceSize: Int = 64, brdfSize: Int = 512, progress: Progress? = nil) {
+    public func setEnvironmentCubemap(texture: MTLTexture, qos: DispatchQoS.QoSClass = .userInitiated, reflectionSize: Int = 512, irradianceSize: Int = 32) {
         cubemapTexture = texture
         cubemapSize = texture.width
         self.reflectionSize = reflectionSize
-        irradianceSize = irrandianceSize
-        self.brdfSize = brdfSize
+        self.irradianceSize = irradianceSize
 
         let device = texture.device
 
-        DispatchQueue.global(qos: qos).async {
-            guard let commandQueue = texture.device.makeCommandQueue() else { return }
+        DispatchQueue.global(qos: qos).async { [unowned self] in
+            guard let commandQueue = texture.device.makeCommandQueue(),
+                  let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 
-            var _brdfTexture: MTLTexture? = nil
-            var _reflectionTexture: MTLTexture? = nil
-            var _irradianceTexture: MTLTexture? = nil
-
-            progress?.completedUnitCount = 0
-            progress?.totalUnitCount = 3
-
-            if let commandBuffer = commandQueue.makeCommandBuffer() {
-                _irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.irradianceTexture = _irradianceTexture
-                }
-                commandBuffer.commit()
+            self.irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
+            self.reflectionTexture = self.setupReflectionTexture(device: device, commandBuffer: commandBuffer)
+            if self.brdfTexture == nil {
+                self.brdfTexture = self.setupBrdfTexture(device: device, commandBuffer: commandBuffer)
             }
 
-            if let commandBuffer = commandQueue.makeCommandBuffer() {
-                _reflectionTexture = self.setupReflectionTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.reflectionTexture = _reflectionTexture
-                }
-                commandBuffer.commit()
-            }
-
-            if self.brdfTexture == nil, let commandBuffer = commandQueue.makeCommandBuffer() {
-                _brdfTexture = self.setupBrdfTexture(device: device, commandBuffer: commandBuffer)
-                commandBuffer.addCompletedHandler { [weak self] _ in
-                    progress?.completedUnitCount += 1
-                    self?.brdfTexture = _brdfTexture
-                }
-                commandBuffer.commit()
-            }
+            commandBuffer.commit()
         }
     }
 
@@ -145,13 +88,12 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: true
            )
         {
-            CubemapGenerator(device: device)
+            IBLScene.cubemapGenerator
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: hdriTexture,
                     destinationTexture: texture
                 )
-            texture.label = "Environment Cubemap"
             return texture
         }
         return nil
@@ -166,13 +108,12 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: false
            )
         {
-            DiffuseIBLGenerator(device: device)
+            IBLScene.diffuseIBLGenerator
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: cubemapTexture,
                     destinationTexture: texture
                 )
-            texture.label = "Irradiance IBL"
             return texture
         }
         return nil
@@ -187,31 +128,29 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: true
            )
         {
-            SpecularIBLGenerator(device: device)
+            IBLScene.specularIBLGenerator
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: cubemapTexture,
                     destinationTexture: texture
                 )
-            texture.label = "Reflection IBL"
             return texture
         }
         return nil
     }
 
     private func setupBrdfTexture(device: MTLDevice, commandBuffer: MTLCommandBuffer) -> MTLTexture? {
-        return BrdfGenerator(device: device, size: brdfSize).encode(commandBuffer: commandBuffer)
+        IBLScene.brdfGenerator.encode(commandBuffer: commandBuffer)
     }
 
     private func createCubemapTexture(device: MTLDevice, pixelFormat: MTLPixelFormat, size: Int, mipmapped: Bool) -> MTLTexture?
     {
         let desc = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: pixelFormat, size: size, mipmapped: mipmapped)
         desc.usage = [.shaderWrite, .shaderRead]
+        desc.allowGPUOptimizedContents = true
         desc.storageMode = .private
         desc.resourceOptions = .storageModePrivate
 
-        let texture = device.makeTexture(descriptor: desc)
-        texture?.label = "Cubemap"
-        return texture
+        return device.makeTexture(descriptor: desc)
     }
 }

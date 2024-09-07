@@ -11,15 +11,18 @@ import MetalKit
 
 import Satin
 
-class OcclusionRenderer: BaseRenderer {
-    var mesh = Mesh(geometry: IcoSphereGeometry(radius: 1.0, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
-
-    var intersectionMesh: Mesh = {
-        let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
-        mesh.label = "Intersection Mesh"
-        mesh.visible = false
-        return mesh
-    }()
+final class OcclusionRenderer: BaseRenderer {
+    let mesh = Mesh(
+        label: "Mesh",
+        geometry: IcoSphereGeometry(radius: 1.0, resolution: 0),
+        material: BasicDiffuseMaterial(hardness: 0.7)
+    )
+    let intersectionMesh = Mesh(
+        label: "Intersection Mesh",
+        geometry: IcoSphereGeometry(radius: 0.1, resolution: 2),
+        material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled),
+        visible: false
+    )
 
     let occlusionGeometry = BoxGeometry(width: 4.0, height: 1.0, depth: 4.0)
 

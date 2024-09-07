@@ -65,19 +65,14 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
         material: NormalColorMaterial(true)
     )
 
+    let camera = PerspectiveCamera(position: simd_make_float3(5.0, 5.0, 5.0), near: 0.001, far: 200.0)
+
     lazy var scene = Object(label: "Scene", [grid, axisMesh])
-    
-
-    var camera: PerspectiveCamera = {
-        let camera = PerspectiveCamera(position: simd_make_float3(5.0, 5.0, 5.0), near: 0.001, far: 200.0)
-        camera.lookAt(target: .zero)
-        return camera
-    }()
-
     lazy var cameraController = OrbitPerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
     override func setup() {
+        camera.lookAt(target: .zero)
         cameraController.target.add(targetMesh)
         scene.attach(cameraController.target)
 

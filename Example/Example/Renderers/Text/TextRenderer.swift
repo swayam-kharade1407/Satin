@@ -14,26 +14,11 @@ import MetalKit
 
 import Satin
 
-class TextRenderer: BaseRenderer {
-    var scene = Object()
-
-    
-
-    lazy var camera: PerspectiveCamera = {
-        let camera = PerspectiveCamera()
-        camera.position = simd_make_float3(0.0, 0.0, 40.0)
-        camera.near = 0.001
-        camera.far = 1000.0
-        return camera
-    }()
-
+final class TextRenderer: BaseRenderer {
+    let scene = Object()
+    let camera = PerspectiveCamera(position: simd_make_float3(0.0, 0.0, 40.0), near: 0.001, far: 1000.0)
     lazy var cameraController: PerspectiveCameraController = .init(camera: camera, view: metalView)
-
-    lazy var renderer: Renderer = {
-        let renderer = Renderer(context: defaultContext)
-        renderer.clearColor = .init(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-        return renderer
-    }()
+    lazy var renderer = Renderer(context: defaultContext)
 
     override func setup() {
         setupText()

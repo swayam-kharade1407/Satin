@@ -15,7 +15,7 @@ import MetalPerformanceShaders
 
 import Satin
 
-fileprivate class ARScene: Object, IBLEnvironment {
+fileprivate final class ARScene: Object, IBLEnvironment {
     private var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }
     private var sharedAssetsURL: URL { assetsURL.appendingPathComponent("Shared") }
     private var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
@@ -111,7 +111,7 @@ fileprivate class ARScene: Object, IBLEnvironment {
     }
 }
 
-fileprivate class ARObject: Object {
+fileprivate final class ARObject: Object {
     var anchor: ARAnchor? {
         didSet {
             if let anchor = anchor {
@@ -144,7 +144,7 @@ fileprivate class ARObject: Object {
     }
 }
 
-class Model: Object {
+final class Model: Object {
     private var assetsURL: URL { Bundle.main.resourceURL!.appendingPathComponent("Assets") }
     private var sharedAssetsURL: URL { assetsURL.appendingPathComponent("Shared") }
     private var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
@@ -239,7 +239,7 @@ class Model: Object {
     }
 }
 
-class ARPBRRenderer: BaseRenderer, MaterialDelegate {
+final class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     class PostMaterial: SourceMaterial {
         public var grainIntensity: Float = 0.0 {
             didSet {
@@ -334,6 +334,7 @@ class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     }()
 
     lazy var postProcessor = PostProcessor(
+        label: "Post Processor", 
         context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
         material: postMaterial
     )

@@ -14,7 +14,7 @@ import Metal
 
 import Satin
 
-class ARLidarMeshRenderer: BaseRenderer {
+final class ARLidarMeshRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
     private let sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsUpdatedSubscription: AnyCancellable?

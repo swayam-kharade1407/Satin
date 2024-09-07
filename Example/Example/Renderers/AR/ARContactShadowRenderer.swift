@@ -14,7 +14,7 @@ import Metal
 
 import Satin
 
-fileprivate class ARObject: Object {
+fileprivate final class ARObject: Object {
     var anchor: ARAnchor? {
         didSet {
             if let anchor = anchor {
@@ -34,7 +34,7 @@ fileprivate class ARObject: Object {
     }
 }
 
-fileprivate class Invader: Object {
+fileprivate final class Invader: Object {
     let voxelScale: Float = 0.025
 
     let voxels = Object(label: "Voxels")
@@ -89,7 +89,7 @@ fileprivate class Invader: Object {
     }
 }
 
-class ARContactShadowRenderer: BaseRenderer {
+final class ARContactShadowRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
     private let sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsSubscription: AnyCancellable?

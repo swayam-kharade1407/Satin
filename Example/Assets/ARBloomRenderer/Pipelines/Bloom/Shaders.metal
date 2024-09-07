@@ -2,7 +2,7 @@
 
 typedef struct {
     float grainAmount; //slider,0,1,0.5
-    float bloomAmount; //slider,0,4,1
+    float bloomAmount; //slider,0,4,0.66
     float grainIntensity;
     float time;
 } BloomUniforms;
@@ -27,23 +27,16 @@ fragment float4 bloomFragment
 (
     VertexData in [[stage_in]],
     constant BloomUniforms &uniforms [[buffer( FragmentBufferMaterialUniforms )]],
-    texture2d<float, access::sample> bgTex [[texture( FragmentTextureCustom0 )]],
-    texture2d<float, access::sample> contentTex [[texture( FragmentTextureCustom1 )]],
-    texture2d<float, access::sample> bloomTex [[texture( FragmentTextureCustom2 )]],
-    texture3d<float> grainTex [[texture( FragmentTextureCustom3 )]]
+    texture2d<float, access::sample> bloomTex [[texture( FragmentTextureCustom0 )]],
+    texture3d<float> grainTex [[texture( FragmentTextureCustom1 )]]
 )
 {
-    const float4 bgSample = bgTex.sample( s, in.texcoord );
     const float4 bloomSample = bloomTex.sample( s, in.texcoord );
     const float4 grainSample = getGrain(grainTex, in.position.xy, in.texcoord, uniforms.grainIntensity, uniforms.time);
 
-    float4 contentSample = contentTex.sample( s, in.texcoord );
-    contentSample.rgb += mix(0.0, grainSample.rgb * grainSample.a, contentSample.a * uniforms.grainAmount);
-
-    float4 color = mix(bgSample, contentSample, contentSample.a);
-
+    float4 color = float4(0.0, 0.0, 0.0, 1.0);
+    color.rgb = mix(0.0, grainSample.rgb * grainSample.a, uniforms.grainAmount);
     color.rgb += bloomSample.a * bloomSample.rgb * uniforms.bloomAmount;
-
     return color;
 }
 

@@ -16,15 +16,11 @@ final class InstancedMeshRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     // MARK: - Satin
 
-    var camera = {
-        let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
-        camera.lookAt(target: .zero)
-        return camera
-    }()
+    let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
+    let scene = Object(label: "Scene")
+    let container = Object(label: "Container")
 
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    var scene = Object(label: "Scene")
-    var container = Object(label: "Container")
     var instancedMesh: InstancedMesh?
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -34,6 +30,7 @@ final class InstancedMeshRenderer: BaseRenderer {
     let dim = 7
 
     override func setup() {
+        camera.lookAt(target: .zero)
         setupScene()
 
 #if os(visionOS)

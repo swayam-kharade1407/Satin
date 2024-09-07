@@ -7,11 +7,9 @@
 //
 
 import Metal
-import MetalKit
-
 import Satin
 
-class ExtrudedTextRenderer: BaseRenderer {
+final class ExtrudedTextRenderer: BaseRenderer {
     var scene = Object()
     var mesh: Mesh!
 

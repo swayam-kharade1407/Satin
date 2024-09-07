@@ -7,11 +7,9 @@
 //
 
 import Metal
-import MetalKit
-
 import Satin
 
-class ProjectedShadowRenderer: BaseRenderer {
+final class ProjectedShadowRenderer: BaseRenderer {
     // MARK: - 3D Scene
 
     lazy var scene = Object(label: "Scene", [shadowPlaneMesh, mesh])

@@ -9,10 +9,9 @@
 import Metal
 import MetalKit
 import MetalPerformanceShaders
-
 import Satin
 
-class ContactShadowRenderer: BaseRenderer {
+final class ContactShadowRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
     lazy var matcapTexture: MTLTexture? = {

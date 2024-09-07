@@ -12,7 +12,7 @@ import MetalKit
 
 import Satin
 
-class SuperShapeGeometry: SatinGeometry {
+final class SuperShapeGeometry: SatinGeometry {
     var r1: Float { didSet {
         if oldValue != r1 {
             _updateGeometryData = true
@@ -126,7 +126,7 @@ class SuperShapeGeometry: SatinGeometry {
     }
 }
 
-class SuperShapesRenderer: BaseRenderer {
+final class SuperShapesRenderer: BaseRenderer {
     var wireframe = false {
         didSet {
             mesh.triangleFillMode = wireframe ? .lines : .fill

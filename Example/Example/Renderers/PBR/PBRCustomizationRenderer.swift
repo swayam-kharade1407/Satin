@@ -9,11 +9,9 @@
 //
 
 import Metal
-import MetalKit
-
 import Satin
 
-class PBRCustomizationRenderer: BaseRenderer {
+final class PBRCustomizationRenderer: BaseRenderer {
     // MARK: - 3D Scene
 
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
@@ -59,7 +57,6 @@ class PBRCustomizationRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

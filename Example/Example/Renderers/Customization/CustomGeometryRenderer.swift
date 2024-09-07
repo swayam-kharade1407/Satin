@@ -29,9 +29,9 @@ final class IcosahedronGeometry: SatinGeometry {
 }
 
 final class CustomGeometryRenderer: BaseRenderer {
-    var scene = Object(label: "Scene")
+    let scene = Object(label: "Scene")
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 100.0)
 
-    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -51,8 +51,11 @@ final class CustomGeometryRenderer: BaseRenderer {
     }
 
     func setupMesh() {
-        mesh = Mesh(geometry: IcosahedronGeometry(size: 1.0, resolution: 4), material: NormalColorMaterial(true))
-        mesh.label = "Icosahedron"
+        mesh = Mesh(
+            label: "Icosahedron",
+            geometry: IcosahedronGeometry(size: 1.0, resolution: 4),
+            material: NormalColorMaterial(true)
+        )
         mesh.triangleFillMode = .lines
         scene.add(mesh)
     }
@@ -64,7 +67,6 @@ final class CustomGeometryRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

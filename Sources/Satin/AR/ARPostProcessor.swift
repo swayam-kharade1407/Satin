@@ -23,11 +23,10 @@ public class ARPostProcessor: PostProcessor {
 
     var session: ARSession
 
-    public init(context: Context, session: ARSession) {
+    public init(label: String, context: Context, session: ARSession) {
         self.session = session
-        super.init(context: context, material: ARPostMaterial())
+        super.init(label: label, context: context, material: ARPostMaterial())
         renderer.colorLoadAction = .load
-        label = "AR Post Processor"
     }
 
     internal func update(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {

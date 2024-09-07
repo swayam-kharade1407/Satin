@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class BufferGeometryMesh: Object, Renderable {
+final class BufferGeometryMesh: Object, Renderable {
     var geometry: Geometry {
         didSet {
             if geometry != oldValue {
@@ -141,11 +141,11 @@ class BufferGeometryMesh: Object, Renderable {
 
     // MARK: - Comoute Bounds
 
-    override open func computeLocalBounds() -> Bounds {
+    override public func computeLocalBounds() -> Bounds {
         return transformBounds(geometry.bounds, localMatrix)
     }
 
-    override open func computeWorldBounds() -> Bounds {
+    override public func computeWorldBounds() -> Bounds {
         var result = transformBounds(geometry.bounds, worldMatrix)
         for child in children {
             result = mergeBounds(result, child.worldBounds)
@@ -155,7 +155,7 @@ class BufferGeometryMesh: Object, Renderable {
 
     // MARK: - Intersect
 
-    override open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
+    override public func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
         guard visible || invisible, intersects(ray: ray) else { return }
 
         var geometryIntersections = [IntersectionResult]()
@@ -198,12 +198,12 @@ class BufferGeometryMesh: Object, Renderable {
     }
 }
 
-class BufferGeometryRenderer: BaseRenderer {
+final class BufferGeometryRenderer: BaseRenderer {
     var geometryData = createGeometryData()
     var geometry = Geometry()
     lazy var mesh = BufferGeometryMesh(geometry: geometry, material: NormalColorMaterial(true))
 
-    var intersectionMesh: Mesh = {
+    let intersectionMesh: Mesh = {
         let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.1, resolution: 2), material: BasicColorMaterial(color: [0.0, 1.0, 0.0, 1.0], blending: .disabled))
         mesh.label = "Intersection Mesh"
         mesh.renderPass = 1

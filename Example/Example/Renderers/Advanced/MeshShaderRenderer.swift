@@ -7,18 +7,16 @@
 //
 
 import Metal
-import MetalKit
-
 import Satin
 
-class MeshShaderRenderer: BaseRenderer {
-    var geometry = IcoSphereGeometry(radius: 1.0, resolution: 4)
+final class MeshShaderRenderer: BaseRenderer {
+    let geometry = IcoSphereGeometry(radius: 1.0, resolution: 4)
     lazy var mesh = Mesh(geometry: geometry, material: BasicDiffuseMaterial(hardness: 0.7))
     fileprivate lazy var meshNormals = CustomMesh(geometry: geometry, material: CustomMaterial(pipelinesURL: pipelinesURL))
 
     lazy var scene = Object(label: "Scene", [mesh])
 
-    lazy var camera = PerspectiveCamera(position: .init(0.0, 0.0, 8.0), near: 0.01, far: 100.0, fov: 45)
+    let camera = PerspectiveCamera(position: .init(0.0, 0.0, 8.0), near: 0.01, far: 100.0, fov: 45)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
     lazy var startTime = getTime()
@@ -58,7 +56,7 @@ class MeshShaderRenderer: BaseRenderer {
     }
 }
 
-private class CustomShader: SourceShader {
+private final class CustomShader: SourceShader {
     public var objectFunctionName = "shaderObject"
     public var meshFunctionName = "shaderMesh"
 
@@ -79,7 +77,7 @@ private class CustomShader: SourceShader {
         super.init(configuration: configuration)
     }
 
-    override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
+    override public func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         if #available(macOS 13.0, iOS 16.0, *) {
             if let context,
                let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
@@ -150,7 +148,7 @@ private class CustomShader: SourceShader {
     }
 }
 
-private class CustomMaterial: SourceMaterial {
+private final class CustomMaterial: SourceMaterial {
     init(pipelinesURL: URL) {
         super.init(pipelinesURL: pipelinesURL)
 //        set("Time", 0.0)
@@ -197,7 +195,7 @@ private class CustomMaterial: SourceMaterial {
     }
 }
 
-private class CustomMesh: Object, Renderable {
+private final class CustomMesh: Object, Renderable {
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
 
     var opaque: Bool { material?.blending == .disabled }

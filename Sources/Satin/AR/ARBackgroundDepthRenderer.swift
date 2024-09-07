@@ -88,14 +88,15 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         self.usePlaneDepth = usePlaneDepth
         self.useMeshDepth = useMeshDepth
 
-        depthRenderer = Renderer(context: context, frameBufferOnly: false)
-        depthRenderer.label = "AR Background"
-
-        depthRenderer.colorLoadAction = .clear
-        depthRenderer.colorStoreAction = .store
-
-        depthRenderer.depthLoadAction = .clear
-        depthRenderer.depthStoreAction = .store
+        depthRenderer = Renderer(
+            label: "AR Background",
+            context: context,
+            colorLoadAction: .clear,
+            colorStoreAction: .store,
+            depthLoadAction: .clear,
+            depthStoreAction: .store,
+            frameBufferOnly: false
+        )
 
         depthCamera = ARPerspectiveCamera(session: session, metalView: metalView, near: near, far: far)
 
@@ -103,9 +104,12 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
 
         backgroundDepthMaterial.set("Near Far Delta", [near, far, far - near])
 
-        depthMesh = Mesh(geometry: Geometry(), material: backgroundDepthMaterial)
-        depthMesh.label = "AR Depth Mesh"
-        depthMesh.visible = false
+        depthMesh = Mesh(
+            label: "AR Depth Mesh", 
+            geometry: Geometry(),
+            material: backgroundDepthMaterial,
+            visible: false
+        )
 
         depthUpscaler = ARDepthUpscaler(device: context.device)
 

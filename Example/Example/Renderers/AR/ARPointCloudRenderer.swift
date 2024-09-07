@@ -15,9 +15,9 @@ import MetalKit
 import Satin
 import SwiftUI
 
-class ARPointCloudRenderer: BaseRenderer {
-    class PointMaterial: SourceMaterial {}
-    class PointComputeSystem: BufferComputeSystem {
+final class ARPointCloudRenderer: BaseRenderer {
+    final class PointMaterial: SourceMaterial {}
+    final class PointComputeSystem: BufferComputeSystem {
         var depthTexture: CVMetalTexture?
         override func bind(_ computeEncoder: MTLComputeCommandEncoder) -> Int {
             if let depthTexture {

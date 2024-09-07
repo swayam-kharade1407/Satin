@@ -7,19 +7,16 @@
 //
 
 import Metal
-import MetalKit
 import simd
-
 import Satin
 
 final class PostProcessingRenderer: BaseRenderer {
     var size = simd_int2(repeating: 0)
-
-    class PostMaterial: SourceMaterial {}
+    final class PostMaterial: SourceMaterial {}
 
     var renderTexture: MTLTexture?
-    var material = BasicDiffuseMaterial(hardness: 0.7)
-    var geometry = IcoSphereGeometry(radius: 1.0, resolution: 0)
+    let material = BasicDiffuseMaterial(hardness: 0.7)
+    let geometry = IcoSphereGeometry(radius: 1.0, resolution: 0)
 
     lazy var scene: Object = {
         let scene = Object(label: "Scene")
@@ -37,12 +34,14 @@ final class PostProcessingRenderer: BaseRenderer {
         return scene
     }()
 
+
+    lazy var postMaterial = PostMaterial(pipelinesURL: pipelinesURL)
     lazy var postProcessor: PostProcessor = {
         let processor = PostProcessor(
+            label: "Post Processor",
             context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat),
-            material: PostMaterial(pipelinesURL: pipelinesURL)
+            material: postMaterial
         )
-        processor.label = "Post Processor"
         processor.mesh.preDraw = { [weak self] renderEncoder in
             guard let self = self else { return }
             renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
@@ -70,7 +69,7 @@ final class PostProcessingRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        guard let renderTexture = renderTexture else { return }
+        guard let renderTexture else { return }
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -78,6 +77,7 @@ final class PostProcessingRenderer: BaseRenderer {
             camera: camera,
             renderTarget: renderTexture
         )
+        postMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
         postProcessor.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 

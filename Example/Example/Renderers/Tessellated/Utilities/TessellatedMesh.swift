@@ -12,7 +12,7 @@ import simd
 
 import Satin
 
-class TessellatedMesh: Object, Renderable {
+final class TessellatedMesh: Object, Renderable {
     var preDraw: ((MTLRenderCommandEncoder) -> Void)?
 
     var opaque: Bool {
@@ -124,7 +124,7 @@ class TessellatedMesh: Object, Renderable {
 
     // MARK: - Draw
 
-    open func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+    public func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         guard instanceCount > 0, let vertexUniforms = vertexUniforms[renderContext], let material, !geometry.vertexBuffers.isEmpty else { return }
 
         renderEncoderState.vertexVertexUniforms = vertexUniforms

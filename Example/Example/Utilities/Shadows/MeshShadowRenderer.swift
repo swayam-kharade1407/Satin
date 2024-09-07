@@ -12,7 +12,7 @@ import Metal
 import MetalPerformanceShaders
 import Satin
 
-class MeshShadowRenderer {
+final class MeshShadowRenderer {
     public var texture: MTLTexture? {
         _texture
     }

@@ -8,10 +8,9 @@
 
 import Metal
 import MetalKit
-
 import Satin
 
-class SDFTextRenderer: BaseRenderer {
+final class SDFTextRenderer: BaseRenderer {
     lazy var fontTexture: MTLTexture? = {
         let loader = MTKTextureLoader(device: device)
         do {

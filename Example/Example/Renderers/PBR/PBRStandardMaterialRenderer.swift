@@ -17,7 +17,7 @@ import CoreImage
 import ModelIO
 import UniformTypeIdentifiers
 
-class PBRStandardMaterialRenderer: BaseRenderer {
+final class PBRStandardMaterialRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 

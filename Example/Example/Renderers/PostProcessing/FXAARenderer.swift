@@ -20,15 +20,7 @@ final class FXAARenderer: BaseRenderer {
     var updateRenderTexture = true
 
     lazy var fxaaMaterial = FxaaMaterial(pipelinesURL: pipelinesURL)
-
-    lazy var fxaaProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: fxaaMaterial)
-        pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
-            renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
-        }
-        pp.label = "FXAA Post Processor"
-        return pp
-    }()
+    lazy var fxaaProcessor = PostProcessor(label: "FXAA Post Processor", context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: fxaaMaterial)
 
     lazy var mesh: Mesh = {
         let mesh = Mesh(
@@ -67,7 +59,6 @@ final class FXAARenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -75,6 +66,9 @@ final class FXAARenderer: BaseRenderer {
             camera: camera,
             renderTarget: renderTexture
         )
+
+        fxaaMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
+
         fxaaProcessor.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 

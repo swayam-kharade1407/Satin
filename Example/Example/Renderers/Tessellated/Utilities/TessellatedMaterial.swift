@@ -10,7 +10,7 @@ import Foundation
 import Metal
 import Satin
 
-class TessellatedShader: SourceShader {
+final class TessellatedShader: SourceShader {
     unowned var geometry: TessellatedGeometry
 
     public init(_ label: String, _ pipelineURL: URL, _ geometry: TessellatedGeometry) {
@@ -22,7 +22,7 @@ class TessellatedShader: SourceShader {
         fatalError("init(configuration:) has not been implemented")
     }
 
-    override open func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
+    override public func makePipeline() throws -> (pipeline: MTLRenderPipelineState?, reflection: MTLRenderPipelineReflection?) {
         guard let context,
               let library = try ShaderLibraryCache.getLibrary(configuration: configuration.getLibraryConfiguration(), device: context.device),
               let vertexFunction = library.makeFunction(name: vertexFunctionName),
@@ -55,7 +55,7 @@ class TessellatedShader: SourceShader {
     }
 }
 
-class TessellatedMaterial: SourceMaterial {
+final class TessellatedMaterial: SourceMaterial {
     unowned var geometry: TessellatedGeometry
 
     public init(pipelinesURL: URL, geometry: TessellatedGeometry) {

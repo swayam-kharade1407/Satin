@@ -11,48 +11,30 @@ import Metal
 import MetalPerformanceShaders
 
 public final class CubemapGenerator {
-    final class CubemapComputeSystem: TextureComputeSystem {
-        var face: UInt32 = 0
-        var sourceTexture: MTLTexture?
-
+    final class CubemapProcessor: TextureComputeProcessor {
         init(device: MTLDevice) {
-            super.init(
-                device: device,
-                pipelinesURL: getPipelinesComputeURL()!,
-                textureDescriptors: []
-            )
-        }
-
-        override func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
-            let index = super.bind(computeEncoder: computeEncoder, iteration: iteration)
-            computeEncoder.setTexture(sourceTexture, index: index)
-            return index + 1
-        }
-
-        override func bindUniforms(_ computeEncoder: MTLComputeCommandEncoder) {
-            super.bindUniforms(computeEncoder)
-            computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
+            super.init(device: device, pipelinesURL: getPipelinesComputeURL()!)
         }
     }
 
-    private var compute: CubemapComputeSystem
+    private var compute: CubemapProcessor
     private var blur: MPSImageGaussianBlur?
 
     public init(device: MTLDevice, sigma: Float = 0.0, tonemapped: Bool = false, gammaCorrected: Bool = false) {
-        compute = CubemapComputeSystem(device: device)
+        compute = CubemapProcessor(device: device)
         if sigma > 0.0 {
             blur = MPSImageGaussianBlur(device: device, sigma: sigma)
+            blur?.edgeMode = .clamp
         }
         compute.set("Tone Mapped", tonemapped)
         compute.set("Gamma Corrected", gammaCorrected)
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
-        let levels = destinationTexture.mipmapLevelCount
         var size = destinationTexture.width
 
         var finalSourceTexture = sourceTexture
-        if let blur = blur {
+        if let blur {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = sourceTexture.pixelFormat
             descriptor.width = sourceTexture.width
@@ -62,6 +44,7 @@ public final class CubemapGenerator {
             descriptor.usage = [.shaderRead, .shaderWrite]
             descriptor.storageMode = .private
             descriptor.resourceOptions = .storageModePrivate
+            descriptor.allowGPUOptimizedContents = true
 
             if let sourceTextureBlurred = commandBuffer.device.makeTexture(descriptor: descriptor) {
                 blur.encode(commandBuffer: commandBuffer, sourceTexture: sourceTexture, destinationTexture: sourceTextureBlurred)
@@ -69,35 +52,13 @@ public final class CubemapGenerator {
             }
         }
 
-        for level in 0 ..< levels {
-            for face in 0 ..< 6 {
-                compute.face = UInt32(face)
-                compute.sourceTexture = finalSourceTexture
-                let desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: destinationTexture.pixelFormat, width: size, height: size, mipmapped: false)
-                desc.usage = [.shaderRead, .shaderWrite]
-                desc.storageMode = .private
-                desc.allowGPUOptimizedContents = true
-                compute.textureDescriptors = [desc]
+        compute.set(destinationTexture, index: ComputeTextureIndex.Custom0) // output
+        compute.set(finalSourceTexture, index: ComputeTextureIndex.Custom1) // input
+        compute.update(commandBuffer)
 
-                commandBuffer.label = "\(compute.label) Compute Command Buffer"
-                compute.update(commandBuffer)
-
-                commandBuffer.label = "\(compute.label) Blit Command Buffer"
-                if let blitEncoder = commandBuffer.makeBlitCommandEncoder(), let fromTexture = compute.dstTexture {
-                    blitEncoder.copy(
-                        from: fromTexture,
-                        sourceSlice: 0,
-                        sourceLevel: 0,
-                        to: destinationTexture,
-                        destinationSlice: face,
-                        destinationLevel: level,
-                        sliceCount: 1,
-                        levelCount: 1
-                    )
-                    blitEncoder.endEncoding()
-                }
-            }
-            size /= 2
+        if let blitEncoder = commandBuffer.makeBlitCommandEncoder() {
+            blitEncoder.generateMipmaps(for: destinationTexture)
+            blitEncoder.endEncoding()
         }
 
         destinationTexture.label = "Cubemap"

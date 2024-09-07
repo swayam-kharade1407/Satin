@@ -12,9 +12,9 @@ import Metal
 import MetalKit
 import Satin
 
-class MultipleViewportRenderer: BaseRenderer {
-    class ViewportMaterial: SourceMaterial {}
-    class AmplificationMaterial: SourceMaterial {}
+final class MultipleViewportRenderer: BaseRenderer {
+    final class ViewportMaterial: SourceMaterial {}
+    final class AmplificationMaterial: SourceMaterial {}
 
     override var depthPixelFormat: MTLPixelFormat { .invalid }
 

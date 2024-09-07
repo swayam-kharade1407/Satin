@@ -8,10 +8,9 @@
 
 import Metal
 import MetalKit
-
 import Satin
 
-class DirectionalShadowRenderer: BaseRenderer {
+final class DirectionalShadowRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
 
     let lightHelperGeo = BoxGeometry(width: 0.1, height: 0.1, depth: 0.5)

@@ -21,7 +21,7 @@ protocol AudioInputDelegate: AnyObject {
     func updatedSpectrum(microphone: AudioInput, spectrum: [Float], channel: Int)
 }
 
-class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
+final class AudioInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     public weak var delegate: AudioInputDelegate?
 
     var cancellables = Set<AnyCancellable>()

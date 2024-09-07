@@ -34,4 +34,12 @@ public enum ComputeTextureIndex: Int {
     case Custom8 = 8
     case Custom9 = 9
     case Custom10 = 10
+//    case Input0 = 11
+//    case Input1 = 12
+//    case Input2 = 13
+//    case Input3 = 14
+//    case Output0 = 15
+//    case Output1 = 16
+//    case Output2 = 17
+//    case Output3 = 18
 }

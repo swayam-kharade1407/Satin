@@ -11,8 +11,8 @@ import MetalKit
 
 import Satin
 
-class CustomInstancingRenderer: BaseRenderer {
-    class InstanceMaterial: SourceMaterial {}
+final class CustomInstancingRenderer: BaseRenderer {
+    final class InstanceMaterial: SourceMaterial {}
 
     // MARK: - Paths
 
@@ -26,7 +26,7 @@ class CustomInstancingRenderer: BaseRenderer {
         return material
     }()
 
-    var camera = OrthographicCamera()
+    let camera = OrthographicCamera()
 
     lazy var mesh = Mesh(geometry: QuadGeometry(), material: instanceMaterial)
     lazy var scene = Object(label: "Scene", [mesh])

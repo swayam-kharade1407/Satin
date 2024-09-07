@@ -12,7 +12,7 @@ import Metal
 import MetalPerformanceShaders
 import Satin
 
-class ShadowPostProcessor: PostProcessor {
+final class ShadowPostProcessor: PostProcessor {
     class ShadowPostMaterial: SourceMaterial {
         public unowned var colorTexture: MTLTexture? {
             didSet {
@@ -57,13 +57,12 @@ class ShadowPostProcessor: PostProcessor {
     }
 
     public init(context: Context) {
-        super.init(context: context, material: ShadowPostMaterial())
+        super.init(label: "Shadow Post Processor", context: context, material: ShadowPostMaterial())
         renderer.setClearColor(.zero)
-        label = "Shadow Post Processor"
     }
 }
 
-class ObjectShadowRenderer {
+final class ObjectShadowRenderer {
     private var context: Context
     private var object: Object
     private var container: Object

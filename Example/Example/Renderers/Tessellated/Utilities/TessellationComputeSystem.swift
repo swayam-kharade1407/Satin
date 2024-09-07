@@ -13,8 +13,8 @@ import simd
 
 import Satin
 
-class TessellationComputeSystem<T>: Tessellator {
-    open var defines: [String: NSObject] {
+final class TessellationComputeSystem<T>: Tessellator {
+    public var defines: [String: NSObject] {
         var results = [String: NSObject]()
 #if !os(macOS)
         results["MOBILE"] = NSString(string: "true")
@@ -117,7 +117,7 @@ class TessellationComputeSystem<T>: Tessellator {
 
     // MARK: - Setup Buffer
 
-    open func setupBuffer(_ geometry: TessellatedGeometry) {
+    public func setupBuffer(_ geometry: TessellatedGeometry) {
         buffer = device.makeBuffer(
             length: MemoryLayout<T>.stride * geometry.patchCount,
             options: [.storageModePrivate]
@@ -126,16 +126,16 @@ class TessellationComputeSystem<T>: Tessellator {
 
     // MARK: - Setup Source
 
-    open func setupSource() {
+    public func setupSource() {
         source = nil
         source = compileSource()
     }
 
-    open func inject(source: inout String) {
+    public func inject(source: inout String) {
 
     }
 
-    open func compileSource() -> String? {
+    public func compileSource() -> String? {
         if let source = source {
             return source
         } else {
@@ -170,13 +170,13 @@ class TessellationComputeSystem<T>: Tessellator {
         return nil
     }
 
-    open func setupPipeline() {
+    public func setupPipeline() {
         guard let source = source else { return }
         guard let library = setupLibrary(source) else { return }
         setupPipeline(library)
     }
 
-    open func setupPipeline(_ library: MTLLibrary) {
+    public func setupPipeline(_ library: MTLLibrary) {
         do {
             pipeline = try createPipeline(library: library, functionName: functionName)
         } catch {
@@ -184,7 +184,7 @@ class TessellationComputeSystem<T>: Tessellator {
         }
     }
 
-    open func createPipeline(library: MTLLibrary, functionName: String) throws -> MTLComputePipelineState? {
+    public func createPipeline(library: MTLLibrary, functionName: String) throws -> MTLComputePipelineState? {
         guard let computeFunction = library.makeFunction(name: functionName) else { return nil }
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeFunction
@@ -193,7 +193,7 @@ class TessellationComputeSystem<T>: Tessellator {
         return result.0
     }
 
-    open func update(commandBuffer: MTLCommandBuffer) {
+    public func update(commandBuffer: MTLCommandBuffer) {
         guard let buffer = buffer, let uniforms = uniforms, let pipeline = pipeline else { return }
         uniforms.update()
 

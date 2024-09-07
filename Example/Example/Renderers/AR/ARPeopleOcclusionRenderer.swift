@@ -14,7 +14,7 @@ import Metal
 
 import Satin
 
-class ARPeopleOcclusionRenderer: BaseRenderer {
+final class ARPeopleOcclusionRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
     private lazy var sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsUpdatedSubscription: AnyCancellable?
@@ -66,6 +66,7 @@ class ARPeopleOcclusionRenderer: BaseRenderer {
         )
 
         compositor = ARCompositor(
+            label: "AR Compositor",
             context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
             session: session
         )

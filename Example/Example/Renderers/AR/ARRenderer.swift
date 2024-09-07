@@ -14,7 +14,7 @@ import Metal
 
 import Satin
 
-class ARRenderer: BaseRenderer {
+final class ARRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
     private let sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsSubscription: AnyCancellable?

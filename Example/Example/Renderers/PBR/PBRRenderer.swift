@@ -10,14 +10,11 @@
 
 import Metal
 import MetalKit
-
 import Satin
 
-class PBRRenderer: BaseRenderer {
-    // MARK: - 3D Scene
-    class CustomShader: PBRShader {}
-
-    class CustomMaterial: StandardMaterial {
+final class PBRRenderer: BaseRenderer {
+    final class CustomShader: PBRShader {}
+    final class CustomMaterial: StandardMaterial {
         var pipelineURL: URL
         required init(pipelinesURL: URL) {
             pipelineURL = pipelinesURL.appendingPathComponent("Custom").appendingPathComponent("Shaders.metal")
@@ -114,7 +111,6 @@ class PBRRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

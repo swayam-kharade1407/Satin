@@ -12,8 +12,7 @@ import MetalKit
 import Satin
 
 class TextureComputeRenderer: BaseRenderer {
-    class ReactionDiffusionComputeSystem: TextureComputeSystem {}
-
+    final class ReactionDiffusionComputeSystem: TextureComputeSystem {}
     final class DisplacementMaterial: SourceMaterial {}
 
     lazy var textureCompute: ReactionDiffusionComputeSystem = {
@@ -26,6 +25,8 @@ class TextureComputeRenderer: BaseRenderer {
         textureDescriptor.sampleCount = 1
         textureDescriptor.textureType = .type2D
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
+        textureDescriptor.allowGPUOptimizedContents = true
+        
         return ReactionDiffusionComputeSystem(
             device: device,
             pipelinesURL: pipelinesURL,
@@ -39,7 +40,7 @@ class TextureComputeRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: PlaneGeometry(size: 2.0, resolution: 512, orientation: .xy), material: material)
 
     lazy var scene = Object(label: "Scene", [mesh])
-    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -76,7 +77,6 @@ class TextureComputeRenderer: BaseRenderer {
     }
 
     override func update() {
-//        print(mesh.material?.parameters)
         cameraController.update()
         camera.update()
         scene.update()

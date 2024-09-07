@@ -15,7 +15,7 @@ import Metal
 import Satin
 import SwiftUI
 
-class ARPlaneGeometry: Geometry {
+final class ARPlaneGeometry: Geometry {
     let positionBuffer = Float3BufferAttribute(defaultValue: .zero, data: [])
     let texcoodsBuffer = Float2BufferAttribute(defaultValue: .zero, data: [])
     let indicesBuffer = ElementBuffer(type: .uint16, data: nil, count: 0, source: [])
@@ -46,7 +46,7 @@ class ARPlaneGeometry: Geometry {
     }
 }
 
-class ARPlaneContainer: Object {
+final class ARPlaneContainer: Object {
     var anchor: ARPlaneAnchor {
         didSet {
             updateAnchor()
@@ -90,7 +90,7 @@ class ARPlaneContainer: Object {
     }
 }
 
-class ARPlanesRenderer: BaseRenderer {
+final class ARPlanesRenderer: BaseRenderer {
     var session: ARSession { sessionPublisher.session }
     private lazy var sessionPublisher = ARSessionPublisher(session: ARSession())
     private var anchorsAddedSubscription: AnyCancellable?

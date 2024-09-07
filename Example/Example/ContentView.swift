@@ -275,19 +275,9 @@ struct ContentView: View {
                 }
             #endif
 
+
             #if os(macOS) && DEBUG
-//            GridRendererView()
-//            BloomRendererView()
-//                LiveCodeRendererView()
-//                DirectionalShadowRendererView()
-//                Renderer2DView()
-//                Renderer3DView()
-//                RayMarchingRendererView()
-//                WaveSimulationRendererView()
-//                PBRStandardMaterialRendererView()
-//                MultipleContextRendererView()
-//                ScreenCaptureRendererView()
-//                TextureComputeRendererView()
+
             #endif
         }
     }

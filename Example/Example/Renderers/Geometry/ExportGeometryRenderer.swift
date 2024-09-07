@@ -12,7 +12,7 @@ import ModelIO
 
 import Satin
 
-class ExportGeometryRenderer: BaseRenderer {
+final class ExportGeometryRenderer: BaseRenderer {
     lazy var material = BasicDiffuseMaterial(hardness: 0.9)
 
     lazy var metal: Mesh = {

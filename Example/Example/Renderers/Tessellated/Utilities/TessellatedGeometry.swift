@@ -10,7 +10,7 @@ import Foundation
 import Metal
 import Satin
 
-class TessellatedGeometry: Geometry {
+final class TessellatedGeometry: Geometry {
 
     let baseGeometry: Geometry
 

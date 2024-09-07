@@ -12,9 +12,8 @@ import Metal
 import MetalKit
 import Satin
 
-class WaveSimulationRenderer: BaseRenderer {
-    class WaveComputeSystem: TextureComputeSystem {}
-
+final class WaveSimulationRenderer: BaseRenderer {
+    final class WaveComputeSystem: TextureComputeSystem {}
     final class DisplacementMaterial: SourceMaterial {}
 
     lazy var computer: WaveComputeSystem = {
@@ -32,7 +31,7 @@ class WaveSimulationRenderer: BaseRenderer {
 
     lazy var scene = Object(label: "Scene", [mesh])
 
-    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -89,14 +88,12 @@ class WaveSimulationRenderer: BaseRenderer {
 
     override func update() {
         computer.set("Time", Float(getTime() - startTime))
-        //        print(mesh.material?.parameters)
         cameraController.update()
         camera.update()
         scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-
         computer.update(commandBuffer, iterations: appParams.get("Iterations", as: IntParameter.self)?.value ?? 1)
         material.set(computer.dstTexture, index: VertexTextureIndex.Custom0)
         material.set(computer.dstTexture, index: FragmentTextureIndex.Custom0)
@@ -117,8 +114,6 @@ class WaveSimulationRenderer: BaseRenderer {
 
     func getTextureDescriptors() -> [MTLTextureDescriptor] {
         let textureDescriptor = MTLTextureDescriptor()
-//        textureDescriptor.width = max(1, Int(metalView.drawableSize.width))
-//        textureDescriptor.height = max(1, Int(metalView.drawableSize.height))
         textureDescriptor.width = 1024
         textureDescriptor.height = 1024
         textureDescriptor.depth = 1
@@ -127,6 +122,7 @@ class WaveSimulationRenderer: BaseRenderer {
         textureDescriptor.sampleCount = 1
         textureDescriptor.textureType = .type2D
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
+        textureDescriptor.allowGPUOptimizedContents = true
         return [textureDescriptor]
     }
 }

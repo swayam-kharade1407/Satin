@@ -11,7 +11,7 @@ import MetalKit
 
 import Satin
 
-class TessellationRenderer: BaseRenderer {
+final class TessellationRenderer: BaseRenderer {
     lazy var tessellator = TessellationComputeSystem<MTLTriangleTessellationFactorsHalf>(
         device: device,
         pipelineURL: pipelinesURL.appendingPathComponent("Tessellated/Compute.metal"),
@@ -26,7 +26,7 @@ class TessellationRenderer: BaseRenderer {
     lazy var tessWireMesh = TessellatedMesh(geometry: tessGeometry, material: tessWireMaterial, tessellator: tessellator)
     lazy var scene = Object(label: "Scene", [tessMesh, tessWireMesh])
 
-    lazy var camera = PerspectiveCamera(position: .init(repeating: 4.0), near: 0.01, far: 50.0, fov: 30)
+    let camera = PerspectiveCamera(position: .init(repeating: 4.0), near: 0.01, far: 50.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -68,7 +68,6 @@ class TessellationRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         tessellator.update(commandBuffer: commandBuffer)
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,

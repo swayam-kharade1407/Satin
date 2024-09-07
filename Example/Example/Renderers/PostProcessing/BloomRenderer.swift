@@ -7,9 +7,7 @@
 //
 
 import Metal
-import MetalPerformanceShaders
 import simd
-
 import Satin
 
 final class BloomRenderer: BaseRenderer {
@@ -95,25 +93,16 @@ final class BloomRenderer: BaseRenderer {
         return scene
     }()
 
-    final class DownscaleComputeSystem: TextureComputeSystem {}
-    var downscalars = [DownscaleComputeSystem]()
-
-    final class UpscaleComputeSystem: TextureComputeSystem {}
-    var upscalars = [UpscaleComputeSystem]()
-
     lazy var postMaterial = PostMaterial(pipelinesURL: pipelinesURL, live: true)
-    lazy var postProcessor: PostProcessor = {
-        let processor = PostProcessor(
-            context: Context(
-                device: device,
-                sampleCount: sampleCount,
-                colorPixelFormat: colorPixelFormat
-            ),
-            material: postMaterial
-        )
-        processor.label = "Post Processor"
-        return processor
-    }()
+    lazy var postProcessor = PostProcessor(
+        label: "Bloom Post Processor",
+        context: Context(
+            device: device,
+            sampleCount: sampleCount,
+            colorPixelFormat: colorPixelFormat
+        ),
+        material: postMaterial
+    )
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 10.0], near: 0.001, far: 100.0, fov: 45.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)

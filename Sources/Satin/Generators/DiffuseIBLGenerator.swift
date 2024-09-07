@@ -10,70 +10,42 @@ import Foundation
 import Metal
 
 public final class DiffuseIBLGenerator {
-    final class DiffuseIBLComputeSystem: TextureComputeSystem {
-        var face: UInt32 = 0
-        var sourceTexture: MTLTexture?
-
+    final class DiffuseIBLComputeProcessor: TextureComputeProcessor {
         init(device: MTLDevice) {
             super.init(
                 device: device,
-                pipelinesURL: getPipelinesComputeURL()!,
-                textureDescriptors: []
+                pipelinesURL: getPipelinesComputeURL()!
             )
         }
 
-        override func bind(computeEncoder: MTLComputeCommandEncoder, iteration: Int) -> Int {
-            let index = super.bind(computeEncoder: computeEncoder, iteration: iteration)
-            computeEncoder.setTexture(sourceTexture, index: index)
-            return index + 1
-        }
-
-        override func bindUniforms(_ computeEncoder: MTLComputeCommandEncoder) {
-            super.bindUniforms(computeEncoder)
-            computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
+        override func getSize(texture: MTLTexture, iteration: Int) -> MTLSize {
+            let size = Int(Float(texture.width) / pow(2.0, Float(iteration)))
+            return MTLSize(width: size, height: size, depth: texture.depth)
         }
     }
 
-    private var compute: DiffuseIBLComputeSystem
+    private var compute: DiffuseIBLComputeProcessor
 
-    public init(device: MTLDevice, tonemapped _: Bool = false, gammaCorrected _: Bool = false) {
-        compute = DiffuseIBLComputeSystem(device: device)
+    public init(device: MTLDevice) {
+        compute = DiffuseIBLComputeProcessor(device: device)
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
         let levels = destinationTexture.mipmapLevelCount
-        var size = destinationTexture.width
+        let width = destinationTexture.width
 
-        for level in 0 ..< levels {
-            for face in 0 ..< 6 {
-                compute.face = UInt32(face)
-                compute.sourceTexture = sourceTexture
-                let desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: destinationTexture.pixelFormat, width: size, height: size, mipmapped: false)
-                desc.usage = [.shaderRead, .shaderWrite]
-                desc.storageMode = .private
-                desc.allowGPUOptimizedContents = true
-                compute.textureDescriptors = [desc]
+        compute.set(destinationTexture, index: ComputeTextureIndex.Custom0) // output
+        compute.set(sourceTexture, index: ComputeTextureIndex.Custom1) // input
 
-                commandBuffer.label = "\(compute.label) Compute Command Buffer"
-                compute.update(commandBuffer)
-
-                commandBuffer.label = "\(compute.label) Blit Command Buffer"
-                if let blitEncoder = commandBuffer.makeBlitCommandEncoder(), let fromTexture = compute.dstTexture {
-                    blitEncoder.copy(
-                        from: fromTexture,
-                        sourceSlice: 0,
-                        sourceLevel: 0,
-                        to: destinationTexture,
-                        destinationSlice: face,
-                        destinationLevel: level,
-                        sliceCount: 1,
-                        levelCount: 1
-                    )
-                    blitEncoder.endEncoding()
-                }
-            }
-            size /= 2
+        compute.preCompute = { computeEncoder, iteration in
+            var level = UInt32(iteration)
+            var size = UInt32(Float(width) / pow(2.0, Float(iteration)))
+            computeEncoder.setBytes(&level, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
+            computeEncoder.setBytes(&size, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
         }
+
+        commandBuffer.label = "\(compute.label) Compute Command Buffer"
+        compute.update(commandBuffer, iterations: levels)
 
         destinationTexture.label = "Diffuse IBL"
     }

@@ -32,7 +32,7 @@ final class FlockingRenderer: BaseRenderer {
 //    lazy var params = ParameterGroup("Controls", [pauseParam, resetParam, particleCountParam])
 
     lazy var scene = Object(label: "Scene", [sprite])
-    var camera = OrthographicCamera()
+    let camera = OrthographicCamera()
     lazy var renderer = Renderer(context: defaultContext)
     lazy var particleSystem = FlockingComputeSystem(device: device, pipelinesURL: pipelinesURL, count: particleCountParam.value, feedback: true, live: true)
 

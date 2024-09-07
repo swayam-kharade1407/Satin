@@ -13,12 +13,12 @@ import Metal
 import MetalKit
 import Satin
 
-class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
+final class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
     // MARK: - 3D Scene
 
-    class CustomShader: PhysicalShader {}
+    final class CustomShader: PhysicalShader {}
 
-    class CustomMaterial: PhysicalMaterial {
+    final class CustomMaterial: PhysicalMaterial {
         var pipelineURL: URL
         required init(pipelinesURL: URL) {
             pipelineURL = pipelinesURL.appendingPathComponent("Custom").appendingPathComponent("Shaders.metal")

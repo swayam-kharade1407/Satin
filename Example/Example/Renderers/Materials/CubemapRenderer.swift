@@ -13,8 +13,8 @@ import MetalKit
 
 import Satin
 
-class CubemapRenderer: BaseRenderer {
-    class CustomMaterial: SourceMaterial {}
+final class CubemapRenderer: BaseRenderer {
+    final class CustomMaterial: SourceMaterial {}
 
     var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.001, far: 200.0, fov: 45.0)
 
@@ -45,8 +45,7 @@ class CubemapRenderer: BaseRenderer {
     lazy var customMaterial = CustomMaterial(pipelineURL: pipelinesURL.appendingPathComponent("Shaders.metal"))
 
     lazy var skybox: Mesh = {
-        let mesh = Mesh(geometry: SkyboxGeometry(), material: SkyboxMaterial())
-        mesh.label = "Skybox"
+        let mesh = Mesh(label: "Skybox", geometry: SkyboxGeometry(), material: SkyboxMaterial())
         mesh.scale = [50, 50, 50]
         return mesh
     }()

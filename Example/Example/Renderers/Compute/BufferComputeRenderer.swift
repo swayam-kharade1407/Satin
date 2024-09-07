@@ -11,10 +11,9 @@ import MetalKit
 import Satin
 
 final class BufferComputeRenderer: BaseRenderer {
-    class ParticleComputeSystem: BufferComputeSystem {}
-
-    class SpriteMaterial: SourceMaterial {}
-    class ChromaMaterial: SourceMaterial {}
+    final class ParticleComputeSystem: BufferComputeSystem {}
+    final class SpriteMaterial: SourceMaterial {}
+    final class ChromaMaterial: SourceMaterial {}
 
     lazy var particleSystem = ParticleComputeSystem(device: device, pipelinesURL: pipelinesURL, count: 8192, live: true)
 
@@ -36,7 +35,7 @@ final class BufferComputeRenderer: BaseRenderer {
         return mesh
     }()
 
-    var camera = PerspectiveCamera(position: [0.0, 0.0, 100.0], near: 0.001, far: 1000.0)
+    let camera = PerspectiveCamera(position: [0.0, 0.0, 100.0], near: 0.001, far: 1000.0)
 
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
@@ -51,14 +50,7 @@ final class BufferComputeRenderer: BaseRenderer {
 
     lazy var chromaMaterial = ChromaMaterial(pipelinesURL: pipelinesURL)
 
-    lazy var chromaticProcessor: PostProcessor = {
-        let pp = PostProcessor(context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: chromaMaterial)
-        pp.mesh.preDraw = { [unowned self] (renderEncoder: MTLRenderCommandEncoder) in
-            renderEncoder.setFragmentTexture(self.renderTexture, index: FragmentTextureIndex.Custom0.rawValue)
-        }
-        pp.label = "Chroma Processor"
-        return pp
-    }()
+    lazy var chromaticProcessor = PostProcessor(label: "Chroma Processor", context: Context(device: device, sampleCount: sampleCount, colorPixelFormat: colorPixelFormat), material: chromaMaterial)
 
     override var depthPixelFormat: MTLPixelFormat {
         .invalid
@@ -105,6 +97,7 @@ final class BufferComputeRenderer: BaseRenderer {
 
         particleSystem.update(commandBuffer)
 
+
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -112,6 +105,8 @@ final class BufferComputeRenderer: BaseRenderer {
             camera: camera,
             renderTarget: renderTexture
         )
+
+        chromaMaterial.set(renderTexture, index: FragmentTextureIndex.Custom0)
 
         chromaticProcessor.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }

@@ -186,6 +186,8 @@ final class JumpFloodOutlineRenderer: BaseRenderer {
         descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
         descriptor.storageMode = .private
         descriptor.resourceOptions = .storageModePrivate
+        descriptor.allowGPUOptimizedContents = true
+
         guard let texture = device.makeTexture(descriptor: descriptor) else { return nil }
         texture.label = label
         return texture

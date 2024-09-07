@@ -21,7 +21,7 @@ public final class BloomGenerator {
 
     public init(device: MTLDevice, levels: Int) {
         self.levels = levels
-        for i in 0...levels {
+        for i in 0 ... levels {
             if i > 0 {
                 downscalars.append(DownscaleComputeSystem(
                     device: device,
@@ -43,9 +43,8 @@ public final class BloomGenerator {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture) -> MTLTexture? {
-        
         if size.x != sourceTexture.width || size.y != sourceTexture.height {
-            for l in 0..<levels {
+            for l in 0 ..< levels {
                 downscalars[l].textureDescriptors = [getTextureDescriptor(sourceTexture: sourceTexture, level: l + 1)]
                 upscalars[l].textureDescriptors = [getTextureDescriptor(sourceTexture: sourceTexture, level: l)]
             }

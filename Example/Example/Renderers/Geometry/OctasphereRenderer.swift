@@ -10,7 +10,7 @@ import Metal
 import MetalKit
 import Satin
 
-class OctasphereRenderer: BaseRenderer {
+final class OctasphereRenderer: BaseRenderer {
     lazy var mesh = Mesh(geometry: OctaSphereGeometry(radius: 1, resolution: 3), material: BasicDiffuseMaterial(hardness: 0.75))
     lazy var scene = Object(label: "Scene", [mesh])
     let camera = PerspectiveCamera(position: simd_make_float3(0.0, 0.0, 5.0), near: 0.01, far: 100.0, fov: 30)
