@@ -22,10 +22,14 @@ public final class IBLScene: Object, IBLEnvironment {
     public internal(set) var reflectionTexture: MTLTexture?
     public var reflectionTexcoordTransform = matrix_identity_float3x3
 
-    static let cubemapGenerator = CubemapGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.023512959480285645
-    static let diffuseIBLGenerator = DiffuseIBLGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.3512990474700928
-    static let specularIBLGenerator = SpecularIBLGenerator(device: MTLCreateSystemDefaultDevice()!) // 0.09427797794342041
-    static let brdfGenerator = BrdfGenerator(device: MTLCreateSystemDefaultDevice()!, size: 512) // 0.012279033660888672
+    var cubemapGenerator: CubemapGenerator? // 0.023512959480285645
+        = CubemapGenerator(device: MTLCreateSystemDefaultDevice()!)
+    var diffuseIBLGenerator: DiffuseIBLGenerator? // 0.3512990474700928
+        = DiffuseIBLGenerator(device: MTLCreateSystemDefaultDevice()!)
+    var specularIBLGenerator: SpecularIBLGenerator? // 0.09427797794342041
+        = SpecularIBLGenerator(device: MTLCreateSystemDefaultDevice()!)
+    var brdfGenerator: BrdfGenerator? // 0.012279033660888672
+        = BrdfGenerator(device: MTLCreateSystemDefaultDevice()!, size: 512)
 
     private var qos: DispatchQoS.QoSClass = .userInitiated
     private var cubemapSize: Int = 512
@@ -38,22 +42,11 @@ public final class IBLScene: Object, IBLEnvironment {
         self.reflectionSize = reflectionSize
         self.irradianceSize = irradianceSize
 
+        let device = texture.device
+        
         DispatchQueue.global(qos: qos).async { [unowned self] in
-            guard let environment = self.environment,
-                  let commandQueue = environment.device.makeCommandQueue(),
+            guard let commandQueue = device.makeCommandQueue(),
                   let commandBuffer = commandQueue.makeCommandBuffer() else { return }
-
-            let device = environment.device
-
-//            let captureManager = MTLCaptureManager.shared()
-//            let captureDescriptor = MTLCaptureDescriptor()
-//            captureDescriptor.captureObject = device
-//
-//            do {
-//                try captureManager.startCapture(with: captureDescriptor)
-//            } catch {
-//                fatalError("error when trying to capture: \(error)")
-//            }
 
             self.cubemapTexture = self.setupCubemapTexture(device: device, commandBuffer: commandBuffer)
             self.irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
@@ -64,9 +57,30 @@ public final class IBLScene: Object, IBLEnvironment {
             }
 
             commandBuffer.commit()
-
-//            captureManager.stopCapture()
         }
+
+//        guard let device = MTLCreateSystemDefaultDevice() else { fatalError("Unable to create Metal Device") }
+//        let captureManager = MTLCaptureManager.shared()
+//        let captureDescriptor = MTLCaptureDescriptor()
+//        captureDescriptor.captureObject = device
+//        do { try captureManager.startCapture(with: captureDescriptor)
+//        } catch { fatalError("error when trying to capture: \(error)") }
+//
+//        guard let commandQueue = device.makeCommandQueue(),
+//              let commandBuffer = commandQueue.makeCommandBuffer() else { return }
+//
+//
+//        cubemapTexture = setupCubemapTexture(device: device, commandBuffer: commandBuffer)
+//        irradianceTexture = setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
+//        reflectionTexture = setupReflectionTexture(device: device, commandBuffer: commandBuffer)
+//
+//        if brdfTexture == nil {
+//            brdfTexture = setupBrdfTexture(device: device, commandBuffer: commandBuffer)
+//        }
+//
+//        commandBuffer.commit()
+//        commandBuffer.waitUntilCompleted()
+//        MTLCaptureManager.shared().stopCapture()
     }
 
     public func setEnvironmentCubemap(texture: MTLTexture, qos: DispatchQoS.QoSClass = .userInitiated, reflectionSize: Int = 512, irradianceSize: Int = 32) {
@@ -78,7 +92,7 @@ public final class IBLScene: Object, IBLEnvironment {
         let device = texture.device
 
         DispatchQueue.global(qos: qos).async { [unowned self] in
-            guard let commandQueue = texture.device.makeCommandQueue(),
+            guard let commandQueue = device.makeCommandQueue(),
                   let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 
             self.irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
@@ -100,7 +114,7 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: true
            )
         {
-            IBLScene.cubemapGenerator
+            getCubemapGenerator(device: device)
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: hdriTexture,
@@ -120,7 +134,7 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: false
            )
         {
-            IBLScene.diffuseIBLGenerator
+            getDiffuseIBLGenerator(device: device)
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: cubemapTexture,
@@ -140,7 +154,7 @@ public final class IBLScene: Object, IBLEnvironment {
                mipmapped: true
            )
         {
-            IBLScene.specularIBLGenerator
+            getSpecularIBLGenerator(device: device)
                 .encode(
                     commandBuffer: commandBuffer,
                     sourceTexture: cubemapTexture,
@@ -152,12 +166,55 @@ public final class IBLScene: Object, IBLEnvironment {
     }
 
     private func setupBrdfTexture(device: MTLDevice, commandBuffer: MTLCommandBuffer) -> MTLTexture? {
-        IBLScene.brdfGenerator.encode(commandBuffer: commandBuffer)
+        getBrdfGenerator(device: device)
+            .encode(
+                commandBuffer: commandBuffer
+            )
+    }
+
+    private func getCubemapGenerator(device: MTLDevice) -> CubemapGenerator {
+        if let cubemapGenerator {
+            return cubemapGenerator
+        } else {
+            cubemapGenerator = CubemapGenerator(device: device)
+            return cubemapGenerator!
+        }
+    }
+
+    private func getBrdfGenerator(device: MTLDevice) -> BrdfGenerator {
+        if let brdfGenerator {
+            return brdfGenerator
+        } else {
+            brdfGenerator = BrdfGenerator(device: MTLCreateSystemDefaultDevice()!, size: 512)
+            return brdfGenerator!
+        }
+    }
+
+    private func getSpecularIBLGenerator(device: MTLDevice) -> SpecularIBLGenerator {
+        if let specularIBLGenerator {
+            return specularIBLGenerator
+        } else {
+            specularIBLGenerator = SpecularIBLGenerator(device: device)
+            return specularIBLGenerator!
+        }
+    }
+
+    private func getDiffuseIBLGenerator(device: MTLDevice) -> DiffuseIBLGenerator {
+        if let diffuseIBLGenerator {
+            return diffuseIBLGenerator
+        } else {
+            diffuseIBLGenerator = DiffuseIBLGenerator(device: device)
+            return diffuseIBLGenerator!
+        }
     }
 
     private func createCubemapTexture(device: MTLDevice, pixelFormat: MTLPixelFormat, size: Int, mipmapped: Bool) -> MTLTexture?
     {
-        let desc = MTLTextureDescriptor.textureCubeDescriptor(pixelFormat: pixelFormat, size: size, mipmapped: mipmapped)
+        let desc = MTLTextureDescriptor.textureCubeDescriptor(
+            pixelFormat: pixelFormat,
+            size: size,
+            mipmapped: mipmapped
+        )
         desc.usage = [.shaderWrite, .shaderRead]
         desc.allowGPUOptimizedContents = true
         desc.storageMode = .private

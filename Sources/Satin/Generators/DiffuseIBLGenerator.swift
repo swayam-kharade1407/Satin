@@ -25,21 +25,27 @@ public final class DiffuseIBLGenerator {
         compute = DiffuseIBLComputeProcessor(device: device)
     }
 
-    public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
-        var width = UInt32(destinationTexture.width)
+    public func encode(commandEncoder: MTLComputeCommandEncoder, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
+        let iterations = _encode(sourceTexture: sourceTexture, destinationTexture: destinationTexture)
+        compute.update(commandEncoder, iterations: iterations)
+    }
 
+    public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
+        let iterations = _encode(sourceTexture: sourceTexture, destinationTexture: destinationTexture)
+        compute.update(commandBuffer, iterations: iterations)
+    }
+
+    private func _encode(sourceTexture: MTLTexture, destinationTexture: MTLTexture) -> Int {
         compute.set(destinationTexture, index: ComputeTextureIndex.Custom0) // output
         compute.set(sourceTexture, index: ComputeTextureIndex.Custom1) // input
 
         compute.preCompute = { computeEncoder, iteration in
             var face = UInt32(iteration)
             computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
-            computeEncoder.setBytes(&width, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
         }
 
-        commandBuffer.label = "\(compute.label) Compute Command Buffer"
-        compute.update(commandBuffer, iterations: 6)
-
         destinationTexture.label = "Diffuse IBL"
+
+        return 6
     }
 }

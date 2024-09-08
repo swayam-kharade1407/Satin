@@ -42,12 +42,10 @@ float2 integrate(float NdotV, float roughness)
     return 4.0 * float2(A, B) / float(SAMPLE_COUNT);
 }
 
-kernel void brdfUpdate
-(
+kernel void brdfUpdate(
     uint2 gid [[thread_position_in_grid]],
     constant BrdfUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    texture2d<float, access::write> tex [[texture(ComputeTextureCustom0)]]
-)
+    texture2d<float, access::write> tex [[texture(ComputeTextureCustom0)]])
 {
     const uint2 size = uint2(uniforms.size);
     if (gid.x >= size.x || gid.y >= size.y) { return; }

@@ -30,28 +30,48 @@ public final class SpecularIBLGenerator {
     public init(device: MTLDevice) {
         compute = SpecularIBLComputeProcessor(device: device)
     }
+    
+
+    public func encode(computeEncoder: MTLComputeCommandEncoder, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
+
+        let iterations = _encode(
+            sourceTexture: sourceTexture,
+            destinationTexture: destinationTexture
+        )
+
+        compute.update(computeEncoder, iterations: iterations)
+    }
+
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
+        let iterations = _encode(
+            sourceTexture: sourceTexture,
+            destinationTexture: destinationTexture
+        )
+
+        compute.update(commandBuffer, iterations: iterations)
+    }
+
+    private func _encode(sourceTexture: MTLTexture, destinationTexture: MTLTexture) -> Int {
         let levels = destinationTexture.mipmapLevelCount
+        let resolution = sourceTexture.width
         let width = destinationTexture.width
-        
+
         compute.set(destinationTexture, index: ComputeTextureIndex.Custom0) // output
         compute.set(sourceTexture, index: ComputeTextureIndex.Custom1) // input
 
         compute.preCompute = { computeEncoder, iteration in
-            var face = UInt32(iteration % 6)
-            var level = UInt32(iteration/6)
-            var size = UInt32(Float(width) / pow(2.0, Float(level)))
-            var roughness = Float(level) / Float(levels - 1)
-            computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
-            computeEncoder.setBytes(&level, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
-            computeEncoder.setBytes(&size, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom2.rawValue)
-            computeEncoder.setBytes(&roughness, length: MemoryLayout<Float>.size, index: ComputeBufferIndex.Custom3.rawValue)
+            let face = UInt32(iteration % 6)
+            let level = UInt32(iteration / 6)
+            let size = UInt32(Float(width) / pow(2.0, Float(level)))
+            let resolution = UInt32(resolution)
+            var faceLevelSizeResolution = simd_make_uint4(face, level, size, resolution)
+
+            computeEncoder.setBytes(&faceLevelSizeResolution, length: MemoryLayout<simd_uint4>.size, index: ComputeBufferIndex.Custom0.rawValue)
         }
 
-        commandBuffer.label = "\(compute.label) Compute Command Buffer"
-        compute.update(commandBuffer, iterations: 6 * levels)
-
         destinationTexture.label = "Specular IBL"
+
+        return levels * 6
     }
 }

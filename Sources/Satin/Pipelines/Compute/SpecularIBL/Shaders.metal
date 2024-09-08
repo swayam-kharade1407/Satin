@@ -19,17 +19,23 @@ typedef struct {
 
 constexpr sampler cubeSampler(filter::linear, mip_filter::linear);
 
-kernel void specularIBLUpdate(
+kernel void specularIBLUpdate
+(
     uint2 gid [[thread_position_in_grid]],
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texturecube<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
     constant SpecularIBLUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint &face [[buffer(ComputeBufferCustom0)]],
-    constant uint &dstLevel [[buffer(ComputeBufferCustom1)]],
-    constant uint &size [[buffer(ComputeBufferCustom2)]],
-    constant float &roughness [[buffer(ComputeBufferCustom3)]])
+    constant uint4 &faceLevelSizeResolution [[buffer(ComputeBufferCustom0)]]
+)
 {
+    const uint size = faceLevelSizeResolution.z;
+
     if (gid.x >= size || gid.y >= size) { return; }
+    
+    const uint face = faceLevelSizeResolution.x;
+    const uint dstLevel = faceLevelSizeResolution.y;
+    
+    const float roughness = float(dstLevel)/float(ref.get_num_mip_levels() - 1);
 
     const float2 uv = (float2(gid) + 0.5) / float2(size);
 
@@ -60,12 +66,13 @@ kernel void specularIBLUpdate(
             const float HdotV = max(dot(H, V), 0.0);
             const float D = distributionGGX(NdotH, roughness);
             const float pdf = max((D * NdotH / (4.0 * HdotV)) + 0.0001, 0.0001);
-
-            const float resolution = float(ref.get_width()); // resolution of source cubemap (per face)
-            const float saTexel = 4.0 * PI / (6.0 * resolution * resolution);
             const float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001);
 
-            const float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
+            const float resolution = float(ref.get_width());
+            const float saTexel = 4.0 * PI / (6.0 * resolution * resolution);
+
+            
+            const float mipLevel = roughness == 0 ? 0.0 : 0.5 * log2(saSample / saTexel);
 
             prefilteredColor += ref.sample(cubeSampler, L, level(mipLevel)).rgb * NdotL;
             totalWeight += NdotL;
@@ -74,5 +81,4 @@ kernel void specularIBLUpdate(
 
     prefilteredColor = prefilteredColor / totalWeight;
     tex.write(float4(prefilteredColor, 1.0), gid, face, dstLevel);
-
 }

@@ -31,9 +31,8 @@ public final class CubemapGenerator {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
-        var size = destinationTexture.width
-
         var finalSourceTexture = sourceTexture
+        
         if let blur {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = sourceTexture.pixelFormat
