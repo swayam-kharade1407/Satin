@@ -276,8 +276,8 @@ struct ContentView: View {
             #endif
 
 
-            #if os(macOS) && DEBUG
-
+            #if os(macOS)
+            PBRStandardMaterialRendererView()
             #endif
         }
     }

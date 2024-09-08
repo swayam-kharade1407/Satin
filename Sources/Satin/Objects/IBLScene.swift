@@ -30,9 +30,9 @@ public final class IBLScene: Object, IBLEnvironment {
     private var qos: DispatchQoS.QoSClass = .userInitiated
     private var cubemapSize: Int = 512
     private var reflectionSize: Int = 512
-    private var irradianceSize: Int = 64
+    private var irradianceSize: Int = 32
 
-    public func setEnvironment(texture: MTLTexture, qos: DispatchQoS.QoSClass = .userInitiated, cubemapSize: Int = 512, reflectionSize: Int = 512, irradianceSize: Int = 64) {
+    public func setEnvironment(texture: MTLTexture, qos: DispatchQoS.QoSClass = .userInitiated, cubemapSize: Int = 512, reflectionSize: Int = 512, irradianceSize: Int = 32) {
         environment = texture
         self.cubemapSize = cubemapSize
         self.reflectionSize = reflectionSize
@@ -45,6 +45,16 @@ public final class IBLScene: Object, IBLEnvironment {
 
             let device = environment.device
 
+//            let captureManager = MTLCaptureManager.shared()
+//            let captureDescriptor = MTLCaptureDescriptor()
+//            captureDescriptor.captureObject = device
+//
+//            do {
+//                try captureManager.startCapture(with: captureDescriptor)
+//            } catch {
+//                fatalError("error when trying to capture: \(error)")
+//            }
+
             self.cubemapTexture = self.setupCubemapTexture(device: device, commandBuffer: commandBuffer)
             self.irradianceTexture = self.setupIrradianceTexture(device: device, commandBuffer: commandBuffer)
             self.reflectionTexture = self.setupReflectionTexture(device: device, commandBuffer: commandBuffer)
@@ -54,6 +64,8 @@ public final class IBLScene: Object, IBLEnvironment {
             }
 
             commandBuffer.commit()
+
+//            captureManager.stopCapture()
         }
     }
 

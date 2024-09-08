@@ -17,11 +17,6 @@ public final class DiffuseIBLGenerator {
                 pipelinesURL: getPipelinesComputeURL()!
             )
         }
-
-        override func getSize(texture: MTLTexture, iteration: Int) -> MTLSize {
-            let size = Int(Float(texture.width) / pow(2.0, Float(iteration)))
-            return MTLSize(width: size, height: size, depth: texture.depth)
-        }
     }
 
     private var compute: DiffuseIBLComputeProcessor
@@ -31,21 +26,19 @@ public final class DiffuseIBLGenerator {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture, destinationTexture: MTLTexture) {
-        let levels = destinationTexture.mipmapLevelCount
-        let width = destinationTexture.width
+        var width = UInt32(destinationTexture.width)
 
         compute.set(destinationTexture, index: ComputeTextureIndex.Custom0) // output
         compute.set(sourceTexture, index: ComputeTextureIndex.Custom1) // input
 
         compute.preCompute = { computeEncoder, iteration in
-            var level = UInt32(iteration)
-            var size = UInt32(Float(width) / pow(2.0, Float(iteration)))
-            computeEncoder.setBytes(&level, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
-            computeEncoder.setBytes(&size, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
+            var face = UInt32(iteration)
+            computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
+            computeEncoder.setBytes(&width, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
         }
 
         commandBuffer.label = "\(compute.label) Compute Command Buffer"
-        compute.update(commandBuffer, iterations: levels)
+        compute.update(commandBuffer, iterations: 6)
 
         destinationTexture.label = "Diffuse IBL"
     }

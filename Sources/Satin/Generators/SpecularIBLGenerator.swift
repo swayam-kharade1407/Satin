@@ -19,7 +19,8 @@ public final class SpecularIBLGenerator {
         }
 
         override func getSize(texture: MTLTexture, iteration: Int) -> MTLSize {
-            let size = Int(Float(texture.width) / pow(2.0, Float(iteration)))
+            let level = iteration / 6
+            let size = Int(Float(texture.width) / pow(2.0, Float(level)))
             return MTLSize(width: size, height: size, depth: texture.depth)
         }
     }
@@ -38,16 +39,18 @@ public final class SpecularIBLGenerator {
         compute.set(sourceTexture, index: ComputeTextureIndex.Custom1) // input
 
         compute.preCompute = { computeEncoder, iteration in
-            var level = UInt32(iteration)
-            var size = UInt32(Float(width) / pow(2.0, Float(iteration)))
+            var face = UInt32(iteration % 6)
+            var level = UInt32(iteration/6)
+            var size = UInt32(Float(width) / pow(2.0, Float(level)))
             var roughness = Float(level) / Float(levels - 1)
-            computeEncoder.setBytes(&level, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
-            computeEncoder.setBytes(&size, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
-            computeEncoder.setBytes(&roughness, length: MemoryLayout<Float>.size, index: ComputeBufferIndex.Custom2.rawValue)
+            computeEncoder.setBytes(&face, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom0.rawValue)
+            computeEncoder.setBytes(&level, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom1.rawValue)
+            computeEncoder.setBytes(&size, length: MemoryLayout<UInt32>.size, index: ComputeBufferIndex.Custom2.rawValue)
+            computeEncoder.setBytes(&roughness, length: MemoryLayout<Float>.size, index: ComputeBufferIndex.Custom3.rawValue)
         }
 
         commandBuffer.label = "\(compute.label) Compute Command Buffer"
-        compute.update(commandBuffer, iterations: levels)
+        compute.update(commandBuffer, iterations: 6 * levels)
 
         destinationTexture.label = "Specular IBL"
     }

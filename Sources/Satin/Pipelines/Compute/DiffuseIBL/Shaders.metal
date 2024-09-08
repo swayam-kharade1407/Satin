@@ -26,7 +26,7 @@ kernel void diffuseIBLUpdate(
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texturecube<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
     constant DiffuseIBLUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint &dstLevel [[buffer(ComputeBufferCustom0)]],
+    constant uint &face [[buffer(ComputeBufferCustom0)]],
     constant uint &size [[buffer(ComputeBufferCustom1)]])
 {
     if (gid.x >= size || gid.y >= size) { return; }
@@ -38,30 +38,28 @@ kernel void diffuseIBLUpdate(
     float3 irradiance = 0.0;
     float sinPhi, cosPhi, sinTheta, cosTheta;
 
-    for (uint face = 0; face < 6; face++) {
-        const float4 rotation = rotations[face];
-        const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
-        float3 UP = abs(N.z) < 0.999 ? WORLD_FORWARD : WORLD_UP;
-        const float3 RIGHT = normalize(cross(UP, N));
-        UP = cross(N, RIGHT);
+    const float4 rotation = rotations[face];
+    const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
+    float3 UP = abs(N.z) < 0.999 ? WORLD_FORWARD : WORLD_UP;
+    const float3 RIGHT = normalize(cross(UP, N));
+    UP = cross(N, RIGHT);
 
-        uint sampleCount = 0u;
+    uint sampleCount = 0u;
 
-        for (float phi = 0.0; phi < TWO_PI; phi += DELTA_PHI) {
-            sinPhi = sincos(phi, cosPhi);
-            for (float theta = 0.0; theta < HALF_PI; theta += DELTA_THETA) {
-                // spherical to cartesian (in tangent space)
-                sinTheta = sincos(theta, cosTheta);
+    for (float phi = 0.0; phi < TWO_PI; phi += DELTA_PHI) {
+        sinPhi = sincos(phi, cosPhi);
+        for (float theta = 0.0; theta < HALF_PI; theta += DELTA_THETA) {
+            // spherical to cartesian (in tangent space)
+            sinTheta = sincos(theta, cosTheta);
 
-                const float3 tempVec = cosPhi * RIGHT + sinPhi * UP;
-                const float3 sampleVector = cosTheta * N + sinTheta * tempVec;
+            const float3 tempVec = cosPhi * RIGHT + sinPhi * UP;
+            const float3 sampleVector = cosTheta * N + sinTheta * tempVec;
 
-                irradiance += ref.sample(cubeSampler, sampleVector).rgb * cosTheta * sinTheta;
-                sampleCount++;
-            }
+            irradiance += ref.sample(cubeSampler, sampleVector).rgb * cosTheta * sinTheta;
+            sampleCount++;
         }
-
-        irradiance = PI * irradiance / float(sampleCount);
-        tex.write(float4(irradiance, 1.0), gid, face, dstLevel);
     }
+
+    irradiance = PI * irradiance / float(sampleCount);
+    tex.write(float4(irradiance, 1.0), gid, face);
 }
