@@ -8,6 +8,7 @@
 
 import Foundation
 import Metal
+import simd
 
 public final class SpecularIBLGenerator {
     final class SpecularIBLComputeProcessor: TextureComputeProcessor {

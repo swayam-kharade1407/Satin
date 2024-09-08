@@ -40,7 +40,7 @@ kernel void diffuseIBLUpdate(
 
     const float4 rotation = rotations[face];
     const float3 N = normalize(float3(ruv, 1.0) * rotateAxisAngle(rotation.xyz, rotation.w));
-    
+
     float3 UP = abs(N.z) < 0.999 ? WORLD_FORWARD : WORLD_UP;
     const float3 RIGHT = normalize(cross(UP, N));
     UP = cross(N, RIGHT);
@@ -48,7 +48,7 @@ kernel void diffuseIBLUpdate(
     uint sampleCount = 0u;
 
     for (float phi = 0.0; phi < TWO_PI; phi += DELTA_PHI) {
-        
+
         float cosPhi;
         const float sinPhi = sincos(phi, cosPhi);
 

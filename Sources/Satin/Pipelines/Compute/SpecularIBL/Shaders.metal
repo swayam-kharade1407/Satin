@@ -19,23 +19,21 @@ typedef struct {
 
 constexpr sampler cubeSampler(filter::linear, mip_filter::linear);
 
-kernel void specularIBLUpdate
-(
+kernel void specularIBLUpdate(
     uint2 gid [[thread_position_in_grid]],
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texturecube<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
     constant SpecularIBLUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint4 &faceLevelSizeResolution [[buffer(ComputeBufferCustom0)]]
-)
+    constant uint4 &faceLevelSizeResolution [[buffer(ComputeBufferCustom0)]])
 {
     const uint size = faceLevelSizeResolution.z;
 
     if (gid.x >= size || gid.y >= size) { return; }
-    
+
     const uint face = faceLevelSizeResolution.x;
     const uint dstLevel = faceLevelSizeResolution.y;
-    
-    const float roughness = float(dstLevel)/float(ref.get_num_mip_levels() - 1);
+
+    const float roughness = float(dstLevel) / float(ref.get_num_mip_levels() - 1);
 
     const float2 uv = (float2(gid) + 0.5) / float2(size);
 
@@ -71,7 +69,6 @@ kernel void specularIBLUpdate
             const float resolution = float(ref.get_width());
             const float saTexel = 4.0 * PI / (6.0 * resolution * resolution);
 
-            
             const float mipLevel = roughness == 0 ? 0.0 : 0.5 * log2(saSample / saTexel);
 
             prefilteredColor += ref.sample(cubeSampler, L, level(mipLevel)).rgb * NdotL;
