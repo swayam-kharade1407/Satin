@@ -15,7 +15,6 @@ import Combine
 import Foundation
 
 import Satin
-import Spectra
 
 protocol AudioInputDelegate: AnyObject {
     func updatedSpectrum(microphone: AudioInput, spectrum: [Float], channel: Int)
