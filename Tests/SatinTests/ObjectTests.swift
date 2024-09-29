@@ -6,15 +6,8 @@
 //
 
 import Satin
-import SatinCore
 import simd
 import XCTest
-
-extension Bounds: Equatable {
-    public static func == (lhs: Bounds, rhs: Bounds) -> Bool {
-        simd_equal(lhs.min, rhs.min) && simd_equal(lhs.max, rhs.max)
-    }
-}
 
 class ObjectTests: XCTestCase {
     func testObjectLocalTransforms() throws {

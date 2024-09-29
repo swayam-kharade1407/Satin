@@ -5,7 +5,7 @@
 //  Created by Taylor Holliday on 3/21/22.
 //
 
-import SatinCore
+import Satin
 import XCTest
 
 class TriangulatorTests: XCTestCase {
@@ -49,7 +49,7 @@ class TriangulatorTests: XCTestCase {
         triangulate(&_paths, &_lengths, 3, &triData)
 
         copyTriangleDataToGeometryData(&triData, &geoData)
-        createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
+        createGeometryDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
         freeTriangleData(&triData)
 
         XCTAssertEqual(geoData.vertexCount, 161)
@@ -92,7 +92,7 @@ class TriangulatorTests: XCTestCase {
                 triangulate(&_paths, &_lengths, 3, &triData)
 
                 copyTriangleDataToGeometryData(&triData, &geoData)
-                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
+                createGeometryDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &geoData)
 
                 freeTriangleData(&triData)
                 freeGeometryData(&geoData)

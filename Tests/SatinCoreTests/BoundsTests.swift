@@ -5,15 +5,9 @@
 //  Created by Taylor Holliday on 8/3/22.
 //
 
-import SatinCore
+import Satin
 import simd
 import XCTest
-
-extension Bounds: Equatable {
-    public static func == (lhs: Bounds, rhs: Bounds) -> Bool {
-        simd_equal(lhs.min, rhs.min) && simd_equal(lhs.max, rhs.max)
-    }
-}
 
 class BoundsTests: XCTestCase {
     func testComputeBoundsFromVertices() {
