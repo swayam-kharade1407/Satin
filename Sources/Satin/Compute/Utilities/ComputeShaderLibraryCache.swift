@@ -8,9 +8,9 @@
 import Foundation
 import Metal
 
-public final actor ComputeShaderLibraryCache {
-    static var cache: [ComputeShaderLibraryConfiguration: MTLLibrary] = [:]
-    static var defaultLibrary: MTLLibrary?
+public final class ComputeShaderLibraryCache {
+    private static var cache: [ComputeShaderLibraryConfiguration: MTLLibrary] = [:]
+    private static var defaultLibrary: MTLLibrary?
 
     private static let libraryQueue = DispatchQueue(label: "ShaderLibraryCacheQueue", attributes: .concurrent)
     private static let defaultLibraryQueue = DispatchQueue(label: "ComputeShaderDefaultLibraryQueue", attributes: .concurrent)

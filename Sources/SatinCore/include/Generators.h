@@ -19,6 +19,8 @@
 extern "C" {
 #endif
 
+GeometryData generateTextGeometryData(const char *fontName, const char *text);
+
 GeometryData generateLineGeometryData(void);
 
 GeometryData generateBoxGeometryData(float width, float height, float depth, float centerX, float centerY, float centerZ,

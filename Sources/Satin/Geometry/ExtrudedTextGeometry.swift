@@ -68,7 +68,7 @@ public final class ExtrudedTextGeometry: TesselatedTextGeometry {
 
             var triData = createTriangleData()
             if triangulate(&_paths, &_lengths, Int32(_lengths.count), &triData) == 0 {
-                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
+                createGeometryDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
                 copyTriangleDataToGeometryData(&triData, &cData)
                 freeTriangleData(&triData)
             }

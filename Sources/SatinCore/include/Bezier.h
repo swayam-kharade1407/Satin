@@ -18,6 +18,7 @@ extern "C" {
 #endif
 
 void freePolyline2D(Polyline2D *line);
+void freePolylines2D(Polylines2D *lines);
 
 void addPointToPolyline2D(simd_float2 p, Polyline2D *line);
 void removeFirstPointInPolyline2D(Polyline2D *line);

@@ -14,6 +14,10 @@ import Satin
 final class Renderer3D: BaseRenderer {
     let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
 
+//    let mesh = Mesh(geometry: CoreTextGeometry(), material: BasicPointMaterial(color: [1, 1, 1, 0.5], size: 16))
+//    let textGeometry = CoreTextGeometry(text: "8")
+//    lazy var mesh = Mesh(geometry: textGeometry, material: BasicColorMaterial(color: .one, blending: .alpha))
+
     let intersectionMesh = Mesh(
         label: "Intersection Mesh",
         geometry: IcoSphereGeometry(radius: 0.05, resolution: 2),
@@ -47,7 +51,10 @@ final class Renderer3D: BaseRenderer {
         cameraController.disable()
     }
 
+
     override func update() {
+//        textGeometry.text = "\(frameIndex)"
+        
         cameraController.update()
         camera.update()
         mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))

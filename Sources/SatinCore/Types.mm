@@ -56,7 +56,14 @@ void freeTriangleData(TriangleData *data)
     }
 }
 
-GeometryData createGeometryData() { return (GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL }; }
+GeometryData createGeometryData() {
+    return (GeometryData) {
+        .vertexCount = 0,
+        .vertexData = NULL,
+        .indexCount = 0,
+        .indexData = NULL
+    };
+}
 
 void freeGeometryData(GeometryData *data)
 {
@@ -130,7 +137,7 @@ void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destDat
     combineIndexGeometryData(destData, &srcData, destData->vertexCount);
 }
 
-void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *geoData)
+void createGeometryDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *geoData)
 {
     int vertexCount = 0;
     for (int i = 0; i < count; i++) {
@@ -142,13 +149,41 @@ void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, Geo
 
     int index = 0;
     for (int i = 0; i < count; i++) {
-        int pathLength = lengths[i];
-        simd_float2 *subpath = paths[i];
+        const int pathLength = lengths[i];
+        const simd_float2 *subpath = paths[i];
         for (int j = 0; j < pathLength; j++) {
-            simd_float2 pt = subpath[j];
-            geoData->vertexData[index++] = (SatinVertex) { .position = simd_make_float3(pt.x, pt.y, 0.0),
-                                                           .normal = simd_make_float3(0.0, 0.0, 1.0),
-                                                           .uv = simd_make_float2((float)j / (float)pathLength, 0.0) };
+            const simd_float2 &pt = subpath[j];
+            geoData->vertexData[index++] = (SatinVertex) {
+                .position = simd_make_float3(pt.x, pt.y, 0.0),
+                .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
+            };
+        }
+    }
+}
+
+void createGeometryDataFromPolylines(Polylines2D *polylines, GeometryData *geoData)
+{
+    int vertexCount = 0;
+    for (int i = 0; i < polylines->count; i++) {
+        vertexCount += polylines->data[i].count;
+    }
+
+    geoData->vertexCount = vertexCount;
+    geoData->vertexData = (SatinVertex *)malloc(sizeof(SatinVertex) * geoData->vertexCount);
+
+    int index = 0;
+    for (int i = 0; i < polylines->count; i++) {
+        const Polyline2D *polyline = &polylines->data[i];
+        const int pathLength = polyline->count;
+        const simd_float2 *subpath = polyline->data;
+        for (int j = 0; j < pathLength; j++) {
+            const simd_float2 &pt = subpath[j];
+            geoData->vertexData[index++] = (SatinVertex) {
+                .position = simd_make_float3(pt.x, pt.y, 0.0),
+                .normal = simd_make_float3(0.0, 0.0, 1.0),
+                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
+            };
         }
     }
 }

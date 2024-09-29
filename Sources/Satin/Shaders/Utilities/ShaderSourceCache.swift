@@ -7,9 +7,9 @@
 
 import Foundation
 
-public final actor ShaderSourceCache {
-    static var sourceCache: [URL: String] = [:]
-    static var compilerCache: [URL: MetalFileCompiler] = [:]
+public final class ShaderSourceCache {
+    private static var sourceCache: [URL: String] = [:]
+    private static var compilerCache: [URL: MetalFileCompiler] = [:]
 
     private static let sourceQueue = DispatchQueue(label: "ShaderSourceCacheSourceQueue", attributes: .concurrent)
     private static let compilerQueue = DispatchQueue(label: "ShaderSourceCacheCompilerQueue", attributes: .concurrent)

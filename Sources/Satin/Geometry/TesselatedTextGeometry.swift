@@ -356,7 +356,7 @@ public class TesselatedTextGeometry: SatinGeometry {
 
             var triData = createTriangleData()
             if triangulate(&_paths, &_lengths, Int32(_lengths.count), &triData) == 0 {
-                createVertexDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
+                createGeometryDataFromPaths(&_paths, &_lengths, Int32(_lengths.count), &cData)
                 copyTriangleDataToGeometryData(&triData, &cData)
                 freeTriangleData(&triData)
             } else {
@@ -431,7 +431,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     }
 
     func getVerticalOffset() -> CGFloat? {
-        guard let suggestFrameSize = suggestFrameSize else { return nil }
+        guard let suggestFrameSize else { return nil }
         var verticalOffset: CGFloat
         switch verticalAlignment {
         case .top:
@@ -445,7 +445,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     }
 
     func getFramePivot() -> CGPoint? {
-        guard let suggestFrameSize = suggestFrameSize else { return nil }
+        guard let suggestFrameSize else { return nil }
         let pt = pivot * 0.5 + 0.5
         let px: CGFloat = (textBounds.width <= 0 ? suggestFrameSize.width : textBounds.width) * CGFloat(pt.x)
         let py: CGFloat = (textBounds.height <= 0 ? suggestFrameSize.height : textBounds.height) * CGFloat(pt.y)
@@ -485,12 +485,12 @@ public class TesselatedTextGeometry: SatinGeometry {
     }
 
     func getFrameSetter() -> CTFramesetter? {
-        guard let attributedText = attributedText else { return nil }
+        guard let attributedText else { return nil }
         return CTFramesetterCreateWithAttributedString(attributedText)
     }
 
     func getSuggestFrameSize() -> CGSize? {
-        guard let frameSetter = frameSetter else { return nil }
+        guard let frameSetter else { return nil }
         var bnds = textBounds
         if bnds.width <= 0 {
             bnds.width = CGFloat.greatestFiniteMagnitude
@@ -502,7 +502,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     }
 
     func getFrame() -> CTFrame? {
-        guard let suggestFrameSize = suggestFrameSize, let frameSetter = frameSetter else { return nil }
+        guard let suggestFrameSize, let frameSetter else { return nil }
 
         let framePath = CGMutablePath()
         let constraints = CGRect(x: 0.0, y: 0.0, width: textBounds.width <= 0.0 ? suggestFrameSize.width : textBounds.width, height: textBounds.height <= 0.0 ? suggestFrameSize.height : textBounds.height)
@@ -512,12 +512,12 @@ public class TesselatedTextGeometry: SatinGeometry {
     }
 
     func getLines() -> [CTLine] {
-        guard let frame = frame else { return [] }
+        guard let frame else { return [] }
         return CTFrameGetLines(frame) as! [CTLine]
     }
 
     func getOrigins() -> [CGPoint] {
-        guard lines.count > 0, let frame = frame else { return [] }
+        guard lines.count > 0, let frame else { return [] }
         var origins: [CGPoint] = Array(repeating: CGPoint(), count: lines.count)
         CTFrameGetLineOrigins(frame, CFRangeMake(0, 0), &origins)
         return origins

@@ -54,9 +54,9 @@ bool isConvex(const simd_float2 *path, int length)
 
     int areaSign = 0;
     for (int i = 0; i <= end; i++) {
-        simd_float2 a = path[i % length];
-        simd_float2 b = path[(i + 1) % length];
-        simd_float2 c = path[(i + 2) % length];
+        const simd_float2 &a = path[i % length];
+        const simd_float2 &b = path[(i + 1) % length];
+        const simd_float2 &c = path[(i + 2) % length];
         int newSign = simd_sign(area2(a, b, c));
         if (i > 0 && areaSign != newSign) { return false; }
         areaSign = newSign;
@@ -95,9 +95,11 @@ bool isDiagonalie(simd_float2 a, simd_float2 b, simd_float2 *polygon, int count)
 {
 
     for (int i = 0; i < count; i++) {
-        simd_float2 c = polygon[i];
-        simd_float2 c1 = polygon[(i + 1) % count];
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) { return false; }
+        const simd_float2 &c = polygon[i];
+        const simd_float2 &c1 = polygon[(i + 1) % count];
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) {
+            return false;
+        }
     }
     return true;
 }
@@ -107,16 +109,16 @@ bool isDiagonal(int i, int j, simd_float2 *polygon, int count)
     int i0 = (i - 1 < 0) ? count - 1 : i - 1;
     int i1 = (i + 1) % count;
 
-    simd_float2 a0 = polygon[i0];
-    simd_float2 a = polygon[i];
-    simd_float2 a1 = polygon[i1];
+    const simd_float2 &a0 = polygon[i0];
+    const simd_float2 &a = polygon[i];
+    const simd_float2 &a1 = polygon[i1];
 
     int j0 = (j - 1 < 0) ? count - 1 : j - 1;
     int j1 = (j + 1) % count;
 
-    simd_float2 b0 = polygon[j0];
-    simd_float2 b = polygon[j];
-    simd_float2 b1 = polygon[j1];
+    const simd_float2 &b0 = polygon[j0];
+    const simd_float2 &b = polygon[j];
+    const simd_float2 &b1 = polygon[j1];
 
     return inCone(a0, a, a1, b) && inCone(b0, b, b1, a) && isDiagonalie(a, b, polygon, count);
 }
@@ -127,8 +129,8 @@ bool isClockwise(simd_float2 *polygon, int length)
     for (int i = 0; i < length; i++) {
         int i0 = i;
         int i1 = (i + 1) % length;
-        simd_float2 a = polygon[i0];
-        simd_float2 b = polygon[i1];
+        const simd_float2 &a = polygon[i0];
+        const simd_float2 &b = polygon[i1];
         area += (b.x - a.x) * (b.y + a.y);
     }
     return !signbit(area);

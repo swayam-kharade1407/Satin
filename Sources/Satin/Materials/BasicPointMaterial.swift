@@ -31,8 +31,6 @@ open class BasicPointMaterial: Material {
     }
 
     public init(color: simd_float4, size: Float, blending: Blending = .alpha, depthWriteEnabled: Bool = true, depthCompareFunction: MTLCompareFunction = .greaterEqual) {
-        
-        pointSize = size
 
         super.init()
 
@@ -40,14 +38,19 @@ open class BasicPointMaterial: Material {
         self.depthWriteEnabled = depthWriteEnabled
         self.depthCompareFunction = depthCompareFunction
 
-        set("Color", color)
+        self.color = color
+        self.pointSize = size
+        updateSize()
     }
 
     public required init() {
         super.init()
 
         blending = .alpha
-        set("Color", simd_float4.one)
+
+        color = .one
+        pointSize = 2.0
+        updateSize()
     }
 
     private func updateSize() {

@@ -99,6 +99,8 @@ final class ScreenCaptureManager: NSObject, SCStreamDelegate, SCStreamOutput {
                 handleLatestScreenSample(sampleBuffer)
             case .audio:
                 break
+            case .microphone:
+                break
             @unknown default:
                 break
         }

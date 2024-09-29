@@ -8,11 +8,11 @@
 import Foundation
 import Metal
 
-public final actor ShaderPipelineCache {
-    static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
-    static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
+public final class ShaderPipelineCache {
+    private static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+    private static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+    private static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
+    private static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
 
     private static let pipelineCacheQueue = DispatchQueue(label: "ShaderPipelineCacheQueue", attributes: .concurrent)
     private static let shadowPipelineCacheQueue = DispatchQueue(label: "ShaderShadowPipelineCacheQueue", attributes: .concurrent)

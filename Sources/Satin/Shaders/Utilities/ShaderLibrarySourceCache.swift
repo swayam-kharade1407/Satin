@@ -7,8 +7,8 @@
 
 import Foundation
 
-public final actor ShaderLibrarySourceCache {
-    static var cache: [ShaderLibraryConfiguration: String] = [:]
+public final class ShaderLibrarySourceCache {
+    private static var cache: [ShaderLibraryConfiguration: String] = [:]
 
     private static let queue = DispatchQueue(label: "ShaderLibrarySourceCacheQueue", attributes: .concurrent)
 

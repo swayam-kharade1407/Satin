@@ -275,10 +275,9 @@ struct ContentView: View {
                 }
             #endif
 
-
-            #if os(macOS)
-            PBRStandardMaterialRendererView()
-            #endif
+//            #if os(macOS)
+//            Renderer3DView()
+//            #endif
         }
     }
 

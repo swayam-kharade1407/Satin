@@ -42,6 +42,11 @@ typedef struct Polyline2D {
     simd_float2 *data;
 } Polyline2D;
 
+typedef struct Polylines2D {
+    int count;
+    Polyline2D *data;
+} Polylines2D;
+
 typedef struct Polyline3D {
     int count;
     simd_float3 *data;
@@ -114,7 +119,8 @@ void freeGeometryData(GeometryData *data);
 void copyVertexDataToGeometryData(SatinVertex *vertices, int count, GeometryData *destData);
 void copyTriangleDataToGeometryData(TriangleData *triData, GeometryData *destData);
 
-void createVertexDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *tData);
+void createGeometryDataFromPaths(simd_float2 **paths, int *lengths, int count, GeometryData *tData);
+void createGeometryDataFromPolylines(Polylines2D *polylines, GeometryData *tData);
 
 void copyGeometryVertexData(GeometryData *dest, GeometryData *src, int start, int end);
 void copyGeometryIndexData(GeometryData *dest, GeometryData *src, int start, int end);

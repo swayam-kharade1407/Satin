@@ -8,15 +8,15 @@
 import Foundation
 import Metal
 
-public final actor ComputeShaderPipelineCache {
-    static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
-    static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
+public final class ComputeShaderPipelineCache {
+    private static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
+    private static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
-    static var updatePipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
-    static var updatePipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
+    private static var updatePipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
+    private static var updatePipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
-    static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
-    static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
+    private static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
+    private static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
 
     private static let resetPipelineCacheQueue = DispatchQueue(label: "ComputeShaderResetPipelineCacheQueue", attributes: .concurrent)
     private static let resetPipelineReflectionCacheQueue = DispatchQueue(label: "ComputeShaderResetReflectionCacheQueue", attributes: .concurrent)

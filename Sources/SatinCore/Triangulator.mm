@@ -10,6 +10,7 @@
 #include <math.h>
 #include <malloc/_malloc.h>
 #include <simd/simd.h>
+#include <iostream>
 #include <simd/quaternion.h>
 
 #include "Triangulator.h"
@@ -24,28 +25,47 @@
 
 /* Types */
 
-typedef struct tVertexStructure tsVertex;
-struct tVertexStructure {
+typedef struct tsVertex {
     int index;
     simd_float2 v;
     bool ear;
     bool imaginary;
     tsVertex *next;
     tsVertex *prev;
-};
+} tsVertex;
 
-typedef struct tPathStructure tsPath;
-struct tPathStructure {
+typedef struct tsVertexPool {
+    int count;
+    tsVertex **data;
+} tsVertexPool;
+
+typedef struct tsPath {
     int index;
     int length;
     int added;
-    simd_float2 *points;
     bool clockwise;
     tsPath *parent;
     tsPath *next;
     tsPath *prev;
     tsVertex *v;
-};
+} tsPath;
+
+tsVertexPool createVertexPool() {
+    return (tsVertexPool) {
+        .count = 0,
+        .data = NULL
+    };
+}
+
+void freeVertexPool(tsVertexPool *pool) {
+    for(int i = 0; i < pool->count; i++) {
+        free(pool->data[i]);
+    }
+
+    free(pool->data);
+    pool->data = NULL;
+    pool->count = 0;
+}
 
 /* Helper Functions */
 
@@ -102,13 +122,21 @@ bool insidePath2(tsPath *path, tsVertex *vertex)
 
 /* Creator Functions */
 
-tsVertex *createVertexStructureFromPath(simd_float2 *path, int length, int indexOffset, int localOffset)
+tsVertex *createVertexStructureFromPath(simd_float2 *path, int length, int indexOffset, int localOffset, bool *clockwise)
 {
     tsVertex *vertices = (tsVertex *)malloc(sizeof(tsVertex) * length);
+
+    float area = 0;
 
     for (int i = 0; i < length; i++) {
         const int next = (i + 1) % length;
         const int prev = (i - 1) < 0 ? (length - 1) : (i - 1);
+
+        int i0 = i;
+        int i1 = (i + 1) % length;
+        const simd_float2 &a = path[i0];
+        const simd_float2 &b = path[i1];
+        area += (b.x - a.x) * (b.y + a.y);
 
         vertices[i] = (tsVertex) {
             .index = (i + indexOffset),
@@ -119,10 +147,51 @@ tsVertex *createVertexStructureFromPath(simd_float2 *path, int length, int index
         };
     }
 
+    if(clockwise != NULL) {
+        *clockwise = !signbit(area);
+    }
+
     return vertices;
 }
 
-tsPath *createPathStructureFromPaths(simd_float2 **paths, int *lengths, int count, int indexOffset)
+tsVertex *createVertexStructureAndGeometryDataFromPath(simd_float2 *path, int length, int indexOffset, int localOffset, bool *clockwise, GeometryData *geometryData)
+{
+    tsVertex *vertices = (tsVertex *)malloc(sizeof(tsVertex) * length);
+
+    float area = 0;
+
+    const int lengthMinusOne = length - 1;
+    for (int i = 0; i < length; i++) {
+        const int next = (i + 1) % length;
+        const int prev = (i - 1) < 0 ? lengthMinusOne : (i - 1);
+
+        int i0 = i;
+        int i1 = (i + 1) % length;
+        const simd_float2 &vCurr = path[i0];
+        const simd_float2 &vNext = path[i1];
+        area += (vNext.x - vCurr.x) * (vNext.y + vCurr.y);
+
+        vertices[i] = (tsVertex) {
+            .index = (i + indexOffset),
+            .v = vCurr,
+            .ear = false,
+            .next = &vertices[next],
+            .prev = &vertices[prev],
+        };
+
+        geometryData->vertexData[indexOffset + i] = (SatinVertex) {
+            .position = simd_make_float3(vCurr.x, vCurr.y, 0.0),
+            .normal = simd_make_float3(0.0, 0.0, 1.0),
+            .uv = simd_make_float2((float)i / (float)lengthMinusOne, 0.0)
+        };
+    }
+
+    *clockwise = !signbit(area);
+
+    return vertices;
+}
+
+tsPath *createPathStructureFromPath(simd_float2 **paths, int *lengths, int count, int indexOffset)
 {
     tsPath *result = (tsPath *)malloc(sizeof(tsPath) * count);
     int localOffset = 0;
@@ -131,22 +200,100 @@ tsPath *createPathStructureFromPaths(simd_float2 **paths, int *lengths, int coun
         const int length = lengths[i];
         const int next = (i + 1) % count;
         const int prev = (i - 1) < 0 ? (count - 1) : (i - 1);
-        result[i] = (tsPath) { .index = i,
-                               .length = length,
-                               .added = 0,
-                               .points = path,
-                               .clockwise = isClockwise(path, length),
-                               .parent = NULL,
-                               .next = &result[next],
-                               .prev = &result[prev],
-                               .v = createVertexStructureFromPath(path, length, indexOffset, localOffset) };
+
+        bool clockwise = false;
+        result[i] = (tsPath) {
+            .index = i,
+            .length = length,
+            .added = 0,
+            .clockwise = clockwise,
+            .parent = NULL,
+            .next = &result[next],
+            .prev = &result[prev],
+            .v = createVertexStructureFromPath(path, length, indexOffset, localOffset, &clockwise)
+        };
+
+        result[i].clockwise = clockwise;
+
         indexOffset += length;
         localOffset += length;
     }
     return result;
 }
 
-/* Memory Deallocations Functions */
+tsPath *createPathStructureAndGeometryDataFromPath(simd_float2 **paths, int *lengths, int count, int indexOffset, GeometryData *geometryData)
+{
+    tsPath *result = (tsPath *)malloc(sizeof(tsPath) * count);
+    int localOffset = 0;
+    for (int i = 0; i < count; i++) {
+        simd_float2 *path = paths[i];
+        const int length = lengths[i];
+        const int next = (i + 1) % count;
+        const int prev = (i - 1) < 0 ? (count - 1) : (i - 1);
+
+        bool clockwise = false;
+        result[i] = (tsPath) {
+            .index = i,
+            .length = length,
+            .added = 0,
+            .clockwise = clockwise,
+            .parent = NULL,
+            .next = &result[next],
+            .prev = &result[prev],
+            .v = createVertexStructureAndGeometryDataFromPath(path, length, indexOffset, localOffset, &clockwise, geometryData)
+        };
+
+        result[i].clockwise = clockwise;
+
+        indexOffset += length;
+        localOffset += length;
+    }
+    return result;
+}
+
+tsPath *createPathStructureFromPolylines(Polylines2D *polylines, GeometryData *geometryData, int indexOffset)
+{
+    int vertexCount = 0;
+    for (int i = 0; i < polylines->count; i++) {
+        vertexCount += polylines->data[i].count;
+    }
+
+    geometryData->vertexCount = vertexCount;
+    geometryData->vertexData = (SatinVertex *)malloc(sizeof(SatinVertex) * geometryData->vertexCount);
+
+    const int count = polylines->count;
+
+    tsPath *result = (tsPath *)malloc(sizeof(tsPath) * count);
+    int localOffset = 0;
+
+    for (int i = 0; i < count; i++) {
+        const Polyline2D &polyline = polylines->data[i];
+
+        const int next = (i + 1) % count;
+        const int prev = (i - 1) < 0 ? (count - 1) : (i - 1);
+
+        const int length = polyline.count;
+
+        bool clockwise = false;
+
+        result[i] = (tsPath) {
+            .index = i,
+            .length = length,
+            .added = 0,
+            .clockwise = clockwise,
+            .parent = NULL,
+            .next = &result[next],
+            .prev = &result[prev],
+            .v = createVertexStructureAndGeometryDataFromPath(polyline.data, length, indexOffset, localOffset, &clockwise, geometryData)
+        };
+
+        result[i].clockwise = clockwise;
+
+        indexOffset += length;
+        localOffset += length;
+    }
+    return result;
+}
 
 void freePathVertexStructure(tsPath *paths, int count)
 {
@@ -262,7 +409,7 @@ void reversePath(tsPath *path)
     path->clockwise = !path->clockwise;
 }
 
-bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertex *pool, int *poolLength)
+bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertexPool *pool)
 {
     tsVertex *oData = outerPath->v;
     tsVertex *iData = innerPath->v;
@@ -281,6 +428,7 @@ bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertex *p
     tsVertex *rightOuter = NULL;
     tsVertex *rightOuterNext = NULL;
     tsVertex *outer = oData;
+
 #ifdef DEBUGCOMBINEPATHS
     printf("Right Inner Index: %d\n", rightInner->index);
 #endif
@@ -323,10 +471,15 @@ bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertex *p
         }
         outer = outer->next;
     } while (outer != oData);
+
 #ifdef DEBUGCOMBINEPATHS
     printf("\nIntersections: %d at: %d\n\n", intersectionCount, rightOuter == NULL ? -1 : rightOuter->index);
 #endif
-    if (intersectionCount % 2 == 0) { rightOuter = NULL; }
+
+    if (intersectionCount % 2 == 0) {
+        rightOuter = NULL;
+    }
+
 #ifdef DEBUGCOMBINEPATHS
     printf("Right most inner index: %d %f %f\n", rightInner->index, rightInner->v.x, rightInner->v.y);
 #endif
@@ -336,43 +489,34 @@ bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertex *p
 #ifdef DEBUGCOMBINEPATHS
         printf("\nCombining paths at outer: %d, inner: %d\n", rightOuter->index, rightInner->index);
 #endif
-        // add new vertices to pool
-        int pl = *poolLength;
-        pool = (tsVertex *)realloc(pool, sizeof(tsVertex) * (pl + 2));
 
-        tsVertex *rightOuterNew = (pool + pl);
+        // add new vertices to pool
+        const int _poolLength = pool->count;
+
+        if(pool->count > 0) {
+            pool->data = (tsVertex **)realloc(pool->data, sizeof(tsVertex*) * (_poolLength + 2));
+            pool->data[_poolLength] = (tsVertex *)malloc(sizeof(tsVertex));
+            pool->data[_poolLength + 1] = (tsVertex *)malloc(sizeof(tsVertex));
+        }
+        else {
+            pool->data = (tsVertex **)malloc(sizeof(tsVertex*) * (_poolLength + 2));
+            pool->data[0] = (tsVertex *)malloc(sizeof(tsVertex));
+            pool->data[1] = (tsVertex *)malloc(sizeof(tsVertex));
+        }
+
+        pool->count = _poolLength + 2;
+
+        tsVertex *rightOuterNew = pool->data[_poolLength];
         rightOuterNew->index = rightOuter->index;
         rightOuterNew->v = rightOuter->v;
         rightOuterNew->ear = rightOuter->ear;
         rightOuterNew->imaginary = true;
 
-        tsVertex *rightInnerNew = (pool + pl + 1);
+        tsVertex *rightInnerNew = pool->data[_poolLength + 1];
         rightInnerNew->index = rightInner->index;
         rightInnerNew->v = rightInner->v;
         rightInnerNew->ear = rightInner->ear;
         rightInnerNew->imaginary = true;
-
-        *poolLength = pl + 2;
-
-        //        // Relink path with new virtual vertices rO, rI
-        //
-        //        tsVertex *rightOuterNext = rightOuter->next;
-        //        tsVertex *rightInnerPrev = rightInner->prev;
-        //
-        //        rightInnerPrev->next = rightInnerNew;
-        //        rightOuterNext->prev = rightOuterNew;
-        //
-        //        rightOuterNew->prev = rightInnerNew;
-        //        rightOuterNew->next = rightOuterNext;
-        //
-        //        rightInnerNew->prev = rightInnerPrev;
-        //        rightInnerNew->next = rightOuterNew;
-        //
-        //
-        //        rightOuter->next = rightInner;
-        //        rightInner->prev = rightOuter;
-
-        //         Relink path with new virtual vertices rO, rI (interlink virtual vertices)
 
         tsVertex *rightOuterNext = rightOuter->next;
         tsVertex *rightInnerNext = rightInner->next;
@@ -404,68 +548,6 @@ bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertex *p
     return false;
 }
 
-void combinePaths(tsPath *pData, int count, tsVertex *pool, int *poolLength)
-{
-    for (int i = 0; i < count; i++) {
-        tsPath *a = pData + i;
-        for (int j = i + 1; j < count; j++) {
-            tsPath *b = pData + j;
-#ifdef DEBUGTRIANGULATION
-            printf("Count: %d, i: %d, j: %d\n", count, i, j);
-            printf("A: %d, B: %d\n", a->index, b->index);
-#endif
-            if (b->parent == NULL && insidePath2(a, b->v)) {
-#ifdef DEBUGTRIANGULATION
-                printf("B %d is inside of A: %d\n", b->index, a->index);
-#endif
-                if (a->clockwise) {
-                    reversePath(a);
-#ifdef DEBUGTRIANGULATION
-                    printf("Reversed a: %d clockwise: %d\n", a->index, a->clockwise);
-#endif
-                }
-
-                if (!b->clockwise) {
-                    reversePath(b);
-#ifdef DEBUGTRIANGULATION
-                    printf("Reversed b: %d clockwise: %d\n", b->index, b->clockwise);
-#endif
-                }
-
-                if (combineOuterAndInnerPaths(a, b, pool, poolLength)) {
-#ifdef DEBUGTRIANGULATION
-                    printf("\nCombined Paths: %d, %d\n\n", a->index, b->index);
-#endif
-                }
-            }
-            else if (a->parent == NULL && insidePath2(b, a->v)) {
-#ifdef DEBUGTRIANGULATION
-                printf("A %d is inside of B: %d\n", a->index, b->index);
-#endif
-                if (!a->clockwise) {
-                    reversePath(a);
-#ifdef DEBUGTRIANGULATION
-                    printf("Reversed a: %d clockwise: %d\n", a->index, a->clockwise);
-#endif
-                }
-
-                if (b->clockwise) {
-                    reversePath(b);
-#ifdef DEBUGTRIANGULATION
-                    printf("Reversed b: %d clockwise: %d\n", b->index, b->clockwise);
-#endif
-                }
-
-                if (combineOuterAndInnerPaths(b, a, pool, poolLength)) {
-#ifdef DEBUGTRIANGULATION
-                    printf("\nCombined Paths: %d, %d\n\n", b->index, a->index);
-#endif
-                }
-            }
-        }
-    }
-}
-
 // Added represents the number of addition verticies added to connect an outer path to an inner path
 int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
 {
@@ -489,7 +571,7 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
     data->count = totalCount - 2;
     data->indices = (TriangleIndices *)malloc(sizeof(TriangleIndices) * data->count);
 
-    tsVertex *v0, *v1, *v2 = vertices, *v3, *v4;
+    tsVertex *v1, *v2 = vertices, *v3;
     int n = totalCount;
 //    int n = count;
 #ifdef ALLOWFAILEDTRIAGULATIONS
@@ -539,9 +621,9 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
         do {
             if (v2->ear) {
                 v3 = v2->next;
-                v4 = v3->next;
+//                v4 = v3->next;
                 v1 = v2->prev;
-                v0 = v1->prev;
+//                v0 = v1->prev;
 
 #ifdef DEBUGTRIANGULATION
                 printf("\nLeft: %d\n", n - 1);
@@ -596,7 +678,11 @@ int _triangulate(tsVertex *vertices, int count, int added, TriangleData *data)
     printf("Adding last triangle: %d, %d, %d\n", v1->index, v2->index, v3->index);
 #endif
 
-    data->indices[triangleIndex] = (TriangleIndices) { .i0 = uint32_t(v1->index), .i1 = uint32_t(v2->index), .i2 = uint32_t(v3->index) };
+    data->indices[triangleIndex] = (TriangleIndices) {
+        .i0 = uint32_t(v1->index),
+        .i1 = uint32_t(v2->index),
+        .i2 = uint32_t(v3->index)
+    };
 
     return 0;
 }
@@ -605,10 +691,10 @@ bool isVertexStructureClockwise(tsVertex *vertices, int length)
 {
     float area = 0;
     for (int i = 0; i < length; i++) {
-        int i0 = i;
-        int i1 = (i + 1) % length;
-        simd_float2 a = vertices[i0].v;
-        simd_float2 b = vertices[i1].v;
+        const int i0 = i;
+        const int i1 = (i + 1) % length;
+        const simd_float2 &a = vertices[i0].v;
+        const simd_float2 &b = vertices[i1].v;
         area += (b.x - a.x) * (b.y + a.y);
     }
     return !signbit(area);
@@ -673,19 +759,24 @@ tsVertex *createVertexStructure(SatinVertex *vertices, const uint32_t *face, int
 
     //    printf("faces: %d, %d, %d\n\n", i0, i1, i2);
     //    printf("normal: %f, %f, %f\n", n.x, n.y, n.z);
-    const simd_quatf q = simd_quaternion(n, simd_make_float3(0.0, 0.0, 1.0));
+    const simd_quatf &q = simd_quaternion(n, simd_make_float3(0.0, 0.0, 1.0));
 
     tsVertex *structure = (tsVertex *)malloc(length * sizeof(tsVertex));
     for (int i = 0; i < length; i++) {
-        int index = face[i];
-        simd_float3 p = simd_act(q, simd_make_float3(vertices[index].position));
-        //        printf("pos: %f, %f, %f\n", p.x, p.y, p.z);
 
-        int next = (i + 1) % length;
-        int prev = (i - 1) < 0 ? (length - 1) : (i - 1);
+        const int index = face[i];
+        const simd_float3 &p = simd_act(q, simd_make_float3(vertices[index].position));
+
+        const int next = (i + 1) % length;
+        const int prev = (i - 1) < 0 ? (length - 1) : (i - 1);
 
         structure[i] = (tsVertex) {
-            .index = index, .v = simd_make_float2(p), .ear = false, .imaginary = false, .next = &structure[next], .prev = &structure[prev]
+            .index = index,
+            .v = simd_make_float2(p),
+            .ear = false,
+            .imaginary = false,
+            .next = &structure[next],
+            .prev = &structure[prev]
         };
     }
 
@@ -698,7 +789,6 @@ tsPath *createPathStructure(SatinVertex *vertices, const uint32_t *face, int len
     result->index = 0;
     result->length = length;
     result->added = 0;
-    result->points = NULL;
     result->clockwise = false;
     result->parent = NULL;
     result->next = NULL;
@@ -709,12 +799,8 @@ tsPath *createPathStructure(SatinVertex *vertices, const uint32_t *face, int len
     return result;
 }
 
-int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tData)
-{
-    tsPath *pData = createPathStructureFromPaths(paths, lengths, count, 0);
-
-    tsVertex *pool = NULL;
-    int poolLength = 0;
+int _triangulate(tsPath *pData, int count, TriangleData *tData) {
+    tsVertexPool pool = createVertexPool();
 
     if (count > 1) {
         for (int i = 0; i < count; i++) {
@@ -725,7 +811,9 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
                     // B is inside of A
                     // if B is already inside of another path, then its enclosed in a bigger path,
                     // so unlink the path from the parent
-                    if (b->parent != NULL) { b->parent = NULL; }
+                    if (b->parent != NULL) {
+                        b->parent = NULL;
+                    }
                     else {
                         b->parent = a;
                     }
@@ -734,7 +822,9 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
                     // A is inside of B
                     // if A is already inside of another path, then its enclosed in a bigger path,
                     // so unlink the path from the parent
-                    if (a->parent != NULL) { a->parent = NULL; }
+                    if (a->parent != NULL) {
+                        a->parent = NULL;
+                    }
                     else {
                         a->parent = b;
                     }
@@ -748,17 +838,20 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
             if (parent != NULL) {
                 if (!inner->clockwise) { reversePath(inner); }
                 if (parent->clockwise) { reversePath(parent); }
-                combineOuterAndInnerPaths(parent, inner, pool, &poolLength);
+                combineOuterAndInnerPaths(parent, inner, &pool);
             }
         }
     }
 
     int success = 0;
+
     for (int i = 0; i < count; i++) {
         tsPath *path = pData + i;
 
         if (path->parent == NULL) {
-            if (path->clockwise) { reversePath(path); }
+            if (path->clockwise) {
+                reversePath(path);
+            }
 
 #ifdef DEBUGTRIANGULATION
             printf("Triangulating path: %d, clockwise: %d\n", path->index, path->clockwise);
@@ -776,11 +869,24 @@ int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *tDat
         }
     }
 
+
+    freeVertexPool(&pool);
+
     freePathVertexStructure(pData, count);
 
-    if (poolLength > 0) { free(pool); }
-
     return success;
+}
+
+int triangulatePolylines(Polylines2D *polylines, GeometryData *geometryData, TriangleData *triangleData)
+{
+    tsPath *pData = createPathStructureFromPolylines(polylines, geometryData, 0);
+    return _triangulate(pData, polylines->count, triangleData);
+}
+
+int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *gData)
+{
+    tsPath *pData = createPathStructureFromPath(paths, lengths, count, 0);
+    return _triangulate(pData, count, gData);
 }
 
 // triangulates counter clockwise path
@@ -807,10 +913,12 @@ int triangulatePath(simd_float2 *points, int length, TriangleData *triData)
 int extrudePaths(simd_float2 **paths, int *lengths, int count, GeometryData *gData)
 {
     int success = 0;
-    tsPath *pData = createPathStructureFromPaths(paths, lengths, count, gData->vertexCount);
+    tsPath *pData = createPathStructureFromPath(paths, lengths, count, gData->vertexCount);
 
     if (count == 1) {
-        if (pData->clockwise) { reversePath(pData); }
+        if (pData->clockwise) {
+            reversePath(pData);
+        }
     }
     else {
         for (int i = 0; i < count; i++) {
