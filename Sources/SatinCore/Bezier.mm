@@ -12,9 +12,7 @@
 
 void freePolyline2D(Polyline2D *line)
 {
-    if (line->count <= 0 && line->data == NULL) {
-        return;
-    }
+    if (line->count <= 0 && line->data == NULL) { return; }
 
     free(line->data);
     line->data = NULL;
@@ -22,17 +20,14 @@ void freePolyline2D(Polyline2D *line)
     line->capacity = 0;
 }
 
-
 void freePolylines2D(Polylines2D *lines)
 {
-    if (lines->count <= 0 && lines->data == NULL) {
-        return;
-    }
+    if (lines->count <= 0 && lines->data == NULL) { return; }
 
-    for(int i = 0; i < lines->count; i++) {
+    for (int i = 0; i < lines->count; i++) {
         freePolyline2D(&lines->data[i]);
     }
-    
+
     free(lines->data);
     lines->data = NULL;
     lines->count = 0;
@@ -53,9 +48,7 @@ void removeFirstPointInPolyline2D(Polyline2D *line)
 {
     if (line->count > 0 || line->data != NULL) {
         line->count--;
-        if (line->count > 0) {
-            memmove(line->data, line->data + 1, line->count * sizeof(simd_float2));
-        }
+        if (line->count > 0) { memmove(line->data, line->data + 1, line->count * sizeof(simd_float2)); }
         else {
             freePolyline2D(line);
         }
@@ -66,17 +59,13 @@ void removeLastPointInPolyline2D(Polyline2D *line)
 {
     if (line->count > 0 || line->data != NULL) {
         line->count--;
-        if (line->count == 0) {
-            freePolyline2D(line);
-        }
+        if (line->count == 0) { freePolyline2D(line); }
     }
 }
 
 void appendPolyline2D(Polyline2D *dst, Polyline2D *src)
 {
-    if((dst->capacity - dst->count) > src->count) {
-        memcpy(dst->data + dst->count, src->data, src->count * sizeof(simd_float2));
-    }
+    if ((dst->capacity - dst->count) > src->count) { memcpy(dst->data + dst->count, src->data, src->count * sizeof(simd_float2)); }
     else {
         dst->capacity += src->count;
         dst->data = (simd_float2 *)realloc(dst->data, dst->capacity * sizeof(simd_float2));
@@ -97,11 +86,7 @@ Polyline2D getLinearPath2(simd_float2 a, simd_float2 b, int res)
         data[i] = simd_mix(a, b, t);
     }
 
-    return (Polyline2D) {
-        .count = res,
-        .capacity = res,
-        .data = data
-    };
+    return (Polyline2D) { .count = res, .capacity = res, .data = data };
 }
 
 Polyline2D getAdaptiveLinearPath2(simd_float2 a, simd_float2 b, float distanceLimit)
@@ -117,23 +102,15 @@ Polyline2D getAdaptiveLinearPath2(simd_float2 a, simd_float2 b, float distanceLi
             t += inc;
             t = MIN(MAX(t, 0.0), 1.0);
         }
-        
-        return (Polyline2D) {
-            .count = sections,
-            .capacity = sections,
-            .data = data
-        };
+
+        return (Polyline2D) { .count = sections, .capacity = sections, .data = data };
     }
     else {
         simd_float2 *data = (simd_float2 *)malloc(2 * sizeof(simd_float2));
         data[0] = a;
         data[1] = b;
 
-        return (Polyline2D) {
-            .count = 2,
-            .capacity = 2,
-            .data = data
-        };
+        return (Polyline2D) { .count = 2, .capacity = 2, .data = data };
     }
 }
 

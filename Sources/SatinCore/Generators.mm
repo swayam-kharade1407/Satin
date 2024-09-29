@@ -26,31 +26,30 @@ extern "C" {
 #include <CoreGraphics/CoreGraphics.h>
 #include <stdio.h>
 
-
-
 typedef struct GlpyhData {
     simd_float2 position;
     Polylines2D *polylines;
 } GlpyhData;
 
 // Define a function to handle each element of the CGPath
-void pathElementCallback(void *info, const CGPathElement *element) {
-//    std::cout << "pathElementCallback" << std::endl;
+void pathElementCallback(void *info, const CGPathElement *element)
+{
+    //    std::cout << "pathElementCallback" << std::endl;
 
     GlpyhData *glyphData = (GlpyhData *)info;
     Polylines2D *polylines = glyphData->polylines;
     Polyline2D *currentPolyline = polylines->count > 0 ? &polylines->data[polylines->count - 1] : NULL;
 
     const simd_float2 &position = glyphData->position;
-//    std::cout << "currentPolyline->count: " << currentPolyline->count << std::endl;
-//    std::cout << "currentPolyline->capacity: " << currentPolyline->capacity << std::endl;
+    //    std::cout << "currentPolyline->count: " << currentPolyline->count << std::endl;
+    //    std::cout << "currentPolyline->capacity: " << currentPolyline->capacity << std::endl;
 
     // Determine the type of path element
     switch (element->type) {
         case kCGPathElementMoveToPoint: {
-//            printf("Move to point (%f, %f)\n", element->points[0].x, element->points[0].y);
+            //            printf("Move to point (%f, %f)\n", element->points[0].x, element->points[0].y);
 
-            if(polylines->count > 0) {
+            if (polylines->count > 0) {
                 polylines->count += 1;
                 polylines->data = (Polyline2D *)realloc(polylines->data, sizeof(Polyline2D) * polylines->count);
             }
@@ -67,7 +66,7 @@ void pathElementCallback(void *info, const CGPathElement *element) {
         }
 
         case kCGPathElementAddLineToPoint: {
-//            printf("Line to point (%f, %f)\n", element->points[0].x, element->points[0].y);
+            //            printf("Line to point (%f, %f)\n", element->points[0].x, element->points[0].y);
 
             const simd_float2 currentPoint = simd_make_float2(element->points[0].x, element->points[0].y);
             Polyline2D line = getAdaptiveLinearPath2(currentPolyline->data[currentPolyline->count - 1], position + currentPoint, 0.25);
@@ -79,8 +78,9 @@ void pathElementCallback(void *info, const CGPathElement *element) {
         }
 
         case kCGPathElementAddQuadCurveToPoint: {
-//            printf("Quadratic curve to point (%f, %f) with control point (%f, %f)\n", element->points[0].x, element->points[0].y,
-//                   element->points[1].x, element->points[1].y);
+            //            printf("Quadratic curve to point (%f, %f) with control point (%f, %f)\n", element->points[0].x,
+            //            element->points[0].y,
+            //                   element->points[1].x, element->points[1].y);
 
             const simd_float2 a = currentPolyline->data[currentPolyline->count - 1];
             const simd_float2 b = simd_make_float2(element->points[0].x, element->points[0].y);
@@ -94,11 +94,10 @@ void pathElementCallback(void *info, const CGPathElement *element) {
         }
 
         case kCGPathElementAddCurveToPoint: {
-//            printf("Cubic curve to point (%f, %f) with control points (%f, %f) and (%f, %f)\n",
-//                   element->points[2].x, element->points[2].y,
-//                   element->points[0].x, element->points[0].y,
-//                   element->points[1].x, element->points[1].y);
-
+            //            printf("Cubic curve to point (%f, %f) with control points (%f, %f) and (%f, %f)\n",
+            //                   element->points[2].x, element->points[2].y,
+            //                   element->points[0].x, element->points[0].y,
+            //                   element->points[1].x, element->points[1].y);
 
             const simd_float2 a = currentPolyline->data[currentPolyline->count - 1];
             const simd_float2 b = simd_make_float2(element->points[0].x, element->points[0].y);
@@ -113,15 +112,13 @@ void pathElementCallback(void *info, const CGPathElement *element) {
         }
 
         case kCGPathElementCloseSubpath: {
-//            printf("Close path\n");
+            //            printf("Close path\n");
 
-            if(currentPolyline->count > 1) {
+            if (currentPolyline->count > 1) {
                 const simd_float2 &firstPt = currentPolyline->data[0];
                 const simd_float2 &lastPt = currentPolyline->data[currentPolyline->count - 1];
 
-                if(isEqual2(firstPt, lastPt)) {
-                    removeLastPointInPolyline2D(currentPolyline);
-                }
+                if (isEqual2(firstPt, lastPt)) { removeLastPointInPolyline2D(currentPolyline); }
 
                 Polyline2D line = getAdaptiveLinearPath2(lastPt, firstPt, 0.25);
                 removeFirstPointInPolyline2D(&line);
@@ -134,22 +131,21 @@ void pathElementCallback(void *info, const CGPathElement *element) {
         }
 
         default:
-//            printf("Unknown path element\n");
+            //            printf("Unknown path element\n");
             break;
     }
 }
 
-
-
 // Function to print glyph data from a string
-void getGlyphDataForString(const char* fontName, const char* inputString, GeometryData *geometryData) {
+void getGlyphDataForString(const char *fontName, const char *inputString, GeometryData *geometryData)
+{
     // Step 1: Create a CFString from the input C-string
 
     CFStringRef string = CFStringCreateWithCString(NULL, inputString, kCFStringEncodingUTF8);
     CFStringRef fontNameString = CFStringCreateWithCString(NULL, fontName, kCFStringEncodingUTF8);
 
     // Step 2: Create a CTFont with a given size
-//    CTFontRef font = CTFontCreateWithName(CFSTR("Audiowide-Regular"), 12.0, NULL);
+    //    CTFontRef font = CTFontCreateWithName(CFSTR("Audiowide-Regular"), 12.0, NULL);
     CTFontRef font = CTFontCreateWithName(fontNameString, 12.0, NULL);
 
     // Step 3: Create an attributed string with the font
@@ -180,7 +176,6 @@ void getGlyphDataForString(const char* fontName, const char* inputString, Geomet
         CTRunGetGlyphs(run, CFRangeMake(0, glyphCount), glyphs);
         CTRunGetPositions(run, CFRangeMake(0, glyphCount), positions);
 
-
         GlpyhData glyphData;
 
         // Print glyphs and their positions
@@ -190,10 +185,7 @@ void getGlyphDataForString(const char* fontName, const char* inputString, Geomet
 
             if (glyphPath) {
 
-                Polylines2D polylines = {
-                    .count = 0,
-                    .data = NULL
-                };
+                Polylines2D polylines = { .count = 0, .data = NULL };
 
                 glyphData.polylines = &polylines;
                 glyphData.position = simd_make_float2(positions[j].x, positions[j].y);
@@ -210,8 +202,8 @@ void getGlyphDataForString(const char* fontName, const char* inputString, Geomet
                 freePolylines2D(&polylines);
                 freeTriangleData(&triangleData);
                 freeGeometryData(&glyphGeometryData);
-
-            } else {
+            }
+            else {
                 printf("Glyph: %u, No path available.\n", glyphs[j]);
             }
         }
@@ -225,7 +217,8 @@ void getGlyphDataForString(const char* fontName, const char* inputString, Geomet
     CFRetain(fontNameString);
 }
 
-GeometryData generateTextGeometryData(const char *fontName, const char *text) {
+GeometryData generateTextGeometryData(const char *fontName, const char *text)
+{
     GeometryData geometryData = createGeometryData();
     getGlyphDataForString(fontName, text, &geometryData);
     return geometryData;

@@ -97,9 +97,7 @@ bool isDiagonalie(simd_float2 a, simd_float2 b, simd_float2 *polygon, int count)
     for (int i = 0; i < count; i++) {
         const simd_float2 &c = polygon[i];
         const simd_float2 &c1 = polygon[(i + 1) % count];
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) {
-            return false;
-        }
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) { return false; }
     }
     return true;
 }

@@ -56,14 +56,7 @@ void freeTriangleData(TriangleData *data)
     }
 }
 
-GeometryData createGeometryData() {
-    return (GeometryData) {
-        .vertexCount = 0,
-        .vertexData = NULL,
-        .indexCount = 0,
-        .indexData = NULL
-    };
-}
+GeometryData createGeometryData() { return (GeometryData) { .vertexCount = 0, .vertexData = NULL, .indexCount = 0, .indexData = NULL }; }
 
 void freeGeometryData(GeometryData *data)
 {
@@ -153,11 +146,9 @@ void createGeometryDataFromPaths(simd_float2 **paths, int *lengths, int count, G
         const simd_float2 *subpath = paths[i];
         for (int j = 0; j < pathLength; j++) {
             const simd_float2 &pt = subpath[j];
-            geoData->vertexData[index++] = (SatinVertex) {
-                .position = simd_make_float3(pt.x, pt.y, 0.0),
-                .normal = simd_make_float3(0.0, 0.0, 1.0),
-                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
-            };
+            geoData->vertexData[index++] = (SatinVertex) { .position = simd_make_float3(pt.x, pt.y, 0.0),
+                                                           .normal = simd_make_float3(0.0, 0.0, 1.0),
+                                                           .uv = simd_make_float2((float)j / (float)pathLength, 0.0) };
         }
     }
 }
@@ -179,11 +170,9 @@ void createGeometryDataFromPolylines(Polylines2D *polylines, GeometryData *geoDa
         const simd_float2 *subpath = polyline->data;
         for (int j = 0; j < pathLength; j++) {
             const simd_float2 &pt = subpath[j];
-            geoData->vertexData[index++] = (SatinVertex) {
-                .position = simd_make_float3(pt.x, pt.y, 0.0),
-                .normal = simd_make_float3(0.0, 0.0, 1.0),
-                .uv = simd_make_float2((float)j / (float)pathLength, 0.0)
-            };
+            geoData->vertexData[index++] = (SatinVertex) { .position = simd_make_float3(pt.x, pt.y, 0.0),
+                                                           .normal = simd_make_float3(0.0, 0.0, 1.0),
+                                                           .uv = simd_make_float2((float)j / (float)pathLength, 0.0) };
         }
     }
 }
