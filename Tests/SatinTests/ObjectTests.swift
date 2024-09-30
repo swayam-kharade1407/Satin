@@ -53,6 +53,6 @@ class ObjectTests: XCTestCase {
     func testLocalBounds() {
         let sphere = SphereGeometry()
         let mesh = Mesh(geometry: sphere, material: nil)
-        XCTAssertEqual(mesh.localBounds, Bounds(min: .init(-1, -1, -1), max: .init(1, 1, 1)))
+        XCTAssert(mesh.localBounds.equals(Bounds(min: .init(-1, -1, -1), max: .init(1, 1, 1))))
     }
 }

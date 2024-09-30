@@ -41,4 +41,8 @@ public extension Bounds {
     func contains(_ pt: simd_float3) -> Bool {
         return isPointInsideOrOnBounds(pt, self)
     }
+
+    func equals(_ bounds: Bounds) -> Bool {
+        simd_equal(self.min, bounds.min) && simd_equal(self.max, bounds.max)
+    }
 }

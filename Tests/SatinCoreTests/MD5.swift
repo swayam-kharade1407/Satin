@@ -13,12 +13,6 @@ import Satin
 import SatinCore
 #endif
 
-extension Bounds: @retroactive Equatable {
-    public static func == (lhs: Bounds, rhs: Bounds) -> Bool {
-        simd_equal(lhs.min, rhs.min) && simd_equal(lhs.max, rhs.max)
-    }
-}
-
 func MD5(data: Data) -> String {
     let digest = Insecure.MD5.hash(data: data)
 
