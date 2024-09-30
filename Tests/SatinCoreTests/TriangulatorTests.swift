@@ -5,7 +5,12 @@
 //  Created by Taylor Holliday on 3/21/22.
 //
 
+#if SWIFT_PACKAGE
+import SatinCore
+#else
 import Satin
+#endif
+
 import XCTest
 
 class TriangulatorTests: XCTestCase {

@@ -47,7 +47,7 @@ final class TessellatedShader: SourceShader {
 
         let pipeline = try context.device.makeRenderPipelineState(
             descriptor: descriptor,
-            options: [.argumentInfo, .bufferTypeInfo],
+            options: [.bindingInfo, .bufferTypeInfo],
             reflection: &reflection
         )
 

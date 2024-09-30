@@ -98,7 +98,7 @@ private final class CustomShader: SourceShader {
                 descriptor.stencilAttachmentPixelFormat = context.stencilPixelFormat
 
                 setupMeshPipelineDescriptorBlending(blending: configuration.blending, descriptor: &descriptor)
-                return try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.argumentInfo, .bufferTypeInfo])
+                return try context.device.makeRenderPipelineState(descriptor: descriptor, options: [.bindingInfo, .bufferTypeInfo])
             } else {
                 return (nil, nil)
             }

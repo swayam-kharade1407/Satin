@@ -5,7 +5,12 @@
 //  Created by Taylor Holliday on 3/23/22.
 //
 
+#if SWIFT_PACKAGE
+import SatinCore
+#else
 import Satin
+#endif
+
 import simd
 import XCTest
 

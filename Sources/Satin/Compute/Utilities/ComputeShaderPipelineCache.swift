@@ -238,7 +238,7 @@ public final class ComputeShaderPipelineCache {
         if configuration.libraryURL != nil {
             let (pipeline, reflection) = try device.makeComputePipelineState(
                 descriptor: descriptor,
-                options: [.argumentInfo, .bufferTypeInfo]
+                options: [.bindingInfo, .bufferTypeInfo]
             )
 
             updatePipelineCacheQueue.sync(flags: .barrier) {
@@ -254,7 +254,7 @@ public final class ComputeShaderPipelineCache {
         else {
             let (pipeline, reflection) = try device.makeComputePipelineState(
                 descriptor: descriptor,
-                options: [.argumentInfo, .bufferTypeInfo]
+                options: [.bindingInfo, .bufferTypeInfo]
             )
 
             updatePipelineCacheQueue.sync(flags: .barrier) {
@@ -307,7 +307,7 @@ public final class ComputeShaderPipelineCache {
         if configuration.libraryURL != nil {
             let (pipeline, reflection) = try device.makeComputePipelineState(
                 descriptor: descriptor,
-                options: [.argumentInfo, .bufferTypeInfo]
+                options: [.bindingInfo, .bufferTypeInfo]
             )
 
             resetPipelineCacheQueue.sync(flags: .barrier) {
@@ -323,7 +323,7 @@ public final class ComputeShaderPipelineCache {
         else {
             let (pipeline, reflection) = try device.makeComputePipelineState(
                 descriptor: descriptor,
-                options: [.argumentInfo, .bufferTypeInfo]
+                options: [.bindingInfo, .bufferTypeInfo]
             )
 
             resetPipelineCacheQueue.sync(flags: .barrier) {

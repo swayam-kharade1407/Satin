@@ -6,6 +6,10 @@
 //
 
 import Satin
+#if SWIFT_PACKAGE
+import SatinCore
+#endif
+
 import simd
 import XCTest
 
