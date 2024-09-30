@@ -14,6 +14,7 @@ import Satin
 import simd
 import XCTest
 
+
 class BoundsTests: XCTestCase {
     func testComputeBoundsFromVertices() {
         var vertices0: [SatinVertex] = []
