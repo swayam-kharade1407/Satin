@@ -1,6 +1,7 @@
 import Foundation
 
 public final class Tween {
+    public let id = UUID()
     // Properties
     public private(set) var loops: Int = 0
     public private(set) var loop: Int = 0

@@ -104,9 +104,10 @@ public final class Tweener {
     }
 
     @objc public class func update() {
-        let tweenCount = tweens.count
-        for i in stride(from: tweenCount - 1, through: 0, by: -1) {
-            if tweens[i].update() { tweens.remove(at: i) }
+        for i in stride(from: tweens.count - 1, through: 0, by: -1) {
+            if tweens[i].update() {
+                tweens.remove(at: i)
+            }
         }
 
         if tweens.isEmpty {

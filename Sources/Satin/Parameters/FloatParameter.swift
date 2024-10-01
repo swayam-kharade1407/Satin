@@ -14,4 +14,8 @@ public final class FloatParameter: GenericParameterWithMinMax<Float> {
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, 0.0, 1.0, controlType)
     }
+
+    public override func clone() -> any Parameter {
+        FloatParameter(label, value, min, max, controlType)
+    }
 }

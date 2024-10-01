@@ -31,6 +31,8 @@ public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
 
     func alignData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer
     func writeData(pointer: UnsafeMutableRawPointer, offset: inout Int) -> UnsafeMutableRawPointer
+
+    func clone() -> any Parameter
 }
 
 public protocol ParameterWithMinMax: Parameter {

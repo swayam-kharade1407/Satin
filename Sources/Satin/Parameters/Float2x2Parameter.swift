@@ -28,4 +28,8 @@ public final class Float2x2Parameter: GenericParameter<simd_float2x2> {
         let value = try container.decode(simd_float2x2.self, forKey: .value)
         super.init(label, value, controlType)
     }
+
+    public override func clone() -> any Parameter {
+        Float2x2Parameter(label, value, controlType)
+    }
 }

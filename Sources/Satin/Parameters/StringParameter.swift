@@ -33,4 +33,8 @@ public final class StringParameter: GenericParameter<String> {
         self.init(label, value, controlType)
         self.options = options
     }
+
+    public override func clone() -> any Parameter {
+        StringParameter(label, value, options, controlType)
+    }
 }

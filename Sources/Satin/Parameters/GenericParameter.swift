@@ -58,7 +58,7 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
         label = try container.decode(String.self, forKey: .label)
 
         let value = try container.decode(ValueType.self, forKey: .value)
-        
+
         self.value = value
 
         if let defaultValue = try container.decodeIfPresent(ValueType.self, forKey: .defaultValue) {
@@ -108,6 +108,10 @@ public class GenericParameter<T: Codable & Equatable>: Parameter, ObservableObje
         offset += size
         return data
     }
+
+    public func clone() -> any Parameter {
+        GenericParameter<ValueType>(label, value, controlType)
+    }
 }
 
 public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParameter<T> {
@@ -154,5 +158,9 @@ public class GenericParameterWithMinMax<T: Codable & Equatable>: GenericParamete
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(min, forKey: .min)
         try container.encode(max, forKey: .max)
+    }
+
+    override public func clone() -> any Parameter {
+        GenericParameterWithMinMax<ValueType>(label, value, min, max, controlType)
     }
 }

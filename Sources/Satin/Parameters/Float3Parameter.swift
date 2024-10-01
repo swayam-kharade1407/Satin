@@ -15,4 +15,8 @@ public final class Float3Parameter: GenericParameterWithMinMax<simd_float3> {
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, .zero, .one, controlType)
     }
+
+    public override func clone() -> any Parameter {
+        Float3Parameter(label, value, min, max, controlType)
+    }
 }

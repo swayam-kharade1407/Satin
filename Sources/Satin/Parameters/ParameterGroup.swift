@@ -169,7 +169,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
 
         for key in newKeys {
             if let param = incomingParams.paramsMap[key] {
-                append(param)
+                append(param.clone())
             }
         }
 
@@ -202,7 +202,13 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
         let commonKeys = exisitingKeys.intersection(incomingKeys)
         for key in commonKeys {
             if let inParam = incomingParams.paramsMap[key] {
-                setParameterFrom(param: inParam, setValue: true, setOptions: false, setControl: false, append: false)
+                setParameterFrom(
+                    param: inParam,
+                    setValue: true,
+                    setOptions: false,
+                    setControl: false,
+                    append: false
+                )
             }
         }
     }
@@ -270,7 +276,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
     func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, setControl: Bool, append: Bool) {
         let label = param.label
         if append, paramsMap[label] == nil {
-            self.append(param)
+            self.append(param.clone())
         } else if let mp = paramsMap[label] {
             if setControl {
                 mp.controlType = param.controlType

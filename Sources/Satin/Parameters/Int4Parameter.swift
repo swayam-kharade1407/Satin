@@ -15,4 +15,8 @@ public final class Int4Parameter: GenericParameterWithMinMax<simd_int4> {
     public convenience init(_ label: String, _ value: ValueType, _ controlType: ControlType = .none) {
         self.init(label, value, .zero, .one, controlType)
     }
+
+    public override func clone() -> any Parameter {
+        Int4Parameter(label, value, min, max, controlType)
+    }
 }

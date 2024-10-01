@@ -28,4 +28,8 @@ public final class Float4x4Parameter: GenericParameter<simd_float4x4> {
         let value = try container.decode(simd_float4x4.self, forKey: .value)
         super.init(label, value, controlType)
     }
+
+    public override func clone() -> any Parameter {
+        Float4x4Parameter(label, value, controlType)
+    }
 }

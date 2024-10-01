@@ -26,4 +26,8 @@ public final class IntParameter: GenericParameterWithMinMax<Int> {
         offset += size
         return data
     }
+
+    public override func clone() -> any Parameter {
+        IntParameter(label, value, min, max, controlType)
+    }
 }
