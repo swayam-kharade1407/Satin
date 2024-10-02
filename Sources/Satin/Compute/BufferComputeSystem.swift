@@ -27,14 +27,14 @@ open class BufferComputeSystem: ComputeSystem {
     public var count: Int {
         didSet {
             if count != oldValue {
-                reset()
+                resetBuffers()
             }
         }
     }
 
     public private(set) var buffers: [ParameterGroup] = [] {
         didSet {
-            reset()
+            resetBuffers()
         }
     }
 
@@ -83,8 +83,8 @@ open class BufferComputeSystem: ComputeSystem {
     override open func update(_ commandBuffer: MTLCommandBuffer, iterations: Int = 1) {
         super.update(commandBuffer)
 
-        guard (_reset && resetPipeline != nil ) || updatePipeline != nil else { return }
-        
+        guard (_reset && resetPipeline != nil) || updatePipeline != nil else { return }
+
         if count > 0, bufferMap.count > 0, let computeEncoder = commandBuffer.makeComputeCommandEncoder() {
             computeEncoder.label = label
             encode(computeEncoder, iterations: iterations)
@@ -119,11 +119,9 @@ open class BufferComputeSystem: ComputeSystem {
             }
 
             _reset = false
-        }
-
-        if let pipeline = updatePipeline {
+        } else if let pipeline = updatePipeline {
             computeEncoder.setComputePipelineState(pipeline)
-            for iteration in 0..<iterations {
+            for iteration in 0 ..< iterations {
                 var offset = bind(computeEncoder)
                 preCompute?(computeEncoder, &offset, iteration)
                 dispatch(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
@@ -219,8 +217,8 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Reset
 
-    override open func reset() {
-        super.reset()
+    open func resetBuffers() {
+        reset()
         _setupBuffers = true
     }
 
@@ -231,7 +229,7 @@ open class BufferComputeSystem: ComputeSystem {
         let gridSize = MTLSizeMake(_count, 1, 1)
 
         var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup
-        threadGroupSize = threadGroupSize > _count ? 32 * max(((_count / 32)), 1) : threadGroupSize
+        threadGroupSize = threadGroupSize > _count ? 32 * max(_count / 32, 1) : threadGroupSize
 
         let threadsPerThreadgroup = MTLSizeMake(threadGroupSize, 1, 1)
         computeEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadsPerThreadgroup)
