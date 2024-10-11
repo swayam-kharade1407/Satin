@@ -12,7 +12,7 @@ import simd
 public final class StructBuffer<T> {
     public private(set) var buffer: MTLBuffer!
     public private(set) var offset = 0
-    public private(set) var index = 0
+    public private(set) var index = -1
     public private(set) var count: Int
 
     public init(device: MTLDevice, count: Int, label: String = "Struct Buffer") {

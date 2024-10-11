@@ -18,7 +18,7 @@ Satin makes simple graphics tasks fun and easy to accomplish quickly and complex
 
 - macOS 14.0
 - iOS 17.0
-- visionOS 1.0
+- visionOS 2.0
 - tvOS 17.0
 
 # Installation
@@ -47,11 +47,11 @@ Satin makes simple graphics tasks fun and easy to accomplish quickly and complex
 - [x] Flexible Vertex Structure
 - [x] Run-time & Dynamic Struct creation via Parameters for Buffers and Uniforms.
 - [x] Metal Shader Compiler (useful when live coding)
-- [x] Buffer & Texture Compute Systems for crunching data fast and hard.
+- [x] Buffer & Texture Compute Systems make running compute kernels a breeze.
 - [x] Generators for BRDF LUT, Image Based Lighting (HDR -> Specular & Diffuse IBL Textures)
 - [x] Fast raycasting via Bounding Volume Hierachies (very helpful to see what you clicked or tapped on).
 - [x] Hooks for custom Metal rendering via Mesh's preDraw, Material's onBind, Buffer & Texture Computes' preCompute, etc
-- [x] Hooks for custom Renderable via Renderable protocol
+- [x] Hooks for custom rendering via the Renderable protocol
 - [x] FileWatcher for checking if a resource or shader file has changed.
 - [x] Tons of examples to show how to use the API.
 - [x] Examples that show how to use Satin & ARKit
@@ -71,7 +71,7 @@ import Satin
 
 // Subclass Satin's Renderer to get triple buffered rendering and
 // callbacks for Setup, Update, Draw, Resize and Events
-class SimpleRenderer: MetalViewRenderer {
+final class SimpleRenderer: MetalViewRenderer {
     // A Satin Renderer handles setting the Content on all the objects in the scene graph
     // and drawing the scene either to a texture or on screen
 
