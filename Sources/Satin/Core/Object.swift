@@ -610,11 +610,9 @@ open class Object: Codable, ObservableObject {
     }
 
     open func removeAll() {
-//        childrenQueue.sync {
-            for child in children {
-                remove(child)
-            }
-//        }
+        for child in children {
+            remove(child)
+        }
     }
 
     // MARK: - Recursive Scene Graph Functions
