@@ -14,8 +14,11 @@ import SwiftUI
 public struct SatinImmersiveSpace: SwiftUI.Scene {
     private let renderer: MetalLayerRenderer
 
-    public init(renderer: MetalLayerRenderer) {
+    @Binding private var immersionStyle: ImmersionStyle
+
+    public init(renderer: MetalLayerRenderer, immersionStyle: Binding<ImmersionStyle>) {
         self.renderer = renderer
+        _immersionStyle = immersionStyle
     }
 
     public var body: some SwiftUI.Scene {
@@ -34,7 +37,7 @@ public struct SatinImmersiveSpace: SwiftUI.Scene {
                 }
                 renderer.startRenderLoop()
             }
-        }.immersionStyle(selection: .constant(.full), in: .full)
+        }.immersionStyle(selection: $immersionStyle, in: .mixed, .full)
     }
 }
 

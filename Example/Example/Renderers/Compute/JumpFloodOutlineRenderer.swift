@@ -95,10 +95,6 @@ final class JumpFloodOutlineRenderer: BaseRenderer {
 
     override func update() {
         cameraController.update()
-        camera.update()
-
-//        mesh.orientation = simd_quatf(angle: Float(getTime() - startTime), axis: simd_normalize(simd_float3.one))
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

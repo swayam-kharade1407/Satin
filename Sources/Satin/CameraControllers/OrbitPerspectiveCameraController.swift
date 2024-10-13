@@ -767,6 +767,7 @@ public final class OrbitPerspectiveCameraController: CameraController, Codable {
 
     // MARK: - macOS Gestures
 
+    @MainActor
     @objc private func magnifyGesture(_ gestureRecognizer: NSMagnificationGestureRecognizer) {
         let newMagnification = Float(gestureRecognizer.magnification)
 

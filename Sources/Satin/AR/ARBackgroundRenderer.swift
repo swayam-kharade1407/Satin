@@ -53,6 +53,17 @@ public class ARBackgroundRenderer: PostProcessor {
 
         mesh.label = "AR Background Color Mesh"
         mesh.visible = false
+
+        mesh.onUpdate = { [weak self] in
+            guard let self, let frame = self.session.currentFrame else { return }
+
+            self.updateTextures(frame)
+
+            if self._updateGeometry {
+                self.updateGeometry(frame)
+                self._updateGeometry = false
+            }
+        }
     }
 
     deinit {
@@ -61,19 +72,6 @@ public class ARBackgroundRenderer: PostProcessor {
 
     @objc func rotated() {
         _updateGeometry = true
-    }
-
-    public override func update() {
-        guard let frame = session.currentFrame else { return }
-
-        updateTextures(frame)
-
-        if _updateGeometry {
-            updateGeometry(frame)
-            _updateGeometry = false
-        }
-
-        super.update()
     }
 
     public override func resize(size: (width: Float, height: Float), scaleFactor: Float) {

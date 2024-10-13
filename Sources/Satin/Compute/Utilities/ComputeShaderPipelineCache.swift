@@ -8,15 +8,15 @@
 import Foundation
 import Metal
 
-public final class ComputeShaderPipelineCache {
-    private static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
-    private static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
+public final class ComputeShaderPipelineCache: Sendable {
+    nonisolated(unsafe) private static var resetPipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
+    nonisolated(unsafe) private static var resetPipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
-    private static var updatePipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
-    private static var updatePipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
+    nonisolated(unsafe) private static var updatePipelineCache: [ComputeShaderConfiguration: MTLComputePipelineState] = [:]
+    nonisolated(unsafe) private static var updatePipelineReflectionCache: [ComputeShaderConfiguration: MTLComputePipelineReflection] = [:]
 
-    private static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
-    private static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
+    nonisolated(unsafe) private static var pipelineParametersCache: [ComputeShaderConfiguration: ParameterGroup] = [:]
+    nonisolated(unsafe) private static var pipelineBuffersCache: [ComputeShaderConfiguration: [ParameterGroup]] = [:]
 
     private static let resetPipelineCacheQueue = DispatchQueue(label: "ComputeShaderResetPipelineCacheQueue", attributes: .concurrent)
     private static let resetPipelineReflectionCacheQueue = DispatchQueue(label: "ComputeShaderResetReflectionCacheQueue", attributes: .concurrent)
@@ -39,38 +39,38 @@ public final class ComputeShaderPipelineCache {
     }
 
     public static func invalidateResetPipeline(configuration: ComputeShaderConfiguration) {
-        _ = resetPipelineCacheQueue.sync(flags: .barrier) {
-            resetPipelineCache.removeValue(forKey: configuration)
+        resetPipelineCacheQueue.sync(flags: .barrier) {
+            _ = resetPipelineCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidateResetPipelineReflection(configuration: ComputeShaderConfiguration) {
-        _ = resetPipelineReflectionCacheQueue.sync(flags: .barrier) {
-            resetPipelineReflectionCache.removeValue(forKey: configuration)
+        resetPipelineReflectionCacheQueue.sync(flags: .barrier) {
+            _ = resetPipelineReflectionCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidateUpdatePipeline(configuration: ComputeShaderConfiguration) {
-        _ = updatePipelineCacheQueue.sync(flags: .barrier) {
-            updatePipelineCache.removeValue(forKey: configuration)
+        updatePipelineCacheQueue.sync(flags: .barrier) {
+            _ = updatePipelineCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidateUpdatePipelineReflection(configuration: ComputeShaderConfiguration) {
-        _ = updatePipelineReflectionCacheQueue.sync(flags: .barrier) {
-            updatePipelineReflectionCache.removeValue(forKey: configuration)
+        updatePipelineReflectionCacheQueue.sync(flags: .barrier) {
+            _ = updatePipelineReflectionCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidatePipelineParameters(configuration: ComputeShaderConfiguration) {
-        _ = pipelineParametersCacheQueue.sync(flags: .barrier) {
-            pipelineParametersCache.removeValue(forKey: configuration)
+        pipelineParametersCacheQueue.sync(flags: .barrier) {
+            _ = pipelineParametersCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidatePipelineBuffers(configuration: ComputeShaderConfiguration) {
-        _ = pipelineBuffersCacheQueue.sync(flags: .barrier) {
-            pipelineBuffersCache.removeValue(forKey: configuration)
+        pipelineBuffersCacheQueue.sync(flags: .barrier) {
+            _ = pipelineBuffersCache.removeValue(forKey: configuration)
         }
     }
 

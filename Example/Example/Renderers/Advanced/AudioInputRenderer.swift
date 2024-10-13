@@ -43,11 +43,6 @@ final class AudioInputRenderer: BaseRenderer {
         print(audioInput.inputs)
     }
 
-    override func update() {
-        camera.update()
-        scene.update()
-    }
-
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,

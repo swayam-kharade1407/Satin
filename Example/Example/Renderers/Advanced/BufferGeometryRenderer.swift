@@ -246,9 +246,6 @@ final class BufferGeometryRenderer: BaseRenderer {
         cameraController.update()
 
         theta += 0.1
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

@@ -17,7 +17,7 @@ import SatinCore
 
 open class Object: Codable, ObservableObject {
     @Published open var id: String = UUID().uuidString
-    
+
     public let labelPublisher = PassthroughSubject<String, Never>()
     @Published open var label = "Object" {
         didSet {
@@ -46,7 +46,7 @@ open class Object: Codable, ObservableObject {
     @Published open var position: simd_float3 = .zero {
         didSet {
             _translationMatrix.clear()
-            
+
             updateLocalMatrix = true
 
             positionPublisher.send(self)
@@ -124,7 +124,7 @@ open class Object: Codable, ObservableObject {
     @Published open var scale: simd_float3 = .one {
         didSet {
             _scaleMatrix.clear()
-            
+
             updateLocalMatrix = true
 
             scalePublisher.send(self)
@@ -411,6 +411,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
+    private let childrenQueue = DispatchQueue(label: "ChildrenQueue", attributes: .concurrent)
+
     // MARK: - OnUpdate Hook
 
     public var onUpdate: (() -> Void)?
@@ -430,8 +432,10 @@ open class Object: Codable, ObservableObject {
     public let childAddedPublisher = PassthroughSubject<Object, Never>()
     public let childRemovedPublisher = PassthroughSubject<Object, Never>()
 
-    var childAddedSubscriptions: [Object: AnyCancellable] = [:]
-    var childRemovedSubscriptions: [Object: AnyCancellable] = [:]
+    private var childAddedSubscriptions: [Object: AnyCancellable] = [:]
+    private let childAddedSubscriptionsQueue = DispatchQueue(label: "ChildAddedSubscriptionsQueue", attributes: .concurrent)
+    private var childRemovedSubscriptions: [Object: AnyCancellable] = [:]
+    private let childRemovedSubscriptionsQueue = DispatchQueue(label: "ChildRemovedSubscriptionsQueue", attributes: .concurrent)
 
     // MARK: - Init
 
@@ -447,9 +451,7 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Deinit
 
-    deinit {
-        removeAll()
-    }
+    deinit {}
 
     // MARK: - CodingKeys
 
@@ -523,7 +525,6 @@ open class Object: Codable, ObservableObject {
 
     open func update() {
         onUpdate?()
-        for child in children { child.update() }
     }
 
     open func encode(_ commandBuffer: MTLCommandBuffer) {}
@@ -533,34 +534,43 @@ open class Object: Codable, ObservableObject {
     // MARK: - Inserting, Adding, Attaching & Removing
 
     open func insert(_ child: Object, at: Int, setParent: Bool = true) {
-        if !children.contains(where: { $0 === child }) {
-            if setParent {
-                child.parent = self
+//        childrenQueue.sync(flags: .barrier) {
+            if !children.contains(where: { $0 === child }) {
+                if setParent {
+                    child.parent = self
+                }
+                child.context = context
+                children.insert(child, at: at)
             }
-            child.context = context
-            children.insert(child, at: at)
-        }
+//        }
     }
 
     open func add(_ child: Object, _ setParent: Bool = true) {
-        guard children.firstIndex(of: child) == nil else { return }
+//        childrenQueue.sync(flags: .barrier) {
+            guard children.firstIndex(of: child) == nil, child != self else { return }
 
-        if setParent {
-            child.removeFromParent()
-            child.parent = self
-        }
+            if setParent {
+                child.removeFromParent()
+                child.parent = self
+            }
 
-        child.context = context
-        children.append(child)
-        childAddedPublisher.send(child)
+            child.context = context
 
-        childAddedSubscriptions[child] = child.childAddedPublisher.sink { [weak self] subchild in
-            self?.childAddedPublisher.send(subchild)
-        }
+            children.append(child)
+            childAddedPublisher.send(child)
 
-        childRemovedSubscriptions[child] = child.childRemovedPublisher.sink { [weak self] subchild in
-            self?.childRemovedPublisher.send(subchild)
-        }
+            childAddedSubscriptionsQueue.sync(flags: .barrier) {
+                childAddedSubscriptions[child] = child.childAddedPublisher.sink { [weak self] subchild in
+                    self?.childAddedPublisher.send(subchild)
+                }
+            }
+
+            childRemovedSubscriptionsQueue.sync(flags: .barrier) {
+                childRemovedSubscriptions[child] = child.childRemovedPublisher.sink { [weak self] subchild in
+                    self?.childRemovedPublisher.send(subchild)
+                }
+            }
+//        }
     }
 
     open func attach(_ child: Object) {
@@ -574,14 +584,25 @@ open class Object: Codable, ObservableObject {
     }
 
     open func remove(_ child: Object) {
-        guard let index = children.firstIndex(of: child) else { return }
-        childRemovedPublisher.send(child)
-        if child.parent === self {
-            child.parent = nil
-        }
-        children.remove(at: index)
-        childAddedSubscriptions.removeValue(forKey: child)
-        childRemovedSubscriptions.removeValue(forKey: child)
+//        childrenQueue.sync(flags: .barrier) {
+            guard let childIndex = children.firstIndex(of: child) else { return }
+
+            childRemovedPublisher.send(child)
+
+            if child.parent === self {
+                child.parent = nil
+            }
+
+            children.remove(at: childIndex)
+
+            childAddedSubscriptionsQueue.sync(flags: .barrier) {
+                _ = childAddedSubscriptions.removeValue(forKey: child)
+            }
+
+            childRemovedSubscriptionsQueue.sync(flags: .barrier) {
+                _ = childRemovedSubscriptions.removeValue(forKey: child)
+            }
+//        }
     }
 
     open func removeFromParent() {
@@ -589,9 +610,11 @@ open class Object: Codable, ObservableObject {
     }
 
     open func removeAll() {
-        for child in children {
-            remove(child)
-        }
+//        childrenQueue.sync {
+            for child in children {
+                remove(child)
+            }
+//        }
     }
 
     // MARK: - Recursive Scene Graph Functions
@@ -599,28 +622,34 @@ open class Object: Codable, ObservableObject {
     public func apply(recursive: Bool = true, _ fn: (_ object: Object) -> Void) {
         fn(self)
         if recursive {
-            for child in children {
-                child.apply(recursive: recursive, fn)
-            }
+//            childrenQueue.sync {
+                for child in children {
+                    child.apply(recursive: recursive, fn)
+                }
+//            }
         }
     }
 
     public func traverse(_ fn: (_ object: Object) -> Void) {
-        for child in children {
-            fn(child)
-            child.traverse(fn)
-        }
+//        childrenQueue.sync {
+            for child in children {
+                fn(child)
+                child.traverse(fn)
+            }
+//        }
     }
 
     public func traverseVisible(_ fn: (_ object: Object) -> Void) {
-        for child in children where child.visible {
-            fn(child)
-            child.traverseVisible(fn)
-        }
+//        childrenQueue.sync {
+            for child in children where child.visible {
+                fn(child)
+                child.traverseVisible(fn)
+            }
+//        }
     }
 
     public func traverseAncestors(_ fn: (_ object: Object) -> Void) {
-        if let parent = parent {
+        if let parent {
             fn(parent)
             parent.traverseAncestors(fn)
         }
@@ -629,10 +658,9 @@ open class Object: Codable, ObservableObject {
     // MARK: - Root
 
     public func getRoot() -> Object? {
-        if let parent = self.parent {
+        if let parent {
             return parent.getRoot()
-        }
-        else {
+        } else {
             return self
         }
     }
@@ -640,41 +668,47 @@ open class Object: Codable, ObservableObject {
     // MARK: - Children
 
     public func getChildren(_ recursive: Bool = true) -> [Object] {
-        var results: [Object] = []
-        for child in children {
-            results.append(child)
-            if recursive {
-                results.append(contentsOf: child.getChildren(recursive))
+//        childrenQueue.sync {
+            var results: [Object] = []
+            for child in children {
+                results.append(child)
+                if recursive {
+                    results.append(contentsOf: child.getChildren(recursive))
+                }
             }
-        }
-        return results
+            return results
+//        }
     }
 
     public func getChild(_ name: String, _ recursive: Bool = true) -> Object? {
-        for child in children {
-            if child.label == name {
-                return child
-            } else if recursive, let found = child.getChild(name, recursive) {
-                return found
-            }
-        }
-        return nil
-    }
-
-    public func getChildById(_ id: String, _ recursive: Bool = true) -> Object? {
-        for child in children {
-            if child.id == id {
-                return child
-            }
-        }
-        if recursive {
+//        childrenQueue.sync {
             for child in children {
-                if let found = child.getChildById(id, recursive) {
+                if child.label == name {
+                    return child
+                } else if recursive, let found = child.getChild(name, recursive) {
                     return found
                 }
             }
-        }
-        return nil
+            return nil
+//        }
+    }
+
+    public func getChildById(_ id: String, _ recursive: Bool = true) -> Object? {
+//        childrenQueue.sync {
+            for child in children {
+                if child.id == id {
+                    return child
+                }
+            }
+            if recursive {
+                for child in children {
+                    if let found = child.getChildById(id, recursive) {
+                        return found
+                    }
+                }
+            }
+            return nil
+//        }
     }
 
     public func getChildrenByName(_ name: String, _ recursive: Bool = true) -> [Object] {
@@ -684,19 +718,21 @@ open class Object: Codable, ObservableObject {
     }
 
     func getChildrenByName(_ name: String, _ recursive: Bool = true, _ results: inout [Object]) {
-        for child in children {
-            if child.label == name {
-                results.append(child)
-            } else if recursive {
-                child.getChildrenByName(name, recursive, &results)
+//        childrenQueue.sync {
+            for child in children {
+                if child.label == name {
+                    results.append(child)
+                } else if recursive {
+                    child.getChildrenByName(name, recursive, &results)
+                }
             }
-        }
+//        }
     }
 
     // MARK: - isVisible
 
     public var isVisible: Bool {
-        if let parent = parent {
+        if let parent {
             return (parent.isVisible && visible)
         } else {
             return visible
@@ -718,8 +754,7 @@ open class Object: Codable, ObservableObject {
             worldPosition = object.worldPosition
             worldOrientation = object.worldOrientation
             worldScale = object.worldScale
-        }
-        else {
+        } else {
             position = object.position
             orientation = object.orientation
             scale = object.scale
@@ -744,14 +779,16 @@ open class Object: Codable, ObservableObject {
 
     open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
         guard visible || invisible, intersects(ray: ray), recursive else { return }
-        for child in children {
-            child.intersect(
-                ray: ray,
-                intersections: &intersections,
-                recursive: recursive,
-                invisible: invisible
-            )
-        }
+//        childrenQueue.sync {
+            for child in children {
+                child.intersect(
+                    ray: ray,
+                    intersections: &intersections,
+                    recursive: recursive,
+                    invisible: invisible
+                )
+            }
+//        }
     }
 
     // MARK: - Conversion Utilities

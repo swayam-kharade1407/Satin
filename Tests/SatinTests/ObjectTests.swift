@@ -13,7 +13,24 @@ import SatinCore
 import simd
 import XCTest
 
-class ObjectTests: XCTestCase {
+final class ObjectTests: XCTestCase {
+
+    func testObjectConcurrency() throws {
+        let object = Object()
+        let iterationCount = 100000
+
+        DispatchQueue.concurrentPerform(iterations: iterationCount) { _ in
+            let newObject = Object()
+            Task {
+                object.add(newObject)
+            }
+
+            Task {
+                object.remove(newObject)
+            }
+        }
+    }
+
     func testObjectLocalTransforms() throws {
         let object = Object()
 

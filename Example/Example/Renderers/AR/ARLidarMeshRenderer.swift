@@ -80,11 +80,6 @@ final class ARLidarMeshRenderer: BaseRenderer {
         }
     }
 
-    override func update() {
-        camera.update()
-        scene.update()
-    }
-
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         backgroundRenderer.draw(
             renderPassDescriptor: renderPassDescriptor,

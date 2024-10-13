@@ -386,9 +386,6 @@ final class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     override func update() {
         let time = getTime() - startTime
         model.orientation = simd_quatf(angle: Float(time), axis: Satin.worldUpDirection)
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

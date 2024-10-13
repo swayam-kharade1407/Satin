@@ -62,9 +62,6 @@ final class TessellationRenderer: BaseRenderer {
         tessellator.set("Inside Tessellation Factor", abs(oscInsider) * 16.0)
 
         cameraController.update()
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

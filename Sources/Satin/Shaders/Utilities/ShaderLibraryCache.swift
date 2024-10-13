@@ -8,16 +8,16 @@
 import Foundation
 import Metal
 
-public final class ShaderLibraryCache {
-    private static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
-    private static var defaultLibrary: MTLLibrary?
+public final class ShaderLibraryCache: Sendable {
+    nonisolated(unsafe) private static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
+    nonisolated(unsafe) private static var defaultLibrary: MTLLibrary?
 
     private static let defaultLibraryQueue = DispatchQueue(label: "ShaderLibraryCacheDefaultLibraryQueue", attributes: .concurrent)
     private static let libraryQueue = DispatchQueue(label: "ShaderLibraryCacheQueue", attributes: .concurrent)
 
     public static func invalidateLibrary(configuration: ShaderLibraryConfiguration) {
-        _ = libraryQueue.sync(flags: .barrier) {
-            cache.removeValue(forKey: configuration)
+        libraryQueue.sync(flags: .barrier) {
+            _ = cache.removeValue(forKey: configuration)
         }
     }
 

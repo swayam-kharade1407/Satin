@@ -55,7 +55,6 @@ struct VisionsView: View {
             Task {
                 if immersiveSpaceIsShown {
                     await dismissImmersiveSpace()
-                    try? await Task.sleep(for: .seconds(0.5))
                     immersiveSpaceIsShown = false
                 }
 

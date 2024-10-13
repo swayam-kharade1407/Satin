@@ -8,15 +8,15 @@ import AppKit
 import UIKit
 #endif
 
-public final class Tweener {
+public final class Tweener: Sendable {
     static let shared = Tweener()
 
-    private static var tweens: [Tween] = []
-    private static var paused: Bool = true
+    nonisolated(unsafe) private static var tweens: [Tween] = []
+    nonisolated(unsafe) private static var paused: Bool = true
 
     #if os(macOS)
 
-    private static var displayLink: CVDisplayLink?
+    nonisolated(unsafe) private static var displayLink: CVDisplayLink?
 
     private class func setupDisplayLink() {
         if Tweener.displayLink == nil {

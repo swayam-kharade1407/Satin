@@ -89,8 +89,6 @@ final class WaveSimulationRenderer: BaseRenderer {
     override func update() {
         computer.set("Time", Float(getTime() - startTime))
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

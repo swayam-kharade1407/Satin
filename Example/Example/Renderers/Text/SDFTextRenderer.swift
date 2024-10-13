@@ -57,8 +57,6 @@ final class SDFTextRenderer: BaseRenderer {
         textMesh.text = "\(frame)"
         frame -= 1
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

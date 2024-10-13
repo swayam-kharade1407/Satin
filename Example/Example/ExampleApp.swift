@@ -36,9 +36,9 @@ struct ExampleApp: App {
         }
 
         #if os(visionOS)
-        SatinImmersiveSpace(renderer: Immersive3DRenderer())
-        SatinImmersiveSpace(renderer: ImmersiveSuperShapesRenderer())
-        SatinImmersiveSpace(renderer: ImmersivePostRenderer())
+        SatinImmersiveSpace(renderer: Immersive3DRenderer(), immersionStyle: .constant(.mixed))
+        SatinImmersiveSpace(renderer: ImmersiveSuperShapesRenderer(), immersionStyle: .constant(.full))
+        SatinImmersiveSpace(renderer: ImmersivePostRenderer(), immersionStyle: .constant(.full))
         #endif
     }
 }

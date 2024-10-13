@@ -49,7 +49,7 @@ final class CustomInstancingRenderer: BaseRenderer {
     func setupData() {
         var data: [Bool] = []
         do {
-            let sequence = try String(contentsOf: dataURL.appendingPathComponent("SARS-CoV-2.txt"))
+            let sequence = try String(contentsOf: dataURL.appendingPathComponent("SARS-CoV-2.txt"), encoding: .utf8)
             for character in sequence {
                 switch character {
                 case "a":
@@ -80,8 +80,6 @@ final class CustomInstancingRenderer: BaseRenderer {
 
     override func update() {
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

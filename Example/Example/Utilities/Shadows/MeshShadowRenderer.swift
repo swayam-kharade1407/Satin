@@ -75,11 +75,6 @@ final class MeshShadowRenderer {
         }
     }
 
-    func update() {
-        camera.update()
-        scene.update()
-    }
-
     func draw(commandBuffer: MTLCommandBuffer) {
         guard _update, var _texture = _texture else { return }
 
@@ -96,7 +91,6 @@ final class MeshShadowRenderer {
         )
 
         blurFilter.encode(commandBuffer: commandBuffer, inPlaceTexture: &_texture)
-
         _update = false
     }
 

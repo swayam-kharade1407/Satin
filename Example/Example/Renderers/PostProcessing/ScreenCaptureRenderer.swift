@@ -201,8 +201,6 @@ final class ScreenCaptureRenderer: BaseRenderer {
 
     override func update() {
         cameraController.update()
-        camera.update()
-        scene.update()
         
         if let texture {
             material.flipped = false

@@ -86,9 +86,6 @@ final class ARPeopleOcclusionRenderer: BaseRenderer {
             backgroundTexture = createTexture("Background Texture", colorPixelFormat)
             _updateTextures = false
         }
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

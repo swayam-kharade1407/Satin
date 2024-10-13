@@ -16,8 +16,9 @@ public struct ShaderDefine {
         self.value = value
     }
 
-    static let defaultDefines: [ShaderDefine] = {
+    static var defaultDefines: [ShaderDefine] {
         var results = [ShaderDefine]()
+        results.reserveCapacity(7)
 
 #if targetEnvironment(simulator)
         results.append(ShaderDefine(key: "SIMULATOR", value: NSString(string: "true")))
@@ -47,7 +48,7 @@ public struct ShaderDefine {
         results.append(ShaderDefine(key: "DEBUG", value: NSString(string: "true")))
 #endif
         return results
-    }()
+    }
 }
 
 extension ShaderDefine: CustomStringConvertible {

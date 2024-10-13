@@ -64,8 +64,6 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
         model?.orientation = simd_quatf(angle: Float(getTime() - startTime) * 0.5, axis: worldUpDirection)
 
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

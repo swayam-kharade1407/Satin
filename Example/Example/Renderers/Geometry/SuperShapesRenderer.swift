@@ -218,8 +218,6 @@ final class SuperShapesRenderer: BaseRenderer {
 
         let theta = Float(getTime() - startTime)
         mesh.orientation = simd_quatf(angle: theta * 0.25, axis: simd_normalize(simd_make_float3(sin(theta), cos(theta), 1.0)))
-
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

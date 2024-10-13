@@ -72,8 +72,6 @@ final class BufferComputeRenderer: BaseRenderer {
         let radius: Float = 10.0 * sin(time * 0.5) * cos(time)
         camera.position = simd_make_float3(radius * sin(time), radius * cos(time), 100.0)
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     func updateRenderTexture(width: Int, height: Int) {

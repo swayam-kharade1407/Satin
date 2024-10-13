@@ -87,12 +87,6 @@ final class MultipleViewportRenderer: BaseRenderer {
 #endif
     }
 
-    override func update() {
-        camera.update()
-        mesh.update()
-        subScene.update()
-    }
-
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         if _updateTextures {
             setupTextures()

@@ -16,13 +16,13 @@ final class InstancedMeshRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
     // MARK: - Satin
 
-    let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
-    let scene = Object(label: "Scene")
-    let container = Object(label: "Container")
+    private let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
+    private let scene = Object(label: "Scene")
+    private let container = Object(label: "Container")
 
-    lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
-    var instancedMesh: InstancedMesh?
-    lazy var renderer = Renderer(context: defaultContext)
+    lazy private var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+    private var instancedMesh: InstancedMesh?
+    lazy private var renderer = Renderer(context: defaultContext)
 
     // MARK: - Properties
 
@@ -94,7 +94,6 @@ final class InstancedMeshRenderer: BaseRenderer {
         container.orientation = .init(angle: cos(getTime()) * .pi, axis: simd_normalize(.one))
 
         camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

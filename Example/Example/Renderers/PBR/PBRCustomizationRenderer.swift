@@ -51,9 +51,6 @@ final class PBRCustomizationRenderer: BaseRenderer {
         let rotation: Float = osc * Float.pi
         let offset = simd_float2(repeating: -0.5)
         material.setTexcoordTransform(offset: offset, scale: scale, rotation: rotation, type: .roughness)
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

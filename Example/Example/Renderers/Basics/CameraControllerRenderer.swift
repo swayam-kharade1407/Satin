@@ -49,7 +49,6 @@ final class CameraControllerRenderer: BaseRenderer {
 
     lazy var targetMesh = Mesh(geometry: BoxGeometry(size: 1.0), material: NormalColorMaterial())
     lazy var scene = Object(label: "Scene", [grid, axisMesh])
-    
 
     lazy var camera: PerspectiveCamera = {
         let pos = simd_make_float3(5.0, 5.0, 5.0)
@@ -87,8 +86,6 @@ final class CameraControllerRenderer: BaseRenderer {
     override func update() {
         cameraController.update()
         targetMesh.orientation = cameraController.camera.worldOrientation.inverse
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

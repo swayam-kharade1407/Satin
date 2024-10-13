@@ -36,9 +36,13 @@ final class Immersive3DRenderer: ImmersiveBaseRenderer {
     )
 
     lazy var startTime = getTime()
-    lazy var scene = Object(label: "Scene", [background, mesh, floor])
+    lazy var scene = Object(label: "Scene", [
+//        background,
+        mesh,
+        floor
+    ])
 
-    lazy var renderer = Renderer(context: defaultContext)
+    lazy var renderer = Renderer(context: defaultContext, clearColor: .zero)
 
 #if targetEnvironment(simulator)
     override var layerLayout: LayerRenderer.Layout { .dedicated }
@@ -73,7 +77,6 @@ final class Immersive3DRenderer: ImmersiveBaseRenderer {
     override func update() {
         let theta = Float(getTime() - startTime)
         mesh.orientation = simd_quatf(angle: theta * 0.75, axis: simd_normalize(simd_make_float3(sin(theta), cos(theta), 1.0)))
-        scene.update()
     }
 
     override func draw(

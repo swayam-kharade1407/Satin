@@ -8,11 +8,11 @@
 import Foundation
 import Metal
 
-public final class ShaderPipelineCache {
-    private static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    private static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    private static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
-    private static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
+public final class ShaderPipelineCache: Sendable {
+    nonisolated(unsafe) private static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+    nonisolated(unsafe) private static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+    nonisolated(unsafe) private static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
+    nonisolated(unsafe) private static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
 
     private static let pipelineCacheQueue = DispatchQueue(label: "ShaderPipelineCacheQueue", attributes: .concurrent)
     private static let shadowPipelineCacheQueue = DispatchQueue(label: "ShaderShadowPipelineCacheQueue", attributes: .concurrent)
@@ -28,26 +28,26 @@ public final class ShaderPipelineCache {
     }
 
     public static func invalidatePipeline(configuration: ShaderConfiguration) {
-        _ = pipelineCacheQueue.sync(flags: .barrier) {
-            pipelineCache.removeValue(forKey: configuration)
+        pipelineCacheQueue.sync(flags: .barrier) {
+            _ = pipelineCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidateShadowPipeline(configuration: ShaderConfiguration) {
-        _ = shadowPipelineCacheQueue.sync(flags: .barrier) {
-            shadowPipelineCache.removeValue(forKey: configuration)
+        shadowPipelineCacheQueue.sync(flags: .barrier) {
+            _ = shadowPipelineCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidatePipelineReflection(configuration: ShaderConfiguration) {
-        _ = pipelineReflectionCacheQueue.sync(flags: .barrier) {
-            pipelineReflectionCache.removeValue(forKey: configuration)
+        pipelineReflectionCacheQueue.sync(flags: .barrier) {
+            _ = pipelineReflectionCache.removeValue(forKey: configuration)
         }
     }
 
     public static func invalidatePipelineParameters(configuration: ShaderConfiguration) {
-        _ = pipelineParametersCacheQueue.sync(flags: .barrier) {
-            pipelineParametersCache.removeValue(forKey: configuration)
+        pipelineParametersCacheQueue.sync(flags: .barrier) {
+            _ = pipelineParametersCache.removeValue(forKey: configuration)
         }
     }
 

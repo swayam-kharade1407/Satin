@@ -8,24 +8,16 @@
 
 import Foundation
 
-public protocol FileWatcherDelegate: AnyObject {
-    func updated(watcher: FileWatcher, filePath: String)
-}
+public final class FileWatcher: Sendable {
+    public let filePath: String
+    public let timeInterval: TimeInterval
+    private nonisolated(unsafe) let onUpdate: (() -> Void)?
 
-public final class FileWatcher {
-    public var timeInterval: TimeInterval = 1.0 {
-        didSet {
-            if timer != nil {
-                watch()
-            }
-        }
-    }
+    private nonisolated(unsafe) var lastModifiedDate: Date?
+    private let lastModifiedDateQueue = DispatchQueue(label: "FileWatcherDateQueue", attributes: .concurrent)
 
-    public var filePath: String
-    public var timer: Timer?
-    var lastModifiedDate: Date?
-    public var onUpdate: (() -> Void)?
-    public weak var delegate: FileWatcherDelegate?
+    private nonisolated(unsafe) var timer: Timer?
+    private let timerQueue = DispatchQueue(label: "FileWatcherTimerQueue", attributes: .concurrent)
 
     public init(filePath: String, timeInterval: TimeInterval = 1.0, active: Bool = true, onUpdate: (() -> Void)? = nil) {
         self.filePath = filePath
@@ -34,7 +26,9 @@ public final class FileWatcher {
         if FileManager.default.fileExists(atPath: self.filePath) {
             do {
                 let result = try FileManager.default.attributesOfItem(atPath: self.filePath)
-                lastModifiedDate = result[.modificationDate] as? Date
+                lastModifiedDateQueue.sync(flags: .barrier) {
+                    lastModifiedDate = result[.modificationDate] as? Date
+                }
             } catch {
                 print("FileWatcher Error: \(error.localizedDescription)")
             }
@@ -53,9 +47,10 @@ public final class FileWatcher {
                 let currentModifiedDate = result[.modificationDate] as? Date
                 if let current = currentModifiedDate, let last = lastModifiedDate {
                     if current > last {
-                        lastModifiedDate = current
+                        lastModifiedDateQueue.sync(flags: .barrier) {
+                            lastModifiedDate = current
+                        }
                         onUpdate?()
-                        delegate?.updated(watcher: self, filePath: filePath)
                     }
                 }
             } catch {
@@ -72,25 +67,26 @@ public final class FileWatcher {
             return
         }
 
-        if timer != nil {
-            unwatch()
+        timerQueue.sync(flags: .barrier) {
+            if self.timer != nil {
+                self.unwatch()
+            }
+            self.timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true, block: { [weak self] _ in
+                self?.checkFile()
+            })
         }
-
-        timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true, block: { [weak self] _ in
-            self?.checkFile()
-        })
     }
 
     public func unwatch() {
-        if let timer = timer {
-            timer.invalidate()
+        timerQueue.sync(flags: .barrier) {
+            if let timer {
+                timer.invalidate()
+            }
+            self.timer = nil
         }
-        timer = nil
     }
 
     deinit {
         unwatch()
-        delegate = nil
-        onUpdate = nil
     }
 }

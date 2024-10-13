@@ -182,9 +182,6 @@ final class ARContactShadowRenderer: BaseRenderer {
                 light.intensity = Float(ambient)
             }
         }
-
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

@@ -37,8 +37,6 @@ final class MeshShaderRenderer: BaseRenderer {
     override func update() {
         meshNormals.material?.set("Time", Float(getTime() - startTime))
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

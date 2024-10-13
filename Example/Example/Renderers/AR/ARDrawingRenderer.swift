@@ -90,8 +90,6 @@ final class ARDrawingRenderer: BaseRenderer {
     override func update() {
         updateDrawing()
         updateMaterial()
-        camera.update()
-        scene.update()
     }
 
     // MARK: - Draw

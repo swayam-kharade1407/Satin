@@ -157,8 +157,6 @@ final class ObjectShadowRenderer {
             }
         }
 
-        finalScene.update()
-
         let rpd = MTLRenderPassDescriptor()
         rpd.renderTargetWidth = resolution
         rpd.renderTargetHeight = resolution

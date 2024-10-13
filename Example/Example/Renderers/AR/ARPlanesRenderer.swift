@@ -157,11 +157,6 @@ final class ARPlanesRenderer: BaseRenderer {
         }
     }
 
-    override func update() {
-        camera.update()
-        scene.update()
-    }
-
     // MARK: - Draw
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

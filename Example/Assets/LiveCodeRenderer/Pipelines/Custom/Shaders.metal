@@ -14,15 +14,21 @@ fragment float4 customFragment( VertexData in [[stage_in]],
 {
     float2 uv = 2.0 * in.texcoord - 1.0;
     uv.x *= uniforms.appResolution.z;
-    float2 norm = normalize( uv );
 
-    const float n = snoise( float3( uv, uniforms.time ) );
-    const float radius = 0.5 + 0.175 * n;
+    const float time = 0.5 * uniforms.time;
+    const float2 norm = normalize( uv );
+    float n = snoise( float3( uv, time ) );
+
+    const float radius = 0.5 + 0.125 * n;
+
     float result = Circle( uv, radius );
     float sdf = result;
     result /= fwidth( result );
     result = 1.0 - saturate( result );
+    float cosTheta;
+    float sinTheta = sincos( time, cosTheta );
+
     float rimLight = saturate( gaussian( sdf, 0.4, 0.4 ) * step( sdf, 0.1 ) );
-    float3 color = mix( ( iridescence( uv.y + uv.x + n * sdf ) ), 1.0, rimLight );
+    float3 color = mix( ( iridescence( 2.0 * uv.y * sinTheta * sdf + 2.0 * uv.x * cosTheta * sdf + n * sdf + time ) ), 1.0, rimLight );
     return float4( color, result );
 }

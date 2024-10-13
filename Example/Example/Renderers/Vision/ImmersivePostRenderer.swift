@@ -96,7 +96,6 @@ final class ImmersivePostRenderer: ImmersiveBaseRenderer {
     override func update() {
         let theta = Float(getTime() - startTime)
         mesh.orientation = simd_quatf(angle: theta * 0.75, axis: simd_normalize(simd_make_float3(sin(theta), cos(theta), 1.0)))
-        scene.update()
     }
 
     // Layered

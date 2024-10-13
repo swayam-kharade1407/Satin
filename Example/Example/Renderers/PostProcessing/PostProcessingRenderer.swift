@@ -64,8 +64,6 @@ final class PostProcessingRenderer: BaseRenderer {
         }
 
         cameraController.update()
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {

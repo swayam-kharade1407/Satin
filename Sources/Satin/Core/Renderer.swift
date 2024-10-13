@@ -516,6 +516,10 @@ open class Renderer {
     // MARK: - Internal Update
 
     private func update(commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [simd_float4]) {
+        for camera in cameras {
+            camera.update()
+        }
+
         onUpdate?()
 
         objectList.removeAll(keepingCapacity: true)
@@ -528,47 +532,57 @@ open class Renderer {
         shadowCasters.removeAll(keepingCapacity: true)
         shadowReceivers.removeAll(keepingCapacity: true)
 
-        updateLists(object: scene)
+        updateLists(object: scene, visible: true)
 
-        updateScene(commandBuffer: commandBuffer, cameras: cameras, viewports: viewports)
+        updateScene(
+            commandBuffer: commandBuffer,
+            cameras: cameras,
+            viewports: viewports
+        )
+
         updateLights()
         updateShadows()
     }
 
-    private func updateLists(object: Object) {
-        guard object.visible else { return }
+    private func updateLists(object: Object, visible: Bool) {
+        object.update()
 
-        objectList.append(object)
+        if object.visible, visible {
+            objectList.append(object)
 
-        if let light = object as? Light {
-            lightList.append(light)
-            if light.castShadow {
-                shadowList.append(light.shadow)
-            }
-        }
-
-        if let renderable = object as? Renderable {
-            if let renderPassList = renderLists[renderable.renderPass] {
-                renderPassList.append(renderable)
-            } else {
-                renderLists[renderable.renderPass] = RenderList(renderable)
+            if let light = object as? Light {
+                lightList.append(light)
+                if light.castShadow {
+                    shadowList.append(light.shadow)
+                }
             }
 
-            if renderable.lighting {
-                lightReceivers.append(renderable)
-            }
+            if let renderable = object as? Renderable {
+                if let renderPassList = renderLists[renderable.renderPass] {
+                    renderPassList.append(renderable)
+                } else {
+                    renderLists[renderable.renderPass] = RenderList(renderable)
+                }
 
-            if renderable.receiveShadow {
-                shadowReceivers.append(renderable)
-            }
+                if renderable.lighting {
+                    lightReceivers.append(renderable)
+                }
 
-            if renderable.castShadow {
-                shadowCasters.append(renderable)
+                if renderable.receiveShadow {
+                    shadowReceivers.append(renderable)
+                }
+
+                if renderable.castShadow {
+                    shadowCasters.append(renderable)
+                }
             }
         }
 
         for child in object.children {
-            updateLists(object: child)
+            updateLists(
+                object: child,
+                visible: object.visible && visible
+            )
         }
     }
 

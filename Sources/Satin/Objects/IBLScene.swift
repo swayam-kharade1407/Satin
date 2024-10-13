@@ -6,7 +6,7 @@
 //  Copyright © 2019 Reza Ali. All rights reserved.
 //
 
-import Metal
+@preconcurrency import Metal
 import simd
 
 public final class IBLScene: Object, IBLEnvironment {

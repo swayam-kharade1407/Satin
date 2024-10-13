@@ -7,14 +7,14 @@
 
 import Foundation
 
-public final class ShaderLibrarySourceCache {
-    private static var cache: [ShaderLibraryConfiguration: String] = [:]
+public final class ShaderLibrarySourceCache: Sendable {
+    nonisolated(unsafe) private static var cache: [ShaderLibraryConfiguration: String] = [:]
 
     private static let queue = DispatchQueue(label: "ShaderLibrarySourceCacheQueue", attributes: .concurrent)
 
     static func invalidateLibrarySource(configuration: ShaderLibraryConfiguration) {
-        _ = queue.sync(flags: .barrier) {
-            cache.removeValue(forKey: configuration)
+        queue.sync(flags: .barrier) {
+            _ = cache.removeValue(forKey: configuration)
         }
     }
 

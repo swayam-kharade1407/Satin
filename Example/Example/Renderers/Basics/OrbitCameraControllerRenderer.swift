@@ -89,8 +89,6 @@ final class OrbitCameraControllerRenderer: BaseRenderer {
     override func update() {
         cameraController.update()
         targetMesh.orientation = cameraController.camera.worldOrientation.inverse
-        camera.update()
-        scene.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
