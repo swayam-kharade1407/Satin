@@ -245,6 +245,8 @@
 		E125E69D2CA9EABF005D3A0E /* ObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E6942CA9EABF005D3A0E /* ObjectTests.swift */; };
 		E14638662C8CB4C4005E36E9 /* TextureComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */; };
 		E14638682C8CB4EF005E36E9 /* ComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */; };
+		E18ABF822CBCD89E00F54A6D /* Locks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18ABF812CBCD89C00F54A6D /* Locks.swift */; };
+		E18ABF842CBCDC9600F54A6D /* MutexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18ABF832CBCDC9000F54A6D /* MutexTests.swift */; };
 		E1C6ED1E2C8FE6FA00231467 /* CoreTextGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6ED1D2C8FE6FA00231467 /* CoreTextGeometry.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
 		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
@@ -501,6 +503,8 @@
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
 		E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureComputeProcessor.swift; sourceTree = "<group>"; };
 		E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeProcessor.swift; sourceTree = "<group>"; };
+		E18ABF812CBCD89C00F54A6D /* Locks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locks.swift; sourceTree = "<group>"; };
+		E18ABF832CBCDC9000F54A6D /* MutexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutexTests.swift; sourceTree = "<group>"; };
 		E1C6ED1D2C8FE6FA00231467 /* CoreTextGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTextGeometry.swift; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
 		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
@@ -934,6 +938,7 @@
 		66D7DED62C06A24B00B5A6C8 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				E18ABF812CBCD89C00F54A6D /* Locks.swift */,
 				66D7DECB2C06A24B00B5A6C8 /* FileWatcher.swift */,
 				66D7DECC2C06A24B00B5A6C8 /* Helpers.swift */,
 				66D7DECD2C06A24B00B5A6C8 /* Loader.swift */,
@@ -1056,6 +1061,7 @@
 		E125E6962CA9EABF005D3A0E /* SatinTests */ = {
 			isa = PBXGroup;
 			children = (
+				E18ABF832CBCDC9000F54A6D /* MutexTests.swift */,
 				E125E6942CA9EABF005D3A0E /* ObjectTests.swift */,
 				E125E6952CA9EABF005D3A0E /* RenderableTests.swift */,
 			);
@@ -1197,6 +1203,7 @@
 			files = (
 				E101A85E2C07061D0055FABA /* Types.mm in Sources */,
 				E101A8542C07061D0055FABA /* Bezier.mm in Sources */,
+				E18ABF822CBCD89E00F54A6D /* Locks.swift in Sources */,
 				E14638682C8CB4EF005E36E9 /* ComputeProcessor.swift in Sources */,
 				E101A8552C07061D0055FABA /* Bounds.mm in Sources */,
 				E101A8562C07061D0055FABA /* Bvh.mm in Sources */,
@@ -1428,6 +1435,7 @@
 				E125E69A2CA9EABF005D3A0E /* BoundsTests.swift in Sources */,
 				E125E69B2CA9EABF005D3A0E /* TriangulatorTests.swift in Sources */,
 				E125E69C2CA9EABF005D3A0E /* RenderableTests.swift in Sources */,
+				E18ABF842CBCDC9600F54A6D /* MutexTests.swift in Sources */,
 				E125E69D2CA9EABF005D3A0E /* ObjectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

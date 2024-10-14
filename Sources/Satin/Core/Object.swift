@@ -16,7 +16,12 @@ import SatinCore
 #endif
 
 open class Object: Codable, ObservableObject {
-    @Published open var id: String = UUID().uuidString
+    public let idPublisher = PassthroughSubject<String, Never>()
+    @Published open var id: String = UUID().uuidString {
+        didSet {
+            idPublisher.send(id)
+        }
+    }
 
     public let labelPublisher = PassthroughSubject<String, Never>()
     @Published open var label = "Object" {
@@ -411,8 +416,6 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    private let childrenQueue = DispatchQueue(label: "ChildrenQueue", attributes: .concurrent)
-
     // MARK: - OnUpdate Hook
 
     public var onUpdate: (() -> Void)?
@@ -433,9 +436,7 @@ open class Object: Codable, ObservableObject {
     public let childRemovedPublisher = PassthroughSubject<Object, Never>()
 
     private var childAddedSubscriptions: [Object: AnyCancellable] = [:]
-    private let childAddedSubscriptionsQueue = DispatchQueue(label: "ChildAddedSubscriptionsQueue", attributes: .concurrent)
     private var childRemovedSubscriptions: [Object: AnyCancellable] = [:]
-    private let childRemovedSubscriptionsQueue = DispatchQueue(label: "ChildRemovedSubscriptionsQueue", attributes: .concurrent)
 
     // MARK: - Init
 
@@ -534,43 +535,35 @@ open class Object: Codable, ObservableObject {
     // MARK: - Inserting, Adding, Attaching & Removing
 
     open func insert(_ child: Object, at: Int, setParent: Bool = true) {
-//        childrenQueue.sync(flags: .barrier) {
-            if !children.contains(where: { $0 === child }) {
-                if setParent {
-                    child.parent = self
-                }
-                child.context = context
-                children.insert(child, at: at)
+        if !children.contains(where: { $0 === child }) {
+            if setParent {
+                child.parent = self
             }
-//        }
+            child.context = context
+            children.insert(child, at: at)
+        }
     }
 
     open func add(_ child: Object, _ setParent: Bool = true) {
-//        childrenQueue.sync(flags: .barrier) {
-            guard children.firstIndex(of: child) == nil, child != self else { return }
+        guard children.firstIndex(of: child) == nil, child != self else { return }
 
-            if setParent {
-                child.removeFromParent()
-                child.parent = self
-            }
+        if setParent {
+            child.removeFromParent()
+            child.parent = self
+        }
 
-            child.context = context
+        child.context = context
 
-            children.append(child)
-            childAddedPublisher.send(child)
+        children.append(child)
+        childAddedPublisher.send(child)
 
-            childAddedSubscriptionsQueue.sync(flags: .barrier) {
-                childAddedSubscriptions[child] = child.childAddedPublisher.sink { [weak self] subchild in
-                    self?.childAddedPublisher.send(subchild)
-                }
-            }
+        childAddedSubscriptions[child] = child.childAddedPublisher.sink { [weak self] subchild in
+            self?.childAddedPublisher.send(subchild)
+        }
 
-            childRemovedSubscriptionsQueue.sync(flags: .barrier) {
-                childRemovedSubscriptions[child] = child.childRemovedPublisher.sink { [weak self] subchild in
-                    self?.childRemovedPublisher.send(subchild)
-                }
-            }
-//        }
+        childRemovedSubscriptions[child] = child.childRemovedPublisher.sink { [weak self] subchild in
+            self?.childRemovedPublisher.send(subchild)
+        }
     }
 
     open func attach(_ child: Object) {
@@ -584,25 +577,19 @@ open class Object: Codable, ObservableObject {
     }
 
     open func remove(_ child: Object) {
-//        childrenQueue.sync(flags: .barrier) {
-            guard let childIndex = children.firstIndex(of: child) else { return }
+        guard let childIndex = children.firstIndex(of: child) else { return }
 
-            childRemovedPublisher.send(child)
+        childRemovedPublisher.send(child)
 
-            if child.parent === self {
-                child.parent = nil
-            }
+        if child.parent === self {
+            child.parent = nil
+        }
 
-            children.remove(at: childIndex)
+        children.remove(at: childIndex)
 
-            childAddedSubscriptionsQueue.sync(flags: .barrier) {
-                _ = childAddedSubscriptions.removeValue(forKey: child)
-            }
+        _ = childAddedSubscriptions.removeValue(forKey: child)
 
-            childRemovedSubscriptionsQueue.sync(flags: .barrier) {
-                _ = childRemovedSubscriptions.removeValue(forKey: child)
-            }
-//        }
+        _ = childRemovedSubscriptions.removeValue(forKey: child)
     }
 
     open func removeFromParent() {
@@ -620,30 +607,24 @@ open class Object: Codable, ObservableObject {
     public func apply(recursive: Bool = true, _ fn: (_ object: Object) -> Void) {
         fn(self)
         if recursive {
-//            childrenQueue.sync {
-                for child in children {
-                    child.apply(recursive: recursive, fn)
-                }
-//            }
+            for child in children {
+                child.apply(recursive: recursive, fn)
+            }
         }
     }
 
     public func traverse(_ fn: (_ object: Object) -> Void) {
-//        childrenQueue.sync {
-            for child in children {
-                fn(child)
-                child.traverse(fn)
-            }
-//        }
+        for child in children {
+            fn(child)
+            child.traverse(fn)
+        }
     }
 
     public func traverseVisible(_ fn: (_ object: Object) -> Void) {
-//        childrenQueue.sync {
-            for child in children where child.visible {
-                fn(child)
-                child.traverseVisible(fn)
-            }
-//        }
+        for child in children where child.visible {
+            fn(child)
+            child.traverseVisible(fn)
+        }
     }
 
     public func traverseAncestors(_ fn: (_ object: Object) -> Void) {
@@ -666,47 +647,39 @@ open class Object: Codable, ObservableObject {
     // MARK: - Children
 
     public func getChildren(_ recursive: Bool = true) -> [Object] {
-//        childrenQueue.sync {
-            var results: [Object] = []
-            for child in children {
-                results.append(child)
-                if recursive {
-                    results.append(contentsOf: child.getChildren(recursive))
-                }
+        var results: [Object] = []
+        for child in children {
+            results.append(child)
+            if recursive {
+                results.append(contentsOf: child.getChildren(recursive))
             }
-            return results
-//        }
+        }
+        return results
     }
 
     public func getChild(_ name: String, _ recursive: Bool = true) -> Object? {
-//        childrenQueue.sync {
-            for child in children {
-                if child.label == name {
-                    return child
-                } else if recursive, let found = child.getChild(name, recursive) {
-                    return found
-                }
+        for child in children {
+            if child.label == name {
+                return child
+            } else if recursive, let found = child.getChild(name, recursive) {
+                return found
             }
-            return nil
-//        }
+        }
+        return nil
     }
 
     public func getChildById(_ id: String, _ recursive: Bool = true) -> Object? {
-//        childrenQueue.sync {
+        for child in children where child.id == id {
+            return child
+        }
+        if recursive {
             for child in children {
-                if child.id == id {
-                    return child
+                if let found = child.getChildById(id, recursive) {
+                    return found
                 }
             }
-            if recursive {
-                for child in children {
-                    if let found = child.getChildById(id, recursive) {
-                        return found
-                    }
-                }
-            }
-            return nil
-//        }
+        }
+        return nil
     }
 
     public func getChildrenByName(_ name: String, _ recursive: Bool = true) -> [Object] {
@@ -716,15 +689,13 @@ open class Object: Codable, ObservableObject {
     }
 
     func getChildrenByName(_ name: String, _ recursive: Bool = true, _ results: inout [Object]) {
-//        childrenQueue.sync {
-            for child in children {
-                if child.label == name {
-                    results.append(child)
-                } else if recursive {
-                    child.getChildrenByName(name, recursive, &results)
-                }
+        for child in children {
+            if child.label == name {
+                results.append(child)
+            } else if recursive {
+                child.getChildrenByName(name, recursive, &results)
             }
-//        }
+        }
     }
 
     // MARK: - isVisible
@@ -740,7 +711,7 @@ open class Object: Codable, ObservableObject {
     // MARK: - isLight
 
     public var isLight: Bool {
-        if let parent = parent {
+        if let parent {
             return (parent.isLight || (self is Light))
         } else {
             return (self is Light)
@@ -777,16 +748,15 @@ open class Object: Codable, ObservableObject {
 
     open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
         guard visible || invisible, intersects(ray: ray), recursive else { return }
-//        childrenQueue.sync {
-            for child in children {
-                child.intersect(
-                    ray: ray,
-                    intersections: &intersections,
-                    recursive: recursive,
-                    invisible: invisible
-                )
-            }
-//        }
+
+        for child in children {
+            child.intersect(
+                ray: ray,
+                intersections: &intersections,
+                recursive: recursive,
+                invisible: invisible
+            )
+        }
     }
 
     // MARK: - Conversion Utilities
