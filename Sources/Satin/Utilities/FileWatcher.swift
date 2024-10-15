@@ -11,7 +11,7 @@ import Foundation
 public final class FileWatcher: Sendable {
     public let filePath: String
     public let timeInterval: TimeInterval
-    private nonisolated(unsafe) let onUpdate: (() -> Void)?
+    private nonisolated(unsafe) let onUpdate: ((String) -> Void)?
 
     private nonisolated(unsafe) var lastModifiedDate: Date?
     private let lastModifiedDateQueue = DispatchQueue(label: "FileWatcherDateQueue", attributes: .concurrent)
@@ -19,7 +19,7 @@ public final class FileWatcher: Sendable {
     private nonisolated(unsafe) var timer: Timer?
     private let timerQueue = DispatchQueue(label: "FileWatcherTimerQueue", attributes: .concurrent)
 
-    public init(filePath: String, timeInterval: TimeInterval = 1.0, active: Bool = true, onUpdate: (() -> Void)? = nil) {
+    public init(filePath: String, timeInterval: TimeInterval = 1.0, active: Bool = true, onUpdate: ((String) -> Void)? = nil) {
         self.filePath = filePath
         self.timeInterval = timeInterval
         self.onUpdate = onUpdate
@@ -50,7 +50,7 @@ public final class FileWatcher: Sendable {
                         lastModifiedDateQueue.sync(flags: .barrier) {
                             lastModifiedDate = current
                         }
-                        onUpdate?()
+                        onUpdate?(filePath)
                     }
                 }
             } catch {

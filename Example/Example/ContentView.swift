@@ -264,6 +264,7 @@ struct ContentView: View {
                     #endif
                 }
             }
+            .listStyle(.sidebar)
             .navigationTitle("Satin Examples")
             #if os(macOS)
                 .toolbar {
