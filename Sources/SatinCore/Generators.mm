@@ -1221,6 +1221,58 @@ GeometryData generateSkyboxGeometryData(float size)
     return (GeometryData) { .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind };
 }
 
+GeometryData generateUVDiskGeometryData(float innerRadius, float outerRadius) {
+    const int vertices = 12;
+    const int triangles = 10;
+
+    SatinVertex *vtx = (SatinVertex *)malloc(vertices * sizeof(SatinVertex));
+    TriangleIndices *ind = (TriangleIndices *)malloc(triangles * sizeof(TriangleIndices));
+
+    const float angularInc = (2.0 * M_PI) / float(vertices);
+    const float angularOffset = -0.5 * M_PI;
+    for(int i = 0; i < vertices; i++) {
+        const float angle = i * angularInc + angularOffset;
+        const float x = cos(angle) * outerRadius;
+        const float y = sin(angle) * outerRadius;
+
+        vtx[i] = (SatinVertex) {
+            .position = simd_make_float3(x, y, 0),
+            .uv = simd_make_float2(abs(x) < 0.00001 ? 0.0 : x / innerRadius, abs(y) < 0.00001 ? 0.0 : y / innerRadius),
+            .normal = simd_make_float3(0.0, 1.0, 0.0)
+        };
+    }
+
+    int index = 0;
+    for(uint32_t i = 0; i < vertices; i+=2) {
+        ind[index] = (TriangleIndices) {
+            .i0 = (i+2) % vertices,
+            .i1 = (i+3) % vertices,
+            .i2 = (i+1) % vertices
+        };
+        index++;
+    }
+
+    for(uint32_t i = 0; i < vertices; i+=4) {
+        ind[index] = (TriangleIndices) {
+            .i0 = (i+3) % vertices,
+            .i1 = (i+5) % vertices,
+            .i2 = (i+1) % vertices
+        };
+        index++;
+    }
+
+    for(uint32_t i = 0; i < vertices; i+=8) {
+        ind[index] = (TriangleIndices) {
+            .i0 = (i+5) % vertices,
+            .i1 = (i+9) % vertices,
+            .i2 = (i+1) % vertices
+        };
+        index++;
+    }
+
+    return (GeometryData) { .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind };
+}
+
 GeometryData generateCircleGeometryData(float radius, int angularResolution, int radialResolution)
 {
     const int radial = radialResolution > 0 ? radialResolution : 1;

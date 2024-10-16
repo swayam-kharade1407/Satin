@@ -38,8 +38,8 @@ final class SDFTextRenderer: BaseRenderer {
 
     override func setup() {
         textMesh.material?.depthWriteEnabled = false
-        textMesh.scale = .init(repeating: 1.0/64.0)
-        textMesh.position.y = 9.5/64.0
+        textMesh.scale = .init(repeating: 1.0/128.0)
+        textMesh.position.y = 4.75/128.0
         scene.add(textMesh)
 
 #if os(visionOS)

@@ -213,6 +213,7 @@ open class Mesh: Object, Renderable {
     open func setupMaterial() {
         guard let context, let material else { return }
         material.vertexDescriptor = geometry.vertexDescriptor
+        material.tessellationDescriptor = geometry.tessellationDescriptor
         material.context = context
     }
 

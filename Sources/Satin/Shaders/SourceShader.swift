@@ -56,7 +56,7 @@ open class SourceShader: Shader {
 
                 self.shadowPipelines.removeAll()
                 self.shadowPipelineError = nil
-                
+
                 self.configurations.removeAll()
 
                 if self.castShadow {

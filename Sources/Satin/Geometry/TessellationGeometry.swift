@@ -1,33 +1,54 @@
 //
-//  TessellatedGeometry.swift
-//  Tesselation
+//  TessellationGeometry.swift
+//  Satin
 //
-//  Created by Reza Ali on 3/31/23.
+//  Created by Reza Ali on 4/1/23.
 //  Copyright © 2023 Reza Ali. All rights reserved.
 //
 
 import Foundation
 import Metal
-import Satin
 
-final class TessellatedGeometry: Geometry {
+public final class TessellationGeometry: Geometry {
+    private let baseGeometry: Geometry
 
-    let baseGeometry: Geometry
+    public var patchCount: Int {
+        if indexCount > 0 {
+            return (indexCount / 3)
+        } else {
+            return (vertexCount / 3)
+        }
+    }
 
-    var patchCount: Int { indexCount > 0 ? (indexCount / 3) : (vertexCount / 3) }
+    public var controlPointsPerPatch: Int {
+        3
+    }
 
-    let controlPointsPerPatch: Int = 3
-    var partitionMode: MTLTessellationPartitionMode { .integer }
-    var stepFunction: MTLTessellationFactorStepFunction { .perPatch }
+    public var partitionMode: MTLTessellationPartitionMode {
+        .integer
+    }
 
-    var controlPointBuffer: MTLBuffer? { vertexBuffers[VertexBufferIndex.Vertices] ?? nil }
-    var controlPointIndexBuffer: MTLBuffer? { indexBuffer }
-    var controlPointIndexType: MTLTessellationControlPointIndexType {
-        guard let indexType = indexType else { return .none }
+    public var factorStepFunction: MTLTessellationFactorStepFunction {
+        .perPatch
+    }
+
+    public var controlPointBuffer: MTLBuffer? {
+        if baseGeometry is SatinGeometry {
+            return vertexBuffers[VertexBufferIndex.Vertices]
+        } else {
+            return vertexBuffers[VertexBufferIndex.Position]
+        }
+    }
+
+    public var controlPointIndexBuffer: MTLBuffer? {
+        indexBuffer
+    }
+
+    public var controlPointIndexType: MTLTessellationControlPointIndexType {
+        guard let indexType else { return .none }
         if indexType == .uint32 {
             return .uint32
-        }
-        else {
+        } else {
             return .uint16
         }
     }
@@ -44,16 +65,25 @@ final class TessellatedGeometry: Geometry {
         }
     }
 
-    override func generateVertexDescriptor()  -> MTLVertexDescriptor {
+    override public var vertexDescriptor: MTLVertexDescriptor {
         let descriptor = super.generateVertexDescriptor()
         descriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepRate = 1
         descriptor.layouts[VertexBufferIndex.Vertices.rawValue].stepFunction = .perPatchControlPoint
         return descriptor
     }
 
-    override func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, indexBufferOffset: Int = 0, vertexStart: Int = 0) {
+    override public var tessellationDescriptor: TessellationDescriptor {
+        TessellationDescriptor(
+            partitionMode: partitionMode,
+            factorStepFunction: factorStepFunction,
+            outputWindingOrder: windingOrder,
+            controlPointIndexType: controlPointIndexType
+        )
+    }
+
+    override public func draw(renderEncoderState: RenderEncoderState, instanceCount: Int, indexBufferOffset: Int = 0, vertexStart: Int = 0) {
         let renderEncoder = renderEncoderState.renderEncoder
-        if let indexBuffer = indexBuffer {
+        if let indexBuffer {
             renderEncoder.drawIndexedPatches(
                 numberOfPatchControlPoints: controlPointsPerPatch,
                 patchStart: 0,
@@ -78,4 +108,3 @@ final class TessellatedGeometry: Geometry {
         }
     }
 }
-

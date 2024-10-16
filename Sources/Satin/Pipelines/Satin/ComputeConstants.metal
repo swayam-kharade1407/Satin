@@ -10,7 +10,8 @@ typedef enum ComputeBufferIndex {
     ComputeBufferCustom7 = 8,
     ComputeBufferCustom8 = 9,
     ComputeBufferCustom9 = 10,
-    ComputeBufferCustom10 = 11
+    ComputeBufferCustom10 = 11,
+    ComputeBufferTessellationFactors = 12
 } ComputeBufferIndex;
 
 typedef enum ComputeTextureIndex {

@@ -9,14 +9,15 @@ import Foundation
 import Metal
 
 public final class ShaderPipelineCache: Sendable {
-    nonisolated(unsafe) private static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    nonisolated(unsafe) private static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
-    nonisolated(unsafe) private static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
-    nonisolated(unsafe) private static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
+    private nonisolated(unsafe) static var pipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+
+    private nonisolated(unsafe) static var shadowPipelineCache: [ShaderConfiguration: MTLRenderPipelineState] = [:]
+    private nonisolated(unsafe) static var pipelineReflectionCache: [ShaderConfiguration: MTLRenderPipelineReflection] = [:]
+
+    private nonisolated(unsafe) static var pipelineParametersCache: [ShaderConfiguration: ParameterGroup] = [:]
 
     private static let pipelineCacheQueue = DispatchQueue(label: "ShaderPipelineCacheQueue", attributes: .concurrent)
     private static let shadowPipelineCacheQueue = DispatchQueue(label: "ShaderShadowPipelineCacheQueue", attributes: .concurrent)
-
     private static let pipelineReflectionCacheQueue = DispatchQueue(label: "ShaderPipelineReflectionCacheQueue", attributes: .concurrent)
     private static let pipelineParametersCacheQueue = DispatchQueue(label: "ShaderPipelineParametersCacheQueue", attributes: .concurrent)
 
@@ -88,6 +89,13 @@ public final class ShaderPipelineCache: Sendable {
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = fragmentFunction
 
+        if let tessellationDescriptor = configuration.rendering.tessellationDescriptor {
+            descriptor.tessellationPartitionMode = tessellationDescriptor.partitionMode
+            descriptor.tessellationFactorStepFunction = tessellationDescriptor.factorStepFunction
+            descriptor.tessellationOutputWindingOrder = tessellationDescriptor.outputWindingOrder
+            descriptor.tessellationControlPointIndexType = tessellationDescriptor.controlPointIndexType
+        }
+
         setupRenderPipelineDescriptorContext(context: context, descriptor: &descriptor)
         setupRenderPipelineDescriptorBlending(blending: configuration.rendering.blending, descriptor: &descriptor)
 
@@ -133,6 +141,13 @@ public final class ShaderPipelineCache: Sendable {
         descriptor.vertexDescriptor = configuration.rendering.vertexDescriptor
         descriptor.vertexFunction = vertexFunction
         descriptor.fragmentFunction = nil
+
+        if let tessellationDescriptor = configuration.rendering.tessellationDescriptor {
+            descriptor.tessellationPartitionMode = tessellationDescriptor.partitionMode
+            descriptor.tessellationFactorStepFunction = tessellationDescriptor.factorStepFunction
+            descriptor.tessellationOutputWindingOrder = tessellationDescriptor.outputWindingOrder
+            descriptor.tessellationControlPointIndexType = tessellationDescriptor.controlPointIndexType
+        }
 
         descriptor.rasterSampleCount = 1
         descriptor.depthAttachmentPixelFormat = context.depthPixelFormat

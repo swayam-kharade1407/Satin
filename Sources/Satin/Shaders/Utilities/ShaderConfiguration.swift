@@ -91,7 +91,7 @@ extension ShaderConfiguration: Equatable {
             lhs.pipelineURL == rhs.pipelineURL &&
             lhs.defines == rhs.defines &&
             lhs.constants == rhs.constants &&
-            lhs.rendering == rhs.rendering
+            lhs.rendering == rhs.rendering 
     }
 }
 

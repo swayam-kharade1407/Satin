@@ -42,6 +42,8 @@ GeometryData generateTorusGeometryData(float minorRadius, float majorRadius, int
 
 GeometryData generateSkyboxGeometryData(float size);
 
+GeometryData generateUVDiskGeometryData(float innerRadius, float outerRadius);
+
 GeometryData generateCircleGeometryData(float radius, int angularResolution, int radialResolution);
 
 GeometryData generateTriangleGeometryData(float size);

@@ -134,6 +134,10 @@ struct ContentView: View {
                         Label("Octasphere", systemImage: "globe")
                     }
 
+                    NavigationLink(destination: DiskRendererView()) {
+                        Label("UV Disk", systemImage: "hexagon.fill")
+                    }
+
                     NavigationLink(destination: ExportGeometryRendererView()) {
                         Label("Export Geometry", systemImage: "square.and.arrow.up")
                     }
@@ -277,7 +281,7 @@ struct ContentView: View {
             #endif
 
 //            #if os(macOS)
-//            Renderer3DView()
+//            DiskRendererView()
 //            #endif
         }
     }

@@ -37,6 +37,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
     private var _vertexDescriptor = ValueCache<MTLVertexDescriptor>()
     public var vertexDescriptor: MTLVertexDescriptor { _vertexDescriptor.get { generateVertexDescriptor() } }
+    public var tessellationDescriptor: TessellationDescriptor? { nil }
 
     public private(set) var vertexAttributes: [VertexAttributeIndex: any VertexAttribute] = [:] {
         didSet {

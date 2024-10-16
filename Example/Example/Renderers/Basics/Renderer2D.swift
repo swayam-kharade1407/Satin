@@ -13,6 +13,7 @@ import Satin
 
 final class Renderer2D: BaseRenderer {
     let mesh = Mesh(label: "Quad", geometry: QuadGeometry(size: 500), material: UVColorMaterial())
+
     var camera = OrthographicCamera()
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView)
     lazy var scene = Object(label: "Scene", [mesh, intersectionMesh])

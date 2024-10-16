@@ -6,6 +6,23 @@
 //
 
 import Foundation
+import Metal
+
+public struct TessellationDescriptor: Equatable, CustomStringConvertible {
+    public let partitionMode: MTLTessellationPartitionMode
+    public let factorStepFunction: MTLTessellationFactorStepFunction
+    public let outputWindingOrder: MTLWinding
+    public let controlPointIndexType: MTLTessellationControlPointIndexType
+
+    public var description: String {
+        var output = "TessellationDescriptor: \n"
+        output += "\tpartitionMode: \(partitionMode)\n"
+        output += "\tfactorStepFunction: \(factorStepFunction)\n"
+        output += "\toutputWindingOrder: \(outputWindingOrder)\n"
+        output += "\tcontrolPointIndexType: \(controlPointIndexType)\n"
+        return output
+    }
+}
 
 public struct RenderingConfiguration: Hashable {
     // Blending
@@ -13,6 +30,7 @@ public struct RenderingConfiguration: Hashable {
 
     // Vertex Descriptor
     var vertexDescriptor = SatinVertexDescriptor()
+    var tessellationDescriptor: TessellationDescriptor?
 
     // Instancing
     var instancing: Bool = false
@@ -82,7 +100,8 @@ extension RenderingConfiguration: Equatable {
         lhs.receiveShadow == rhs.receiveShadow &&
         lhs.shadowCount == rhs.shadowCount &&
         lhs.defines == rhs.defines &&
-        lhs.constants == rhs.constants
+        lhs.constants == rhs.constants &&
+        lhs.tessellationDescriptor == rhs.tessellationDescriptor
     }
 }
 
@@ -100,7 +119,10 @@ extension RenderingConfiguration: CustomStringConvertible {
         output += "\t\t shadowCount: \(shadowCount)\n"
 
         output += "\t\t vertexDecriptor: \(vertexDescriptor)\n"
-        
+        if let tessellationDescriptor {
+            output += "\t\t tessellationDescriptor: \(tessellationDescriptor)\n"
+        }
+
         if !defines.isEmpty {
             output += "\t\t defines:\n"
             for (index, define) in defines.enumerated() {

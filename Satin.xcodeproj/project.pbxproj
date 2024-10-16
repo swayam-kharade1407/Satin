@@ -236,6 +236,10 @@
 		E101A95B2C070EA00055FABA /* SatinImmersiveSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDC2C06A24B00B5A6C8 /* SatinImmersiveSpace.swift */; };
 		E101A95C2C070EA00055FABA /* SatinMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D7DEDD2C06A24B00B5A6C8 /* SatinMetalView.swift */; };
 		E10A52D52C581CE300BB537A /* CodingUserInfoKey+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */; };
+		E10D918D2CBF60AC00107EE9 /* TessellationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10D918C2CBF60A600107EE9 /* TessellationProcessor.swift */; };
+		E10D918F2CBF60C900107EE9 /* TessellationGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10D918E2CBF60C200107EE9 /* TessellationGeometry.swift */; };
+		E10D91992CBF713800107EE9 /* TessellationMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10D91982CBF713300107EE9 /* TessellationMesh.swift */; };
+		E10D919C2CBF8FBA00107EE9 /* UVDiskGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10D919B2CBF8FB400107EE9 /* UVDiskGeometry.swift */; };
 		E125E67A2CA9EA89005D3A0E /* Satin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D7DD332C06A23000B5A6C8 /* Satin.framework */; };
 		E125E6982CA9EABF005D3A0E /* BezierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E68F2CA9EABF005D3A0E /* BezierTests.swift */; };
 		E125E6992CA9EABF005D3A0E /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E6912CA9EABF005D3A0E /* MD5.swift */; };
@@ -493,6 +497,10 @@
 		66D7DEF62C06A24B00B5A6C8 /* Triangulator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Triangulator.mm; sourceTree = "<group>"; };
 		66D7DEF72C06A24B00B5A6C8 /* Types.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Types.mm; sourceTree = "<group>"; };
 		E10A52D42C581CE300BB537A /* CodingUserInfoKey+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodingUserInfoKey+Extensions.swift"; sourceTree = "<group>"; };
+		E10D918C2CBF60A600107EE9 /* TessellationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessellationProcessor.swift; sourceTree = "<group>"; };
+		E10D918E2CBF60C200107EE9 /* TessellationGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessellationGeometry.swift; sourceTree = "<group>"; };
+		E10D91982CBF713300107EE9 /* TessellationMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessellationMesh.swift; sourceTree = "<group>"; };
+		E10D919B2CBF8FB400107EE9 /* UVDiskGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UVDiskGeometry.swift; sourceTree = "<group>"; };
 		E125E6762CA9EA89005D3A0E /* SatinTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SatinTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E125E68F2CA9EABF005D3A0E /* BezierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierTests.swift; sourceTree = "<group>"; };
 		E125E6902CA9EABF005D3A0E /* BoundsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundsTests.swift; sourceTree = "<group>"; };
@@ -636,6 +644,7 @@
 		66D7DD682C06A24B00B5A6C8 /* Compute */ = {
 			isa = PBXGroup;
 			children = (
+				E10D918C2CBF60A600107EE9 /* TessellationProcessor.swift */,
 				66D7DD642C06A24B00B5A6C8 /* Utilities */,
 				66D7DD652C06A24B00B5A6C8 /* BufferComputeSystem.swift */,
 				66D7DD662C06A24B00B5A6C8 /* ComputeSystem.swift */,
@@ -752,6 +761,8 @@
 			isa = PBXGroup;
 			children = (
 				66D7DDA12C06A24B00B5A6C8 /* Utilities */,
+				E10D919B2CBF8FB400107EE9 /* UVDiskGeometry.swift */,
+				E10D918E2CBF60C200107EE9 /* TessellationGeometry.swift */,
 				66D7DDA22C06A24B00B5A6C8 /* ArcGeometry.swift */,
 				66D7DDA32C06A24B00B5A6C8 /* BoxGeometry.swift */,
 				66D7DDA42C06A24B00B5A6C8 /* CapsuleGeometry.swift */,
@@ -822,6 +833,7 @@
 		66D7DDD82C06A24B00B5A6C8 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				E10D91982CBF713300107EE9 /* TessellationMesh.swift */,
 				66D7DDD52C06A24B00B5A6C8 /* IBLScene.swift */,
 				66D7DDD62C06A24B00B5A6C8 /* InstancedMesh.swift */,
 				66D7DDD72C06A24B00B5A6C8 /* Submesh.swift */,
@@ -989,8 +1001,8 @@
 				66D7DDD82C06A24B00B5A6C8 /* Objects */,
 				66D7DDED2C06A24B00B5A6C8 /* Parameters */,
 				66D7DEAB2C06A24B00B5A6C8 /* Protocols */,
-				66D7DEAE2C06A24B00B5A6C8 /* Renderer */,
 				66D7DEC02C06A24B00B5A6C8 /* Shaders */,
+				66D7DEAE2C06A24B00B5A6C8 /* Renderer */,
 				66D7DEC22C06A24B00B5A6C8 /* Shadows */,
 				66D7DEC52C06A24B00B5A6C8 /* Text */,
 				66D7DECA2C06A24B00B5A6C8 /* Types */,
@@ -1309,6 +1321,7 @@
 				E101A8BC2C070E8E0055FABA /* Blending.swift in Sources */,
 				E101A8BD2C070E8E0055FABA /* Constants.swift in Sources */,
 				E101A8BE2C070E8E0055FABA /* Lighting.swift in Sources */,
+				E10D91992CBF713800107EE9 /* TessellationMesh.swift in Sources */,
 				E101A8BF2C070E8E0055FABA /* Tonemapping.swift in Sources */,
 				E101A8C02C070E8E0055FABA /* YCbCrToRGBConverter.swift in Sources */,
 				E101A8C12C070E8E0055FABA /* Camera.swift in Sources */,
@@ -1319,10 +1332,12 @@
 				E101A8C62C070E8E0055FABA /* Object.swift in Sources */,
 				E101A8C72C070E8E0055FABA /* Renderer.swift in Sources */,
 				E101A8C82C070E8E0055FABA /* Shader.swift in Sources */,
+				E10D919C2CBF8FBA00107EE9 /* UVDiskGeometry.swift in Sources */,
 				E101A8C92C070E8E0055FABA /* Bundle+Extensions.swift in Sources */,
 				E101A8CA2C070E8E0055FABA /* BVH+Extensions.swift in Sources */,
 				E101A8CB2C070E8E0055FABA /* CGPoint+Extensions.swift in Sources */,
 				E101A8CC2C070E8E0055FABA /* CGSize+Extensions.swift in Sources */,
+				E10D918F2CBF60C900107EE9 /* TessellationGeometry.swift in Sources */,
 				E1C6ED1E2C8FE6FA00231467 /* CoreTextGeometry.swift in Sources */,
 				E101A8CD2C070E8E0055FABA /* Metal+Extensions.swift in Sources */,
 				E101A8CE2C070E8E0055FABA /* MTLClearColor+Extensions.swift in Sources */,
@@ -1384,6 +1399,7 @@
 				E101A9052C070E8E0055FABA /* ARBackgroundMaterial.swift in Sources */,
 				E101A9062C070E8E0055FABA /* ARCompositorMaterial.swift in Sources */,
 				E101A9072C070E8E0055FABA /* ARMatteMaterial.swift in Sources */,
+				E10D918D2CBF60AC00107EE9 /* TessellationProcessor.swift in Sources */,
 				E101A9082C070E8E0055FABA /* ARPostMaterial.swift in Sources */,
 				E101A9092C070E8E0055FABA /* BasicColorMaterial.swift in Sources */,
 				E101A90A2C070E8E0055FABA /* BasicDiffuseMaterial.swift in Sources */,

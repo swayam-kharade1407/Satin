@@ -12,18 +12,37 @@ import MetalKit
 import Satin
 
 final class TessellationRenderer: BaseRenderer {
-    lazy var tessellator = TessellationComputeSystem<MTLTriangleTessellationFactorsHalf>(
+    final class Tessellated: TessellationProcessor<MTLTriangleTessellationFactorsHalf> {}
+    final class TessellatedMaterial: SourceMaterial {}
+
+    lazy var tessellator = Tessellated(
         device: device,
         pipelineURL: pipelinesURL.appendingPathComponent("Tessellated/Compute.metal"),
-        functionName: "tessellationTriUpdate"
+        live: true,
+        geometry: tessGeometry
     )
 
-    lazy var tessGeometry = TessellatedGeometry(baseGeometry: IcoSphereGeometry(radius: 1, resolution: 1))
-    lazy var tessMaterial = TessellatedMaterial(pipelinesURL: pipelinesURL, geometry: tessGeometry)
-    lazy var tessMesh = TessellatedMesh(geometry: tessGeometry, material: tessMaterial, tessellator: tessellator)
+    let tessGeometry = TessellationGeometry(
+        baseGeometry: IcoSphereGeometry(radius: 1, resolution: 1)
+    )
 
-    lazy var tessWireMaterial = TessellatedMaterial(pipelinesURL: pipelinesURL, geometry: tessGeometry)
-    lazy var tessWireMesh = TessellatedMesh(geometry: tessGeometry, material: tessWireMaterial, tessellator: tessellator)
+    lazy var tessMaterial = TessellatedMaterial(pipelinesURL: pipelinesURL)
+    lazy var tessMesh = TessellationMesh(
+        label: "Tessellated Fill",
+        geometry: tessGeometry,
+        material: tessMaterial,
+        tessellator: tessellator,
+        tessellate: false
+    )
+
+    lazy var tessWireMesh = TessellationMesh(
+        label: "Tessellated Wire",
+        geometry: tessGeometry,
+        material: TessellatedMaterial(pipelinesURL: pipelinesURL),
+        tessellator: tessellator,
+        tessellate: false
+    )
+
     lazy var scene = Object(label: "Scene", [tessMesh, tessWireMesh])
 
     let camera = PerspectiveCamera(position: .init(repeating: 4.0), near: 0.01, far: 50.0, fov: 30)
@@ -33,14 +52,13 @@ final class TessellationRenderer: BaseRenderer {
     override func setup() {
         camera.lookAt(target: .zero)
 
-        tessMaterial.depthBias = DepthBias(bias: -1, slope: -1, clamp: -1)
+        tessMesh.material?.depthBias = DepthBias(bias: -1, slope: -1, clamp: -1)
 
         tessWireMesh.triangleFillMode = .lines
-        tessWireMaterial.blending = .additive
-        tessWireMaterial.depthBias = DepthBias(bias: 1, slope: 1, clamp: 1)
-        tessWireMaterial.set("Color", [1.0, 1.0, 1.0, 0.33])
+        tessWireMesh.material?.blending = .additive
 
-        tessellator.setup(tessGeometry)
+        tessWireMesh.material?.depthBias = DepthBias(bias: 1, slope: 1, clamp: 1)
+        tessWireMesh.material?.set("Color", [1.0, 1.0, 1.0, 0.33])
     }
 
     deinit {
@@ -52,8 +70,8 @@ final class TessellationRenderer: BaseRenderer {
         let currentTime = getTime() - startTime
         let osc = Float(sin(currentTime)) * 0.5
 
-        tessMaterial.set("Amplitude", osc)
-        tessWireMaterial.set("Amplitude", osc)
+        tessWireMesh.material?.set("Amplitude", osc)
+        tessMesh.material?.set("Amplitude", osc)
 
         let oscEdge = Float(sin(currentTime * 0.5))
         let oscInsider = Float(cos(currentTime * 1.25))
@@ -65,7 +83,7 @@ final class TessellationRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        tessellator.update(commandBuffer: commandBuffer)
+        tessellator.update(commandBuffer)
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

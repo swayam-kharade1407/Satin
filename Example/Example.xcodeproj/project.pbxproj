@@ -88,13 +88,8 @@
 		E103E14F2B60400E0017588F /* PostProcessingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D62565269D21C8000094C1 /* PostProcessingRenderer.swift */; };
 		E103E1502B60400E0017588F /* FXAARenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E105CC36252BDE7F009EE563 /* FXAARenderer.swift */; };
 		E103E15C2B60404C0017588F /* TessellationRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF33D29DA3C030076C163 /* TessellationRenderer.swift */; };
-		E103E15D2B60404C0017588F /* TessellationComputeSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */; };
-		E103E15F2B60404C0017588F /* Tessellator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34229DA3EB60076C163 /* Tessellator.swift */; };
-		E103E1602B60404C0017588F /* TessellatedMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34329DA3EB60076C163 /* TessellatedMaterial.swift */; };
 		E103E1612B60404C0017588F /* RayMarchingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EC55D8268785630097C140 /* RayMarchingRenderer.swift */; };
 		E103E1622B60404C0017588F /* MeshShaderRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */; };
-		E103E1632B60404C0017588F /* TessellatedGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34729DA3EB60076C163 /* TessellatedGeometry.swift */; };
-		E103E1642B60404C0017588F /* TessellatedMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCF34429DA3EB60076C163 /* TessellatedMesh.swift */; };
 		E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B058F26BB704100D91376 /* AudioInputRenderer.swift */; };
 		E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19A7EC12A6097D200D28E89 /* BufferGeometryRenderer.swift */; };
 		E11325D028AEAEB50049CACC /* SuperShapeGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E11325CE28AEAEB50049CACC /* SuperShapeGenerator.c */; };
@@ -102,6 +97,8 @@
 		E11D04E22C605421003BDC36 /* MultipleContextRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11D04E12C605421003BDC36 /* MultipleContextRendererView.swift */; };
 		E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */; };
 		E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */; };
+		E13B2C022CBF997200888E66 /* DiskRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B2BFF2CBF996E00888E66 /* DiskRenderer.swift */; };
+		E13B2C042CBF99E600888E66 /* DiskRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B2C032CBF99E000888E66 /* DiskRendererView.swift */; };
 		E152371F29CBA22B00D96D46 /* BaseRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371E29CBA22B00D96D46 /* BaseRenderer.swift */; };
 		E152372829CBDF4E00D96D46 /* ObjectShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152372729CBDF4E00D96D46 /* ObjectShadowRenderer.swift */; };
 		E173180E2C8F8B2800334DE8 /* FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = E173180D2C8F8B2800334DE8 /* FFT.swift */; };
@@ -172,6 +169,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E10D91922CBF60D900107EE9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E183102B2C20D7390067E62D /* Satin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E125E6762CA9EA89005D3A0E;
+			remoteInfo = SatinTests;
+		};
 		E183102F2C20D7390067E62D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E183102B2C20D7390067E62D /* Satin.xcodeproj */;
@@ -218,6 +222,8 @@
 		E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleViewportRendererView.swift; sourceTree = "<group>"; };
 		E13687272900BBEC00FFF43F /* InstancedMeshRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstancedMeshRenderer.swift; sourceTree = "<group>"; };
 		E13687292900BEEC00FFF43F /* InstancedMeshRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstancedMeshRendererView.swift; sourceTree = "<group>"; };
+		E13B2BFF2CBF996E00888E66 /* DiskRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskRenderer.swift; sourceTree = "<group>"; };
+		E13B2C032CBF99E000888E66 /* DiskRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskRendererView.swift; sourceTree = "<group>"; };
 		E144FA2D24D0D5550072D456 /* CameraControllerRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControllerRenderer.swift; sourceTree = "<group>"; };
 		E14C122C29E5D618009D3C8C /* ARPeopleOcclusionRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPeopleOcclusionRendererView.swift; sourceTree = "<group>"; };
 		E14C122E29E5D67A009D3C8C /* ARPeopleOcclusionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARPeopleOcclusionRenderer.swift; sourceTree = "<group>"; };
@@ -274,11 +280,6 @@
 		E1BBE46429E4D1AB00A21F3A /* ARLidarMeshRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARLidarMeshRendererView.swift; sourceTree = "<group>"; };
 		E1BCF33D29DA3C030076C163 /* TessellationRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessellationRenderer.swift; sourceTree = "<group>"; };
 		E1BCF33F29DA3C210076C163 /* TessellationRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessellationRendererView.swift; sourceTree = "<group>"; };
-		E1BCF34229DA3EB60076C163 /* Tessellator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tessellator.swift; sourceTree = "<group>"; };
-		E1BCF34329DA3EB60076C163 /* TessellatedMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellatedMaterial.swift; sourceTree = "<group>"; };
-		E1BCF34429DA3EB60076C163 /* TessellatedMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellatedMesh.swift; sourceTree = "<group>"; };
-		E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellationComputeSystem.swift; sourceTree = "<group>"; };
-		E1BCF34729DA3EB60076C163 /* TessellatedGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TessellatedGeometry.swift; sourceTree = "<group>"; };
 		E1C967742B409E1E00271541 /* SDFTextRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDFTextRenderer.swift; sourceTree = "<group>"; };
 		E1C967772B409E7E00271541 /* SDFTextRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDFTextRendererView.swift; sourceTree = "<group>"; };
 		E1CC09892489751A00B92285 /* CustomGeometryRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGeometryRenderer.swift; sourceTree = "<group>"; };
@@ -401,7 +402,6 @@
 		66E678CD243EE2190070B294 /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
-				E1BCF34129DA3E910076C163 /* Tessellated */,
 				E19D4C4029F9C23900DF993D /* Advanced */,
 				E152372029CBA8DA00D96D46 /* AR */,
 				E19D4C4129F9C23F00DF993D /* Basics */,
@@ -492,20 +492,9 @@
 			isa = PBXGroup;
 			children = (
 				E18310302C20D7390067E62D /* Satin.framework */,
+				E10D91932CBF60D900107EE9 /* SatinTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		E18E2C0129DA46900045B7DC /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				E1BCF34229DA3EB60076C163 /* Tessellator.swift */,
-				E1BCF34729DA3EB60076C163 /* TessellatedGeometry.swift */,
-				E1BCF34329DA3EB60076C163 /* TessellatedMaterial.swift */,
-				E1BCF34429DA3EB60076C163 /* TessellatedMesh.swift */,
-				E1BCF34629DA3EB60076C163 /* TessellationComputeSystem.swift */,
-			);
-			path = Utilities;
 			sourceTree = "<group>";
 		};
 		E1903C192B608BF1004AB175 /* Vision */ = {
@@ -582,6 +571,7 @@
 		E19D4C3A29F9C16E00DF993D /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
+				E13B2C032CBF99E000888E66 /* DiskRendererView.swift */,
 				E1E767C728A6D41B005D75AB /* ExportGeometryRendererView.swift */,
 				E1E767ED28A6EC44005D75AB /* LoadObjRendererView.swift */,
 				E11325D128AEB0770049CACC /* SuperShapesRendererView.swift */,
@@ -650,6 +640,7 @@
 		E19D4C4029F9C23900DF993D /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
+				E1BCF33D29DA3C030076C163 /* TessellationRenderer.swift */,
 				E11D04DF2C605348003BDC36 /* MultipleContextRenderer.swift */,
 				E1EC55D8268785630097C140 /* RayMarchingRenderer.swift */,
 				E10E2FD529C508EC00C4EAFF /* MeshShaderRenderer.swift */,
@@ -711,6 +702,7 @@
 		E19D4C4529F9C27800DF993D /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
+				E13B2BFF2CBF996E00888E66 /* DiskRenderer.swift */,
 				E11325CC28AEADAA0049CACC /* SuperShapesRenderer.swift */,
 				E17B2FD7247A4E8900BD2BF9 /* LoadObjRenderer.swift */,
 				E180FD7127E13A85002D6DF5 /* OctasphereRenderer.swift */,
@@ -737,15 +729,6 @@
 				E1CC09892489751A00B92285 /* CustomGeometryRenderer.swift */,
 			);
 			path = Customization;
-			sourceTree = "<group>";
-		};
-		E1BCF34129DA3E910076C163 /* Tessellated */ = {
-			isa = PBXGroup;
-			children = (
-				E18E2C0129DA46900045B7DC /* Utilities */,
-				E1BCF33D29DA3C030076C163 /* TessellationRenderer.swift */,
-			);
-			path = Tessellated;
 			sourceTree = "<group>";
 		};
 		E1BEFC4729EDBE5A00F9CE60 /* PBR */ = {
@@ -970,6 +953,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		E10D91932CBF60D900107EE9 /* SatinTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SatinTests.xctest;
+			remoteRef = E10D91922CBF60D900107EE9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E18310302C20D7390067E62D /* Satin.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -1008,7 +998,6 @@
 				E103E1482B6040010017588F /* BufferGeometryRendererView.swift in Sources */,
 				E103E13D2B603FCA0017588F /* PBRSubmeshRendererView.swift in Sources */,
 				E103E12F2B603ED30017588F /* LoadObjRenderer.swift in Sources */,
-				E103E1632B60404C0017588F /* TessellatedGeometry.swift in Sources */,
 				E1903C0F2B6046B4004AB175 /* ARPlaneRendererView.swift in Sources */,
 				E103E0DC2B5F41570017588F /* Renderer3D.swift in Sources */,
 				E103E1322B603F940017588F /* CustomGeometryRenderer.swift in Sources */,
@@ -1081,6 +1070,7 @@
 				E103E1032B603B620017588F /* InstancedMeshRendererView.swift in Sources */,
 				E1D43BB12C65855A0063E2C9 /* ParameterGroupHeaderViewController.swift in Sources */,
 				E103E1362B603F9A0017588F /* InstancingRendererView.swift in Sources */,
+				E13B2C042CBF99E600888E66 /* DiskRendererView.swift in Sources */,
 				E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */,
 				E103E14F2B60400E0017588F /* PostProcessingRenderer.swift in Sources */,
 				E103E1422B603FF40017588F /* FXAARendererView.swift in Sources */,
@@ -1118,11 +1108,9 @@
 				E1D43BDC2C66A5ED0063E2C9 /* XYPadViewController.swift in Sources */,
 				E1D43BB82C65855A0063E2C9 /* DisclosureButton.swift in Sources */,
 				E103E1372B603FC50017588F /* PBRCustomizationRenderer.swift in Sources */,
-				E103E15F2B60404C0017588F /* Tessellator.swift in Sources */,
 				E103E1012B603B620017588F /* CameraControllerRendererView.swift in Sources */,
 				E103E12D2B603ED30017588F /* SuperShapesRenderer.swift in Sources */,
 				E103E1352B603F9A0017588F /* CustomGeometryRendererView.swift in Sources */,
-				E103E1642B60404C0017588F /* TessellatedMesh.swift in Sources */,
 				E103E1402B603FCA0017588F /* PBRRendererView.swift in Sources */,
 				E152372829CBDF4E00D96D46 /* ObjectShadowRenderer.swift in Sources */,
 				E103E0FD2B5F476A0017588F /* Renderer3DView.swift in Sources */,
@@ -1137,7 +1125,6 @@
 				E103E1502B60400E0017588F /* FXAARenderer.swift in Sources */,
 				E103E0FF2B5F498A0017588F /* Renderer2DView.swift in Sources */,
 				E19B2D6A2C87DBBE00A31650 /* GridRenderer.swift in Sources */,
-				E103E15D2B60404C0017588F /* TessellationComputeSystem.swift in Sources */,
 				E173180E2C8F8B2800334DE8 /* FFT.swift in Sources */,
 				E1D43BBB2C65855A0063E2C9 /* SliderViewController.swift in Sources */,
 				E103E1152B603DEA0017588F /* TextRendererView.swift in Sources */,
@@ -1148,12 +1135,12 @@
 				E103E13F2B603FCA0017588F /* PBREnhancedRendererView.swift in Sources */,
 				E19B2D622C8783F800A31650 /* BloomGenerator.swift in Sources */,
 				E103E1182B603E210017588F /* TextureComputeRenderer.swift in Sources */,
-				E103E1602B60404C0017588F /* TessellatedMaterial.swift in Sources */,
 				E19417032C499FAA00FE2E2B /* ScreenCaptureRenderer.swift in Sources */,
 				E103E11B2B603E3C0017588F /* FlockingRendererView.swift in Sources */,
 				E103E13E2B603FCA0017588F /* PBRCustomizationRendererView.swift in Sources */,
 				E1F22D1D29BD71FA0011CEAB /* Timing.swift in Sources */,
 				E103E10A2B603DBD0017588F /* ARLidarMeshRenderer.swift in Sources */,
+				E13B2C022CBF997200888E66 /* DiskRenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

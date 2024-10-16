@@ -7,8 +7,8 @@ typedef struct {
 
 kernel void tessellationQuadUpdate
 (
-    device MTLQuadTessellationFactorsHalf *patchFactorsArray [[buffer(0)]],
-    constant TessellationUniforms &uniforms [[buffer(1)]],
+    device MTLQuadTessellationFactorsHalf *patchFactorsArray [[buffer(ComputeBufferTessellationFactors)]],
+    constant TessellationUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
     uint patchIndex [[thread_position_in_grid]]
 )
 {
@@ -21,10 +21,10 @@ kernel void tessellationQuadUpdate
     patchFactors.insideTessellationFactor[1] = uniforms.insideTessellationFactor;
 }
 
-kernel void tessellationTriUpdate
+kernel void tessellatedUpdate
 (
-    device MTLTriangleTessellationFactorsHalf *patchFactorsArray [[buffer(0)]],
-    constant TessellationUniforms &uniforms [[buffer(1)]],
+    device MTLTriangleTessellationFactorsHalf *patchFactorsArray [[buffer(ComputeBufferTessellationFactors)]],
+    constant TessellationUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
     uint patchIndex [[thread_position_in_grid]]
 )
 {

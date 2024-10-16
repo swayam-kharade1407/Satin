@@ -45,6 +45,11 @@ open class Material: Codable, ObservableObject {
         set { renderingConfiguration.vertexDescriptor = newValue }
     }
 
+    public var tessellationDescriptor: TessellationDescriptor? {
+        get { renderingConfiguration.tessellationDescriptor }
+        set { renderingConfiguration.tessellationDescriptor = newValue }
+    }
+
     private var parametersSubscription: AnyCancellable?
 
     public private(set) var shader: Shader? {

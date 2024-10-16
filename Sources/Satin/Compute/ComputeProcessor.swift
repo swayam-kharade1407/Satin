@@ -2,7 +2,8 @@
 //  ComputeProcessor.swift
 //  Satin
 //
-//  Created by Reza Ali on 9/7/24.
+//  Created by Reza Ali on 3/7/24.
+//  Copyright © 2023 Reza Ali. All rights reserved.
 //
 
 import Combine
@@ -19,6 +20,8 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
     internal var prefix: String {
         var prefix = String(describing: type(of: self)).replacingOccurrences(of: "ComputeProcessor", with: "")
+        prefix = prefix.replacingOccurrences(of: "Compute", with: "")
+        prefix = prefix.replacingOccurrences(of: "Processor", with: "")
         if let bundleName = Bundle(for: type(of: self)).displayName, bundleName != prefix {
             prefix = prefix.replacingOccurrences(of: bundleName, with: "")
         }
@@ -227,7 +230,11 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
     open func bindUniforms(_ computeEncoder: MTLComputeCommandEncoder) {
         guard let uniforms, let shader, shader.resetWantsUniforms || shader.updateWantsUniforms else { return }
-        computeEncoder.setBuffer(uniforms.buffer, offset: uniforms.offset, index: ComputeBufferIndex.Uniforms.rawValue)
+        computeEncoder.setBuffer(
+            uniforms.buffer,
+            offset: uniforms.offset,
+            index: ComputeBufferIndex.Uniforms.rawValue
+        )
     }
 
     internal func bindBuffers(_ computeEncoder: MTLComputeCommandEncoder) {
@@ -235,10 +242,18 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
         for index in shader.bufferBindingIsUsed {
             if let uniformBuffer = computeUniformBuffers[index] {
-                computeEncoder.setBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index.rawValue)
+                computeEncoder.setBuffer(
+                    uniformBuffer.buffer,
+                    offset: uniformBuffer.offset,
+                    index: index.rawValue
+                )
             }
             else if let buffer = computeBuffers[index] {
-                computeEncoder.setBuffer(buffer, offset: 0, index: index.rawValue)
+                computeEncoder.setBuffer(
+                    buffer,
+                    offset: 0,
+                    index: index.rawValue
+                )
             }
         }
     }
