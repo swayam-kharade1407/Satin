@@ -532,7 +532,10 @@ open class Renderer {
         shadowCasters.removeAll(keepingCapacity: true)
         shadowReceivers.removeAll(keepingCapacity: true)
 
-        updateLists(object: scene, visible: true)
+        updateLists(
+            object: scene,
+            visible: true
+        )
 
         updateScene(
             commandBuffer: commandBuffer,
@@ -545,6 +548,7 @@ open class Renderer {
     }
 
     private func updateLists(object: Object, visible: Bool) {
+        object.context = context
         object.update()
 
         if object.visible, visible {
@@ -635,26 +639,17 @@ open class Renderer {
                         if let brdfTexture = brdfTexture {
                             pbrMaterial.setTexture(brdfTexture, type: .brdf)
                         }
-                        pbrMaterial.update()
                     }
 
                     if let cubemapTexture = cubemapTexture, let skyboxMaterial = material as? SkyboxMaterial {
                         skyboxMaterial.texture = cubemapTexture
                         skyboxMaterial.texcoordTransform = reflectionTexcoordTransform
                         skyboxMaterial.environmentIntensity = environmentIntensity
-                        skyboxMaterial.update()
                     }
+
+                    material.update()
                 }
-
-                // Update context after setting properties to reduce calls to shader compiler
-
-                object.context = context
-
             } else {
-                // Update context here before update in case you need to setup vertex uniforms, etc for non-renderables
-
-                object.context = context
-
                 for i in 0..<context.vertexAmplificationCount {
                     object.update(
                         renderContext: context,

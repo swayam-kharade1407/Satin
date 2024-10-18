@@ -10,10 +10,6 @@ Satin is a 3D graphics framework (inspired by threejs) that helps designers and 
 
 Satin makes simple graphics tasks fun and easy to accomplish quickly and complex graphics tasks easier to accomplish without having to write tons of boilerplate code. It does this by providing structure, opinions, and tons of helpful abstractions on Metal to help you get up and rendering / coding in a few minutes. Satin is mostly Swift based, however when performing expensive CPU operations, Satin uses SatinCore, which is written in C (for tasks like geometry generation, triangulation, bounds & computational geometry calculations, and more) to make sure things are as fast as possible.
 
-# Examples :sparkles:
-
-<img src="./Images/2DExample.png" width="25%"><img src="./Images/3DExample.png" width="25%"><img src="./Images/Cubemap.png" width="25%"><img src="./Images/CustomGeometry.png" width="25%"><img src="./Images/DepthMaterial.png" width="25%"><img src="./Images/ExtrudedTextGeometry.png" width="25%"><img src="./Images/MatcapMaterial.png" width="25%"><img src="./Images/ModelLoading.png" width="25%"><img src="./Images/ParticleSystem.png" width="25%"><img src="./Images/PhysicallyBasedShading.png" width="25%"><img src="./Images/TextGeometry.png" width="25%"><img src="./Images/Export.png" width="25%">
-
 # Supported Platforms :computer: :iphone: :tv:
 
 - macOS 14.0
