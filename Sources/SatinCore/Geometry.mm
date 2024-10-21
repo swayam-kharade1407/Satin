@@ -13,6 +13,8 @@ bool greaterThanZero(float a) { return a > FLT_EPSILON; }
 
 bool isZero(float a) { return a == 0 || fabsf(a) < FLT_EPSILON; }
 
+bool isZeroDouble(double a) { return a == 0 || fabsf(a) < DBL_EPSILON; }
+
 float area2(simd_float2 a, simd_float2 b, simd_float2 c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
 
 float cross2(simd_float2 a, simd_float2 b) { return a.x * b.y - b.x * a.y; }

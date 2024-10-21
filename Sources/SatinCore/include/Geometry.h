@@ -23,6 +23,7 @@ extern "C" {
 
 bool greaterThanZero(float a);
 bool isZero(float a);
+bool isZeroDouble(double a);
 
 float area2(simd_float2 a, simd_float2 b, simd_float2 c);
 float cross2(simd_float2 a, simd_float2 b);
