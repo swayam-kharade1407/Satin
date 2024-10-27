@@ -7,13 +7,14 @@
 
 #include <float.h>
 #include <math.h>
+#include <iostream>
 #include "Geometry.h"
 
 bool greaterThanZero(float a) { return a > FLT_EPSILON; }
 
 bool isZero(float a) { return a == 0 || fabsf(a) < FLT_EPSILON; }
 
-bool isZeroDouble(double a) { return a == 0 || fabsf(a) < DBL_EPSILON; }
+bool isZeroDouble(double a) { return a == 0 || fabs(a) < DBL_EPSILON; }
 
 float area2(simd_float2 a, simd_float2 b, simd_float2 c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
 
@@ -82,9 +83,11 @@ bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d
     return (isLeft(a, b, c) ^ isLeft(a, b, d)) && (isLeft(c, d, a) ^ isLeft(c, d, b));
 }
 
-bool intersects(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
+bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
 {
-    if (intersectsProper(a, b, c, d)) { return true; }
+    if (intersectsProper(a, b, c, d)) {
+        return true;
+    }
     else if (isBetween(a, b, c) || isBetween(a, b, d) || isBetween(c, d, a) || isBetween(c, d, b)) {
         return true;
     }
@@ -93,18 +96,36 @@ bool intersects(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
     }
 }
 
-bool isDiagonalie(simd_float2 a, simd_float2 b, simd_float2 *polygon, int count)
-{
-
+bool isDiagonalInPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count) {
     for (int i = 0; i < count; i++) {
         const simd_float2 &c = polygon[i];
         const simd_float2 &c1 = polygon[(i + 1) % count];
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersects(a, b, c, c1)) { return false; }
+
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProper(a, b, c, c1)) {
+            return false;
+        }
     }
     return true;
 }
 
-bool isDiagonal(int i, int j, simd_float2 *polygon, int count)
+bool isDiagonalInOrOnPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count)
+{
+    for (int i = 0; i < count; i++) {
+        const simd_float2 &c = polygon[i];
+        const simd_float2 &c1 = polygon[(i + 1) % count];
+
+        if(!isLeftOn(c, c1, a) && !isLeftOn(c, c1, b)) {
+            return false;
+        }
+
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProperOrInBetween(a, b, c, c1)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isDiagonal(int i, int j, const simd_float2 *polygon, int count)
 {
     int i0 = (i - 1 < 0) ? count - 1 : i - 1;
     int i1 = (i + 1) % count;
@@ -120,10 +141,10 @@ bool isDiagonal(int i, int j, simd_float2 *polygon, int count)
     const simd_float2 &b = polygon[j];
     const simd_float2 &b1 = polygon[j1];
 
-    return inCone(a0, a, a1, b) && inCone(b0, b, b1, a) && isDiagonalie(a, b, polygon, count);
+    return inCone(a0, a, a1, b) && inCone(b0, b, b1, a) && isDiagonalInOrOnPolygon(a, b, polygon, count);
 }
 
-bool isClockwise(simd_float2 *polygon, int length)
+bool isClockwise(const simd_float2 *polygon, int length)
 {
     float area = 0;
     for (int i = 0; i < length; i++) {
@@ -317,7 +338,7 @@ float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point)
     return acLength * sin(angle);
 }
 
-simd_float3 closestPointOnLine(simd_float3 start, simd_float3 end, simd_float3 point)
+simd_float3 closestPointOnLine3(simd_float3 start, simd_float3 end, simd_float3 point)
 {
     simd_float3 ab = end - start;
     simd_float3 ac = point - start;

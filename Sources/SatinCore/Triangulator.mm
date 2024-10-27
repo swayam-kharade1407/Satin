@@ -428,7 +428,7 @@ bool combineOuterAndInnerPaths(tsPath *outerPath, tsPath *innerPath, tsVertexPoo
     int intersectionCount = 0;
     do {
         if (!isColinear2(rightInner->v, outer->v, outer->next->v) &&
-            intersects(rightInner->v, rightInnerPosExt, outer->v, outer->next->v)) {
+            intersectsProperOrInBetween(rightInner->v, rightInnerPosExt, outer->v, outer->next->v)) {
             intersectionCount++;
 
             if (isColinear2(rightInner->v, rightInnerPosExt, outer->v)) {

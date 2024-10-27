@@ -43,6 +43,11 @@ public final class BloomGenerator {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, sourceTexture: MTLTexture) -> MTLTexture? {
+#if DEBUG
+        commandBuffer.pushDebugGroup("Bloom Generator")
+        defer { commandBuffer.popDebugGroup() }
+#endif
+
         if size.x != sourceTexture.width || size.y != sourceTexture.height {
             for l in 0 ..< levels {
                 downscalars[l].textureDescriptors = [getTextureDescriptor(sourceTexture: sourceTexture, level: l + 1)]
@@ -52,21 +57,24 @@ public final class BloomGenerator {
         }
 
         var prevTexture: MTLTexture? = sourceTexture
+        var firstDown = true
         for downscalar in downscalars {
+            downscalar.set("First", firstDown)
+            firstDown = false
             downscalar.set(prevTexture, index: ComputeTextureIndex.Custom1)
             downscalar.update(commandBuffer)
             prevTexture = downscalar.dstTexture
         }
 
         var i = levels - 1
-        var first = true
+        var firstUp = true
         for upscalar in upscalars.reversed() {
             upscalar.set(prevTexture, index: ComputeTextureIndex.Custom1)
-            upscalar.set(first ? nil : downscalars[i].dstTexture, index: ComputeTextureIndex.Custom2)
+            upscalar.set(firstUp ? nil : downscalars[i].dstTexture, index: ComputeTextureIndex.Custom2)
             upscalar.update(commandBuffer)
             prevTexture = upscalar.dstTexture
             i -= 1
-            first = false
+            firstUp = false
         }
 
         return prevTexture
