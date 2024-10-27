@@ -85,9 +85,7 @@ bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d
 
 bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
 {
-    if (intersectsProper(a, b, c, d)) {
-        return true;
-    }
+    if (intersectsProper(a, b, c, d)) { return true; }
     else if (isBetween(a, b, c) || isBetween(a, b, d) || isBetween(c, d, a) || isBetween(c, d, b)) {
         return true;
     }
@@ -96,14 +94,13 @@ bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, si
     }
 }
 
-bool isDiagonalInPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count) {
+bool isDiagonalInPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count)
+{
     for (int i = 0; i < count; i++) {
         const simd_float2 &c = polygon[i];
         const simd_float2 &c1 = polygon[(i + 1) % count];
 
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProper(a, b, c, c1)) {
-            return false;
-        }
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProper(a, b, c, c1)) { return false; }
     }
     return true;
 }
@@ -114,9 +111,7 @@ bool isDiagonalInOrOnPolygon(simd_float2 a, simd_float2 b, const simd_float2 *po
         const simd_float2 &c = polygon[i];
         const simd_float2 &c1 = polygon[(i + 1) % count];
 
-        if(!isLeftOn(c, c1, a) && !isLeftOn(c, c1, b)) {
-            return false;
-        }
+        if (!isLeftOn(c, c1, a) && !isLeftOn(c, c1, b)) { return false; }
 
         if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProperOrInBetween(a, b, c, c1)) {
             return false;
