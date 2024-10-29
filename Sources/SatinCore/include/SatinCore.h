@@ -19,4 +19,5 @@
 #import "Rectangle.h"
 #import "Triangulator.h"
 #import "Bvh.h"
+#import "SignedDistanceFunctions.h"
 #pragma clang diagnostic pop
