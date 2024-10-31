@@ -9,7 +9,7 @@
 @preconcurrency import Metal
 import simd
 
-public final class IBLScene: Object, IBLEnvironment {
+open class IBLScene: Object, IBLEnvironment {
     public var environmentIntensity: Float = 1.0
 
     public internal(set) var environment: MTLTexture?

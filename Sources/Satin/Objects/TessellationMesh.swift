@@ -8,19 +8,28 @@
 
 import Foundation
 import Metal
+import Combine
 import simd
 
-final public class TessellationMesh: Mesh {
-    var tessellator: Tessellator
-    var tessellate: Bool
+open class TessellationMesh: Mesh {
+    public var tessellator: Tessellator
+    public var tessellate: Bool {
+        didSet {
+            tessellatePublisher.send(tessellate)
+        }
+    }
+    public let tessellatePublisher = PassthroughSubject<Bool, Never>()
 
-    public init(label: String, geometry: TessellationGeometry, material: Material?, tessellator: Tessellator, tessellate: Bool = true) {
+    public init(label: String, geometry: TessellationGeometry, material: Material?, tessellator: Tessellator, tessellate: Bool = true, visible: Bool = true, renderOrder: Int = 0, renderPass: Int = 0) {
         self.tessellator = tessellator
         self.tessellate = tessellate
         super.init(
             label: label,
             geometry: geometry,
-            material: material
+            material: material,
+            visible: visible,
+            renderOrder: renderOrder,
+            renderPass: renderPass
         )
     }
     

@@ -9,14 +9,14 @@
 import Foundation
 import Metal
 
-public protocol Tessellator {
+public protocol Tessellator: ComputeProcessor {
     var factorsBuffer: MTLBuffer? { get }
     func update(_ commandBuffer: MTLCommandBuffer, iterations: Int)
     func update(_ computeEncoder: MTLComputeCommandEncoder, iterations: Int)
 }
 
 open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
-    internal override var prefix: String {
+    override internal var prefix: String {
         var prefix = String(describing: type(of: self)).replacingOccurrences(of: "TessellationProcessor", with: "")
         prefix = prefix.replacingOccurrences(of: "Tessellation", with: "")
         prefix = prefix.replacingOccurrences(of: "Processor", with: "")
@@ -50,6 +50,12 @@ open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
         super.setup()
     }
 
+    open override func update() {
+        super.update()
+        set(geometry.controlPointBuffer, index: .TessellationPositions)
+        set(geometry.indexBuffer, index: .TessellationIndices)
+    }
+
     func setupFactorsBuffer() {
         factorsBuffer = device.makeBuffer(
             length: MemoryLayout<T>.stride * geometry.patchCount,
@@ -59,7 +65,6 @@ open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
         factorsBuffer?.label = "\(label) Factors Buffer"
         set(factorsBuffer, index: ComputeBufferIndex.TessellationFactors)
     }
-
 
     override func updateSize() {
         parameters.set("Count", geometry.patchCount)
@@ -118,18 +123,18 @@ open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
 
     // MARK: - Dispatching
 
-#if os(macOS) || os(iOS) || os(visionOS)
-    override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
-        let patchCount = geometry.patchCount
-        let threadsPerGrid = MTLSizeMake(patchCount, 1, 1)
+    #if os(macOS) || os(iOS) || os(visionOS)
+        override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
+            let patchCount = geometry.patchCount
+            let threadsPerGrid = MTLSizeMake(patchCount, 1, 1)
 
-        var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup
-        threadGroupSize = threadGroupSize > patchCount ? 32 * max(patchCount / 32, 1) : threadGroupSize
+            var threadGroupSize = pipeline.maxTotalThreadsPerThreadgroup
+            threadGroupSize = threadGroupSize > patchCount ? 32 * max(patchCount / 32, 1) : threadGroupSize
 
-        let threadsPerThreadgroup = MTLSizeMake(threadGroupSize, 1, 1)
-        computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-    }
-#endif
+            let threadsPerThreadgroup = MTLSizeMake(threadGroupSize, 1, 1)
+            computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        }
+    #endif
 
     override open func dispatchThreadgroups(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         let maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup

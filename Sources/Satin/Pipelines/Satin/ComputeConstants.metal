@@ -11,7 +11,9 @@ typedef enum ComputeBufferIndex {
     ComputeBufferCustom8 = 9,
     ComputeBufferCustom9 = 10,
     ComputeBufferCustom10 = 11,
-    ComputeBufferTessellationFactors = 12
+    ComputeBufferTessellationFactors = 12,
+    ComputeBufferTessellationPositions = 13,
+    ComputeBufferTessellationIndices = 14
 } ComputeBufferIndex;
 
 typedef enum ComputeTextureIndex {

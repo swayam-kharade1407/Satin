@@ -21,6 +21,8 @@ public enum ComputeBufferIndex: Int {
     case Custom9 = 10
     case Custom10 = 11
     case TessellationFactors = 12
+    case TessellationPositions = 13
+    case TessellationIndices = 14
 }
 
 public enum ComputeTextureIndex: Int {
