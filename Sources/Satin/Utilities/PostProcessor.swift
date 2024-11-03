@@ -5,7 +5,9 @@
 //  Created by Reza Ali on 4/16/20.
 //
 
+import Foundation
 import Metal
+import simd
 
 open class PostProcessor {
     public var label = "Post" {
