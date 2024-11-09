@@ -110,6 +110,9 @@ public final class MetalView: NSView, CALayerDelegate {
         layerContentsRedrawPolicy = .duringViewResize
         metalLayer.maximumDrawableCount = maxBuffersInFlight
         metalLayer.delegate = self
+
+        metalLayer.colorspace = nil //CGColorSpace(name: CGColorSpace.extendedSRGB)
+        metalLayer.wantsExtendedDynamicRangeContent = true
     }
 
     // MARK: - View Window Change

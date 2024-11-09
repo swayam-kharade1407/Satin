@@ -38,6 +38,7 @@ open class BufferComputeSystem: ComputeSystem {
         }
     }
 
+    private var bufferResourceOptions: MTLResourceOptions
     private var bufferOrder: [String] = []
     private var bufferMap: [String: [MTLBuffer]] = [:]
     private var bufferParametersSubscription: AnyCancellable?
@@ -54,15 +55,17 @@ open class BufferComputeSystem: ComputeSystem {
 
     // MARK: - Init
 
-    public init(device: MTLDevice, pipelineURL: URL, count: Int, feedback: Bool = false, live: Bool = false) {
+    public init(device: MTLDevice, pipelineURL: URL, count: Int, feedback: Bool = false, live: Bool = false, bufferResourceOptions: MTLResourceOptions = .storageModePrivate) {
         assert(count > 0, "Buffer Compute System count: \(count) must be greater than zero!")
         self.count = count
+        self.bufferResourceOptions = bufferResourceOptions
         super.init(device: device, pipelineURL: pipelineURL, feedback: feedback, live: live)
     }
 
-    public init(device: MTLDevice, pipelinesURL: URL, count: Int, feedback: Bool = false, live: Bool = false) {
+    public init(device: MTLDevice, pipelinesURL: URL, count: Int, feedback: Bool = false, live: Bool = false, bufferResourceOptions: MTLResourceOptions = .storageModePrivate) {
         assert(count > 0, "Buffer Compute System count: \(count) must be greater than zero!")
         self.count = count
+        self.bufferResourceOptions = bufferResourceOptions
         super.init(device: device, pipelinesURL: pipelinesURL, feedback: feedback, live: live)
     }
 
@@ -151,6 +154,17 @@ open class BufferComputeSystem: ComputeSystem {
         return nil
     }
 
+    public func getSourceBuffer(_ label: String) -> MTLBuffer? {
+        if let buffers = bufferMap[label] ?? bufferMap[label.titleCase] {
+            return buffers[srcIndex]
+        }
+        return nil
+    }
+
+    public func getDestinationBuffer(_ label: String) -> MTLBuffer? {
+        getBuffer(label)
+    }
+
     private func setupBuffers() {
         guard count > 0 else { return }
         bufferMap = [:]
@@ -165,7 +179,7 @@ open class BufferComputeSystem: ComputeSystem {
 
             var buffers: [MTLBuffer] = []
             for i in 0 ..< feedbackCount {
-                if let buffer = device.makeBuffer(length: stride * count, options: [.storageModePrivate]) {
+                if let buffer = device.makeBuffer(length: stride * count, options: bufferResourceOptions) {
                     buffer.label = label + " \(i)"
                     buffers.append(buffer)
                 }

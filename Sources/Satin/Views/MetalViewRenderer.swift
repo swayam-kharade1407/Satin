@@ -190,7 +190,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
     // MARK: - ForgeMetalViewRenderDelegate
 
     internal func draw(metalLayer: CAMetalLayer, drawable: CAMetalDrawable) {
-        guard let commandBuffer = preDraw() else { return }
+        guard isSetup, let commandBuffer = preDraw() else { return }
 
         update()
 

@@ -39,6 +39,7 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
     public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ offset: inout Int, _ iteration: Int) -> Void)?
 
     public private(set) var computeUniformBuffers: [ComputeBufferIndex: UniformBuffer] = [:]
+    public private(set) var computeStructBuffers: [ComputeBufferIndex: BindableBuffer] = [:]
     public private(set) var computeBuffers: [ComputeBufferIndex: MTLBuffer] = [:]
     public private(set) var computeTextures: [ComputeTextureIndex: MTLTexture] = [:]
 
@@ -254,6 +255,9 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
             if let uniformBuffer = computeUniformBuffers[index] {
                 computeEncoder.setBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index.rawValue)
             }
+            else if let structBuffer = computeStructBuffers[index] {
+                computeEncoder.setBuffer(structBuffer.buffer, offset: structBuffer.offset, index: index.rawValue)
+            }
             else if let buffer = computeBuffers[index] {
                 computeEncoder.setBuffer(buffer, offset: 0, index: index.rawValue)
             }
@@ -290,6 +294,14 @@ open class ComputeSystem: ComputeShaderDelegate, ObservableObject {
             computeUniformBuffers[index] = uniformBuffer
         } else {
             computeUniformBuffers.removeValue(forKey: index)
+        }
+    }
+
+    public func set(_ structBuffer: BindableBuffer?, index: ComputeBufferIndex) {
+        if let structBuffer {
+            computeStructBuffers[index] = structBuffer
+        } else {
+            computeStructBuffers.removeValue(forKey: index)
         }
     }
 

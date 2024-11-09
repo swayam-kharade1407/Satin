@@ -21,6 +21,10 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
+    override var colorPixelFormat: MTLPixelFormat{
+        .rgba16Float
+    }
+
     // MARK: - UI
 
     override var paramKeys: [String] {

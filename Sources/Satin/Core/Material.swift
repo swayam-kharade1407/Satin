@@ -117,10 +117,12 @@ open class Material: Codable, ObservableObject {
     }
 
     public private(set) var vertexUniformBuffers: [VertexBufferIndex: UniformBuffer] = [:]
+    public private(set) var vertexStructBuffers: [VertexBufferIndex: any BindableBuffer] = [:]
     public private(set) var vertexBuffers: [VertexBufferIndex: MTLBuffer] = [:]
     public private(set) var vertexTextures: [VertexTextureIndex: MTLTexture] = [:]
 
     public private(set) var fragmentUniformBuffers: [FragmentBufferIndex: UniformBuffer] = [:]
+    public private(set) var fragmentStructBuffers: [FragmentBufferIndex: any BindableBuffer] = [:]
     public private(set) var fragmentBuffers: [FragmentBufferIndex: MTLBuffer] = [:]
     public private(set) var fragmentTextures: [FragmentTextureIndex: MTLTexture] = [:]
 
@@ -447,19 +449,49 @@ open class Material: Codable, ObservableObject {
 
         for index in shader.vertexBufferBindingIsUsed {
             if let uniformBuffer = vertexUniformBuffers[index] {
-                renderEncoderState.setVertexBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index)
+                renderEncoderState.setVertexBuffer(
+                    uniformBuffer.buffer,
+                    offset: uniformBuffer.offset,
+                    index: index
+                )
+            }
+            else if let structBuffer = vertexStructBuffers[index] {
+                renderEncoderState.setVertexBuffer(
+                    structBuffer.buffer,
+                    offset: structBuffer.offset,
+                    index: index
+                )
             }
             else if let buffer = vertexBuffers[index] {
-                renderEncoderState.setVertexBuffer(buffer, offset: 0, index: index)
+                renderEncoderState.setVertexBuffer(
+                    buffer,
+                    offset: 0,
+                    index: index
+                )
             }
         }
 
         for index in shader.fragmentBufferBindingIsUsed {
             if let uniformBuffer = fragmentUniformBuffers[index] {
-                renderEncoderState.setFragmentBuffer(uniformBuffer.buffer, offset: uniformBuffer.offset, index: index)
+                renderEncoderState.setFragmentBuffer(
+                    uniformBuffer.buffer,
+                    offset: uniformBuffer.offset,
+                    index: index
+                )
+            }
+            else if let structBuffer = fragmentStructBuffers[index] {
+                renderEncoderState.setFragmentBuffer(
+                    structBuffer.buffer,
+                    offset: structBuffer.offset,
+                    index: index
+                )
             }
             else if let buffer = fragmentBuffers[index] {
-                renderEncoderState.setFragmentBuffer(buffer, offset: 0, index: index)
+                renderEncoderState.setFragmentBuffer(
+                    buffer,
+                    offset: 0,
+                    index: index
+                )
             }
         }
     }
@@ -516,6 +548,14 @@ open class Material: Codable, ObservableObject {
         }
     }
 
+    public func set(_ structBuffer: BindableBuffer?, index: VertexBufferIndex) {
+        if let structBuffer {
+            vertexStructBuffers[index] = structBuffer
+        } else {
+            vertexStructBuffers.removeValue(forKey: index)
+        }
+    }
+
     public func set(_ texture: MTLTexture?, index: VertexTextureIndex) {
         if let texture = texture {
             vertexTextures[index] = texture
@@ -529,6 +569,14 @@ open class Material: Codable, ObservableObject {
             fragmentUniformBuffers[index] = uniformBuffer
         } else {
             fragmentUniformBuffers.removeValue(forKey: index)
+        }
+    }
+
+    public func set(_ structBuffer: BindableBuffer?, index: FragmentBufferIndex) {
+        if let structBuffer {
+            fragmentStructBuffers[index] = structBuffer
+        } else {
+            fragmentStructBuffers.removeValue(forKey: index)
         }
     }
 
