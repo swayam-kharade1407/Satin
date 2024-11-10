@@ -8,7 +8,6 @@
 
 import Metal
 import MetalKit
-
 import Satin
 
 final class Renderer2D: BaseRenderer {

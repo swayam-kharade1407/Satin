@@ -52,6 +52,11 @@ typedef struct Polyline3D {
     simd_float3 *data;
 } Polyline3D;
 
+typedef struct Points2D {
+    int count;
+    simd_float2 *data;
+} Points2D;
+
 typedef struct TriangleIndices {
     uint32_t i0;
     uint32_t i1;
@@ -105,6 +110,9 @@ typedef struct VertexUniforms {
     simd_float3 worldCameraPosition;
     simd_float3 worldCameraViewDirection;
 } VertexUniforms;
+
+Points2D createPoints2D(void);
+void freePoints2D(Points2D *points);
 
 TriangleFaceMap createTriangleFaceMap(void);
 void freeTriangleFaceMap(TriangleFaceMap *map);

@@ -20,4 +20,5 @@
 #import "Triangulator.h"
 #import "Bvh.h"
 #import "SignedDistanceFunctions.h"
+#import "PoissonDiskSampler.h"
 #pragma clang diagnostic pop

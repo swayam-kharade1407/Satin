@@ -281,7 +281,7 @@ struct ContentView: View {
             #endif
 
 //            #if os(macOS)
-//            DiskRendererView()
+//            PoissonRendererView()
 //            #endif
         }
     }

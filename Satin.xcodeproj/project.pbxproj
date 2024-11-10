@@ -247,6 +247,8 @@
 		E125E69B2CA9EABF005D3A0E /* TriangulatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E6922CA9EABF005D3A0E /* TriangulatorTests.swift */; };
 		E125E69C2CA9EABF005D3A0E /* RenderableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E6952CA9EABF005D3A0E /* RenderableTests.swift */; };
 		E125E69D2CA9EABF005D3A0E /* ObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125E6942CA9EABF005D3A0E /* ObjectTests.swift */; };
+		E131C0812CE0008900FDBF8A /* PoissonDiskSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = E131C0802CE0006D00FDBF8A /* PoissonDiskSampler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E131C0832CE0017100FDBF8A /* PoissonDiskSampler.mm in Sources */ = {isa = PBXBuildFile; fileRef = E131C0822CE0016E00FDBF8A /* PoissonDiskSampler.mm */; };
 		E14638662C8CB4C4005E36E9 /* TextureComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */; };
 		E14638682C8CB4EF005E36E9 /* ComputeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */; };
 		E18ABF822CBCD89E00F54A6D /* Locks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18ABF812CBCD89C00F54A6D /* Locks.swift */; };
@@ -510,6 +512,8 @@
 		E125E6922CA9EABF005D3A0E /* TriangulatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriangulatorTests.swift; sourceTree = "<group>"; };
 		E125E6942CA9EABF005D3A0E /* ObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectTests.swift; sourceTree = "<group>"; };
 		E125E6952CA9EABF005D3A0E /* RenderableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderableTests.swift; sourceTree = "<group>"; };
+		E131C0802CE0006D00FDBF8A /* PoissonDiskSampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoissonDiskSampler.h; sourceTree = "<group>"; };
+		E131C0822CE0016E00FDBF8A /* PoissonDiskSampler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PoissonDiskSampler.mm; sourceTree = "<group>"; };
 		E13494B22C06FBF000F29F45 /* Satin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Satin.h; sourceTree = "<group>"; };
 		E14638652C8CB4C4005E36E9 /* TextureComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureComputeProcessor.swift; sourceTree = "<group>"; };
 		E14638672C8CB4EF005E36E9 /* ComputeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeProcessor.swift; sourceTree = "<group>"; };
@@ -1019,6 +1023,7 @@
 		66D7DEEC2C06A24B00B5A6C8 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				E131C0802CE0006D00FDBF8A /* PoissonDiskSampler.h */,
 				E1E2E09D2CCF64A700627A2F /* SignedDistanceFunctions.h */,
 				66D7DEE02C06A24B00B5A6C8 /* Bezier.h */,
 				66D7DEE12C06A24B00B5A6C8 /* Bounds.h */,
@@ -1041,6 +1046,7 @@
 			children = (
 				66D7DEEC2C06A24B00B5A6C8 /* include */,
 				66D7DEED2C06A24B00B5A6C8 /* Bezier.mm */,
+				E131C0822CE0016E00FDBF8A /* PoissonDiskSampler.mm */,
 				66D7DEEE2C06A24B00B5A6C8 /* Bounds.mm */,
 				66D7DEEF2C06A24B00B5A6C8 /* Bvh.mm */,
 				E1E2E09F2CCF64B100627A2F /* SignedDistanceFunctions.mm */,
@@ -1114,6 +1120,7 @@
 				E101A88C2C070D270055FABA /* Rectangle.h in Headers */,
 				E101A88D2C070D270055FABA /* Transforms.h in Headers */,
 				E1E2E09E2CCF64A700627A2F /* SignedDistanceFunctions.h in Headers */,
+				E131C0812CE0008900FDBF8A /* PoissonDiskSampler.h in Headers */,
 				E101A88E2C070D270055FABA /* Triangulator.h in Headers */,
 				E101A88F2C070D270055FABA /* Types.h in Headers */,
 			);
@@ -1331,6 +1338,7 @@
 				E101A8BE2C070E8E0055FABA /* Lighting.swift in Sources */,
 				E10D91992CBF713800107EE9 /* TessellationMesh.swift in Sources */,
 				E101A8BF2C070E8E0055FABA /* Tonemapping.swift in Sources */,
+				E131C0832CE0017100FDBF8A /* PoissonDiskSampler.mm in Sources */,
 				E101A8C02C070E8E0055FABA /* YCbCrToRGBConverter.swift in Sources */,
 				E101A8C12C070E8E0055FABA /* Camera.swift in Sources */,
 				E101A8C22C070E8E0055FABA /* Context.swift in Sources */,

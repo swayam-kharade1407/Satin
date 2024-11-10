@@ -11,6 +11,20 @@
 #include "Geometry.h"
 #include "Types.h"
 
+Points2D createPoints2D(void) {
+    return (Points2D) {
+        .count = 0,
+        .data = NULL
+    };
+}
+
+void freePoints2D(Points2D *points) {
+    if (points->count > 0 && points->data != NULL) {
+        free(points->data);
+        points->count = 0;
+    }
+}
+
 TriangleFaceMap createTriangleFaceMap() { return (TriangleFaceMap) { .count = 0, .data = NULL }; }
 
 void appendFaceMapData(TriangleFaceMap *dest, int index, int count)

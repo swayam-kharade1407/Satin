@@ -95,6 +95,8 @@
 		E11325D028AEAEB50049CACC /* SuperShapeGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E11325CE28AEAEB50049CACC /* SuperShapeGenerator.c */; };
 		E11D04E02C605348003BDC36 /* MultipleContextRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11D04DF2C605348003BDC36 /* MultipleContextRenderer.swift */; };
 		E11D04E22C605421003BDC36 /* MultipleContextRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11D04E12C605421003BDC36 /* MultipleContextRendererView.swift */; };
+		E131C07D2CDFDCB500FDBF8A /* PoissonRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E131C07A2CDFDCAA00FDBF8A /* PoissonRenderer.swift */; };
+		E131C07F2CDFDD3C00FDBF8A /* PoissonRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E131C07E2CDFDD3600FDBF8A /* PoissonRendererView.swift */; };
 		E1365B942B7010D6008C0033 /* MultipleViewportRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */; };
 		E1365B962B70113B008C0033 /* MultipleViewportRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */; };
 		E13B2C022CBF997200888E66 /* DiskRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B2BFF2CBF996E00888E66 /* DiskRenderer.swift */; };
@@ -218,6 +220,8 @@
 		E11D04DF2C605348003BDC36 /* MultipleContextRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleContextRenderer.swift; sourceTree = "<group>"; };
 		E11D04E12C605421003BDC36 /* MultipleContextRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleContextRendererView.swift; sourceTree = "<group>"; };
 		E129CCB5252009CC009B237A /* ARRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARRenderer.swift; sourceTree = "<group>"; };
+		E131C07A2CDFDCAA00FDBF8A /* PoissonRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoissonRenderer.swift; sourceTree = "<group>"; };
+		E131C07E2CDFDD3600FDBF8A /* PoissonRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoissonRendererView.swift; sourceTree = "<group>"; };
 		E1365B932B7010D6008C0033 /* MultipleViewportRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleViewportRenderer.swift; sourceTree = "<group>"; };
 		E1365B952B70113B008C0033 /* MultipleViewportRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleViewportRendererView.swift; sourceTree = "<group>"; };
 		E13687272900BBEC00FFF43F /* InstancedMeshRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstancedMeshRenderer.swift; sourceTree = "<group>"; };
@@ -571,6 +575,7 @@
 		E19D4C3A29F9C16E00DF993D /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
+				E131C07E2CDFDD3600FDBF8A /* PoissonRendererView.swift */,
 				E13B2C032CBF99E000888E66 /* DiskRendererView.swift */,
 				E1E767C728A6D41B005D75AB /* ExportGeometryRendererView.swift */,
 				E1E767ED28A6EC44005D75AB /* LoadObjRendererView.swift */,
@@ -702,6 +707,7 @@
 		E19D4C4529F9C27800DF993D /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
+				E131C07A2CDFDCAA00FDBF8A /* PoissonRenderer.swift */,
 				E13B2BFF2CBF996E00888E66 /* DiskRenderer.swift */,
 				E11325CC28AEADAA0049CACC /* SuperShapesRenderer.swift */,
 				E17B2FD7247A4E8900BD2BF9 /* LoadObjRenderer.swift */,
@@ -918,7 +924,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Hi-Rez";
 				TargetAttributes = {
 					E1D714D028A6BAD900B517B6 = {
@@ -1036,6 +1042,7 @@
 				E103E10C2B603DBD0017588F /* ARPlanesRenderer.swift in Sources */,
 				E103E12C2B603ECD0017588F /* OctasphereRendererView.swift in Sources */,
 				E103E1072B603DBD0017588F /* ARBloomRenderer.swift in Sources */,
+				E131C07F2CDFDD3C00FDBF8A /* PoissonRendererView.swift in Sources */,
 				E103E1192B603E3C0017588F /* TextureComputeRendererView.swift in Sources */,
 				E103E1312B603F940017588F /* CustomInstancingRenderer.swift in Sources */,
 				E103E1202B603E760017588F /* MatcapRenderer.swift in Sources */,
@@ -1054,6 +1061,7 @@
 				E1D43BCA2C65855A0063E2C9 /* ButtonViewController.swift in Sources */,
 				E103E1382B603FC50017588F /* PBREnhancedRenderer.swift in Sources */,
 				E103E1092B603DBD0017588F /* ARContactShadowRenderer.swift in Sources */,
+				E131C07D2CDFDCB500FDBF8A /* PoissonRenderer.swift in Sources */,
 				E103E1492B6040010017588F /* MeshShaderRendererView.swift in Sources */,
 				E1DDD35B2C3105CA00012A44 /* JumpFloodOutlineRenderer.swift in Sources */,
 				E1DEB76D2C8659B400D58D21 /* BloomRenderer.swift in Sources */,
@@ -1212,6 +1220,7 @@
 				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_INTEROP_MODE = objc;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
@@ -1277,6 +1286,7 @@
 				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_INTEROP_MODE = objc;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
