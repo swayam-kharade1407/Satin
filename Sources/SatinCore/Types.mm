@@ -11,14 +11,10 @@
 #include "Geometry.h"
 #include "Types.h"
 
-Points2D createPoints2D(void) {
-    return (Points2D) {
-        .count = 0,
-        .data = NULL
-    };
-}
+Points2D createPoints2D(void) { return (Points2D) { .count = 0, .data = NULL }; }
 
-void freePoints2D(Points2D *points) {
+void freePoints2D(Points2D *points)
+{
     if (points->count > 0 && points->data != NULL) {
         free(points->data);
         points->count = 0;
