@@ -72,8 +72,8 @@ open class TextureComputeSystem: ComputeSystem {
 
     override open func setup() {
         super.setup()
-        setupDescriptor()
-        setupTextures()
+        updateDescriptor()
+        updateTextures()
     }
 
     override open func update() {
@@ -84,7 +84,7 @@ open class TextureComputeSystem: ComputeSystem {
 
     // MARK: - Descriptors
 
-    private func setupDescriptor() {
+    open func setupDescriptor() {
         for textureDescriptor in textureDescriptors {
             if !textureDescriptor.usage.contains(.shaderWrite) {
                 textureDescriptor.usage = [textureDescriptor.usage, .shaderWrite]
@@ -93,13 +93,12 @@ open class TextureComputeSystem: ComputeSystem {
                 textureDescriptor.usage = [textureDescriptor.usage, .shaderRead]
             }
         }
-
-        _setupDescriptors = false
     }
 
     private func updateDescriptor() {
         if _setupDescriptors {
             setupDescriptor()
+            _setupDescriptors = false
         }
     }
 
@@ -107,7 +106,6 @@ open class TextureComputeSystem: ComputeSystem {
 
     open func setupTextures() {
         textures = []
-
         for textureDescriptor in textureDescriptors {
             for i in 0 ..< feedbackCount {
                 if let texture = device.makeTexture(descriptor: textureDescriptor) {
@@ -116,14 +114,13 @@ open class TextureComputeSystem: ComputeSystem {
                 }
             }
         }
-
-        _index = 0
-        _setupTextures = false
     }
 
     private func updateTextures() {
         if _setupTextures {
             setupTextures()
+            _index = 0
+            _setupTextures = false
         }
     }
 

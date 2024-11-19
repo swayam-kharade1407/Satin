@@ -475,8 +475,11 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
     }
 
     deinit {
+        computeUniformBuffers.removeAll()
+        computeStructBuffers.removeAll()
         computeBuffers.removeAll()
         computeTextures.removeAll()
+
         shader = nil
         delegate = nil
     }
