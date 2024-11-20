@@ -246,7 +246,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     // MARK: - Setup Index Buffer
 
     private func setupIndexBuffer() {
-        guard let device = context?.device, let elementBuffer = elementBuffer else { return }
+        guard let device = context?.device, let elementBuffer else { return }
         indexBuffer = elementBuffer.getBuffer(device: device)
     }
 

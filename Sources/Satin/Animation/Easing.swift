@@ -41,7 +41,7 @@ public enum Easing {
     case outBounce
     case inOutBounce
 
-    var function: (Double) -> Double {
+    public var function: (Double) -> Double {
         switch self {
             case .linear:
                 easeLinear

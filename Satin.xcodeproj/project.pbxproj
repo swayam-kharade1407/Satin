@@ -769,8 +769,8 @@
 			isa = PBXGroup;
 			children = (
 				66D7DDA12C06A24B00B5A6C8 /* Utilities */,
-				E10D919B2CBF8FB400107EE9 /* UVDiskGeometry.swift */,
 				E10D918E2CBF60C200107EE9 /* TessellationGeometry.swift */,
+				E10D919B2CBF8FB400107EE9 /* UVDiskGeometry.swift */,
 				66D7DDA22C06A24B00B5A6C8 /* ArcGeometry.swift */,
 				66D7DDA32C06A24B00B5A6C8 /* BoxGeometry.swift */,
 				66D7DDA42C06A24B00B5A6C8 /* CapsuleGeometry.swift */,
