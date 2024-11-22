@@ -16,7 +16,6 @@ fragment float4 customFragment( VertexData in [[stage_in]],
     uv.x *= uniforms.appResolution.z;
 
     const float time = 0.5 * uniforms.time;
-    const float2 norm = normalize( uv );
     float n = snoise( float3( uv, time ) );
 
     const float radius = 0.5 + 0.125 * n;

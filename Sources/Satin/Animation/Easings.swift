@@ -159,18 +159,18 @@ public func easeInOutElastic(_ t: Double) -> Double {
 }
 
 public func easeInBounce(_ t: Double) -> Double {
-    return pow(2.0, 6.0 * (t - 1)) * abs(sin(t * Double.pi * 3.5))
+    return pow(2.0, 6.0 * (t - 1)) * fabs(sin(t * Double.pi * 3.5))
 }
 
 public func easeOutBounce(_ t: Double) -> Double {
-    return 1.0 - pow(2.0, -6.0 * t) * abs(cos(t * Double.pi * 3.5))
+    return 1.0 - pow(2.0, -6.0 * t) * fabs(cos(t * Double.pi * 3.5))
 }
 
 public func easeInOutBounce(_ t: Double) -> Double {
     if t < 0.5 {
-        return 8.0 * pow(2.0, 8.0 * (t - 1.0)) * abs(sin(t * Double.pi * 7.0))
+        return 8.0 * pow(2.0, 8.0 * (t - 1.0)) * fabs(sin(t * Double.pi * 7.0))
     } else {
-        return 1.0 - 8.0 * pow(2.0, -8.0 * t) * abs(sin(t * Double.pi * 7.0))
+        return 1.0 - 8.0 * pow(2.0, -8.0 * t) * fabs(sin(t * Double.pi * 7.0))
     }
 }
 
