@@ -21,7 +21,8 @@ Bounds createBounds(void);
 
 Bounds computeBoundsFromFloatData(const void *data, int stride, int count);
 Bounds computeBoundsFromVertices(const SatinVertex *vertices, int count);
-Bounds computeBoundsFromVerticesAndTransform(const SatinVertex *vertices, int count, simd_float4x4 transform);
+Bounds computeBoundsFromVerticesAndTransform(
+    const SatinVertex *vertices, int count, simd_float4x4 transform);
 
 Bounds expandBounds(Bounds bounds, simd_float3 pt);
 Bounds mergeBounds(Bounds a, Bounds b);

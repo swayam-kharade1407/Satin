@@ -17,7 +17,8 @@
 extern "C" {
 #endif
 
-int triangulatePolylines(Polylines2D *lines, GeometryData *geometryData, TriangleData *triangleData);
+int triangulatePolylines(
+    Polylines2D *lines, GeometryData *geometryData, TriangleData *triangleData);
 
 // triangulates multiple paths
 int triangulate(simd_float2 **paths, int *lengths, int count, TriangleData *gData);

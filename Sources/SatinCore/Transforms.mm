@@ -10,22 +10,19 @@
 #include <stdio.h>
 #include <iostream>
 
-simd_float4x4 translationMatrixf(float x, float y, float z)
-{
+simd_float4x4 translationMatrixf(float x, float y, float z) {
     simd_float4x4 result = matrix_identity_float4x4;
     result.columns[3] = simd_make_float4(x, y, z, 1.0);
     return result;
 }
 
-simd_float4x4 translationMatrix3f(simd_float3 p)
-{
+simd_float4x4 translationMatrix3f(simd_float3 p) {
     simd_float4x4 result = matrix_identity_float4x4;
     result.columns[3] = simd_make_float4(p, 1.0);
     return result;
 }
 
-simd_float4x4 scaleMatrixf(float x, float y, float z)
-{
+simd_float4x4 scaleMatrixf(float x, float y, float z) {
     simd_float4x4 result = matrix_identity_float4x4;
     result.columns[0].x = x;
     result.columns[1].y = y;
@@ -33,8 +30,7 @@ simd_float4x4 scaleMatrixf(float x, float y, float z)
     return result;
 }
 
-simd_float4x4 scaleMatrix3f(simd_float3 p)
-{
+simd_float4x4 scaleMatrix3f(simd_float3 p) {
     simd_float4x4 result = matrix_identity_float4x4;
     result.columns[0].x = p.x;
     result.columns[1].y = p.y;
@@ -42,9 +38,10 @@ simd_float4x4 scaleMatrix3f(simd_float3 p)
     return result;
 }
 
-// Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is applied)
-simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float top, float near, float far)
-{
+// Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is
+// applied)
+simd_float4x4
+orthographicMatrixf(float left, float right, float bottom, float top, float near, float far) {
     const float rightMinusLeftInv = 1.0 / (right - left);
     const float topMinusBottomInv = 1.0 / (top - bottom);
     const float farMinusNearInv = 1.0 / (far - near);
@@ -65,8 +62,8 @@ simd_float4x4 orthographicMatrixf(float left, float right, float bottom, float t
     return simd_matrix(col0, col1, col2, col3);
 }
 
-simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, float near, float far)
-{
+simd_float4x4
+frustrumMatrixf(float left, float right, float bottom, float top, float near, float far) {
     const float twoTimesNear = 2.0 * near;
 
     const float sx = twoTimesNear / (right - left);
@@ -87,9 +84,9 @@ simd_float4x4 frustrumMatrixf(float left, float right, float bottom, float top, 
     return simd_matrix(col0, col1, col2, col3);
 }
 
-// Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is applied)
-simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
-{
+// Reverse Z: Near Plane at 1, Far Plane at 0 (z comes in negative after camera view matrix is
+// applied)
+simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far) {
     const float angle = degToRad(0.5 * fov);
     const float farMinusNear = far - near;
 
@@ -107,8 +104,7 @@ simd_float4x4 perspectiveMatrixf(float fov, float aspect, float near, float far)
     return simd_matrix(col0, col1, col2, col3);
 }
 
-simd_float4x4 lookAtMatrix3f(simd_float3 eye, simd_float3 at, simd_float3 up)
-{
+simd_float4x4 lookAtMatrix3f(simd_float3 eye, simd_float3 at, simd_float3 up) {
     simd_float4x4 result = matrix_identity_float4x4;
 
     const simd_float3 zAxis = simd_normalize(at - eye);

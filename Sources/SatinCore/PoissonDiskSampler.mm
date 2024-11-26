@@ -17,9 +17,9 @@
 
 using namespace std;
 
-Points2D generatePoissonDiskSamples(Rectangle rect, float minDistance, float kMax)
-{
-    const Rectangle bounds = (Rectangle) { .min = simd_min(rect.max, rect.min), .max = simd_max(rect.max, rect.min) };
+Points2D generatePoissonDiskSamples(Rectangle rect, float minDistance, float kMax) {
+    const Rectangle bounds =
+        (Rectangle) { .min = simd_min(rect.max, rect.min), .max = simd_max(rect.max, rect.min) };
     const simd_float2 size = bounds.max - bounds.min;
 
     const float width = size.x;
@@ -44,15 +44,19 @@ Points2D generatePoissonDiskSamples(Rectangle rect, float minDistance, float kMa
 
     vector<int> grid(gridLength, -1);
 
-    const simd_float2 initialSample = bounds.min + simd_make_float2(static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (width)),
-                                                                    static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (height)));
+    const simd_float2 initialSample =
+        bounds.min + simd_make_float2(
+                         static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (width)),
+                         static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (height)));
 
     samples.emplace_back(initialSample);
     activeList.emplace_back(initialSample);
 
-    const simd_int2 initialSampleGridPosition = gridSizeHalf + simd_make_int2(initialSample.x / cellSize, initialSample.y / cellSize);
+    const simd_int2 initialSampleGridPosition =
+        gridSizeHalf + simd_make_int2(initialSample.x / cellSize, initialSample.y / cellSize);
 
-    const uint32_t initialSampleGridIndex = initialSampleGridPosition.y * gridWidth + initialSampleGridPosition.x;
+    const uint32_t initialSampleGridIndex =
+        initialSampleGridPosition.y * gridWidth + initialSampleGridPosition.x;
 
     grid[initialSampleGridIndex] = 0;
 
@@ -67,11 +71,14 @@ Points2D generatePoissonDiskSamples(Rectangle rect, float minDistance, float kMa
         for (int k = 0; k < kMax; k++) {
             const float angle = static_cast<float>(rand()) / angleMax;
             const float distance = radius + static_cast<float>(rand()) / distanceMax;
-            const simd_float2 candidate = activeSample + distance * simd_make_float2(cos(angle), sin(angle));
+            const simd_float2 candidate =
+                activeSample + distance * simd_make_float2(cos(angle), sin(angle));
 
             if (rectangleContainsPoint(bounds, candidate)) {
-                const simd_int2 candidateGridPosition = gridSizeHalf + simd_make_int2(candidate.x / cellSize, candidate.y / cellSize);
-                const uint32_t candidateGridIndex = candidateGridPosition.y * gridWidth + candidateGridPosition.x;
+                const simd_int2 candidateGridPosition =
+                    gridSizeHalf + simd_make_int2(candidate.x / cellSize, candidate.y / cellSize);
+                const uint32_t candidateGridIndex =
+                    candidateGridPosition.y * gridWidth + candidateGridPosition.x;
 
                 // Check surrounding cells in the grid
 

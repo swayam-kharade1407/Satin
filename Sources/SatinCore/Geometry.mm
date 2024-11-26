@@ -16,20 +16,20 @@ bool isZero(float a) { return a == 0 || fabsf(a) < FLT_EPSILON; }
 
 bool isZeroDouble(double a) { return a == 0 || fabs(a) < DBL_EPSILON; }
 
-float area2(simd_float2 a, simd_float2 b, simd_float2 c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
+float area2(simd_float2 a, simd_float2 b, simd_float2 c) {
+    return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+}
 
 float cross2(simd_float2 a, simd_float2 b) { return a.x * b.y - b.x * a.y; }
 
 bool isLeft(simd_float2 a, simd_float2 b, simd_float2 c) { return greaterThanZero(area2(a, b, c)); }
 
-bool isLeftOn(simd_float2 a, simd_float2 b, simd_float2 c)
-{
+bool isLeftOn(simd_float2 a, simd_float2 b, simd_float2 c) {
     float res = area2(a, b, c);
     return greaterThanZero(res) || isZero(res);
 }
 
-bool inCone(simd_float2 a0, simd_float2 a, simd_float2 a1, simd_float2 b)
-{
+bool inCone(simd_float2 a0, simd_float2 a, simd_float2 a1, simd_float2 b) {
     if (isLeftOn(a, a1, a0)) { return isLeft(a, b, a0) && isLeft(b, a, a1); }
     return !(isLeftOn(a, b, a1) && isLeftOn(b, a, a0));
 }
@@ -40,19 +40,18 @@ bool isEqual2(simd_float2 a, simd_float2 b) { return isEqual(a.x, b.x) && isEqua
 
 bool isColinear2(simd_float2 a, simd_float2 b, simd_float2 c) { return isZero(area2(a, b, c)); }
 
-bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c)
-{
+bool isColinear3(simd_float3 a, simd_float3 b, simd_float3 c) {
     float cax = c[0] - a[0];
     float cay = c[1] - a[1];
     float caz = c[2] - a[2];
     float bax = b[0] - a[0];
     float bay = b[1] - a[1];
     float baz = b[2] - a[2];
-    return isZero((caz * bay) - (baz * cay)) && isZero((baz * cax) - (bax * caz)) && isZero((bax * cay) - (bay * cax));
+    return isZero((caz * bay) - (baz * cay)) && isZero((baz * cax) - (bax * caz)) &&
+           isZero((bax * cay) - (bay * cax));
 }
 
-bool isConvex(const simd_float2 *path, int length)
-{
+bool isConvex(const simd_float2 *path, int length) {
     int end = (length + 1);
 
     int areaSign = 0;
@@ -68,60 +67,63 @@ bool isConvex(const simd_float2 *path, int length)
     return true;
 }
 
-bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c)
-{
+bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c) {
     if (!isColinear2(a, b, c)) { return false; }
-    if (a[0] != b[0]) { return ((a[0] <= c[0]) && (c[0] <= b[0])) || ((a[0] >= c[0]) && (c[0] >= b[0])); }
-    else {
+    if (a[0] != b[0]) {
+        return ((a[0] <= c[0]) && (c[0] <= b[0])) || ((a[0] >= c[0]) && (c[0] >= b[0]));
+    } else {
         return ((a[1] <= c[1]) && (c[1] <= b[1])) || ((a[1] >= c[1]) && (c[1] >= b[1]));
     }
 }
 
-bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
-{
-    if (isColinear2(a, b, c) || isColinear2(a, b, d) || isColinear2(c, d, a) || isColinear2(c, d, b)) { return false; }
+bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d) {
+    if (isColinear2(a, b, c) || isColinear2(a, b, d) || isColinear2(c, d, a) ||
+        isColinear2(c, d, b)) {
+        return false;
+    }
     return (isLeft(a, b, c) ^ isLeft(a, b, d)) && (isLeft(c, d, a) ^ isLeft(c, d, b));
 }
 
-bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d)
-{
-    if (intersectsProper(a, b, c, d)) { return true; }
-    else if (isBetween(a, b, c) || isBetween(a, b, d) || isBetween(c, d, a) || isBetween(c, d, b)) {
+bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d) {
+    if (intersectsProper(a, b, c, d)) {
         return true;
-    }
-    else {
+    } else if (
+        isBetween(a, b, c) || isBetween(a, b, d) || isBetween(c, d, a) || isBetween(c, d, b)) {
+        return true;
+    } else {
         return false;
     }
 }
 
-bool isDiagonalInPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count)
-{
+bool isDiagonalInPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count) {
     for (int i = 0; i < count; i++) {
         const simd_float2 &c = polygon[i];
         const simd_float2 &c1 = polygon[(i + 1) % count];
 
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProper(a, b, c, c1)) { return false; }
-    }
-    return true;
-}
-
-bool isDiagonalInOrOnPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count)
-{
-    for (int i = 0; i < count; i++) {
-        const simd_float2 &c = polygon[i];
-        const simd_float2 &c1 = polygon[(i + 1) % count];
-
-        if (!isLeftOn(c, c1, a) && !isLeftOn(c, c1, b)) { return false; }
-
-        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) && intersectsProperOrInBetween(a, b, c, c1)) {
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) &&
+            intersectsProper(a, b, c, c1)) {
             return false;
         }
     }
     return true;
 }
 
-bool isDiagonal(int i, int j, const simd_float2 *polygon, int count)
-{
+bool isDiagonalInOrOnPolygon(simd_float2 a, simd_float2 b, const simd_float2 *polygon, int count) {
+    for (int i = 0; i < count; i++) {
+        const simd_float2 &c = polygon[i];
+        const simd_float2 &c1 = polygon[(i + 1) % count];
+
+        if (!isLeftOn(c, c1, a) && !isLeftOn(c, c1, b)) { return false; }
+
+        if (!isEqual2(c, a) && !isEqual2(c1, a) && !isEqual2(c, b) && !isEqual2(c1, b) &&
+            intersectsProperOrInBetween(a, b, c, c1)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isDiagonal(int i, int j, const simd_float2 *polygon, int count) {
     int i0 = (i - 1 < 0) ? count - 1 : i - 1;
     int i1 = (i + 1) % count;
 
@@ -136,11 +138,11 @@ bool isDiagonal(int i, int j, const simd_float2 *polygon, int count)
     const simd_float2 &b = polygon[j];
     const simd_float2 &b1 = polygon[j1];
 
-    return inCone(a0, a, a1, b) && inCone(b0, b, b1, a) && isDiagonalInOrOnPolygon(a, b, polygon, count);
+    return inCone(a0, a, a1, b) && inCone(b0, b, b1, a) &&
+           isDiagonalInOrOnPolygon(a, b, polygon, count);
 }
 
-bool isClockwise(const simd_float2 *polygon, int length)
-{
+bool isClockwise(const simd_float2 *polygon, int length) {
     float area = 0;
     for (int i = 0; i < length; i++) {
         int i0 = i;
@@ -152,8 +154,8 @@ bool isClockwise(const simd_float2 *polygon, int length)
     return !signbit(area);
 }
 
-bool rayRayIntersection2(simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection)
-{
+bool rayRayIntersection2(
+    simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection) {
     const float dx = bs.x - as.x;
     const float dy = bs.y - as.y;
     const float det = bd.x * ad.y - bd.y * ad.x;
@@ -166,9 +168,12 @@ bool rayRayIntersection2(simd_float2 as, simd_float2 ad, simd_float2 bs, simd_fl
     return false;
 }
 
-bool rayPlaneIntersection(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal, simd_float3 planeOrigin,
-                          simd_float3 *intersection)
-{
+bool rayPlaneIntersection(
+    simd_float3 origin,
+    simd_float3 direction,
+    simd_float3 planeNormal,
+    simd_float3 planeOrigin,
+    simd_float3 *intersection) {
     float time = 0.0;
     if (rayPlaneIntersectionTime(origin, direction, planeNormal, planeOrigin, &time)) {
         *intersection = origin + direction * time;
@@ -177,8 +182,12 @@ bool rayPlaneIntersection(simd_float3 origin, simd_float3 direction, simd_float3
     return false;
 }
 
-bool rayPlaneIntersectionTime(simd_float3 origin, simd_float3 direction, simd_float3 planeNormal, simd_float3 planeOrigin, float *time)
-{
+bool rayPlaneIntersectionTime(
+    simd_float3 origin,
+    simd_float3 direction,
+    simd_float3 planeNormal,
+    simd_float3 planeOrigin,
+    float *time) {
     simd_float3 o = planeOrigin - origin;
     const float oProj = simd_dot(o, planeNormal);
     const float dProj = simd_dot(direction, planeNormal);
@@ -187,8 +196,8 @@ bool rayPlaneIntersectionTime(simd_float3 origin, simd_float3 direction, simd_fl
     return (dProj < 0);
 }
 
-bool rayBoundsIntersection(simd_float3 origin, simd_float3 direction, Bounds bounds, simd_float2 *times)
-{
+bool rayBoundsIntersection(
+    simd_float3 origin, simd_float3 direction, Bounds bounds, simd_float2 *times) {
     simd_float3 dirInv = 1.0 / direction;
     simd_float3 tmin = (bounds.min - origin) * dirInv;
     simd_float3 tmax = (bounds.max - origin) * dirInv;
@@ -214,14 +223,17 @@ bool rayBoundsIntersection(simd_float3 origin, simd_float3 direction, Bounds bou
     return true;
 }
 
-bool rayBoundsIntersect(Ray ray, Bounds bounds)
-{
+bool rayBoundsIntersect(Ray ray, Bounds bounds) {
     simd_float2 times;
     return rayBoundsIntersection(ray.origin, ray.direction, bounds, &times);
 }
 
-bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float3 center, float radius, simd_float2 *times)
-{
+bool raySphereIntersection(
+    simd_float3 origin,
+    simd_float3 direction,
+    simd_float3 center,
+    float radius,
+    simd_float2 *times) {
     const simd_float3 l = center - origin;
     const float tca = simd_dot(l, direction);
     if (tca < 0) { return false; }
@@ -239,16 +251,24 @@ bool raySphereIntersection(simd_float3 origin, simd_float3 direction, simd_float
     return true;
 }
 
-bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_float3 v0, simd_float3 v1, simd_float3 v2, float *time,
-                             simd_float3 *intersection, simd_float3 *normal)
-{
-    if (isColinear3(v0, v1, v2)) { return false; }
-    else {
+bool rayTriangleIntersection(
+    simd_float3 origin,
+    simd_float3 direction,
+    simd_float3 v0,
+    simd_float3 v1,
+    simd_float3 v2,
+    float *time,
+    simd_float3 *intersection,
+    simd_float3 *normal) {
+    if (isColinear3(v0, v1, v2)) {
+        return false;
+    } else {
         simd_float3 a = v1 - v0;
         simd_float3 b = v2 - v0;
         *normal = simd_normalize(simd_cross(a, b));
         simd_float3 triangleOrigin = simd_dot(*normal, v0);
-        bool intersected = rayPlaneIntersectionTime(origin, direction, *normal, triangleOrigin, time);
+        bool intersected =
+            rayPlaneIntersectionTime(origin, direction, *normal, triangleOrigin, time);
         if (intersected) {
 
             (*intersection) = origin + direction * (*time);
@@ -272,8 +292,8 @@ bool rayTriangleIntersection(simd_float3 origin, simd_float3 direction, simd_flo
     return false;
 }
 
-bool rayTriangleIntersectionTime(Ray ray, simd_float3 p0, simd_float3 p1, simd_float3 p2, float *time)
-{
+bool rayTriangleIntersectionTime(
+    Ray ray, simd_float3 p0, simd_float3 p1, simd_float3 p2, float *time) {
     const simd_float3 edge1 = p1 - p0;
     const simd_float3 edge2 = p2 - p0;
     const simd_float3 h = simd_cross(ray.direction, edge2);
@@ -291,21 +311,18 @@ bool rayTriangleIntersectionTime(Ray ray, simd_float3 p0, simd_float3 p1, simd_f
     return true;
 }
 
-simd_float3 projectPointOnPlane(simd_float3 origin, simd_float3 normal, simd_float3 point)
-{
+simd_float3 projectPointOnPlane(simd_float3 origin, simd_float3 normal, simd_float3 point) {
     simd_float3 v = point - origin;
     float pn = simd_dot(v, normal);
     return point - pn * normal;
 }
 
-float pointPlaneDistance(simd_float3 origin, simd_float3 normal, simd_float3 point)
-{
+float pointPlaneDistance(simd_float3 origin, simd_float3 normal, simd_float3 point) {
     simd_float3 v = point - origin;
     return simd_dot(v, normal);
 }
 
-float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point)
-{
+float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point) {
     simd_float2 ab = simd_normalize(end - start);
     simd_float2 ac = point - start;
     float acLength = simd_length(ac);
@@ -314,8 +331,7 @@ float pointLineDistance2(simd_float2 start, simd_float2 end, simd_float2 point)
     return acLength * sin(angle);
 }
 
-simd_float2 projectedPointOnLine2(simd_float2 start, simd_float2 end, simd_float2 point)
-{
+simd_float2 projectedPointOnLine2(simd_float2 start, simd_float2 end, simd_float2 point) {
     simd_float2 ab = end - start;
     float lengthAB = simd_length(ab);
     simd_float2 ac = point - start;
@@ -323,8 +339,7 @@ simd_float2 projectedPointOnLine2(simd_float2 start, simd_float2 end, simd_float
     return start + projectedLength * (ab / lengthAB);
 }
 
-float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point)
-{
+float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point) {
     simd_float3 ab = simd_normalize(end - start);
     simd_float3 ac = point - start;
     float acLength = simd_length(ac);
@@ -333,8 +348,7 @@ float pointLineDistance3(simd_float3 start, simd_float3 end, simd_float3 point)
     return acLength * sin(angle);
 }
 
-simd_float3 closestPointOnLine3(simd_float3 start, simd_float3 end, simd_float3 point)
-{
+simd_float3 closestPointOnLine3(simd_float3 start, simd_float3 end, simd_float3 point) {
     simd_float3 ab = end - start;
     simd_float3 ac = point - start;
 
@@ -346,22 +360,19 @@ simd_float3 closestPointOnLine3(simd_float3 start, simd_float3 end, simd_float3 
     return start + ab * distNormalized;
 }
 
-float angle2(simd_float2 a)
-{
+float angle2(simd_float2 a) {
     float theta = atan2f(a.y, a.x);
     if (theta < 0) { theta += M_PI * 2.0; }
     return theta;
 }
 
-float angle(float x, float y)
-{
+float angle(float x, float y) {
     float theta = atan2f(y, x);
     if (theta < 0) { theta += M_PI * 2.0; }
     return theta;
 }
 
-simd_float3 getBarycentricCoordinates(simd_float3 p, simd_float3 a, simd_float3 b, simd_float3 c)
-{
+simd_float3 getBarycentricCoordinates(simd_float3 p, simd_float3 a, simd_float3 b, simd_float3 c) {
     const simd_float3 v0 = b - a;
     const simd_float3 v1 = c - a;
     const simd_float3 v2 = p - a;
