@@ -1,12 +1,13 @@
-# This is intended to conform to the Cocoa coding style (http://cocoa.apple.com/Cocoa%20Coding%20Style.html)
 BasedOnStyle: WebKit
 SortIncludes: false
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Attach
 Standard: Cpp11
 IndentCaseLabels: true
 DerivePointerAlignment: false
 PointerAlignment: Right
 AlignAfterOpenBracket: AlwaysBreak
+BinPackArguments: false
+BinPackParameters: false
 AlignOperands: true
 AlignTrailingComments: true
 AllowShortBlocksOnASingleLine: true
@@ -15,4 +16,5 @@ AllowShortIfStatementsOnASingleLine: true
 BreakBeforeBinaryOperators: None
 BreakConstructorInitializersBeforeComma: false
 NamespaceIndentation: All
+ColumnLimit: 100
 IndentWidth: 4

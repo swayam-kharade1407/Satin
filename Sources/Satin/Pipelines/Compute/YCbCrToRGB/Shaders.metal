@@ -7,8 +7,7 @@ kernel void ycbcrToRgbUpdate(
     constant YCbCrToRGBUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
     texture2d<float, access::write> rgbaTex [[texture(ComputeTextureCustom0)]],
     texture2d<float, access::read> yTex [[texture(ComputeTextureCustom1)]],
-    texture2d<float, access::read> cbcrTex [[texture(ComputeTextureCustom2)]])
-{
+    texture2d<float, access::read> cbcrTex [[texture(ComputeTextureCustom2)]]) {
     const float4x4 ycbcrToRGBTransform = float4x4(
         float4(+1.0000f, +1.0000f, +1.0000f, +0.0000f),
         float4(+0.0000f, -0.3441f, +1.7720f, +0.0000f),

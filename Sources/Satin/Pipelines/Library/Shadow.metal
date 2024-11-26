@@ -1,5 +1,5 @@
-float calculateShadow(float4 shadowCoord, depth2d<float> shadowTex, ShadowData data, sampler shadowSampler)
-{
+float calculateShadow(
+    float4 shadowCoord, depth2d<float> shadowTex, ShadowData data, sampler shadowSampler) {
     shadowCoord.xyz /= shadowCoord.w;
 
     // SDF Box Calculation to see if we are within the shadow frustrum
@@ -16,7 +16,8 @@ float calculateShadow(float4 shadowCoord, depth2d<float> shadowTex, ShadowData d
     float samples = 0.0;
     for (float y = -radius; y <= radius; y += 1.0) {
         for (float x = -radius; x <= radius; x += 1.0) {
-            shadow += shadowTex.sample_compare(shadowSampler, shadowCoord.xy + float2(x, y) * texelSize, shadowCoord.z);
+            shadow += shadowTex.sample_compare(
+                shadowSampler, shadowCoord.xy + float2(x, y) * texelSize, shadowCoord.z);
             samples += 1.0;
         }
     }

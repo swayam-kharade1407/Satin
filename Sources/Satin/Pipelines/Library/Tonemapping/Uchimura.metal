@@ -1,8 +1,7 @@
 // Uchimura 2017, "HDR theory and practice"
 // Math: https://www.desmos.com/calculator/gslcdxvipg
 // Source: https://www.slideshare.net/nikuque/hdr-theory-and-practicce-jp
-float3 uchimura(float3 x, float P, float a, float m, float l, float c, float b)
-{
+float3 uchimura(float3 x, float P, float a, float m, float l, float c, float b) {
     const float l0 = ((P - m) * l) / a;
     const float S0 = m + l0;
     const float S1 = m + a * l0;
@@ -20,8 +19,7 @@ float3 uchimura(float3 x, float P, float a, float m, float l, float c, float b)
     return T * w0 + L * w1 + S * w2;
 }
 
-float3 uchimura(float3 x)
-{
+float3 uchimura(float3 x) {
     const float P = 1.0;  // max display brightness
     const float a = 1.0;  // contrast
     const float m = 0.22; // linear section start
@@ -32,8 +30,7 @@ float3 uchimura(float3 x)
     return uchimura(x, P, a, m, l, c, b);
 }
 
-float uchimura(float x, float P, float a, float m, float l, float c, float b)
-{
+float uchimura(float x, float P, float a, float m, float l, float c, float b) {
     const float l0 = ((P - m) * l) / a;
     const float S0 = m + l0;
     const float S1 = m + a * l0;
@@ -51,8 +48,7 @@ float uchimura(float x, float P, float a, float m, float l, float c, float b)
     return T * w0 + L * w1 + S * w2;
 }
 
-float uchimura(float x)
-{
+float uchimura(float x) {
     const float P = 1.0;  // max display brightness
     const float a = 1.0;  // contrast
     const float m = 0.22; // linear section start

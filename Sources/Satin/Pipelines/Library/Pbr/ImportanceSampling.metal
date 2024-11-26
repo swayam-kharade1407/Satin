@@ -3,8 +3,7 @@
 
 // Based on Karis 2014
 // GGX NDF via importance sampling
-float3 importanceSampleGGX(float2 Xi, float3 N, float roughness)
-{
+float3 importanceSampleGGX(float2 Xi, float3 N, float roughness) {
     const float alpha = roughness * roughness;
     const float alpha2 = alpha * alpha;
 

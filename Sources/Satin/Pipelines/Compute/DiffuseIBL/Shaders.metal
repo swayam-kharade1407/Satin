@@ -2,12 +2,9 @@
 #include "Library/Rotate.metal"
 
 static constant float4 rotations[6] = {
-    float4(0.0, 1.0, 0.0, HALF_PI),
-    float4(0.0, 1.0, 0.0, -HALF_PI),
-    float4(1.0, 0.0, 0.0, -HALF_PI),
-    float4(1.0, 0.0, 0.0, HALF_PI),
-    float4(0.0, 0.0, 1.0, 0.0),
-    float4(0.0, 1.0, 0.0, PI)
+    float4(0.0, 1.0, 0.0, HALF_PI),  float4(0.0, 1.0, 0.0, -HALF_PI),
+    float4(1.0, 0.0, 0.0, -HALF_PI), float4(1.0, 0.0, 0.0, HALF_PI),
+    float4(0.0, 0.0, 1.0, 0.0),      float4(0.0, 1.0, 0.0, PI)
 };
 
 #define WORLD_UP float3(0.0, 1.0, 0.0)
@@ -26,8 +23,7 @@ kernel void diffuseIBLUpdate(
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texturecube<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
     constant DiffuseIBLUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint &face [[buffer(ComputeBufferCustom0)]])
-{
+    constant uint &face [[buffer(ComputeBufferCustom0)]]) {
     const uint size = uint(tex.get_width());
 
     if (gid.x >= size || gid.y >= size) { return; }

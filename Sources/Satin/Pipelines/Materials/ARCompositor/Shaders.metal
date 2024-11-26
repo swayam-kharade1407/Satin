@@ -14,8 +14,7 @@ fragment float4 arcompositorFragment(
     depth2d<float> contentDepthTexture [[texture(FragmentTextureCustom2)]],
     texture2d<float> backgroundTexture [[texture(FragmentTextureCustom3)]],
     texture2d<float> alphaTexture [[texture(FragmentTextureCustom4)]],
-    depth2d<float> dilatedDepthTexture [[texture(FragmentTextureCustom5)]])
-{
+    depth2d<float> dilatedDepthTexture [[texture(FragmentTextureCustom5)]]) {
     constexpr sampler s = sampler(filter::linear);
 
     const float2 uv = in.texcoord;
@@ -26,7 +25,8 @@ fragment float4 arcompositorFragment(
     const float2 grainUV = fmod(in.position.xy, grainSize) / grainSize;
     const int2 grainCell = int2(in.position.xy / grainSize);
     const float3 noiseUV = float3(grainUV, time);
-    const float2 noiseOffset = float2(random(noiseUV, 123 + grainCell.x), random(noiseUV, 234 + grainCell.y));
+    const float2 noiseOffset =
+        float2(random(noiseUV, 123 + grainCell.x), random(noiseUV, 234 + grainCell.y));
     const float3 guv = float3(fract(grainUV + noiseOffset), cameraGrainIntensity);
     const float4 grain = grainTexture.sample(s, guv);
 
@@ -41,7 +41,8 @@ fragment float4 arcompositorFragment(
 
     float4 color = mix(backgroundSample, contentSample, contentSample.a);
 
-    color = mix(color, backgroundSample, step(contentDepthSample, dilatedDepthSample) * alphaSample);
+    color =
+        mix(color, backgroundSample, step(contentDepthSample, dilatedDepthSample) * alphaSample);
 
     return color;
 }

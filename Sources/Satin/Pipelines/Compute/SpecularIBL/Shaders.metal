@@ -3,12 +3,9 @@
 #include "Library/Rotate.metal"
 
 static constant float4 rotations[6] = {
-    float4(0.0, 1.0, 0.0, HALF_PI),
-    float4(0.0, 1.0, 0.0, -HALF_PI),
-    float4(1.0, 0.0, 0.0, -HALF_PI),
-    float4(1.0, 0.0, 0.0, HALF_PI),
-    float4(0.0, 0.0, 1.0, 0.0),
-    float4(0.0, 1.0, 0.0, PI)
+    float4(0.0, 1.0, 0.0, HALF_PI),  float4(0.0, 1.0, 0.0, -HALF_PI),
+    float4(1.0, 0.0, 0.0, -HALF_PI), float4(1.0, 0.0, 0.0, HALF_PI),
+    float4(0.0, 0.0, 1.0, 0.0),      float4(0.0, 1.0, 0.0, PI)
 };
 
 #define SAMPLE_COUNT 1024u
@@ -24,8 +21,7 @@ kernel void specularIBLUpdate(
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texturecube<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
     constant SpecularIBLUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    constant uint4 &faceLevelSizeResolution [[buffer(ComputeBufferCustom0)]])
-{
+    constant uint4 &faceLevelSizeResolution [[buffer(ComputeBufferCustom0)]]) {
     const uint size = faceLevelSizeResolution.z;
 
     if (gid.x >= size || gid.y >= size) { return; }
@@ -51,7 +47,8 @@ kernel void specularIBLUpdate(
     float totalWeight = 0.0;
 
     for (uint i = 0u; i < SAMPLE_COUNT; ++i) {
-        // generates a sample vector that's biased towards the preferred alignment direction (importance sampling).
+        // generates a sample vector that's biased towards the preferred alignment direction
+        // (importance sampling).
         float2 Xi = hammersley(i, SAMPLE_COUNT);
         float3 H = importanceSampleGGX(Xi, N, roughness);
         float3 L = normalize(2.0 * dot(V, H) * H - V);

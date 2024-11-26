@@ -9,7 +9,7 @@ import Foundation
 import Metal
 import simd
 
-public protocol IBLEnvironment {
+public protocol IBLEnvironment: AnyObject {
     var environmentIntensity: Float { get }
     
     var environment: MTLTexture? { get }

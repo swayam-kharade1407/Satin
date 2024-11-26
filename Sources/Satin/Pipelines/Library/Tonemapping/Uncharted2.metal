@@ -1,5 +1,4 @@
-float3 uncharted2Tonemap(float3 x)
-{
+float3 uncharted2Tonemap(float3 x) {
     const float A = 0.15;
     const float B = 0.50;
     const float C = 0.10;
@@ -9,8 +8,7 @@ float3 uncharted2Tonemap(float3 x)
     return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
 }
 
-float3 uncharted2(float3 color)
-{
+float3 uncharted2(float3 color) {
     const float W = 11.2;
     const float exposureBias = 2.0;
     const float3 curr = uncharted2Tonemap(exposureBias * color);
@@ -18,8 +16,7 @@ float3 uncharted2(float3 color)
     return curr * whiteScale;
 }
 
-float uncharted2Tonemap(float x)
-{
+float uncharted2Tonemap(float x) {
     const float A = 0.15;
     const float B = 0.50;
     const float C = 0.10;
@@ -29,8 +26,7 @@ float uncharted2Tonemap(float x)
     return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
 }
 
-float uncharted2(float color)
-{
+float uncharted2(float color) {
     const float W = 11.2;
     const float exposureBias = 2.0;
     const float curr = uncharted2Tonemap(exposureBias * color);

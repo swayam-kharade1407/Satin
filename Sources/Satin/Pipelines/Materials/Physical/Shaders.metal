@@ -37,8 +37,7 @@ vertex CustomVertexData physicalVertex(
     // inject shadow vertex args
     constant PhysicalUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]],
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
-{
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]) {
 #if defined(INSTANCING)
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;
     const float4x4 modelMatrix = instanceUniforms[instanceID].modelMatrix;
@@ -88,8 +87,7 @@ fragment float4 physicalFragment(
 // inject lighting args
 // inject shadow fragment args
 #include "Chunks/PbrTextures.metal"
-    constant PhysicalUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
-{
+    constant PhysicalUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]]) {
     float4 outColor;
 
 #include "Chunks/PixelInfoInit.metal"

@@ -3,8 +3,7 @@
 #include "Geometry/GeometrySmith.metal"
 #include "Visibility/VisibilitySmithGGXCorrelated.metal"
 
-float3 evalDiffuse(thread PixelInfo &pixel, float NdotL, float NdotV, float LdotH)
-{
+float3 evalDiffuse(thread PixelInfo &pixel, float NdotL, float NdotV, float LdotH) {
     float roughness = pixel.material.roughness;
 
     // Diffuse
@@ -32,8 +31,8 @@ float3 evalDiffuse(thread PixelInfo &pixel, float NdotL, float NdotV, float Ldot
     return f;
 }
 #if defined(HAS_ANISOTROPIC)
-float3 evalAnisotropicSpecular(thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH)
-{
+float3 evalAnisotropicSpecular(
+    thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH) {
     float3 V = pixel.view, X = pixel.tangent, Y = pixel.bitangent;
     float HdotX = dot(H, X), HdotY = dot(H, Y);
     float LdotX = dot(L, X), LdotY = dot(L, Y);
@@ -41,21 +40,22 @@ float3 evalAnisotropicSpecular(thread PixelInfo &pixel, float3 F, float3 H, floa
 
     float2 a = getMaterialAxAy(pixel.material);
     float D = distributionAnisoGGX(NdotH, HdotX, HdotY, a.x, a.y);
-    float Vis = visibilityAnisoSmithGGXCorrelated(NdotV, NdotL, VdotX, VdotY, LdotX, LdotY, a.x, a.y);
+    float Vis =
+        visibilityAnisoSmithGGXCorrelated(NdotV, NdotL, VdotX, VdotY, LdotX, LdotY, a.x, a.y);
     return (F * D * Vis);
 }
 #endif
 
-float3 evalIsotropicSpecular(thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH)
-{
+float3 evalIsotropicSpecular(
+    thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH) {
     float D = distributionGGX(NdotH, pixel.material.roughness);
     float remappedRoughness = 0.5 + pixel.material.roughness / 2.0;
     float G = step(0.0, NdotL / NdotV) * geometrySmith(NdotV, NdotL, remappedRoughness);
     return (D * G * F) / max(0.0001, 4.0 * NdotL * NdotV);
 }
 
-float3 evalSpecular(thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH)
-{
+float3 evalSpecular(
+    thread PixelInfo &pixel, float3 F, float3 H, float3 L, float NdotL, float NdotV, float NdotH) {
 #if defined(HAS_ANISOTROPIC)
     if (abs(pixel.material.anisotropic) > 0.0) {
         return evalAnisotropicSpecular(pixel, F, H, L, NdotL, NdotV, NdotH);
@@ -68,8 +68,7 @@ float3 evalSpecular(thread PixelInfo &pixel, float3 F, float3 H, float3 L, float
 }
 
 #if defined(HAS_CLEARCOAT)
-float3 evalClearcoat(thread PixelInfo &pixel, float NdotH, float NdotL, float NdotV)
-{
+float3 evalClearcoat(thread PixelInfo &pixel, float NdotH, float NdotL, float NdotV) {
     float3 F = fresnelSchlick(NdotV, 0.04, 1.0); // ior = 1.5
     float D = distributionClearcoatGGX(NdotH, pixel.material.clearcoatRoughness);
     float G = geometrySmith(NdotV, NdotL, 0.25);
@@ -79,8 +78,7 @@ float3 evalClearcoat(thread PixelInfo &pixel, float NdotH, float NdotL, float Nd
 #endif
 
 #if defined(HAS_TRANSMISSION)
-float3 evalTransmission(thread PixelInfo &pixel, float3 F, float3 L, float NdotV)
-{
+float3 evalTransmission(thread PixelInfo &pixel, float3 F, float3 L, float NdotV) {
     float3 N = pixel.normal;
     float3 V = pixel.view;
 
@@ -98,15 +96,15 @@ float3 evalTransmission(thread PixelInfo &pixel, float3 F, float3 L, float NdotV
     float3 H = normalize(L_mirror + V);
 
     float D = distributionGGX(saturate(dot(N, H)), transmissionRoughness);
-    float Vis = visibilitySmithGGXCorrelated(saturate(dot(N, L_mirror)), NdotV, transmissionRoughness);
+    float Vis =
+        visibilitySmithGGXCorrelated(saturate(dot(N, L_mirror)), NdotV, transmissionRoughness);
 
     // Transmission BTDF
     return (1.0 - F) * pixel.material.baseColor * D * Vis;
 }
 #endif
 
-float3 evalBRDF(thread PixelInfo &pixel, float3 L, float NdotL, float NdotV)
-{
+float3 evalBRDF(thread PixelInfo &pixel, float3 L, float NdotL, float NdotV) {
     // View Vector
     float3 V = pixel.view;
     // Normal Vector
@@ -118,7 +116,8 @@ float3 evalBRDF(thread PixelInfo &pixel, float3 L, float NdotL, float NdotV)
     float LdotH = dot(L, H);
 
     // Fresnel Approximation
-    float3 F = fresnelSchlickRoughness(LdotH, getMaterialSpecularColor(pixel.material), pixel.material.roughness);
+    float3 F = fresnelSchlickRoughness(
+        LdotH, getMaterialSpecularColor(pixel.material), pixel.material.roughness);
 
     // Specular Energy Contribution
     float3 Ks = F;
@@ -143,9 +142,7 @@ float3 evalBRDF(thread PixelInfo &pixel, float3 L, float NdotL, float NdotV)
     float3 brdf = Kd * Fd + Fs;
 
 #if defined(HAS_CLEARCOAT)
-    if (pixel.material.clearcoat > 0) {
-        brdf += evalClearcoat(pixel, NdotH, NdotL, NdotV);
-    }
+    if (pixel.material.clearcoat > 0) { brdf += evalClearcoat(pixel, NdotH, NdotL, NdotV); }
 #endif
 
     return brdf;

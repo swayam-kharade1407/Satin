@@ -24,8 +24,7 @@ kernel void cubemapUpdate(
     uint2 gid [[thread_position_in_grid]],
     texturecube<float, access::write> tex [[texture(ComputeTextureCustom0)]],
     texture2d<float, access::sample> ref [[texture(ComputeTextureCustom1)]],
-    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]])
-{
+    constant CubemapUniforms &uniforms [[buffer(ComputeBufferUniforms)]]) {
     const uint2 size = uint2(uniforms.size);
 
     if (gid.x >= size.x || gid.y >= size.y) { return; }

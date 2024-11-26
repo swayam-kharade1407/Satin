@@ -19,10 +19,10 @@ vertex DepthVertexData depthVertex(
     // inject instancing args
     ushort amp_id [[amplification_id]],
     constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant DepthUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
-{
+    constant DepthUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]) {
 #if INSTANCING
-    const float4 position = vertexUniforms[amp_id].viewMatrix * instanceUniforms[instanceID].modelMatrix * float4(v.position, 1.0);
+    const float4 position = vertexUniforms[amp_id].viewMatrix *
+                            instanceUniforms[instanceID].modelMatrix * float4(v.position, 1.0);
 #else
     const float4 position = vertexUniforms[amp_id].modelViewMatrix * float4(v.position, 1.0);
 #endif
@@ -50,8 +50,7 @@ vertex DepthVertexData depthVertex(
 
 fragment float4 depthFragment(
     DepthVertexData in [[stage_in]],
-    constant DepthUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
-{
+    constant DepthUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]]) {
     const float depth = uniforms.invert ? 1.0 - in.depth : in.depth;
     float3 color = mix(float3(depth), turbo(depth), uniforms.color);
     color = dither8x8(in.position.xy, color);

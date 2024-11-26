@@ -8,7 +8,7 @@
 import Foundation
 import Metal
 
-public protocol VertexAttribute: Equatable, AnyObject {
+public protocol VertexAttribute: AnyObject, Equatable {
     associatedtype ValueType: Codable
     var id: String { get }
 

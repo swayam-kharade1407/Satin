@@ -10,8 +10,7 @@ fragment half4 arpostFragment(
     VertexData in [[stage_in]],
     constant ARPostUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
     texture2d<float, access::sample> contextTex [[texture(FragmentTextureCustom0)]],
-    texture3d<float, access::sample> grainTex [[texture(FragmentTextureCustom1)]])
-{
+    texture3d<float, access::sample> grainTex [[texture(FragmentTextureCustom1)]]) {
     const float2 uv = in.texcoord;
     const float time = uniforms.time;
     const float2 grainSize = uniforms.grainSize;
@@ -20,7 +19,8 @@ fragment half4 arpostFragment(
     const float2 grainUV = fmod(in.position.xy, grainSize) / grainSize;
     const int2 grainCell = int2(in.position.xy / grainSize);
     const float3 noiseUV = float3(grainUV, time);
-    const float2 noiseOffset = float2(random(noiseUV, 123 + grainCell.x), random(noiseUV, 234 + grainCell.y));
+    const float2 noiseOffset =
+        float2(random(noiseUV, 123 + grainCell.x), random(noiseUV, 234 + grainCell.y));
     const float3 guv = float3(fract(grainUV + noiseOffset), cameraGrainIntensity);
 
     constexpr sampler s = sampler(filter::linear);

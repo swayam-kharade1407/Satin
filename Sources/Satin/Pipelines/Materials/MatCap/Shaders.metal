@@ -12,10 +12,10 @@ vertex MatCapVertexData matCapVertex(
     Vertex in [[stage_in]],
     // inject instancing args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
-{
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]) {
 #if INSTANCING
-    const float4x4 modelViewMatrix = vertexUniforms[amp_id].viewMatrix * instanceUniforms[instanceID].modelMatrix;
+    const float4x4 modelViewMatrix =
+        vertexUniforms[amp_id].viewMatrix * instanceUniforms[instanceID].modelMatrix;
 #else
     const float4x4 modelViewMatrix = vertexUniforms[amp_id].modelViewMatrix;
 #endif
@@ -35,8 +35,7 @@ fragment half4 matCapFragment(
     MatCapVertexData in [[stage_in]],
     constant MatCapUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
     texture2d<float> tex [[texture(FragmentTextureCustom0)]],
-    sampler texSampler [[sampler(FragmentSamplerCustom0)]])
-{
+    sampler texSampler [[sampler(FragmentSamplerCustom0)]]) {
     const float3 r = reflect(in.eye, normalize(in.normal));
     const float m = 2.0 * sqrt(pow(r.x, 2.0) + pow(r.y, 2.0) + pow(r.z + 1.0, 2.0));
     const float2 uv = r.xy / m + 0.5;

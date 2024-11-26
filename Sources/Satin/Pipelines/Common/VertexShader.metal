@@ -3,12 +3,12 @@ vertex VertexData satinVertex(
     // inject instancing args
     // inject shadow vertex args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
-{
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]) {
     VertexData out;
 
 #if INSTANCING
-    out.position = vertexUniforms[amp_id].viewProjectionMatrix * instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
+    out.position = vertexUniforms[amp_id].viewProjectionMatrix *
+                   instanceUniforms[instanceID].modelMatrix * float4(in.position, 1.0);
 
 #if HAS_NORMAL
     out.normal = instanceUniforms[instanceID].normalMatrix * in.normal;

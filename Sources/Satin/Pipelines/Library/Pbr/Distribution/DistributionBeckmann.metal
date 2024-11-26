@@ -1,5 +1,4 @@
-float distributionBeckmann(float NoH, float roughness)
-{
+float distributionBeckmann(float NoH, float roughness) {
     const float alpha = roughness * roughness;
     const float alpha2 = alpha * alpha;
     const float NoH2 = NoH * NoH;

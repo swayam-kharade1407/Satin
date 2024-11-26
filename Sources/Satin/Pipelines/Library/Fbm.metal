@@ -1,8 +1,7 @@
 #include "Noise3D.metal"
 #include "Noise2D.metal"
 
-float fbm(float2 v, int octaves)
-{
+float fbm(float2 v, int octaves) {
     float res = 0.0;
     float scale = 1.0;
     for (int i = 0; i < 8; i++) {
@@ -14,8 +13,7 @@ float fbm(float2 v, int octaves)
     return res;
 }
 
-float fbm(float3 v, int octaves)
-{
+float fbm(float3 v, int octaves) {
     float res = 0.0;
     float scale = 1.0;
     for (int i = 0; i < 8; i++) {
@@ -27,8 +25,7 @@ float fbm(float3 v, int octaves)
     return res;
 }
 
-float fbm_abs(float2 v, int octaves)
-{
+float fbm_abs(float2 v, int octaves) {
     float res = 0.0;
     float scale = 1.0;
     for (int i = 0; i < 8; i++) {
@@ -40,8 +37,7 @@ float fbm_abs(float2 v, int octaves)
     return res;
 }
 
-float fbm_abs(float3 v, int octaves)
-{
+float fbm_abs(float3 v, int octaves) {
     float res = 0.0;
     float scale = 1.0;
     for (int i = 0; i < 8; i++) {

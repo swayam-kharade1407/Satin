@@ -11,8 +11,7 @@ static constexpr sampler s(mag_filter::linear, min_filter::linear);
 fragment FragOut arbackgroundDepthFragment(
     VertexData in [[stage_in]],
     constant ARBackgroundDepthUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
-    depth2d<float, access::sample> capturedDepthTexture [[texture(FragmentTextureCustom0)]])
-{
+    depth2d<float, access::sample> capturedDepthTexture [[texture(FragmentTextureCustom0)]]) {
     FragOut out;
 
     float z = capturedDepthTexture.sample(s, in.texcoord) + 0.01;

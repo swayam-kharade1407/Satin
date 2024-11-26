@@ -13,8 +13,7 @@ fragment FragOut armatteFragment(
     VertexData in [[stage_in]],
     constant ARMatteUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]],
     texture2d<float> alphaTexture [[texture(FragmentTextureCustom0)]],
-    depth2d<float> depthTexture [[texture(FragmentTextureCustom1)]])
-{
+    depth2d<float> depthTexture [[texture(FragmentTextureCustom1)]]) {
     const float2 uv = in.texcoord;
 
     FragOut out;

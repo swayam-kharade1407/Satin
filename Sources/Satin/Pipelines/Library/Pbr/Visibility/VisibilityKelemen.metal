@@ -1,4 +1,1 @@
-float visibilityKelemen(float LoH)
-{
-    return 0.25 / (LoH * LoH);
-}
+float visibilityKelemen(float LoH) { return 0.25 / (LoH * LoH); }

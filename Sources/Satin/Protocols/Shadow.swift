@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import Metal
 
-public protocol Shadow {
+public protocol Shadow: AnyObject {
     var label: String { get set }
     var texture: MTLTexture? { get }
     var data: ShadowData { get }

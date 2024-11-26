@@ -1,23 +1,29 @@
 #include "Pi.metal"
 
 // https://www.shadertoy.com/view/ll2GD3
-float3 palette(float t, float3 a, float3 b, float3 c, float3 d)
-{
+float3 palette(float t, float3 a, float3 b, float3 c, float3 d) {
     return a + b * cos(TWO_PI * (c * t + d));
 }
 
-float3 iridescence(float n)
-{
-    return palette(n, float3(0.5, 0.5, 0.5), float3(0.5, 0.5, 0.5), float3(1.0, 1.0, 1.0), float3(0.0, 0.33, 0.67));
+float3 iridescence(float n) {
+    return palette(
+        n,
+        float3(0.5, 0.5, 0.5),
+        float3(0.5, 0.5, 0.5),
+        float3(1.0, 1.0, 1.0),
+        float3(0.0, 0.33, 0.67));
 }
 
-float3 temperature(float n)
-{
-    return palette(-n - 0.5, float3(0.5, 0.5, 0.5), float3(0.5, 0.5, 0.5), float3(1.0, 1.0, 1.0), float3(0.0, 0.10, 0.20));
+float3 temperature(float n) {
+    return palette(
+        -n - 0.5,
+        float3(0.5, 0.5, 0.5),
+        float3(0.5, 0.5, 0.5),
+        float3(1.0, 1.0, 1.0),
+        float3(0.0, 0.10, 0.20));
 }
 
-float3 spectrum(float f)
-{
+float3 spectrum(float f) {
     f = f * 3.0 - 1.5;
     return pow(saturate(float3(-f, 1.0 - abs(f), f)), 1.0 / 2.2);
 }
@@ -46,8 +52,7 @@ float3 scatter(float g, float3 c) // gradient, color
 //   GLSL Approximation: Ruofei Du (ruofei@google.com)
 //   MSL Approximation: Reza Ali (reza@hi-rez.io)
 
-float3 turbo(float x)
-{
+float3 turbo(float x) {
     const float4 kRedfloat4 = float4(0.13572138, 4.61539260, -42.66032258, 132.13108234);
     const float4 kGreenfloat4 = float4(0.09140261, 2.19418839, 4.84296658, -14.18503333);
     const float4 kBluefloat4 = float4(0.10667330, 12.64194608, -60.58204836, 110.36276771);

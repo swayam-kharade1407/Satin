@@ -1,12 +1,10 @@
-float getSquareFalloffAttenuation(float distanceSquare, float lightInvRadius)
-{
+float getSquareFalloffAttenuation(float distanceSquare, float lightInvRadius) {
     const float factor = distanceSquare * lightInvRadius * lightInvRadius;
     const float smoothFactor = max(1.0 - factor * factor, 0.0);
     return (smoothFactor * smoothFactor) / max(distanceSquare, 1e-4);
 }
 
-float getSpotAngleAttenuation(float3 fragmentToLightDir, float3 lightDir, float2 spotInfo)
-{
+float getSpotAngleAttenuation(float3 fragmentToLightDir, float3 lightDir, float2 spotInfo) {
     const float cd = dot(lightDir, fragmentToLightDir);
     const float attenuation = saturate(cd * spotInfo.x + spotInfo.y);
     return attenuation * attenuation;
@@ -14,8 +12,11 @@ float getSpotAngleAttenuation(float3 fragmentToLightDir, float3 lightDir, float2
 
 #if defined(LIGHTING)
 // Returns light radiance, set L to the light direction
-float3 getLightInfo(const LightData light, float3 worldPosition, thread float3 &lightDirection, thread float &lightDistance)
-{
+float3 getLightInfo(
+    const LightData light,
+    float3 worldPosition,
+    thread float3 &lightDirection,
+    thread float &lightDistance) {
     float3 lightRadiance = light.color.rgb * light.color.a;
     const float3 lightPosition = light.position.xyz;
     const LightType type = (LightType)light.position.w;
@@ -34,7 +35,8 @@ float3 getLightInfo(const LightData light, float3 worldPosition, thread float3 &
 
         if (type > LightTypePoint) {
             // We are dealing with a spot light
-            lightRadiance *= getSpotAngleAttenuation(lightDirection, light.direction.xyz, light.spotInfo.xy);
+            lightRadiance *=
+                getSpotAngleAttenuation(lightDirection, light.direction.xyz, light.spotInfo.xy);
         }
     }
 

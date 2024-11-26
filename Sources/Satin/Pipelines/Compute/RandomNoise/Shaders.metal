@@ -12,8 +12,7 @@ float rand3(float3 n) { return rand2(n.xy + fract(0.05 * n.z)); }
 kernel void randomNoiseUpdate(
     uint2 gid [[thread_position_in_grid]],
     constant RandomNoiseUniforms &uniforms [[buffer(ComputeBufferUniforms)]],
-    texture2d<float, access::write> tex [[texture(ComputeTextureCustom0)]])
-{
+    texture2d<float, access::write> tex [[texture(ComputeTextureCustom0)]]) {
     if (gid.x >= tex.get_width() || gid.y >= tex.get_height()) { return; }
     const float2 size = float2(tex.get_width(), tex.get_height()) - 1.0;
     const float2 uv = float2(gid) / size;

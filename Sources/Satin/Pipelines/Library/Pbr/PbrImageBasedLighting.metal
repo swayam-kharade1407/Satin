@@ -1,5 +1,4 @@
-float3 getIBLRadiance(texturecube<float> reflectionMap, float3 dir, float roughness)
-{
+float3 getIBLRadiance(texturecube<float> reflectionMap, float3 dir, float roughness) {
     const float levels = float(reflectionMap.get_num_mip_levels() - 1);
     const float mipLevel = roughness * levels;
     return reflectionMap.sample(reflectionSampler, dir, level(mipLevel)).rgb;
@@ -9,8 +8,7 @@ void pbrIndirectLighting(
     texturecube<float> irradianceMap,
     texturecube<float> reflectionMap,
     texture2d<float> brdfMap,
-    thread PixelInfo &pixel)
-{
+    thread PixelInfo &pixel) {
     float roughness = pixel.material.roughness;
     float metallic = pixel.material.metallic;
     float3 baseColor = pixel.material.baseColor;
@@ -31,7 +29,8 @@ void pbrIndirectLighting(
 
     const float3 irradianceSampleDirection = pixel.material.irradianceTexcoordTransform * N;
     // Diffuse
-    radiance_d += Kd * baseColor * pixel.material.environmentIntensity * irradianceMap.sample(irradianceSampler, irradianceSampleDirection).rgb;
+    radiance_d += Kd * baseColor * pixel.material.environmentIntensity *
+                  irradianceMap.sample(irradianceSampler, irradianceSampleDirection).rgb;
 
     float3 R = reflect(-V, N);
 
@@ -50,25 +49,29 @@ void pbrIndirectLighting(
     const float3 reflectionSampleDirection = pixel.material.reflectionTexcoordTransform * R;
 
     // Specular
-    float3 specularLight = pixel.material.environmentIntensity * getIBLRadiance(reflectionMap, reflectionSampleDirection, roughness);
+    float3 specularLight = pixel.material.environmentIntensity *
+                           getIBLRadiance(reflectionMap, reflectionSampleDirection, roughness);
     radiance_s = Fs * specularLight;
 
 #if defined(HAS_TRANSMISSION)
     // Transmission
     float ior = pixel.material.ior;
     // float3 thickness = pixel.material.thickness;
-    float3 transmissionRay = pixel.material.reflectionTexcoordTransform * getVolumeTransmissionRay(N, V, 1.0, ior);
+    float3 transmissionRay =
+        pixel.material.reflectionTexcoordTransform * getVolumeTransmissionRay(N, V, 1.0, ior);
     // float3 refractedRayExit = pixel.position + transmissionRay;
 
-    // Since Satin's render isn't ready for multiple passes we are going to default to refract into the cubemap
-    // Project refracted vector on the framebuffer, while mapping to normalized device coordinates.
-    // float4 ndcPos = projectionMatrix * viewMatrix * float4(refractedRayExit, 1.0);
+    // Since Satin's render isn't ready for multiple passes we are going to default to refract into
+    // the cubemap Project refracted vector on the framebuffer, while mapping to normalized device
+    // coordinates. float4 ndcPos = projectionMatrix * viewMatrix * float4(refractedRayExit, 1.0);
     // float2 refractionCoords = ndcPos.xy / ndcPos.w;
     // refractionCoords += 1.0;
     // refractionCoords /= 2.0;
 
     // Sample framebuffer to get pixel the refracted ray hits.
-    float3 transmittedLight = pixel.material.environmentIntensity * getIBLRadiance(reflectionMap, transmissionRay, applyIorToRoughness(roughness, ior));
+    float3 transmittedLight =
+        pixel.material.environmentIntensity *
+        getIBLRadiance(reflectionMap, transmissionRay, applyIorToRoughness(roughness, ior));
 
     float3 radiance_t = (1.0 - Fs) * transmittedLight * baseColor;
     radiance_d = mix(radiance_d, radiance_t, pixel.material.transmission);
@@ -80,9 +83,11 @@ void pbrIndirectLighting(
     float clearcoat = pixel.material.clearcoat;
     if (clearcoat > 0) {
         float clearcoatRoughness = pixel.material.clearcoatRoughness;
-        float3 clearcoatLight = pixel.material.environmentIntensity * getIBLRadiance(reflectionMap, R, clearcoatRoughness);
+        float3 clearcoatLight = pixel.material.environmentIntensity *
+                                getIBLRadiance(reflectionMap, R, clearcoatRoughness);
         float3 Kc = fresnelSchlickRoughness(NdotV, 0.04, clearcoatRoughness);
-        float2 brdfClearcoat = brdfMap.sample(brdfSampler, saturate(float2(NdotV, clearcoatRoughness))).rg;
+        float2 brdfClearcoat =
+            brdfMap.sample(brdfSampler, saturate(float2(NdotV, clearcoatRoughness))).rg;
         float3 Fcc = clearcoatLight * (Kc * brdfClearcoat.x + brdfClearcoat.y);
         pixel.radiance += clearcoat * Fcc * pixel.material.occlusion;
     }

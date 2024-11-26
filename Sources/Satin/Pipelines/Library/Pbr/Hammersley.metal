@@ -1,7 +1,6 @@
 // Van Der Corpus sequence
 // @see http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html
-float vdcSequence(uint bits)
-{
+float vdcSequence(uint bits) {
     bits = (bits << 16u) | (bits >> 16u);
     bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
     bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
@@ -12,7 +11,4 @@ float vdcSequence(uint bits)
 
 // Hammersley sequence
 // @see http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html
-float2 hammersley(uint i, uint N)
-{
-    return float2(float(i) / float(N), vdcSequence(i));
-}
+float2 hammersley(uint i, uint N) { return float2(float(i) / float(N), vdcSequence(i)); }

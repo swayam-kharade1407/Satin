@@ -16,8 +16,7 @@ vertex BasicPointCustomVertexData basicPointVertex(
     ushort amp_id [[amplification_id]],
     // inject instancing args
     constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]],
-    constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]])
-{
+    constant BasicPointUniforms &uniforms [[buffer(VertexBufferMaterialUniforms)]]) {
 
     const float4 position = float4(in.position, 1.0);
 
@@ -40,8 +39,7 @@ struct FragOut {
 fragment FragOut basicPointFragment(
     BasicPointCustomVertexData in [[stage_in]],
     const float2 puv [[point_coord]],
-    constant BasicPointUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
-{
+    constant BasicPointUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]]) {
     const float size = uniforms.size;
     const float sizeHalf = uniforms.sizeHalf;
 

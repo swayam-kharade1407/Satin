@@ -1,5 +1,4 @@
-void pbrInit(thread PixelInfo &pixel)
-{
+void pbrInit(thread PixelInfo &pixel) {
     pixel.material.roughness = max(0.045, pixel.material.roughness);
 
 #if defined(HAS_CLEARCOAT)

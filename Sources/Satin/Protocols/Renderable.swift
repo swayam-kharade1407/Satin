@@ -9,7 +9,7 @@ import Foundation
 import Metal
 import simd
 
-public protocol Renderable {
+public protocol Renderable: AnyObject {
     var label: String { get }
     
     var opaque: Bool { get }

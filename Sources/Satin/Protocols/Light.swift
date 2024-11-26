@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import simd
 
-public protocol Light {
+public protocol Light: AnyObject {
     var type: LightType { get }
 
     var data: LightData { get }

@@ -18,8 +18,7 @@ vertex BasicDiffuseVertexData basicDiffuseVertex(
     // inject instancing args
     // inject shadow vertex args
     ushort amp_id [[amplification_id]],
-    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]])
-{
+    constant VertexUniforms *vertexUniforms [[buffer(VertexBufferVertexUniforms)]]) {
     const float4 position = float4(in.position, 1.0);
 #if INSTANCING
     const float3x3 normalMatrix = instanceUniforms[instanceID].normalMatrix;
@@ -47,8 +46,7 @@ vertex BasicDiffuseVertexData basicDiffuseVertex(
 fragment float4 basicDiffuseFragment(
     BasicDiffuseVertexData in [[stage_in]],
     // inject shadow fragment args
-    constant BasicDiffuseUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]])
-{
+    constant BasicDiffuseUniforms &uniforms [[buffer(FragmentBufferMaterialUniforms)]]) {
     float4 outColor = uniforms.color;
 
     const float3 pos = in.viewPosition;

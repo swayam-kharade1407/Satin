@@ -9,7 +9,7 @@
 import Combine
 import Foundation
 
-public protocol Parameter: Codable, CustomStringConvertible, AnyObject {
+public protocol Parameter: AnyObject, Codable, CustomStringConvertible {
     associatedtype ValueType: Codable & Equatable
 
     var id: String { get }
