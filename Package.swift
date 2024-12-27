@@ -35,6 +35,6 @@ let package = Package(
             dependencies: ["Satin"]
         ),
     ],
-    swiftLanguageVersions: [.v5],
+    swiftLanguageModes: [.v5],
     cxxLanguageStandard: .cxx17
 )
