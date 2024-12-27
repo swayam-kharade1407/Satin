@@ -12,7 +12,7 @@ public final class SkyboxGeometry: SatinGeometry {
     public var size: Float {
         didSet {
             if oldValue != size {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

@@ -12,11 +12,11 @@ import MetalKit
 import Satin
 
 final class Renderer3D: BaseRenderer {
-    let mesh = Mesh(geometry: IcoSphereGeometry(radius: 0.5, resolution: 0), material: BasicDiffuseMaterial(hardness: 0.7))
-
-//    let mesh = Mesh(geometry: CoreTextGeometry(), material: BasicPointMaterial(color: [1, 1, 1, 0.5], size: 16))
-//    let textGeometry = CoreTextGeometry(text: "8")
-//    lazy var mesh = Mesh(geometry: textGeometry, material: BasicColorMaterial(color: .one, blending: .alpha))
+    let mesh = Mesh(
+        label: "Sphere",
+        geometry: IcoSphereGeometry(radius: 0.5, resolution: 0),
+        material: BasicDiffuseMaterial(hardness: 0.7)
+    )
 
     let intersectionMesh = Mesh(
         label: "Intersection Mesh",
@@ -28,13 +28,11 @@ final class Renderer3D: BaseRenderer {
 
     lazy var startTime = getTime()
     lazy var scene = Object(label: "Scene", [mesh])
-
     lazy var renderer = Renderer(context: defaultContext)
-
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 30)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
 
-    override var sampleCount: Int { 4 }
+    override var sampleCount: Int { 1 }
 
     override func setup() {
         mesh.add(intersectionMesh)

@@ -13,7 +13,7 @@ public final class TubeGeometry: SatinGeometry {
     public var radius: Float {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -21,7 +21,7 @@ public final class TubeGeometry: SatinGeometry {
     public var height: Float {
         didSet {
             if oldValue != height {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -29,7 +29,7 @@ public final class TubeGeometry: SatinGeometry {
     public var startAngle: Float {
         didSet {
             if oldValue != startAngle {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -37,7 +37,7 @@ public final class TubeGeometry: SatinGeometry {
     public var endAngle: Float {
         didSet {
             if oldValue != endAngle {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -45,7 +45,7 @@ public final class TubeGeometry: SatinGeometry {
     public var angularResolution: Int {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -53,7 +53,7 @@ public final class TubeGeometry: SatinGeometry {
     public var verticalResolution: Int {
         didSet {
             if oldValue != verticalResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

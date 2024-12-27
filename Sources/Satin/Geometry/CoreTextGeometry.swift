@@ -14,9 +14,9 @@ import SatinCore
 public final class CoreTextGeometry: SatinGeometry {
     public var text: String {
         didSet {
-//            if text != oldValue {
-                _updateGeometryData = true
-//            }
+            if text != oldValue {
+                _updateData = true
+            }
         }
     }
 

@@ -17,7 +17,7 @@ public final class ExtrudedTextGeometry: TesselatedTextGeometry {
     public var distance: Float {
         didSet {
             if oldValue != distance {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

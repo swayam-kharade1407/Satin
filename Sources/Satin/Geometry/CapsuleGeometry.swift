@@ -22,7 +22,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var radius: Float {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -30,7 +30,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var height: Float {
         didSet {
             if oldValue != height {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -38,7 +38,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var angularResolution: Int = 60 {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -46,7 +46,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var radialResolution: Int = 30 {
         didSet {
             if oldValue != radialResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -54,7 +54,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var verticalResolution: Int = 1 {
         didSet {
             if oldValue != verticalResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -62,7 +62,7 @@ public final class CapsuleGeometry: SatinGeometry {
     public var axis: Axis = .y {
         didSet {
             if oldValue != axis {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

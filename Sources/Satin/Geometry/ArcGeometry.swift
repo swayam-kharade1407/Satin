@@ -16,7 +16,7 @@ public final class ArcGeometry: SatinGeometry {
     public var innerRadius: Float {
         didSet {
             if oldValue != innerRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -24,7 +24,7 @@ public final class ArcGeometry: SatinGeometry {
     public var outerRadius: Float {
         didSet {
             if oldValue != outerRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -32,7 +32,7 @@ public final class ArcGeometry: SatinGeometry {
     public var startAngle: Float {
         didSet {
             if oldValue != startAngle {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -40,7 +40,7 @@ public final class ArcGeometry: SatinGeometry {
     public var endAngle: Float {
         didSet {
             if oldValue != endAngle {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -48,7 +48,7 @@ public final class ArcGeometry: SatinGeometry {
     public var angularResolution: Int {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -56,7 +56,7 @@ public final class ArcGeometry: SatinGeometry {
     public var radialResolution: Int {
         didSet {
             if oldValue != radialResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

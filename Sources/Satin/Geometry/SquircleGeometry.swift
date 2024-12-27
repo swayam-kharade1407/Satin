@@ -10,10 +10,37 @@ import SatinCore
 #endif
 
 public final class SquircleGeometry: SatinGeometry {
-    var size: Float = 2.0
-    var radius: Float = 4.0
-    var angularResolution: Int = 90
-    var radialResolution: Int = 20
+    public var size: Float = 2.0 {
+        didSet {
+            if oldValue != size {
+                _updateData = true
+            }
+        }
+    }
+    
+    public var radius: Float = 4.0 {
+        didSet {
+            if oldValue != radius {
+                _updateData = true
+            }
+        }
+    }
+    
+    public var angularResolution: Int = 90 {
+        didSet {
+            if oldValue != angularResolution {
+                _updateData = true
+            }
+        }
+    }
+    
+    public var radialResolution: Int = 20 {
+        didSet {
+            if oldValue != radialResolution {
+                _updateData = true
+            }
+        }
+    }
 
     public init(size: Float, radius: Float, angularResolution: Int, radialResolution: Int) {
         self.size = size

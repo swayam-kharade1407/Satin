@@ -14,7 +14,7 @@ public final class TorusGeometry: SatinGeometry {
     public var minorRadius: Float {
         didSet {
             if oldValue != minorRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -22,7 +22,7 @@ public final class TorusGeometry: SatinGeometry {
     public var majorRadius: Float {
         didSet {
             if oldValue != majorRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -30,7 +30,7 @@ public final class TorusGeometry: SatinGeometry {
     public var minorResolution: Int {
         didSet {
             if oldValue != minorResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -38,7 +38,7 @@ public final class TorusGeometry: SatinGeometry {
     public var majorResolution: Int {
         didSet {
             if oldValue != majorResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

@@ -14,7 +14,7 @@ public final class SphereGeometry: SatinGeometry {
     public var radius: Float = 1.0 {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -22,7 +22,7 @@ public final class SphereGeometry: SatinGeometry {
     public var angularResolution: Int = 60 {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -30,7 +30,7 @@ public final class SphereGeometry: SatinGeometry {
     public var verticalResolution: Int = 30 {
         didSet {
             if oldValue != verticalResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

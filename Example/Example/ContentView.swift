@@ -280,9 +280,11 @@ struct ContentView: View {
                 }
             #endif
 
-//            #if os(macOS)
+            #if os(macOS)
+            PBRStandardMaterialRendererView()
 //            PoissonRendererView()
-//            #endif
+//            RadianceCascadesRendererView()
+            #endif
         }
     }
 

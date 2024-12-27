@@ -14,7 +14,7 @@ public final class ConeGeometry: SatinGeometry {
     public var radius: Float = 1.0 {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -22,7 +22,7 @@ public final class ConeGeometry: SatinGeometry {
     public var height: Float = 2.0 {
         didSet {
             if oldValue != height {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -30,7 +30,7 @@ public final class ConeGeometry: SatinGeometry {
     public var angularResolution: Int = 60 {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -38,7 +38,7 @@ public final class ConeGeometry: SatinGeometry {
     public var radialResolution: Int = 1 {
         didSet {
             if oldValue != radialResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -46,7 +46,7 @@ public final class ConeGeometry: SatinGeometry {
     public var verticalResolution: Int = 1 {
         didSet {
             if oldValue != verticalResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

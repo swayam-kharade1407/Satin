@@ -13,7 +13,7 @@ public final class RoundedBoxGeometry: SatinGeometry {
     public var size: simd_float3 {
         didSet {
             if oldValue != size {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -21,7 +21,7 @@ public final class RoundedBoxGeometry: SatinGeometry {
     public var radius: Float {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -29,7 +29,7 @@ public final class RoundedBoxGeometry: SatinGeometry {
     public var resolution: Int {
         didSet {
             if oldValue != resolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

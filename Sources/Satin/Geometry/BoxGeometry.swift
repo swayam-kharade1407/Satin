@@ -43,7 +43,7 @@ public final class BoxGeometry: SatinGeometry {
     public var size = simd_float3(repeating: 2) {
         didSet {
             if oldValue != size {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -51,7 +51,7 @@ public final class BoxGeometry: SatinGeometry {
     public var center = simd_float3(repeating: 0.0) {
         didSet {
             if oldValue != center {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -59,7 +59,7 @@ public final class BoxGeometry: SatinGeometry {
     public var resolution = simd_int3(repeating: 1) {
         didSet {
             if oldValue != resolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

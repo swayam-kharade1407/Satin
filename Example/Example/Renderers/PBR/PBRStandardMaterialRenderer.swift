@@ -41,7 +41,7 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
     lazy var startTime = getTime()
     lazy var skybox: Mesh = .init(label: "Skybox", geometry: SkyboxGeometry(size: 250), material: SkyboxMaterial())
     lazy var scene = IBLScene(label: "Scene", [skybox])
-    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 6.0], near: 0.01, far: 1000.0)
+    lazy var camera = PerspectiveCamera(position: [0.0, 0.0, 4.0], near: 0.01, far: 1000.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
 
@@ -52,6 +52,7 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
         setupTextures()
         setupLights()
         setupScene()
+        scene.environmentIntensity = 0.375
 
 #if os(visionOS)
         renderer.setClearColor(.zero)
@@ -66,7 +67,6 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
 
     override func update() {
         model?.orientation = simd_quatf(angle: Float(getTime() - startTime) * 0.5, axis: worldUpDirection)
-
         cameraController.update()
     }
 

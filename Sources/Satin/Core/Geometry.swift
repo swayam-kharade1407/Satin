@@ -20,7 +20,7 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
 
     public var context: Context? {
         didSet {
-            if context != nil, context != oldValue {
+            if oldValue == nil, context != oldValue {
                 setup()
             }
         }
@@ -222,9 +222,11 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
     private func updateBuffers() {
         if _updateVertexBuffers {
             setupVertexBuffers()
+            _updateVertexBuffers = false
         }
         if _updateIndexBuffer {
             setupIndexBuffer()
+            _updateIndexBuffer = false
         }
     }
 
@@ -240,7 +242,6 @@ open class Geometry: BufferAttributeDelegate, InterleavedBufferDelegate, Element
                 setupInterleavedBufferAttribute(device, attribute: interleavedBufferAttribute)
             }
         }
-        _updateVertexBuffers = false
     }
 
     // MARK: - Setup Index Buffer

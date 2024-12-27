@@ -14,7 +14,7 @@ public final class CircleGeometry: SatinGeometry {
     public var radius: Float = 1 {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -22,7 +22,7 @@ public final class CircleGeometry: SatinGeometry {
     public var angularResolution: Int = 60 {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -30,7 +30,7 @@ public final class CircleGeometry: SatinGeometry {
     public var radialResolution: Int = 1 {
         didSet {
             if oldValue != radialResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

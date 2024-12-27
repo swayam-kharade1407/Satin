@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Satin",
-    platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .visionOS(.v1)],
+    platforms: [.macOS(.v14), .iOS(.v17), .visionOS(.v2)],
     products: [
         .library(
             name: "Satin",
@@ -33,7 +33,7 @@ let package = Package(
         .testTarget(
             name: "SatinTests",
             dependencies: ["Satin"]
-        )
+        ),
     ],
     swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx17

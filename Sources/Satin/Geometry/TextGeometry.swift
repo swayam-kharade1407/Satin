@@ -44,7 +44,7 @@ public final class TextGeometry: Geometry {
         addAttribute(texcoordBuffer, for: .Texcoord)
         setElements(indexElementBuffer)
 
-        updateData()
+        updateGeometryData()
     }
 
     public func updateData() {
@@ -126,17 +126,22 @@ public final class TextGeometry: Geometry {
         texcoordBuffer.data = texcoords
         positionBuffer.data = positions
         indexElementBuffer.updateData(data: &indices, count: indices.count, source: indices)
-
-        _updateData = false
+    }
+    
+    func updateGeometryData() {
+        if _updateData {
+            updateData()
+            _updateData = false
+        }
     }
 
     override public func setup() {
-        if _updateData { updateData() }
+        updateGeometryData()
         super.setup()
     }
 
     override public func update() {
-        if _updateData { updateData() }
+        updateGeometryData()
         super.update()
     }
 }

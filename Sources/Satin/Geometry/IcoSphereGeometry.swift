@@ -14,7 +14,7 @@ public final class IcoSphereGeometry: SatinGeometry {
     public var radius: Float = 1 {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -22,7 +22,7 @@ public final class IcoSphereGeometry: SatinGeometry {
     public var resolution: Int = 1 {
         didSet {
             if oldValue != resolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

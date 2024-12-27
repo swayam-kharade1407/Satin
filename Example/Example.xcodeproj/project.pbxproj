@@ -124,6 +124,8 @@
 		E19B2D662C8793F300A31650 /* Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D652C8793F300A31650 /* Paths.swift */; };
 		E19B2D6A2C87DBBE00A31650 /* GridRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D692C87DBBE00A31650 /* GridRenderer.swift */; };
 		E19B2D6C2C87DCBD00A31650 /* GridRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19B2D6B2C87DCBD00A31650 /* GridRendererView.swift */; };
+		E1D225392D068A0400CFEA24 /* RadianceCascadesRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D225362D0689F900CFEA24 /* RadianceCascadesRenderer.swift */; };
+		E1D2253B2D068A2C00CFEA24 /* RadianceCascadesRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D2253A2D068A2500CFEA24 /* RadianceCascadesRendererView.swift */; };
 		E1D43BB12C65855A0063E2C9 /* ParameterGroupHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */; };
 		E1D43BB22C65855A0063E2C9 /* InputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B942C6585590063E2C9 /* InputViewController.swift */; };
 		E1D43BB32C65855A0063E2C9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D43B952C6585590063E2C9 /* LabelViewController.swift */; };
@@ -290,6 +292,8 @@
 		E1CC099D2489797300B92285 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		E1CC099E2489797300B92285 /* IcosahedronGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IcosahedronGenerator.h; sourceTree = "<group>"; };
 		E1CC099F2489797300B92285 /* IcosahedronGenerator.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = IcosahedronGenerator.c; sourceTree = "<group>"; };
+		E1D225362D0689F900CFEA24 /* RadianceCascadesRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadianceCascadesRenderer.swift; sourceTree = "<group>"; };
+		E1D2253A2D068A2500CFEA24 /* RadianceCascadesRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadianceCascadesRendererView.swift; sourceTree = "<group>"; };
 		E1D43B932C6585590063E2C9 /* ParameterGroupHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterGroupHeaderViewController.swift; sourceTree = "<group>"; };
 		E1D43B942C6585590063E2C9 /* InputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
 		E1D43B952C6585590063E2C9 /* LabelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
@@ -598,6 +602,7 @@
 		E19D4C3C29F9C1B800DF993D /* Compute */ = {
 			isa = PBXGroup;
 			children = (
+				E1D2253A2D068A2500CFEA24 /* RadianceCascadesRendererView.swift */,
 				E1E767D528A6D7D9005D75AB /* BufferComputeRendererView.swift */,
 				E1E7685228ADB23B005D75AB /* FlockingRendererView.swift */,
 				E1E7680028A70000005D75AB /* TextureComputeRendererView.swift */,
@@ -695,6 +700,7 @@
 		E19D4C4429F9C26600DF993D /* Compute */ = {
 			isa = PBXGroup;
 			children = (
+				E1D225362D0689F900CFEA24 /* RadianceCascadesRenderer.swift */,
 				E1FA708224A5D394001BFE4B /* BufferComputeRenderer.swift */,
 				E1E7685028ADAF6F005D75AB /* FlockingRenderer.swift */,
 				E1B625BE2492C03400C774D1 /* TextureComputeRenderer.swift */,
@@ -1020,6 +1026,7 @@
 				E1D43BD42C65B1910063E2C9 /* ControlViewController+Shared.swift in Sources */,
 				E103E1662B60404C0017588F /* BufferGeometryRenderer.swift in Sources */,
 				E103E1652B60404C0017588F /* AudioInputRenderer.swift in Sources */,
+				E1D225392D068A0400CFEA24 /* RadianceCascadesRenderer.swift in Sources */,
 				E103E1132B603DEA0017588F /* SDFTextRendererView.swift in Sources */,
 				E19417052C499FD200FE2E2B /* ScreenCaptureRendererView.swift in Sources */,
 				E1903C162B6046B4004AB175 /* ARRendererView.swift in Sources */,
@@ -1096,6 +1103,7 @@
 				E11D04E02C605348003BDC36 /* MultipleContextRenderer.swift in Sources */,
 				E103E1302B603ED30017588F /* ExportGeometryRenderer.swift in Sources */,
 				E103E1262B603E7C0017588F /* LiveCodeRendererView.swift in Sources */,
+				E1D2253B2D068A2C00CFEA24 /* RadianceCascadesRendererView.swift in Sources */,
 				E1D43BC62C65855A0063E2C9 /* InspectorViewController.swift in Sources */,
 				E1903C112B6046B4004AB175 /* ARLidarMeshRendererView.swift in Sources */,
 				E1D43BC32C65855A0063E2C9 /* MultiNumberInputViewController.swift in Sources */,

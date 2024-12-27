@@ -13,7 +13,7 @@ public final class UVDiskGeometry: SatinGeometry {
     public var outerRadius: Float {
         didSet {
             if oldValue != outerRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -21,7 +21,7 @@ public final class UVDiskGeometry: SatinGeometry {
     public var innerRadius: Float {
         didSet {
             if oldValue != innerRadius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }

@@ -15,90 +15,90 @@ import Satin
 final class SuperShapeGeometry: SatinGeometry {
     var r1: Float { didSet {
         if oldValue != r1 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var a1: Float { didSet {
         if oldValue != a1 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var b1: Float { didSet {
         if oldValue != b1 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var m1: Float { didSet {
         if oldValue != m1 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n11: Float { didSet {
         if oldValue != n11 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n21: Float { didSet {
         if oldValue != n21 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n31: Float { didSet {
         if oldValue != n31 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var r2: Float { didSet {
         if oldValue != r2 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var a2: Float { didSet {
         if oldValue != a2 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var b2: Float { didSet {
         if oldValue != b2 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
     var m2: Float { didSet {
         if oldValue != m2 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n12: Float { didSet {
         if oldValue != n12 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n22: Float { didSet {
         if oldValue != n22 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var n32: Float { didSet {
         if oldValue != n32 {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 
     var res: Int { didSet {
         if oldValue != res {
-            _updateGeometryData = true
+            _updateData = true
         }
     }}
 

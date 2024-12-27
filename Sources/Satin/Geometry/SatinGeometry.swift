@@ -12,31 +12,31 @@ import SatinCore
 open class SatinGeometry: Geometry {
     public internal(set) var geometryData: GeometryData = createGeometryData()
 
-    public var _updateGeometryData: Bool = true
+    public var _updateData: Bool = true
 
     public init() {
         super.init()
-        setupGeometry()
+        updateGeometryData()
     }
 
     deinit {
         freeGeometryData(&geometryData)
     }
 
-    open func setupGeometry() {
+    open func updateData() {
         freeGeometryData(&geometryData)
         setFrom(geometryData: generateGeometryData())
-        _updateGeometryData = false
     }
 
     open override func update() {
-        updateGeometry()
+        updateGeometryData()
         super.update()
     }
 
-    open func updateGeometry() {
-        if _updateGeometryData {
-            setupGeometry()
+    open func updateGeometryData() {
+        if _updateData {
+            updateData()
+            _updateData = false
         }
     }
 

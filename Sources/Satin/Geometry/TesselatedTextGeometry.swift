@@ -26,7 +26,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var verticalAlignment: VerticalAlignment = .center {
         didSet {
             if verticalAlignment != oldValue {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -34,7 +34,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var textAlignment: CTTextAlignment = .natural {
         didSet {
             if textAlignment != oldValue {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -42,7 +42,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var text = "" {
         didSet {
             if text != oldValue {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -50,7 +50,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var pivot = simd_float2(repeating: 0.0) {
         didSet {
             if pivot != oldValue {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -58,7 +58,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var textBounds = CGSize(width: -1, height: -1) {
         didSet {
             if textBounds != oldValue {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -66,7 +66,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var kern: Float = 0.0 {
         didSet {
             if oldValue != kern {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -74,7 +74,7 @@ public class TesselatedTextGeometry: SatinGeometry {
     public var lineSpacing: Float = 0.0 {
         didSet {
             if oldValue != kern {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -84,7 +84,7 @@ public class TesselatedTextGeometry: SatinGeometry {
             if fontName != oldValue {
                 ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
                 needsClear = true
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -94,7 +94,7 @@ public class TesselatedTextGeometry: SatinGeometry {
             if fontSize != oldValue {
                 ctFont = CTFontCreateWithName(fontName as CFString, CGFloat(fontSize), nil)
                 needsClear = true
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -269,9 +269,9 @@ public class TesselatedTextGeometry: SatinGeometry {
 
     var needsClear = false
 
-    override public var _updateGeometryData: Bool {
+    override public var _updateData: Bool {
         didSet {
-            if _updateGeometryData {
+            if _updateData {
                 needsTextSetup = true
             }
         }

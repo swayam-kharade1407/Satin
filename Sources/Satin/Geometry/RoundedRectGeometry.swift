@@ -13,7 +13,7 @@ public final class RoundedRectGeometry: SatinGeometry {
     public var size: simd_float2 {
         didSet {
             if oldValue != size {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -21,7 +21,7 @@ public final class RoundedRectGeometry: SatinGeometry {
     public var radius: Float = 0.5 {
         didSet {
             if oldValue != radius {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -29,7 +29,7 @@ public final class RoundedRectGeometry: SatinGeometry {
     public var angularResolution: Int = 32 {
         didSet {
             if oldValue != angularResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
@@ -37,7 +37,7 @@ public final class RoundedRectGeometry: SatinGeometry {
     public var radialResolution: Int = 32 {
         didSet {
             if oldValue != radialResolution {
-                _updateGeometryData = true
+                _updateData = true
             }
         }
     }
