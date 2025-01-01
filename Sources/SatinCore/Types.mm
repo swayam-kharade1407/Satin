@@ -17,6 +17,7 @@ void freePoints2D(Points2D *points) {
     if (points->count > 0 && points->data != NULL) {
         free(points->data);
         points->count = 0;
+        points->data = NULL;
     }
 }
 
@@ -49,6 +50,7 @@ void freeTriangleFaceMap(TriangleFaceMap *map) {
     if (map->count > 0 && map->data != NULL) {
         free(map->data);
         map->count = 0;
+        map->data = NULL;
     }
 }
 
@@ -58,6 +60,7 @@ void freeTriangleData(TriangleData *data) {
     if (data->count > 0 && data->indices != NULL) {
         free(data->indices);
         data->count = 0;
+        data->indices = NULL;
     }
 }
 
@@ -70,11 +73,13 @@ void freeGeometryData(GeometryData *data) {
     if (data->vertexCount > 0 && data->vertexData != NULL) {
         free(data->vertexData);
         data->vertexCount = 0;
+        data->vertexData = NULL;
     }
 
     if (data->indexCount > 0 && data->indexData != NULL) {
         free(data->indexData);
         data->indexCount = 0;
+        data->indexData = NULL;
     }
 }
 
