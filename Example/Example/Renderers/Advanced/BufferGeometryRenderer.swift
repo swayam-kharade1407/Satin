@@ -155,8 +155,12 @@ final class BufferGeometryMesh: Object, Renderable {
 
     // MARK: - Intersect
 
-    override public func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
-        guard visible || invisible, intersects(ray: ray) else { return }
+    override public func intersect(
+        ray: Ray,
+        intersections: inout [RaycastResult],
+        options: RaycastOptions
+    ) -> Bool {
+        guard visible || options.invisible, intersects(ray: ray) else { return false }
 
         var geometryIntersections = [IntersectionResult]()
         geometry.intersect(
@@ -170,31 +174,40 @@ final class BufferGeometryMesh: Object, Renderable {
                 worldMatrix * simd_make_float4(geometryIntersection.position, 1.0)
             )
 
-            results.append(
-                RaycastResult(
-                    barycentricCoordinates: geometryIntersection.barycentricCoordinates,
-                    distance: simd_length(hitPosition - ray.origin),
-                    normal: normalMatrix * geometryIntersection.normal,
-                    position: hitPosition,
-                    primitiveIndex: geometryIntersection.primitiveIndex,
-                    object: self,
-                    submesh: nil
-                )
+            let raycastResult = RaycastResult(
+                barycentricCoordinates: geometryIntersection.barycentricCoordinates,
+                distance: simd_length(hitPosition - ray.origin),
+                normal: normalMatrix * geometryIntersection.normal,
+                position: hitPosition,
+                primitiveIndex: geometryIntersection.primitiveIndex,
+                object: self,
+                submesh: nil
             )
+            
+            if options.first {
+                intersections.append(raycastResult)
+                return true
+            }
+            else {
+                results.append(raycastResult)
+            }
         }
 
         intersections.append(contentsOf: results)
 
-        if recursive {
+        if options.recursive {
             for child in children {
-                child.intersect(
+                if child.intersect(
                     ray: ray,
                     intersections: &intersections,
-                    recursive: recursive,
-                    invisible: invisible
-                )
+                    options: options
+                ), options.first {
+                    return true
+                }
             }
         }
+        
+        return results.count > 0
     }
 }
 

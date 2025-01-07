@@ -15,7 +15,7 @@ import SatinCore
 #endif
 
 public class InstancedMesh: Mesh {
-    public override func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
+    override public func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
         guard instanceMatrixBuffer != nil, instanceMatricesUniforms.count >= instanceCount else { return false }
 
         if let drawCount = drawCount {
@@ -215,8 +215,12 @@ public class InstancedMesh: Mesh {
         return false
     }
 
-    override open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
-        guard visible || invisible, intersects(ray: ray) else { return }
+    override open func intersect(
+        ray: Ray,
+        intersections: inout [RaycastResult],
+        options: RaycastOptions
+    ) -> Bool {
+        guard visible || options.invisible, intersects(ray: ray) else { return false }
 
         var geometryIntersections = [IntersectionResult]()
 
@@ -234,26 +238,43 @@ public class InstancedMesh: Mesh {
             }
         }
 
+        var results = [RaycastResult]()
         for (instance, intersection) in zip(instanceIntersections, geometryIntersections) {
-            intersections.append(
-                RaycastResult(
-                    barycentricCoordinates: intersection.barycentricCoordinates,
-                    distance: intersection.distance,
-                    normal: intersection.normal,
-                    position: simd_make_float3(getWorldMatrixAt(index: instance) * simd_make_float4(intersection.position, 1.0)),
-                    primitiveIndex: intersection.primitiveIndex,
-                    object: self,
-                    submesh: nil,
-                    instance: instance
-                )
+            let raycastResult = RaycastResult(
+                barycentricCoordinates: intersection.barycentricCoordinates,
+                distance: intersection.distance,
+                normal: intersection.normal,
+                position: simd_make_float3(getWorldMatrixAt(index: instance) * simd_make_float4(intersection.position, 1.0)),
+                primitiveIndex: intersection.primitiveIndex,
+                object: self,
+                submesh: nil,
+                instance: instance
             )
-        }
 
-        if recursive {
-            for child in children {
-                child.intersect(ray: ray, intersections: &intersections, recursive: recursive)
+            if options.first {
+                intersections.append(raycastResult)
+                return true
+            }
+            else {
+                results.append(raycastResult)
             }
         }
+
+        intersections.append(contentsOf: results)
+
+        if options.recursive {
+            for child in children {
+                if child.intersect(
+                    ray: ray,
+                    intersections: &intersections,
+                    options: options
+                ) && options.first {
+                    return true
+                }
+            }
+        }
+
+        return results.count > 0
     }
 
     // MARK: - Deinit

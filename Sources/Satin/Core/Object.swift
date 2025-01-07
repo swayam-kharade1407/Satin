@@ -746,17 +746,29 @@ open class Object: Codable, ObservableObject {
         return rayBoundsIntersect(ray, worldBounds)
     }
 
-    open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
-        guard visible || invisible, intersects(ray: ray), recursive else { return }
+    open func intersect(
+        ray: Ray,
+        intersections: inout [RaycastResult],
+        options: RaycastOptions
+    ) -> Bool {
+        guard visible || options.invisible, intersects(ray: ray), options.recursive else { return false }
 
+        var results = [RaycastResult]()
+        
         for child in children {
-            child.intersect(
+            if child.intersect(
                 ray: ray,
-                intersections: &intersections,
-                recursive: recursive,
-                invisible: invisible
-            )
+                intersections: &results,
+                options: options
+            ) && options.first {
+                intersections.append(contentsOf: results)
+                return true
+            }
         }
+        
+        intersections.append(contentsOf: results)
+        
+        return results.count > 0
     }
 
     // MARK: - Conversion Utilities

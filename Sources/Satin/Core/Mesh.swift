@@ -90,7 +90,6 @@ open class Mesh: Object, Renderable {
     }
 
     open func isDrawable(renderContext: Context, shadow: Bool) -> Bool {
-
         guard instanceCount > 0,
               !geometry.vertexBuffers.isEmpty,
               vertexUniforms[renderContext] != nil
@@ -146,7 +145,7 @@ open class Mesh: Object, Renderable {
         return allMaterials
     }
 
-    internal var geometrySubscription: AnyCancellable?
+    var geometrySubscription: AnyCancellable?
 
     public internal(set) var submeshes: [Submesh] = []
 
@@ -179,7 +178,7 @@ open class Mesh: Object, Renderable {
         setupMaterial()
     }
 
-    internal func cleanupGeometrySubscriber() {
+    func cleanupGeometrySubscriber() {
         geometrySubscription?.cancel()
         geometrySubscription = nil
     }
@@ -207,7 +206,9 @@ open class Mesh: Object, Renderable {
 
     open func setupSubmeshes() {
         guard let context else { return }
-        for submesh in submeshes { submesh.context = context }
+        for submesh in submeshes {
+            submesh.context = context
+        }
     }
 
     open func setupMaterial() {
@@ -243,14 +244,18 @@ open class Mesh: Object, Renderable {
     override open func update() {
         geometry.update()
         material?.update()
-        for submesh in submeshes { submesh.update() }
+        for submesh in submeshes {
+            submesh.update()
+        }
         super.update()
     }
 
     override open func encode(_ commandBuffer: MTLCommandBuffer) {
         geometry.encode(commandBuffer)
         material?.encode(commandBuffer)
-        for submesh in submeshes { submesh.encode(commandBuffer) }
+        for submesh in submeshes {
+            submesh.encode(commandBuffer)
+        }
         super.encode(commandBuffer)
     }
 
@@ -335,14 +340,19 @@ open class Mesh: Object, Renderable {
 
     // MARK: - Intersect
 
-    override open func intersect(ray: Ray, intersections: inout [RaycastResult], recursive: Bool = true, invisible: Bool = false) {
-        guard visible || invisible, intersects(ray: ray) else { return }
+    override open func intersect(
+        ray: Ray,
+        intersections: inout [RaycastResult],
+        options: RaycastOptions
+    ) -> Bool {
+        guard visible || options.invisible, intersects(ray: ray) else { return false }
 
         var geometryIntersections = [IntersectionResult]()
         geometry.intersect(
             ray: worldMatrixInverse.act(ray),
             intersections: &geometryIntersections
         )
+        geometryIntersections.sort { $0.distance < $1.distance }
 
         var results = [RaycastResult]()
         for geometryIntersection in geometryIntersections {
@@ -350,38 +360,38 @@ open class Mesh: Object, Renderable {
                 worldMatrix * simd_make_float4(geometryIntersection.position, 1.0)
             )
 
-            /*
-             let v0 = getVertex(index: triangle.i0)
-             let v1 = getVertex(index: triangle.i1)
-             let v2 = getVertex(index: triangle.i2)
-
-             uv: v0.uv * bc.x + v1.uv * bc.y + v2.uv * bc.z,
-             */
-
-            results.append(
-                RaycastResult(
-                    barycentricCoordinates: geometryIntersection.barycentricCoordinates,
-                    distance: simd_length(hitPosition - ray.origin),
-                    normal: normalMatrix * geometryIntersection.normal,
-                    position: hitPosition,
-                    primitiveIndex: geometryIntersection.primitiveIndex,
-                    object: self,
-                    submesh: nil
-                )
+            let raycastResult = RaycastResult(
+                barycentricCoordinates: geometryIntersection.barycentricCoordinates,
+                distance: simd_length(hitPosition - ray.origin),
+                normal: normalMatrix * geometryIntersection.normal,
+                position: hitPosition,
+                primitiveIndex: geometryIntersection.primitiveIndex,
+                object: self,
+                submesh: nil
             )
+
+            if options.first {
+                intersections.append(raycastResult)
+                return true
+            } else {
+                results.append(raycastResult)
+            }
         }
 
         intersections.append(contentsOf: results)
 
-        if recursive {
+        if options.recursive {
             for child in children {
-                child.intersect(
+                if child.intersect(
                     ray: ray,
                     intersections: &intersections,
-                    recursive: recursive,
-                    invisible: invisible
-                )
+                    options: options
+                ) && options.first {
+                    return true
+                }
             }
         }
+
+        return results.count > 0
     }
 }
