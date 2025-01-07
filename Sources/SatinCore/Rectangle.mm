@@ -75,4 +75,3 @@ Rectangle projectBoundsToRectangle(Bounds a, simd_float4x4 transform) {
     }
     return result;
 }
-
