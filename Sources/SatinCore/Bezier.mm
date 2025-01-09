@@ -10,13 +10,9 @@
 
 #include "Bezier.h"
 
-Polyline2D createEmptyPolyline2D() {
-    return (Polyline2D) { .count = 0, .data = NULL };
-}
+Polyline2D createEmptyPolyline2D() { return (Polyline2D) { .count = 0, .data = NULL }; }
 
-Polylines2D createEmptyPolylines2D() {
-    return (Polylines2D) { .count = 0, .data = NULL };
-}
+Polylines2D createEmptyPolylines2D() { return (Polylines2D) { .count = 0, .data = NULL }; }
 
 void freePolyline2D(Polyline2D *line) {
     if (line->capacity > 0 && line->data != NULL) {
