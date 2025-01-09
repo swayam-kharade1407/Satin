@@ -21,8 +21,7 @@ simd_float3 torusKnotGenerator(float t, float s, float R, float r, float c, floa
 
     const simd_float3 torus =
         simd_make_float3((R + r * cosPhi) * cosTheta, (R + r * cosPhi) * sinTheta, r * sinPhi);
-    const simd_float3 normal =
-        simd_make_float3(cos(theta) * cos(phi), sin(theta) * cos(phi), sin(phi));
+    const simd_float3 normal = simd_normalize(simd_make_float3(cosTheta * cosPhi, sinTheta * cosPhi, sinPhi));
 
     const simd_float3 tTheta = (1.0 + r * cosPhi) * simd_make_float3(-sinTheta, cosTheta, 0.0);
     const simd_float3 tPhi = r * simd_make_float3(-sinPhi * cosTheta, -sinPhi * sinTheta, cosPhi);

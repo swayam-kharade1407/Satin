@@ -37,6 +37,7 @@ final class LiveCodeRenderer: BaseRenderer {
     lazy var scene = Object(label: "Scene", [mesh])
     lazy var renderer = Renderer(context: defaultContext)
 
+    override var colorPixelFormat: MTLPixelFormat { .rgba16Float }
     override var depthPixelFormat: MTLPixelFormat { .invalid }
 
     override func setup() {

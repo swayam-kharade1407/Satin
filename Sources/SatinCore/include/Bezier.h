@@ -17,6 +17,9 @@
 extern "C" {
 #endif
 
+Polyline2D createEmptyPolyline2D();
+Polylines2D createEmptyPolylines2D();
+
 void freePolyline2D(Polyline2D *line);
 void freePolylines2D(Polylines2D *lines);
 

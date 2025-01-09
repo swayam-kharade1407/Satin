@@ -10,25 +10,33 @@
 
 #include "Bezier.h"
 
-void freePolyline2D(Polyline2D *line) {
-    if (line->count <= 0 && line->data == NULL) { return; }
+Polyline2D createEmptyPolyline2D() {
+    return (Polyline2D) { .count = 0, .data = NULL };
+}
 
-    free(line->data);
-    line->data = NULL;
-    line->count = 0;
-    line->capacity = 0;
+Polylines2D createEmptyPolylines2D() {
+    return (Polylines2D) { .count = 0, .data = NULL };
+}
+
+void freePolyline2D(Polyline2D *line) {
+    if (line->capacity > 0 && line->data != NULL) {
+        free(line->data);
+        line->data = NULL;
+        line->count = 0;
+        line->capacity = 0;
+    }
 }
 
 void freePolylines2D(Polylines2D *lines) {
-    if (lines->count <= 0 && lines->data == NULL) { return; }
+    if (lines->count > 0 && lines->data != NULL) {
+        for (int i = 0; i < lines->count; i++) {
+            freePolyline2D(&lines->data[i]);
+        }
 
-    for (int i = 0; i < lines->count; i++) {
-        freePolyline2D(&lines->data[i]);
+        free(lines->data);
+        lines->data = NULL;
+        lines->count = 0;
     }
-
-    free(lines->data);
-    lines->data = NULL;
-    lines->count = 0;
 }
 
 void addPointToPolyline2D(simd_float2 p, Polyline2D *line) {
