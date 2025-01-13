@@ -1332,27 +1332,16 @@ GeometryData generateUVDiskGeometryData(float innerRadius, float outerRadius) {
                                  .normal = simd_make_float3(0.0, 1.0, 0.0) };
     }
 
-    int index = 0;
-    for (uint32_t i = 0; i < vertices; i += 2) {
-        ind[index] = (TriangleIndices) { .i0 = (i + 2) % vertices,
-                                         .i1 = (i + 3) % vertices,
-                                         .i2 = (i + 1) % vertices };
-        index++;
-    }
-
-    for (uint32_t i = 0; i < vertices; i += 4) {
-        ind[index] = (TriangleIndices) { .i0 = (i + 3) % vertices,
-                                         .i1 = (i + 5) % vertices,
-                                         .i2 = (i + 1) % vertices };
-        index++;
-    }
-
-    for (uint32_t i = 0; i < vertices; i += 8) {
-        ind[index] = (TriangleIndices) { .i0 = (i + 5) % vertices,
-                                         .i1 = (i + 9) % vertices,
-                                         .i2 = (i + 1) % vertices };
-        index++;
-    }
+    ind[0] = (TriangleIndices) { .i0 = 0, .i1 = 1, .i2 = 2 };
+    ind[1] = (TriangleIndices) { .i0 = 2, .i1 = 3, .i2 = 4 };
+    ind[2] = (TriangleIndices) { .i0 = 4, .i1 = 5, .i2 = 6 };
+    ind[3] = (TriangleIndices) { .i0 = 6, .i1 = 7, .i2 = 8 };
+    ind[4] = (TriangleIndices) { .i0 = 8, .i1 = 9, .i2 = 10 };
+    ind[5] = (TriangleIndices) { .i0 = 10, .i1 = 11, .i2 = 0 };
+    ind[6] = (TriangleIndices) { .i0 = 0, .i1 = 2, .i2 = 10 };
+    ind[7] = (TriangleIndices) { .i0 = 2, .i1 = 4, .i2 = 6 };
+    ind[8] = (TriangleIndices) { .i0 = 6, .i1 = 8, .i2 = 10 };
+    ind[9] = (TriangleIndices) { .i0 = 2, .i1 = 6, .i2 = 10 };
 
     return (GeometryData) {
         .vertexCount = vertices, .vertexData = vtx, .indexCount = triangles, .indexData = ind

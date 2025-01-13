@@ -36,7 +36,11 @@ void freePolylines2D(Polylines2D *lines) {
 }
 
 void addPointToPolyline2D(simd_float2 p, Polyline2D *line) {
-    if ((line->count + 1) >= line->capacity) {
+    if(line->data == nullptr) {
+        line->capacity = (line->capacity + 1) * 2;
+        line->data = (simd_float2 *)malloc(line->capacity * sizeof(simd_float2));
+    }
+    else if ((line->count + 1) >= line->capacity) {
         line->capacity = (line->capacity + 1) * 2;
         line->data = (simd_float2 *)realloc(line->data, line->capacity * sizeof(simd_float2));
     }
