@@ -154,6 +154,32 @@ bool isClockwise(const simd_float2 *polygon, int length) {
     return !signbit(area);
 }
 
+bool lineLineIntersection2(
+    simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, simd_float2 *intersection) {
+    const simd_float2 ab = b - a;
+    const simd_float2 cd = d - c;
+    const simd_float2 ac = c - a;
+
+    const float denom = cd.x * ab.y - cd.y * ab.x;
+
+    if (isZero(denom)) { return false; }
+
+    const float alphaNom = cd.x * ac.y - cd.y * ac.x;
+    const float alpha = alphaNom / denom;
+
+    const float betaNom = ab.x * ac.y - ab.y * ac.x;
+    const float beta = betaNom / denom;
+
+    std::cout << alpha << " " << beta << std::endl;
+
+    if (alpha >= 0 && alpha <= 1 && beta >= 0 && beta <= 1) {
+        *intersection = a + alpha * ab;
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool rayRayIntersection2(
     simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection) {
     const float dx = bs.x - as.x;
