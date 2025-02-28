@@ -2,9 +2,7 @@
 #include "Library/Rotate.metal"
 
 static constant float4 rotations[6] = {
-    float4(0.0, 1.0, 0.0, HALF_PI),  float4(0.0, 1.0, 0.0, -HALF_PI),
-    float4(1.0, 0.0, 0.0, -HALF_PI), float4(1.0, 0.0, 0.0, HALF_PI),
-    float4(0.0, 0.0, 1.0, 0.0),      float4(0.0, 1.0, 0.0, PI)
+    float4(0.0, 1.0, 0.0, HALF_PI), float4(0.0, 1.0, 0.0, -HALF_PI), float4(1.0, 0.0, 0.0, -HALF_PI), float4(1.0, 0.0, 0.0, HALF_PI), float4(0.0, 0.0, 1.0, 0.0), float4(0.0, 1.0, 0.0, PI)
 };
 
 #define WORLD_UP float3(0.0, 1.0, 0.0)
