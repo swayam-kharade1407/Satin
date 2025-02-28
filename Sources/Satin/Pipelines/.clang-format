@@ -16,5 +16,4 @@ AllowShortIfStatementsOnASingleLine: true
 BreakBeforeBinaryOperators: None
 BreakConstructorInitializersBeforeComma: false
 NamespaceIndentation: All
-ColumnLimit: 100
 IndentWidth: 4

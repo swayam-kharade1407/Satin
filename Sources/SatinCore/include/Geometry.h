@@ -51,8 +51,17 @@ bool isBetween(simd_float2 a, simd_float2 b, simd_float2 c);
 bool intersectsProper(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d);
 bool intersectsProperOrInBetween(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d);
 
-bool lineLineIntersection2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, simd_float2 *intersection);
-bool lineLineDistance3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, simd_float3 *ab, simd_float3 *cd, float *mab, float *mcd);
+bool lineLineIntersection2(
+    simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, simd_float2 *intersection);
+bool lineLineDistance3(
+    simd_float3 a,
+    simd_float3 b,
+    simd_float3 c,
+    simd_float3 d,
+    simd_float3 *ab,
+    simd_float3 *cd,
+    float *mab,
+    float *mcd);
 
 bool rayRayIntersection2(
     simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection);
