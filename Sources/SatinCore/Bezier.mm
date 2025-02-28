@@ -11,7 +11,6 @@
 #include "Bezier.h"
 
 Polyline2D createEmptyPolyline2D() { return (Polyline2D) { .count = 0, .data = NULL }; }
-
 Polylines2D createEmptyPolylines2D() { return (Polylines2D) { .count = 0, .data = NULL }; }
 
 void freePolyline2D(Polyline2D *line) {
@@ -35,6 +34,30 @@ void freePolylines2D(Polylines2D *lines) {
     }
 }
 
+Polyline3D createEmptyPolyline3D() { return (Polyline3D) { .count = 0, .data = NULL }; }
+Polylines3D createEmptyPolylines3D() { return (Polylines3D) { .count = 0, .data = NULL }; }
+
+void freePolyline3D(Polyline3D *line) {
+    if (line->capacity > 0 && line->data != NULL) {
+        free(line->data);
+        line->data = NULL;
+        line->count = 0;
+        line->capacity = 0;
+    }
+}
+
+void freePolylines3D(Polylines3D *lines) {
+    if (lines->count > 0 && lines->data != NULL) {
+        for (int i = 0; i < lines->count; i++) {
+            freePolyline3D(&lines->data[i]);
+        }
+
+        free(lines->data);
+        lines->data = NULL;
+        lines->count = 0;
+    }
+}
+
 void addPointToPolyline2D(simd_float2 p, Polyline2D *line) {
     if (line->data == nullptr) {
         line->capacity = (line->capacity + 1) * 2;
@@ -49,7 +72,7 @@ void addPointToPolyline2D(simd_float2 p, Polyline2D *line) {
 }
 
 void removeFirstPointInPolyline2D(Polyline2D *line) {
-    if (line->count > 0 || line->data != NULL) {
+    if (line->count > 0 && line->data != NULL) {
         line->count--;
         if (line->count > 0) {
             memmove(line->data, line->data + 1, line->count * sizeof(simd_float2));
@@ -60,7 +83,7 @@ void removeFirstPointInPolyline2D(Polyline2D *line) {
 }
 
 void removeLastPointInPolyline2D(Polyline2D *line) {
-    if (line->count > 0 || line->data != NULL) {
+    if (line->count > 0 && line->data != NULL) {
         line->count--;
         if (line->count == 0) { freePolyline2D(line); }
     }
@@ -73,6 +96,48 @@ void appendPolyline2D(Polyline2D *dst, Polyline2D *src) {
         dst->capacity += src->count;
         dst->data = (simd_float2 *)realloc(dst->data, dst->capacity * sizeof(simd_float2));
         memcpy(dst->data + dst->count, src->data, src->count * sizeof(simd_float2));
+    }
+    dst->count += src->count;
+}
+
+void addPointToPolyline3D(simd_float3 p, Polyline3D *line) {
+    if (line->data == nullptr) {
+        line->capacity = (line->capacity + 1) * 2;
+        line->data = (simd_float3 *)malloc(line->capacity * sizeof(simd_float3));
+    } else if ((line->count + 1) >= line->capacity) {
+        line->capacity = (line->capacity + 1) * 2;
+        line->data = (simd_float3 *)realloc(line->data, line->capacity * sizeof(simd_float3));
+    }
+
+    line->data[line->count] = p;
+    line->count++;
+}
+
+void removeFirstPointInPolyline3D(Polyline3D *line) {
+    if (line->count > 0 && line->data != NULL) {
+        line->count--;
+        if (line->count > 0) {
+            memmove(line->data, line->data + 1, line->count * sizeof(simd_float3));
+        } else {
+            freePolyline3D(line);
+        }
+    }
+}
+
+void removeLastPointInPolyline3D(Polyline3D *line) {
+    if (line->count > 0 && line->data != NULL) {
+        line->count--;
+        if (line->count == 0) { freePolyline3D(line); }
+    }
+}
+
+void appendPolyline3D(Polyline3D *dst, Polyline3D *src) {
+    if ((dst->capacity - dst->count) > src->count) {
+        memcpy(dst->data + dst->count, src->data, src->count * sizeof(simd_float3));
+    } else {
+        dst->capacity += src->count;
+        dst->data = (simd_float3 *)realloc(dst->data, dst->capacity * sizeof(simd_float3));
+        memcpy(dst->data + dst->count, src->data, src->count * sizeof(simd_float3));
     }
     dst->count += src->count;
 }
@@ -207,15 +272,13 @@ simd_float2 cubicBezier2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float
     return oneMinusT3 * a + 3.0 * oneMinusT2 * t * b + 3.0 * oneMinusT * t * t * c + t * t * t * d;
 }
 
-simd_float2
-cubicBezierVelocity2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t) {
+simd_float2 cubicBezierVelocity2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t) {
     float oneMinusT = 1.0 - t;
     float oneMinusT2 = oneMinusT * oneMinusT;
     return 3.0 * oneMinusT2 * (b - a) + 6.0 * oneMinusT * t * (c - b) + 3.0 * t * t * (d - c);
 }
 
-simd_float2
-cubicBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t) {
+simd_float2 cubicBezierAcceleration2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float t) {
     return 6.0 * (1.0 - t) * (c - 2.0 * b + a) + 6.0 * t * (d - 2.0 * c + b);
 }
 
@@ -225,8 +288,7 @@ float cubicBezierCurvature2(simd_float2 a, simd_float2 b, simd_float2 c, simd_fl
     return simd_length(simd_cross(vel, acc)) / pow(simd_length(vel), 3.0);
 }
 
-Polyline2D
-getCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, int res) {
+Polyline2D getCubicBezierPath2(simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, int res) {
     simd_float2 *data = (simd_float2 *)malloc(res * sizeof(simd_float2));
     const float resMinusOne = res - 1;
     for (int i = 0; i < res; i++) {
@@ -275,6 +337,45 @@ void _adaptiveCubicBezierCurve2(
     }
 }
 
+void _adaptiveCubicBezierCurve3(
+    simd_float3 a,
+    simd_float3 b,
+    simd_float3 c,
+    simd_float3 d,
+    simd_float3 aVel,
+    simd_float3 bVel,
+    simd_float3 cVel,
+    float angleLimit,
+    int depth,
+    Polyline3D *line) {
+    if (depth > 8) { return; }
+
+    const float startMiddleAngle = acos(simd_dot(aVel, bVel));
+    const float middleEndAngle = acos(simd_dot(bVel, cVel));
+
+    if ((startMiddleAngle + middleEndAngle) > angleLimit) {
+        // Split curve into two curves (start, end)
+
+        const simd_float3 ab = (a + b) * 0.5;
+        const simd_float3 bc = (b + c) * 0.5;
+        const simd_float3 cd = (c + d) * 0.5;
+        const simd_float3 abc = (ab + bc) * 0.5;
+        const simd_float3 bcd = (bc + cd) * 0.5;
+        const simd_float3 abcd = (abc + bcd) * 0.5;
+
+        // Start Curve:  a,      ab,     abc,    abcd
+        // End Curve:    abcd,   bcd,    cd,     d
+
+        const simd_float3 sVel = simd_normalize(cubicBezierVelocity3(a, ab, abc, abcd, 0.5));
+        _adaptiveCubicBezierCurve3(a, ab, abc, abcd, aVel, sVel, bVel, angleLimit, depth + 1, line);
+
+        addPointToPolyline3D(abcd, line);
+
+        const simd_float3 eVel = simd_normalize(cubicBezierVelocity3(abcd, bcd, cd, d, 0.5));
+        _adaptiveCubicBezierCurve3(abcd, bcd, cd, d, bVel, eVel, cVel, angleLimit, depth + 1, line);
+    }
+}
+
 Polyline2D getAdaptiveCubicBezierPath2(
     simd_float2 a, simd_float2 b, simd_float2 c, simd_float2 d, float angleLimit) {
     const simd_float2 aVel = simd_normalize(cubicBezierVelocity2(a, b, c, d, 0.0));
@@ -295,22 +396,59 @@ simd_float3 cubicBezier3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float
            3.0 * oneMinusT * t * t * c + t * t * t * d;
 }
 
+simd_float3 cubicBezierVelocity3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float t) {
+    float oneMinusT = 1.0 - t;
+    float oneMinusT2 = oneMinusT * oneMinusT;
+    return 3.0 * oneMinusT2 * (b - a) + 6.0 * oneMinusT * t * (c - b) + 3.0 * t * t * (d - c);
+}
+
+simd_float3 cubicBezierAcceleration3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float t) {
+    return 6.0 * (1.0 - t) * (c - 2.0 * b + a) + 6.0 * t * (d - 2.0 * c + b);
+}
+
+simd_float3 cubicBezierJerk3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float t) {
+    return 6.0 * (d - c - b + a);
+}
+
+float cubicBezierCurvature3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float t) {
+    const simd_float3 vel = cubicBezierVelocity3(a, b, c, d, t);
+    const simd_float3 acc = cubicBezierAcceleration3(a, b, c, d, t);
+    return simd_length(simd_cross(vel, acc)) / pow(simd_length(vel), 3.0);
+}
+
+Polyline3D getCubicBezierPath3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, int res) {
+    simd_float3 *data = (simd_float3 *)malloc(res * sizeof(simd_float3));
+    const float resMinusOne = res - 1;
+    for (int i = 0; i < res; i++) {
+        const float t = (float)i / resMinusOne;
+        data[i] = cubicBezier3(a, b, c, d, t);
+    }
+    return (Polyline3D) { .count = res, .capacity = res, .data = data };
+}
+
+Polyline3D getAdaptiveCubicBezierPath3(simd_float3 a, simd_float3 b, simd_float3 c, simd_float3 d, float angleLimit) {
+    const simd_float3 aVel = simd_normalize(cubicBezierVelocity3(a, b, c, d, 0.0));
+    const simd_float3 bVel = simd_normalize(cubicBezierVelocity3(a, b, c, d, 0.5));
+    const simd_float3 cVel = simd_normalize(cubicBezierVelocity3(a, b, c, d, 1.0));
+
+    Polyline3D line = createEmptyPolyline3D();
+    addPointToPolyline3D(a, &line);
+    _adaptiveCubicBezierCurve3(a, b, c, d, aVel, bVel, cVel, angleLimit, 0, &line);
+    addPointToPolyline3D(d, &line);
+
+    return line;
+}
+
 simd_float3 quadraticBezier3(simd_float3 a, simd_float3 b, simd_float3 c, float t) {
     float oneMinusT = 1.0 - t;
     return oneMinusT * oneMinusT * a + 2.0 * oneMinusT * t * b + t * t * c;
-}
-
-void freePolyline3D(Polyline3D *line) {
-    if (line->count <= 0 && line->data == NULL) { return; }
-    free(line->data);
-    line->data = NULL;
-    line->count = 0;
 }
 
 Polyline3D convertPolyline2DToPolyline3D(Polyline2D *line) {
     const int count = line->count;
 
     Polyline3D result;
+    result.capacity = count;
     result.count = count;
     result.data = (simd_float3 *)malloc(count * sizeof(simd_float3));
     for (int i = 0; i < count; i++) {

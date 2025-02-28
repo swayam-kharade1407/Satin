@@ -180,6 +180,46 @@ bool lineLineIntersection2(
     }
 }
 
+// https://paulbourke.net/geometry/pointlineplane/
+
+bool lineLineDistance3(simd_float3 p1, simd_float3 p2, simd_float3 p3, simd_float3 p4, simd_float3 *a, simd_float3 *b, float *ta, float *tb) {
+    const simd_float3 p13 = p1 - p3;
+    const simd_float3 p43 = p4 - p3;
+    
+    if (abs(p43.x) < FLT_EPSILON && abs(p43.y) < FLT_EPSILON && abs(p43.z) < FLT_EPSILON) {
+        return false;
+    }
+       
+    const simd_float3 p21 = p2 - p1;
+    
+    if (abs(p21.x) < FLT_EPSILON && abs(p21.y) < FLT_EPSILON && abs(p21.z) < FLT_EPSILON) {
+        return false;
+    }
+    
+    float d1343 = simd_dot(p13, p43);
+    float d4321 = simd_dot(p43, p21);
+    float d1321 = simd_dot(p13, p21);
+    float d4343 = simd_dot(p43, p43);
+    float d2121 = simd_dot(p21, p21);
+    
+    float denom = d2121 * d4343 - d4321 * d4321;
+    if (abs(denom) < FLT_EPSILON) {
+        return false;
+    }
+    
+    float numer = d1343 * d4321 - d1321 * d4343;
+    
+    float ma = numer / denom;
+    float mb = (d1343 + d4321 * ma) / d4343;
+    *ta = ma;
+    *tb = mb;
+    
+    *a = p1 + ma * p21;
+    *b = p3 + mb * p43;
+    
+    return true;
+}
+
 bool rayRayIntersection2(
     simd_float2 as, simd_float2 ad, simd_float2 bs, simd_float2 bd, simd_float2 *intersection) {
     const float dx = bs.x - as.x;

@@ -252,7 +252,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
         }
     }
 
-    public func load(_ url: URL, values: Bool = true, options: Bool = true, controls: Bool = true, append: Bool = true) {
+    public func load(_ url: URL, ignoreControlTypeNone: Bool = false, values: Bool = true, options: Bool = true, controls: Bool = true, append: Bool = true) {
         do {
             let jsonDecoder = JSONDecoder()
             let data = try Data(contentsOf: url)
@@ -263,7 +263,8 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     setValue: values,
                     setOptions: options,
                     setControl: controls,
-                    append: append
+                    append: append,
+                    ignoreControlTypeNone: ignoreControlTypeNone
                 )
             }
 
@@ -273,8 +274,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
         }
     }
 
-    func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, setControl: Bool, append: Bool) {
+    func setParameterFrom(param: any Parameter, setValue: Bool, setOptions: Bool, setControl: Bool, append: Bool, ignoreControlTypeNone: Bool = false) {
         let label = param.label
+        let canSetValue = !(param.controlType == .none && ignoreControlTypeNone) && setValue
+        if ignoreControlTypeNone {
+            print(" \(param.label) - canSetValue: \(canSetValue)")
+        }
         if append, paramsMap[label] == nil {
             self.append(param.clone())
         } else if let mp = paramsMap[label] {
@@ -282,7 +287,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                 mp.controlType = param.controlType
             }
             if let p = param as? FloatParameter, let mfp = mp as? FloatParameter {
-                if setValue {
+                if canSetValue {
                     mfp.value = p.value
                 }
                 if setOptions {
@@ -290,7 +295,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mfp.max = p.max
                 }
             } else if let p = param as? Float2Parameter, let mfp = mp as? Float2Parameter {
-                if setValue {
+                if canSetValue {
                     mfp.value = p.value
                 }
                 if setOptions {
@@ -298,7 +303,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mfp.max = p.max
                 }
             } else if let p = param as? Float3Parameter, let mfp = mp as? Float3Parameter {
-                if setValue {
+                if canSetValue {
                     mfp.value = p.value
                 }
                 if setOptions {
@@ -306,7 +311,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mfp.max = p.max
                 }
             } else if let p = param as? PackedFloat3Parameter, let mfp = mp as? PackedFloat3Parameter {
-                if setValue {
+                if canSetValue {
                     mfp.value = p.value
                 }
                 if setOptions {
@@ -314,7 +319,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mfp.max = p.max
                 }
             } else if let p = param as? Float4Parameter, let mfp = mp as? Float4Parameter {
-                if setValue {
+                if canSetValue {
                     mfp.value = p.value
                 }
                 if setOptions {
@@ -322,7 +327,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mfp.max = p.max
                 }
             } else if let p = param as? IntParameter, let mip = mp as? IntParameter {
-                if setValue {
+                if canSetValue {
                     mip.value = p.value
                 }
                 if setOptions {
@@ -331,7 +336,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                 }
 
             } else if let p = param as? Int2Parameter, let mip = mp as? Int2Parameter {
-                if setValue {
+                if canSetValue {
                     mip.value = p.value
                 }
                 if setOptions {
@@ -340,7 +345,7 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                 }
 
             } else if let p = param as? Int3Parameter, let mip = mp as? Int3Parameter {
-                if setValue {
+                if canSetValue {
                     mip.value = p.value
                 }
                 if setOptions {
@@ -349,26 +354,26 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                 }
 
             } else if let p = param as? DoubleParameter, let mdp = mp as? DoubleParameter {
-                if setValue {
+                if canSetValue {
                     mdp.value = p.value
                 }
-                if setOptions {
+                if canSetValue {
                     mdp.min = p.min
                     mdp.max = p.max
                 }
             } else if let p = param as? BoolParameter, let mbp = mp as? BoolParameter {
-                if setValue {
+                if canSetValue {
                     mbp.value = p.value
                 }
             } else if let p = param as? StringParameter, let mbp = mp as? StringParameter {
-                if setValue {
+                if canSetValue {
                     mbp.value = p.value
                 }
                 if setOptions {
                     mbp.options = p.options
                 }
             } else if let p = param as? UInt32Parameter, let mbp = mp as? UInt32Parameter {
-                if setValue {
+                if canSetValue {
                     mbp.value = p.value
                 }
                 if setOptions {
@@ -376,12 +381,12 @@ public final class ParameterGroup: Codable, CustomStringConvertible, ObservableO
                     mbp.max = p.max
                 }
             } else if let p = param as? Float3x3Parameter, let mbp = mp as? Float3x3Parameter {
-                if setValue {
+                if canSetValue {
                     mbp.value = p.value
                 }
 
             } else if let p = param as? Float4x4Parameter, let mbp = mp as? Float4x4Parameter {
-                if setValue {
+                if canSetValue {
                     mbp.value = p.value
                 }
             }

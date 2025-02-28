@@ -49,8 +49,14 @@ typedef struct Polylines2D {
 
 typedef struct Polyline3D {
     int count;
+    int capacity;
     simd_float3 *data;
 } Polyline3D;
+
+typedef struct Polylines3D {
+    int count;
+    Polyline3D *data;
+} Polylines3D;
 
 typedef struct Points2D {
     int count;
