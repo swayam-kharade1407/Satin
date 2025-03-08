@@ -8,6 +8,10 @@ public func easeSmoothstep(_ t: Double) -> Double {
     return t * t * (3 - 2 * t)
 }
 
+public func easeSmootherstep(_ t: Double) -> Double {
+    return t * t * t * (t * (6.0 * t - 15.0) + 10.0)
+}
+
 public func easeInSine(_ t: Double) -> Double {
     return sin(1.5707963 * t)
 }
@@ -180,6 +184,10 @@ public func easeLinear(_ t: Float) -> Float {
 
 public func easeSmoothstep(_ t: Float) -> Float {
     return t * t * (3 - 2 * t)
+}
+
+public func easeSmootherstep(_ t: Float) -> Float {
+    return t * t * t * (t * (6.0 * t - 15.0) + 10.0)
 }
 
 public func easeInSine(_ t: Float) -> Float {

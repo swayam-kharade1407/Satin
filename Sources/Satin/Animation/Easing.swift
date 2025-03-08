@@ -10,6 +10,7 @@ import Foundation
 public enum Easing {
     case linear
     case smoothstep
+    case smootherstep
     case inSine
     case outSine
     case inOutSine
@@ -47,6 +48,8 @@ public enum Easing {
                 easeLinear
             case .smoothstep:
                 easeSmoothstep
+            case .smootherstep:
+                easeSmootherstep
             case .inSine:
                 easeInSine
             case .outSine:
