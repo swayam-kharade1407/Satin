@@ -47,9 +47,7 @@ public func easeOutCubic(_ t: Double) -> Double {
 }
 
 public func easeInOutCubic(_ t: Double) -> Double {
-    let tMinueOne = t - 1.0
-    let tMinueTwo = t - 2.0
-    return t < 0.5 ? 4.0 * t * t * t : 1.0 + tMinueOne * (2.0 * tMinueTwo) * (2.0 * t)
+    return t < 0.5 ? 4.0 * t * t * t : 1.0 - pow(-2.0 * t + 2.0, 3.0) / 2.0
 }
 
 public func easeInQuart(_ t: Double) -> Double {
@@ -225,9 +223,7 @@ public func easeOutCubic(_ t: Float) -> Float {
 }
 
 public func easeInOutCubic(_ t: Float) -> Float {
-    let tMinueOne = t - 1.0
-    let tMinueTwo = t - 2.0
-    return t < 0.5 ? 4.0 * t * t * t : 1.0 + tMinueOne * (2.0 * tMinueTwo) * (2.0 * t)
+    return t < 0.5 ? 4.0 * t * t * t : 1.0 - pow(-2.0 * t + 2.0, 3.0) / 2.0
 }
 
 public func easeInQuart(_ t: Float) -> Float {
