@@ -741,7 +741,7 @@ func parseParameters(source: String) -> ParameterGroup? {
                             success = true
                         }
                     }
-                } else if (uiType == "toggle" || uiType == "button"), vType == "bool" {
+                } else if uiType == "toggle" || uiType == "button", vType == "bool" {
                     let controlType: ControlType = uiType == "toggle" ? .toggle : .button
 
                     var success = false

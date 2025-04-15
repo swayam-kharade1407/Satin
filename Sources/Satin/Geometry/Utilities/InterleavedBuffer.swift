@@ -33,7 +33,7 @@ public class InterleavedBuffer: Equatable {
     var source: Any?
 
     public var needsUpdate: Bool = true
-    public var buffer: MTLBuffer? 
+    public var buffer: MTLBuffer?
 
     public weak var delegate: InterleavedBufferDelegate?
 
@@ -52,7 +52,7 @@ public class InterleavedBuffer: Equatable {
         self.count = count
         self.source = source
         self.data = data
-        self.needsUpdate = true
+        needsUpdate = true
         delegate?.updated(buffer: self)
     }
 
@@ -75,4 +75,3 @@ public class InterleavedBuffer: Equatable {
         source = nil
     }
 }
-

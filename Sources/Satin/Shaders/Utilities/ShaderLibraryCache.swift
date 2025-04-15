@@ -9,8 +9,8 @@ import Foundation
 import Metal
 
 public final class ShaderLibraryCache: Sendable {
-    nonisolated(unsafe) private static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
-    nonisolated(unsafe) private static var defaultLibrary: MTLLibrary?
+    private nonisolated(unsafe) static var cache: [ShaderLibraryConfiguration: MTLLibrary] = [:]
+    private nonisolated(unsafe) static var defaultLibrary: MTLLibrary?
 
     private static let defaultLibraryQueue = DispatchQueue(label: "ShaderLibraryCacheDefaultLibraryQueue", attributes: .concurrent)
     private static let libraryQueue = DispatchQueue(label: "ShaderLibraryCacheQueue", attributes: .concurrent)

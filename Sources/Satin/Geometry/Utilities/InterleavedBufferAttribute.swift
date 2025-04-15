@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Reza Ali on 7/13/23.
 //
@@ -65,11 +65,11 @@ public final class Float4InterleavedBufferAttribute: GenericInterleavedBufferAtt
     override public var components: Int { simd_float4.scalarCount }
 }
 
-//public final class PackedFloat3InterleavedBufferAttribute: GenericInterleavedBufferAttribute<simd_float3> {
+// public final class PackedFloat3InterleavedBufferAttribute: GenericInterleavedBufferAttribute<simd_float3> {
 //    override public var type: AttributeType { .packedfloat3 }
 //    override public var components: Int { simd_float3.scalarCount }
 //
 //    override public var size: Int { return 12 }
 //    override public var stride: Int { return 12 }
 //    override public var alignment: Int { return 4 }
-//}
+// }

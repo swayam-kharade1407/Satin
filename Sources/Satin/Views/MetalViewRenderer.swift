@@ -44,7 +44,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     public internal(set) var appearance: Appearance = .unspecified {
         didSet {
-            self.updateAppearance()
+            updateAppearance()
         }
     }
 
@@ -189,7 +189,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
 
     // MARK: - ForgeMetalViewRenderDelegate
 
-    internal func draw(metalLayer: CAMetalLayer, drawable: CAMetalDrawable) {
+    func draw(metalLayer: CAMetalLayer, drawable: CAMetalDrawable) {
         guard isSetup, let commandBuffer = preDraw() else { return }
 
         update()
@@ -216,7 +216,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         postDraw(drawable: drawable, commandBuffer: commandBuffer)
     }
 
-    internal func getDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+    func getDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
         guard depthPixelFormat != .invalid else { return nil }
 
         guard ref.width > 0, ref.height > 0 else { return nil }
@@ -260,7 +260,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         return texture
     }
 
-    internal func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+    func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
         guard sampleCount > 1, depthPixelFormat != .invalid else { return nil }
 
         guard ref.width > 0, ref.height > 0 else { return nil }
@@ -304,7 +304,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         return texture
     }
 
-    internal func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+    func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
         var replace = false
 
         if colorMultisampleTextures.count > index,
@@ -322,7 +322,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         descriptor.pixelFormat = colorPixelFormat
         descriptor.sampleCount = sampleCount
         descriptor.textureType = .type2DMultisample
-        
+
         descriptor.width = ref.width
         descriptor.height = ref.height
 
@@ -345,7 +345,7 @@ open class MetalViewRenderer: MetalViewRendererDelegate {
         return texture
     }
 
-    internal func drawableResized(size: CGSize, scaleFactor: CGFloat) {
+    func drawableResized(size: CGSize, scaleFactor: CGFloat) {
 #if DEBUG_VIEWS
         print("renderer resize: \(size), scaleFactor: \(scaleFactor) - MetalViewRenderer: \(id)")
 #endif

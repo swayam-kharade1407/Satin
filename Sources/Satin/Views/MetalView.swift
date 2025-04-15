@@ -63,7 +63,7 @@ public final class MetalView: NSView, CALayerDelegate {
     private var _displayLink: CVDisplayLink?
     private var _displaySource: DispatchSourceUserDataAdd?
     private let _dispatchRenderLoop: CVDisplayLinkOutputCallback = {
-        displayLink, now, outputTime, flagsIn, flagsOut, displayLinkContext in
+        _, _, _, _, _, displayLinkContext in
         let source = Unmanaged<DispatchSourceUserDataAdd>.fromOpaque(displayLinkContext!).takeUnretainedValue()
         source.add(data: 1)
         return kCVReturnSuccess
@@ -111,7 +111,7 @@ public final class MetalView: NSView, CALayerDelegate {
         metalLayer.maximumDrawableCount = maxBuffersInFlight
         metalLayer.delegate = self
 
-        metalLayer.colorspace = nil //CGColorSpace(name: CGColorSpace.extendedSRGB)
+        metalLayer.colorspace = nil // CGColorSpace(name: CGColorSpace.extendedSRGB)
         metalLayer.wantsExtendedDynamicRangeContent = true
     }
 
@@ -186,7 +186,7 @@ public final class MetalView: NSView, CALayerDelegate {
 
     // MARK: - Render Loop
 
-    internal func setupRenderLoop(screen: NSScreen?) {
+    func setupRenderLoop(screen: NSScreen?) {
         guard _displayLink == nil else { return }
 
 #if DEBUG_VIEW
@@ -228,7 +228,7 @@ public final class MetalView: NSView, CALayerDelegate {
         )
     }
 
-    internal func pauseRenderLoop() {
+    func pauseRenderLoop() {
         if let displayLink = _displayLink, !_displayLinkPaused {
 #if DEBUG_VIEW
             print("pauseRenderLoop - MetalView: \(delegate?.id)")
@@ -239,7 +239,7 @@ public final class MetalView: NSView, CALayerDelegate {
         _displayLinkPaused = true
     }
 
-    internal func resumeRenderLoop() {
+    func resumeRenderLoop() {
         if let displayLink = _displayLink, _displayLinkPaused {
 #if DEBUG_VIEW
             print("resumeRenderLoop - MetalView: \(delegate?.id)")
@@ -562,7 +562,7 @@ public final class MetalView: UIView {
         guard let drawable = metalLayer.nextDrawable() else { return }
         delegate?.draw(metalLayer: metalLayer, drawable: drawable)
     }
-    
+
     // MARK: - Event Based Rendering
 
     override public func display(_ layer: CALayer) {

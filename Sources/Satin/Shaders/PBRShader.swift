@@ -34,7 +34,7 @@ open class PBRShader: SourceShader {
         }
     }
 
-    open override func getConstants() -> [String] {
+    override open func getConstants() -> [String] {
         var results = super.getConstants()
         for pbrTexType in PBRTextureType.allCases {
             if let sampler = samplers[pbrTexType], let descriptor = sampler {
@@ -44,7 +44,7 @@ open class PBRShader: SourceShader {
         return results
     }
 
-    open override func getDefines() -> [ShaderDefine] {
+    override open func getDefines() -> [ShaderDefine] {
         var results = super.getDefines()
 
         if !maps.isEmpty { results.append(ShaderDefine(key: "HAS_MAPS", value: NSString(string: "true"))) }

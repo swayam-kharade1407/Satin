@@ -287,13 +287,13 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    internal var _updateBounds = true {
+    var _updateBounds = true {
         didSet {
             updateLocalBounds = true
         }
     }
 
-    internal var _bounds = createBounds()
+    var _bounds = createBounds()
     public var bounds: Bounds {
         if _updateBounds {
             _bounds = computeBounds()
@@ -315,7 +315,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    internal var _updateLocalBounds = true {
+    var _updateLocalBounds = true {
         didSet {
             if _updateLocalBounds {
                 updateWorldBounds = true
@@ -323,7 +323,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    internal var _localBounds = createBounds()
+    var _localBounds = createBounds()
     public var localBounds: Bounds {
         if _updateLocalBounds {
             _localBounds = computeLocalBounds()
@@ -345,9 +345,9 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    internal var _updateWorldBounds = true
+    var _updateWorldBounds = true
 
-    internal var _worldBounds = createBounds()
+    var _worldBounds = createBounds()
     public var worldBounds: Bounds {
         if _updateWorldBounds {
             _worldBounds = computeWorldBounds()
@@ -702,7 +702,7 @@ open class Object: Codable, ObservableObject {
 
     public var isVisible: Bool {
         if let parent {
-            return (parent.isVisible && visible)
+            return parent.isVisible && visible
         } else {
             return visible
         }
@@ -712,9 +712,9 @@ open class Object: Codable, ObservableObject {
 
     public var isLight: Bool {
         if let parent {
-            return (parent.isLight || (self is Light))
+            return parent.isLight || (self is Light)
         } else {
-            return (self is Light)
+            return self is Light
         }
     }
 
@@ -754,7 +754,7 @@ open class Object: Codable, ObservableObject {
         guard visible || options.invisible, intersects(ray: ray), options.recursive else { return false }
 
         var results = [RaycastResult]()
-        
+
         for child in children {
             if child.intersect(
                 ray: ray,
@@ -765,9 +765,9 @@ open class Object: Codable, ObservableObject {
                 return true
             }
         }
-        
+
         intersections.append(contentsOf: results)
-        
+
         return results.count > 0
     }
 

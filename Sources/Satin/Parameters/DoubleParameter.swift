@@ -15,7 +15,7 @@ public final class DoubleParameter: GenericParameterWithMinMax<Double> {
         self.init(label, value, 0.0, 1.0, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         DoubleParameter(label, value, min, max, controlType)
     }
 }

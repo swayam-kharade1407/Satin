@@ -12,7 +12,7 @@ import QuartzCore
 import AppKit
 #endif
 
-internal protocol MetalViewRendererDelegate: AnyObject {
+protocol MetalViewRendererDelegate: AnyObject {
     var id: String { get }
     func draw(metalLayer: CAMetalLayer, drawable: CAMetalDrawable)
     func drawableResized(size: CGSize, scaleFactor: CGFloat)

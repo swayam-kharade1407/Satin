@@ -92,16 +92,16 @@ public struct RenderingConfiguration: Hashable {
 extension RenderingConfiguration: Equatable {
     public static func == (lhs: RenderingConfiguration, rhs: RenderingConfiguration) -> Bool {
         lhs.blending == rhs.blending &&
-        lhs.vertexDescriptor == rhs.vertexDescriptor &&
-        lhs.instancing == rhs.instancing &&
-        lhs.lighting == rhs.lighting &&
-        lhs.lightCount == rhs.lightCount &&
-        lhs.castShadow == rhs.castShadow &&
-        lhs.receiveShadow == rhs.receiveShadow &&
-        lhs.shadowCount == rhs.shadowCount &&
-        lhs.defines == rhs.defines &&
-        lhs.constants == rhs.constants &&
-        lhs.tessellationDescriptor == rhs.tessellationDescriptor
+            lhs.vertexDescriptor == rhs.vertexDescriptor &&
+            lhs.instancing == rhs.instancing &&
+            lhs.lighting == rhs.lighting &&
+            lhs.lightCount == rhs.lightCount &&
+            lhs.castShadow == rhs.castShadow &&
+            lhs.receiveShadow == rhs.receiveShadow &&
+            lhs.shadowCount == rhs.shadowCount &&
+            lhs.defines == rhs.defines &&
+            lhs.constants == rhs.constants &&
+            lhs.tessellationDescriptor == rhs.tessellationDescriptor
     }
 }
 

@@ -101,7 +101,7 @@ public final class BoxGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateBoxGeometryData(size.x, size.y, size.z, center.x, center.y, center.z, resolution.x, resolution.y, resolution.z)
     }
 }

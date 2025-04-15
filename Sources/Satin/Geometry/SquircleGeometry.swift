@@ -17,7 +17,7 @@ public final class SquircleGeometry: SatinGeometry {
             }
         }
     }
-    
+
     public var radius: Float = 4.0 {
         didSet {
             if oldValue != radius {
@@ -25,7 +25,7 @@ public final class SquircleGeometry: SatinGeometry {
             }
         }
     }
-    
+
     public var angularResolution: Int = 90 {
         didSet {
             if oldValue != angularResolution {
@@ -33,7 +33,7 @@ public final class SquircleGeometry: SatinGeometry {
             }
         }
     }
-    
+
     public var radialResolution: Int = 20 {
         didSet {
             if oldValue != radialResolution {
@@ -50,7 +50,7 @@ public final class SquircleGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateSquircleGeometryData(size, radius, Int32(angularResolution), Int32(radialResolution))
     }
 }

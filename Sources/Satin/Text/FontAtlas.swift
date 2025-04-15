@@ -26,7 +26,7 @@ public struct FontAtlas: Decodable {
     public var height: Int
     public var characters: [String: FontAtlasCharacter]
 
-    static public func load(url: URL) throws -> FontAtlas {
+    public static func load(url: URL) throws -> FontAtlas {
         let data = try Data(contentsOf: url)
         return try JSONDecoder().decode(FontAtlas.self, from: data)
     }

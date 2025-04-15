@@ -239,7 +239,7 @@ open class StandardMaterial: Material {
     /// This allows users to scale the texture values by the uniform values.
     /// When this function is called, the value is set to one to ensure
     /// the texture values value aren't scaled to zero by the uniform
-    internal func setTextureMultiplierUniformToOne(type: PBRTextureType) {
+    func setTextureMultiplierUniformToOne(type: PBRTextureType) {
         switch type {
             case .baseColor:
                 baseColor = .one

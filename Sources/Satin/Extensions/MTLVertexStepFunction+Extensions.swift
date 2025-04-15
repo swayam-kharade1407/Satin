@@ -1,6 +1,6 @@
 //
 //  MTLVertexStepFunction+Extensions.swift
-//  
+//
 //
 //  Created by Reza Ali on 7/17/23.
 //

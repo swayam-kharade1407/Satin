@@ -20,7 +20,6 @@ public final class PlaneGeometry: SatinGeometry {
         case zy = 5 // points in -x direction
     }
 
-
     public var width: Float {
         get {
             size.x
@@ -47,7 +46,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    public var resolution: simd_int2 = .init(repeating: 1)  {
+    public var resolution: simd_int2 = .init(repeating: 1) {
         didSet {
             if oldValue != resolution {
                 _updateData = true
@@ -55,7 +54,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    public var orientation: PlaneOrientation = .xy  {
+    public var orientation: PlaneOrientation = .xy {
         didSet {
             if oldValue != orientation {
                 _updateData = true
@@ -63,7 +62,7 @@ public final class PlaneGeometry: SatinGeometry {
         }
     }
 
-    public var centered: Bool = true  {
+    public var centered: Bool = true {
         didSet {
             if oldValue != centered {
                 _updateData = true
@@ -87,7 +86,7 @@ public final class PlaneGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generatePlaneGeometryData(size.x, size.y, resolution.x, resolution.y, orientation.rawValue, centered)
     }
 }

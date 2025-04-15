@@ -8,7 +8,7 @@
 import Foundation
 
 public final class ShaderLibrarySourceCache: Sendable {
-    nonisolated(unsafe) private static var cache: [ShaderLibraryConfiguration: String] = [:]
+    private nonisolated(unsafe) static var cache: [ShaderLibraryConfiguration: String] = [:]
 
     private static let queue = DispatchQueue(label: "ShaderLibrarySourceCacheQueue", attributes: .concurrent)
 
@@ -138,7 +138,7 @@ public final class ShaderLibrarySourceCache: Sendable {
         }
 
 //        print(source)
-        
+
         return source
     }
 }

@@ -74,7 +74,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
 
     private let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
 
-    internal var onDisappearAction: (() -> Void)?
+    var onDisappearAction: (() -> Void)?
 
     public init() {}
 
@@ -103,7 +103,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         }
     }
 
-    internal func renderLoop() {
+    func renderLoop() {
         while true {
             if layerRenderer.state == .invalidated {
                 cleanup()
@@ -160,7 +160,6 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
     ) {}
 
     open func preDraw(frame: LayerRenderer.Frame) -> (drawable: LayerRenderer.Drawable, commandBuffer: MTLCommandBuffer, cameras: [PerspectiveCamera])? {
-        
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
             fatalError("Failed to create command buffer")
         }
@@ -314,9 +313,9 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         postDraw(frame: frame, drawable: drawable, commandBuffer: commandBuffer)
     }
 
-    internal var colorMultisampleTextures: [MTLTexture?] = []
+    var colorMultisampleTextures: [MTLTexture?] = []
 
-    internal func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+    func getMultisampleColorTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
         var replace = false
 
         if colorMultisampleTextures.count > index,
@@ -324,8 +323,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         {
             if colorMultisampleTexture.width == ref.width && colorMultisampleTexture.height == ref.height {
                 return colorMultisampleTexture
-            }
-            else {
+            } else {
                 replace = true
             }
         }
@@ -346,25 +344,23 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         let texture = device.makeTexture(descriptor: descriptor)
 
         if layerLayout == .dedicated {
-            texture?.label = "\(id) Multisample Color Texture \(index % 2 == 1 ? "Right" : "Left") \(index/2)/\(maxBuffersInFlight)"
-        }
-        else {
+            texture?.label = "\(id) Multisample Color Texture \(index % 2 == 1 ? "Right" : "Left") \(index / 2)/\(maxBuffersInFlight)"
+        } else {
             texture?.label = "\(id) Multisample Color Texture \(index + 1)/\(maxBuffersInFlight)"
         }
 
         if replace {
             colorMultisampleTextures[index] = texture
-        }
-        else {
+        } else {
             colorMultisampleTextures.append(texture)
         }
 
         return texture
     }
 
-    internal var depthMultisampleTextures: [MTLTexture?] = []
+    var depthMultisampleTextures: [MTLTexture?] = []
 
-    internal func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
+    func getMultisampleDepthTexture(ref: MTLTexture, index: Int) -> MTLTexture? {
         var replace = false
 
         if depthMultisampleTextures.count > index,
@@ -372,8 +368,7 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         {
             if depthMultisampleTexture.width == ref.width && depthMultisampleTexture.height == ref.height {
                 return depthMultisampleTexture
-            }
-            else {
+            } else {
                 replace = true
             }
         }
@@ -394,16 +389,14 @@ open class MetalLayerRenderer: CompositorLayerConfiguration {
         let texture = device.makeTexture(descriptor: descriptor)
 
         if layerLayout == .dedicated {
-            texture?.label = "\(id) Multisample Depth Texture \(index % 2 == 1 ? "Right" : "Left") \(index/2)/\(maxBuffersInFlight)"
-        }
-        else {
+            texture?.label = "\(id) Multisample Depth Texture \(index % 2 == 1 ? "Right" : "Left") \(index / 2)/\(maxBuffersInFlight)"
+        } else {
             texture?.label = "\(id) Multisample Depth Texture \(index + 1)/\(maxBuffersInFlight)"
         }
 
         if replace {
             depthMultisampleTextures[index] = texture
-        }
-        else {
+        } else {
             depthMultisampleTextures.append(texture)
         }
 

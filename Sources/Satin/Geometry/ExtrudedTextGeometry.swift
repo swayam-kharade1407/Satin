@@ -53,10 +53,9 @@ public final class ExtrudedTextGeometry: TesselatedTextGeometry {
             bData = cacheReverseData
             sData = cacheExtrudeData
             characterPaths[char] = charPaths
-        } else if let glyphPath = CTFontCreatePathForGlyph(ctFont, glyph, nil) {
+        }
+        else if let glyphPath = CTFontCreatePathForGlyph(ctFont, glyph, nil) {
             let glyphPaths = getPolylines(glyphPath, angleLimit, fontSize / 10.0)
-
-
 
             var _paths: [UnsafeMutablePointer<simd_float2>?] = []
             var _lengths: [Int32] = []

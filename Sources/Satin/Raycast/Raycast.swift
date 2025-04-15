@@ -20,7 +20,7 @@ public func raycast(ray: Ray, objects: [Object], options: RaycastOptions = .recu
             ray: ray,
             intersections: &intersections,
             options: options
-        ) && options.first {
+        ), options.first {
             return intersections
         }
     }
@@ -35,7 +35,7 @@ public func raycast(origin: simd_float3, direction: simd_float3, objects: [Objec
             ray: Ray(origin: origin, direction: direction),
             intersections: &intersections,
             options: options
-        ) && options.first {
+        ), options.first {
             return intersections
         }
     }
@@ -50,7 +50,7 @@ public func raycast(camera: Camera, coordinate: simd_float2, objects: [Object], 
             ray: Ray(camera: camera, coordinate: coordinate),
             intersections: &intersections,
             options: options
-        ) && options.first {
+        ), options.first {
             return intersections
         }
     }
@@ -64,7 +64,7 @@ public func raycast(ray: Ray, object: Object, options: RaycastOptions = .recursi
         ray: ray,
         intersections: &intersections,
         options: options
-    ) && options.first {
+    ), options.first {
         return intersections
     }
     intersections.sort { $0.distance < $1.distance }
@@ -77,7 +77,7 @@ public func raycast(origin: simd_float3, direction: simd_float3, object: Object,
         ray: Ray(origin: origin, direction: direction),
         intersections: &intersections,
         options: options
-    ) && options.first {
+    ), options.first {
         return intersections
     }
     intersections.sort { $0.distance < $1.distance }
@@ -90,7 +90,7 @@ public func raycast(camera: Camera, coordinate: simd_float2, object: Object, opt
         ray: Ray(camera: camera, coordinate: coordinate),
         intersections: &intersections,
         options: options
-    ) && options.first {
+    ), options.first {
         return intersections
     }
     intersections.sort { $0.distance < $1.distance }

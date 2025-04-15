@@ -6,9 +6,9 @@
 //  Copyright © 2023 Reza Ali. All rights reserved.
 //
 
+import Combine
 import Foundation
 import Metal
-import Combine
 import simd
 
 open class TessellationMesh: Mesh {
@@ -18,6 +18,7 @@ open class TessellationMesh: Mesh {
             tessellatePublisher.send(tessellate)
         }
     }
+
     public let tessellatePublisher = PassthroughSubject<Bool, Never>()
 
     public init(label: String, geometry: TessellationGeometry, material: Material?, tessellator: Tessellator, tessellate: Bool = true, visible: Bool = true, renderOrder: Int = 0, renderPass: Int = 0) {
@@ -32,20 +33,21 @@ open class TessellationMesh: Mesh {
             renderPass: renderPass
         )
     }
-    
+
     public required init(from decoder: Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
 
-    public override func encode(_ commandBuffer: any MTLCommandBuffer) {
+    override public func encode(_ commandBuffer: any MTLCommandBuffer) {
         if tessellate {
             tessellator.update(commandBuffer, iterations: 1)
         }
         super.encode(commandBuffer)
     }
+
     // MARK: - Draw
 
-    public override func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
+    override public func draw(renderContext: Context, renderEncoderState: RenderEncoderState, instanceCount: Int, shadow: Bool) {
         guard instanceCount > 0, let vertexUniforms = vertexUniforms[renderContext], let material, !geometry.vertexBuffers.isEmpty else { return }
 
         renderEncoderState.vertexVertexUniforms = vertexUniforms

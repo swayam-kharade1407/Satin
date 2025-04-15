@@ -11,7 +11,6 @@ import Foundation
 import SatinCore
 #endif
 
-
 extension Float {
     var toDegrees: Float {
         radToDeg(self)

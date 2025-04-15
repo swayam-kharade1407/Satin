@@ -14,9 +14,9 @@ public final class TessellationGeometry: Geometry {
 
     public var patchCount: Int {
         if indexCount > 0 {
-            return (indexCount / 3)
+            return indexCount / 3
         } else {
-            return (vertexCount / 3)
+            return vertexCount / 3
         }
     }
 

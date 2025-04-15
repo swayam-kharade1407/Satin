@@ -1,6 +1,6 @@
 //
 //  VertexAttribute.swift
-//  
+//
 //
 //  Created by Reza Ali on 8/2/23.
 //
@@ -20,7 +20,7 @@ public protocol VertexAttribute: AnyObject, Equatable {
     var stride: Int { get }
     var alignment: Int { get }
     var components: Int { get }
-    
+
     var stepRate: Int { get }
     var stepFunction: MTLVertexStepFunction { get }
 }

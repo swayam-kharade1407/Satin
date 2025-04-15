@@ -245,8 +245,7 @@ open class Renderer {
         }
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [], renderTarget: MTLTexture)
-    {
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [], renderTarget: MTLTexture) {
         if context.sampleCount > 1 {
             let resolveTexture = renderPassDescriptor.colorAttachments[0].resolveTexture
             renderPassDescriptor.colorAttachments[0].resolveTexture = renderTarget
@@ -287,8 +286,7 @@ open class Renderer {
         )
     }
 
-    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = [])
-    {
+    public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, scene: Object, cameras: [Camera], viewports: [MTLViewport], viewMappings: [MTLVertexAmplificationViewMapping] = []) {
         let simd_viewports = viewports.map(\.float4)
         update(
             commandBuffer: commandBuffer,
@@ -962,7 +960,7 @@ open class Renderer {
                     self?._updateLightDataBuffer = true
                 }.store(in: &lightDataSubscriptions)
             }
-            lightDataBuffer = StructBuffer<LightData>.init(
+            lightDataBuffer = StructBuffer<LightData>(
                 device: context.device,
                 count: lightList.count,
                 label: "Light Data Buffer"
@@ -1002,7 +1000,7 @@ open class Renderer {
             shadowArgumentBuffer = nil
 
         } else {
-            shadowMatricesBuffer = StructBuffer<simd_float4x4>.init(
+            shadowMatricesBuffer = StructBuffer<simd_float4x4>(
                 device: context.device,
                 count: shadowList.count,
                 label: "Shadow Matrices Buffer"
@@ -1033,7 +1031,7 @@ open class Renderer {
                 shadowArgumentBuffer?.label = "Shadow Argument Buffer"
                 shadowArgumentEncoder.setArgumentBuffer(shadowArgumentBuffer, offset: 0)
 
-                let shadowDataBuffer = StructBuffer<ShadowData>.init(
+                let shadowDataBuffer = StructBuffer<ShadowData>(
                     device: context.device,
                     count: shadowList.count,
                     label: "Shadow Data Buffer"

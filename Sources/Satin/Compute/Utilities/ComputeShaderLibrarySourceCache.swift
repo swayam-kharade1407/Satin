@@ -8,8 +8,7 @@
 import Foundation
 
 public final class ComputeShaderLibrarySourceCache: Sendable {
-
-    nonisolated(unsafe) private static var cache: [ComputeShaderLibraryConfiguration: String] = [:]
+    private nonisolated(unsafe) static var cache: [ComputeShaderLibraryConfiguration: String] = [:]
     private static let queue = DispatchQueue(label: "ComputeShaderLibrarySourceCacheQueue", attributes: .concurrent)
 
     static func invalidateLibrarySource(configuration: ComputeShaderLibraryConfiguration) {

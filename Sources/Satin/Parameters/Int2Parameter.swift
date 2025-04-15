@@ -16,7 +16,7 @@ public final class Int2Parameter: GenericParameterWithMinMax<simd_int2> {
         self.init(label, value, .zero, .one, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         Int2Parameter(label, value, min, max, controlType)
     }
 }

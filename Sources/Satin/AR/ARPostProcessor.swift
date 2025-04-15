@@ -29,7 +29,7 @@ public class ARPostProcessor: PostProcessor {
         renderer.colorLoadAction = .load
     }
 
-    internal func update(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
+    func update(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
         guard let frame = session.currentFrame else { return }
         if let material = mesh.material as? ARPostMaterial {
             material.set("Camera Grain Intensity", frame.cameraGrainIntensity)
@@ -37,12 +37,12 @@ public class ARPostProcessor: PostProcessor {
         }
     }
 
-    public override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
+    override public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         update(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
         super.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 
-    public override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, renderTarget: MTLTexture) {
+    override public func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer, renderTarget: MTLTexture) {
         update(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
         super.draw(renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer, renderTarget: renderTarget)
     }

@@ -11,7 +11,7 @@ import simd
 
 public protocol IBLEnvironment: AnyObject {
     var environmentIntensity: Float { get }
-    
+
     var environment: MTLTexture? { get }
     var cubemapTexture: MTLTexture? { get }
 

@@ -17,7 +17,7 @@ import XCTest
 class BoundsTests: XCTestCase {
     func testComputeBoundsFromVertices() {
         var vertices0: [SatinVertex] = []
-        
+
         XCTAssert(
             computeBoundsFromVertices(&vertices0, 0).equals(createBounds())
         )

@@ -35,13 +35,14 @@ public protocol RawMutex: ScopedMutex {
     func unbalancedUnlock()
 }
 
-extension RawMutex {
-    public func sync<R>(execute work: () throws -> R) rethrows -> R {
+public extension RawMutex {
+    func sync<R>(execute work: () throws -> R) rethrows -> R {
         unbalancedLock()
         defer { unbalancedUnlock() }
         return try work()
     }
-    public func trySync<R>(execute work: () throws -> R) rethrows -> R? {
+
+    func trySync<R>(execute work: () throws -> R) rethrows -> R? {
         guard unbalancedTryLock() else { return nil }
         defer { unbalancedUnlock() }
         return try work()
@@ -100,8 +101,7 @@ public final class PThreadMutex: RawMutex {
 public final class UnfairLock: RawMutex {
     public typealias MutexPrimitive = os_unfair_lock
 
-    public init() {
-    }
+    public init() {}
 
     /// Exposed as an "unsafe" public property so non-scoped patterns can be implemented, if required.
     public var underlyingMutex = os_unfair_lock()

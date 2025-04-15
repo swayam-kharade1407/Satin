@@ -120,7 +120,7 @@ public final class MetalFileCompiler {
                     filePath: fileURLResolved.path,
                     timeInterval: 0.25,
                     active: watch
-                ) { [weak self] filePath in
+                ) { [weak self] _ in
                     ShaderSourceCache.removeSource(url: fileURL)
                     self?.onUpdatePublisher.send()
                 }

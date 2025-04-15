@@ -28,7 +28,7 @@ open class SatinGeometry: Geometry {
         setFrom(geometryData: generateGeometryData())
     }
 
-    open override func update() {
+    override open func update() {
         updateGeometryData()
         super.update()
     }

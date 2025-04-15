@@ -43,7 +43,7 @@ public final class Tween {
 
     private var lastDeltaTime: CFTimeInterval = 0.0
 
-    internal init(duration: Double) {
+    init(duration: Double) {
         self.duration = duration
     }
 
@@ -195,19 +195,19 @@ public final class Tween {
         return progress
     }
 
-    internal func updateProgress() {
+    func updateProgress() {
         guard tweening else { return }
         let deltaTime = (CFAbsoluteTimeGetCurrent() - startTime)
-        if deltaTime >= 0.0 && lastDeltaTime < 0.0 {
+        if deltaTime >= 0.0, lastDeltaTime < 0.0 {
             _onTweenStart?()
         }
         lastDeltaTime = deltaTime
         progress = deltaTime / duration
     }
 
-    internal func update() -> Bool {
+    func update() -> Bool {
         updateProgress()
-        
+
         guard tweening, progress >= 0.0 else { return complete }
 
         let _progress = pingPong(min(max(progress, 0.0), 1.0))

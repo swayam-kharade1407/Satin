@@ -8,8 +8,8 @@
 import Foundation
 
 public final class ShaderSourceCache: Sendable {
-    nonisolated(unsafe) private static var sourceCache: [URL: String] = [:]
-    nonisolated(unsafe) private static var compilerCache: [URL: MetalFileCompiler] = [:]
+    private nonisolated(unsafe) static var sourceCache: [URL: String] = [:]
+    private nonisolated(unsafe) static var compilerCache: [URL: MetalFileCompiler] = [:]
 
     private static let sourceQueue = DispatchQueue(label: "ShaderSourceCacheSourceQueue", attributes: .concurrent)
     private static let compilerQueue = DispatchQueue(label: "ShaderSourceCacheCompilerQueue", attributes: .concurrent)
@@ -62,7 +62,7 @@ public final class ShaderSourceCache: Sendable {
 
 public final class PassThroughVertexPipelineSource: Sendable {
     static let shared = PassThroughVertexPipelineSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesCommonURL("VertexShader.metal")
     private static let queue = DispatchQueue(label: "PassThroughVertexPipelineSourceQueue", attributes: .concurrent)
@@ -95,7 +95,7 @@ public final class PassThroughVertexPipelineSource: Sendable {
 
 public final class PassThroughShadowPipelineSource: Sendable {
     static let shared = PassThroughShadowPipelineSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesCommonURL("ShadowShader.metal")
     private static let queue = DispatchQueue(label: "PassThroughShadowPipelineSourceQueue", attributes: .concurrent)
@@ -128,7 +128,7 @@ public final class PassThroughShadowPipelineSource: Sendable {
 
 public final class ShadowFunctionSource: Sendable {
     static let shared = ShadowFunctionSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesLibraryURL("Shadow.metal")
     private static let queue = DispatchQueue(label: "ShadowFunctionSourceQueue", attributes: .concurrent)
@@ -161,7 +161,7 @@ public final class ShadowFunctionSource: Sendable {
 
 public final class ConstantsSource: Sendable {
     static let shared = ConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("Constants.metal")
     private static let queue = DispatchQueue(label: "ConstantsSourceQueue", attributes: .concurrent)
@@ -194,7 +194,7 @@ public final class ConstantsSource: Sendable {
 
 public final class ComputeConstantsSource: Sendable {
     static let shared = ComputeConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("ComputeConstants.metal")
     private static let queue = DispatchQueue(label: "ComputeConstantsSourceQueue", attributes: .concurrent)
@@ -227,7 +227,7 @@ public final class ComputeConstantsSource: Sendable {
 
 public final class MeshConstantsSource: Sendable {
     static let shared = MeshConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("MeshConstants.metal")
     private static let queue = DispatchQueue(label: "MeshConstantsSourceQueue", attributes: .concurrent)
@@ -260,7 +260,7 @@ public final class MeshConstantsSource: Sendable {
 
 public final class VertexConstantsSource: Sendable {
     static let shared = VertexConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("VertexConstants.metal")
     private static let queue = DispatchQueue(label: "VertexConstantsSourceQueue", attributes: .concurrent)
@@ -293,7 +293,7 @@ public final class VertexConstantsSource: Sendable {
 
 public final class FragmentConstantsSource: Sendable {
     static let shared = FragmentConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("FragmentConstants.metal")
     private static let queue = DispatchQueue(label: "FragmentConstantsSourceQueue", attributes: .concurrent)
@@ -326,7 +326,7 @@ public final class FragmentConstantsSource: Sendable {
 
 public final class PBRConstantsSource: Sendable {
     static let shared = PBRConstantsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("PBRConstants.metal")
     private static let queue = DispatchQueue(label: "PBRConstantsSourceQueue", attributes: .concurrent)
@@ -359,7 +359,7 @@ public final class PBRConstantsSource: Sendable {
 
 public final class RenderIncludeSource: Sendable {
     static let shared = RenderIncludeSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("RenderIncludes.metal")
     private static let queue = DispatchQueue(label: "RenderIncludeSourceQueue", attributes: .concurrent)
@@ -392,7 +392,7 @@ public final class RenderIncludeSource: Sendable {
 
 public final class ComputeIncludeSource: Sendable {
     static let shared = ComputeIncludeSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("ComputeIncludes.metal")
     private static let queue = DispatchQueue(label: "ComputeIncludeSourceQueue", attributes: .concurrent)
@@ -425,7 +425,7 @@ public final class ComputeIncludeSource: Sendable {
 
 public final class VertexSource: Sendable {
     static let shared = VertexSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("Vertex.metal")
     private static let queue = DispatchQueue(label: "VertexSourceQueue", attributes: .concurrent)
@@ -458,7 +458,7 @@ public final class VertexSource: Sendable {
 
 public final class VertexDataSource: Sendable {
     static let shared = VertexDataSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("VertexData.metal")
     private static let queue = DispatchQueue(label: "VertexDataSourceQueue", attributes: .concurrent)
@@ -491,7 +491,7 @@ public final class VertexDataSource: Sendable {
 
 public final class VertexUniformsSource: Sendable {
     static let shared = VertexUniformsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("VertexUniforms.metal")
     private static let queue = DispatchQueue(label: "VertexUniformsSourceQueue", attributes: .concurrent)
@@ -524,7 +524,7 @@ public final class VertexUniformsSource: Sendable {
 
 public final class InstanceMatrixUniformsSource: Sendable {
     static let shared = InstanceMatrixUniformsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("InstanceMatrixUniforms.metal")
     private static let queue = DispatchQueue(label: "InstanceMatrixUniformsSourceQueue", attributes: .concurrent)
@@ -557,7 +557,7 @@ public final class InstanceMatrixUniformsSource: Sendable {
 
 public final class LightingSource: Sendable {
     static let shared = LightingSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("LightData.metal")
     private static let queue = DispatchQueue(label: "LightingSourceQueue", attributes: .concurrent)
@@ -590,7 +590,7 @@ public final class LightingSource: Sendable {
 
 public final class ShadowDataSource: Sendable {
     static let shared = ShadowDataSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("ShadowData.metal")
     private static let queue = DispatchQueue(label: "ShadowDataSourceQueue", attributes: .concurrent)
@@ -623,7 +623,7 @@ public final class ShadowDataSource: Sendable {
 
 public final class InstancingArgsSource: Sendable {
     static let shared = InstancingArgsSource()
-    nonisolated(unsafe) private static var sharedSource: String?
+    private nonisolated(unsafe) static var sharedSource: String?
 
     private static let url = getPipelinesSatinURL("InstancingArgs.metal")
     private static let queue = DispatchQueue(label: "InstancingArgsSourceQueue", attributes: .concurrent)

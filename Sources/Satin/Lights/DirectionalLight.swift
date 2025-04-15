@@ -43,6 +43,7 @@ public final class DirectionalLight: Object, Light {
             setupShadow()
         }
     }
+
     public lazy var shadow: Shadow = DirectionalLightShadow(label: label)
 
     public let publisher = PassthroughSubject<Light, Never>()
@@ -79,8 +80,7 @@ public final class DirectionalLight: Object, Light {
         setupShadow()
     }
 
-    func setupTransformSubscriber()
-    {
+    func setupTransformSubscriber() {
         transformSubscriber = transformPublisher.sink { [weak self] _ in
             guard let self = self else { return }
             self.shadow.update(light: self)

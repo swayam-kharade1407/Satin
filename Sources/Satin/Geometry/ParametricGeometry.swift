@@ -58,8 +58,7 @@ public final class ParametricGeometry: Geometry {
         setupGeometry()
     }
 
-
-    public override func encode(_ commandBuffer: MTLCommandBuffer) {
+    override public func encode(_ commandBuffer: MTLCommandBuffer) {
         updateGeometry()
         super.encode(commandBuffer)
     }
@@ -123,7 +122,7 @@ public final class ParametricGeometry: Geometry {
 
     func updateGeometry() {
         if _updateGeometry {
-            setupGeometry()            
+            setupGeometry()
         }
     }
 

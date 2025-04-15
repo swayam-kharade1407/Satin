@@ -32,7 +32,7 @@ public final class UVDiskGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateUVDiskGeometryData(min(innerRadius, outerRadius), max(innerRadius, outerRadius))
     }
 }

@@ -11,7 +11,7 @@ import simd
 
 public protocol Renderable: AnyObject {
     var label: String { get }
-    
+
     var opaque: Bool { get }
     var doubleSided: Bool { get }
 

@@ -15,7 +15,7 @@ import Metal
 public class ARBackgroundRenderer: PostProcessor {
     // Captured image texture cache
     private var capturedImageTextureCache: CVMetalTextureCache!
-    internal var viewportSize = CGSize(width: 0, height: 0)
+    var viewportSize = CGSize(width: 0, height: 0)
     private var _updateGeometry = true
 
     public private(set) var capturedImageTextureY: CVMetalTexture? {
@@ -74,7 +74,7 @@ public class ARBackgroundRenderer: PostProcessor {
         _updateGeometry = true
     }
 
-    public override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override public func resize(size: (width: Float, height: Float), scaleFactor: Float) {
         super.resize(size: size, scaleFactor: scaleFactor)
         _updateGeometry = true
         viewportSize = CGSize(width: Int(size.width), height: Int(size.height))
@@ -82,7 +82,7 @@ public class ARBackgroundRenderer: PostProcessor {
 
     // MARK: - Internal Methods
 
-    internal func updateGeometry(_ frame: ARFrame) {
+    func updateGeometry(_ frame: ARFrame) {
         guard let interfaceOrientation = getOrientation() else { return }
 
         // Update the texture coordinates of our image plane to aspect fill the viewport
@@ -100,7 +100,7 @@ public class ARBackgroundRenderer: PostProcessor {
         mesh.geometry = geo
     }
 
-    internal func updateTextures(_ frame: ARFrame) {
+    func updateTextures(_ frame: ARFrame) {
         if CVPixelBufferGetPlaneCount(frame.capturedImage) == 2 {
             capturedImageTextureY = createTexture(
                 fromPixelBuffer: frame.capturedImage,
@@ -120,14 +120,14 @@ public class ARBackgroundRenderer: PostProcessor {
         }
     }
 
-    internal func setupTextureCache() {
+    func setupTextureCache() {
         // Create captured image texture cache
         var textureCache: CVMetalTextureCache?
         CVMetalTextureCacheCreate(nil, nil, context.device, nil, &textureCache)
         capturedImageTextureCache = textureCache
     }
 
-    internal func createTexture(fromPixelBuffer pixelBuffer: CVPixelBuffer, pixelFormat: MTLPixelFormat, planeIndex: Int) -> CVMetalTexture? {
+    func createTexture(fromPixelBuffer pixelBuffer: CVPixelBuffer, pixelFormat: MTLPixelFormat, planeIndex: Int) -> CVMetalTexture? {
         let width = CVPixelBufferGetWidthOfPlane(pixelBuffer, planeIndex)
         let height = CVPixelBufferGetHeightOfPlane(pixelBuffer, planeIndex)
 
@@ -141,12 +141,9 @@ public class ARBackgroundRenderer: PostProcessor {
         return texture
     }
 
-    internal func getOrientation() -> UIInterfaceOrientation? {
+    func getOrientation() -> UIInterfaceOrientation? {
         return UIWindow.keyWindow?.windowScene?.interfaceOrientation
     }
 }
 
 #endif
-
-
-

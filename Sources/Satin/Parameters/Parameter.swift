@@ -100,12 +100,12 @@ public enum ParameterType: String, Codable {
 
     var string: String {
         switch self {
-            case .uint32:
-                return "uint32_t"
-            case .packedfloat3:
-                return "packed_float3"
-            default:
-                return self.rawValue
+        case .uint32:
+            return "uint32_t"
+        case .packedfloat3:
+            return "packed_float3"
+        default:
+            return self.rawValue
         }
     }
 }

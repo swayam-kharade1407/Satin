@@ -16,7 +16,7 @@ public final class Int3Parameter: GenericParameterWithMinMax<simd_int3> {
         self.init(label, value, .zero, .one, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         Int3Parameter(label, value, min, max, controlType)
     }
 }

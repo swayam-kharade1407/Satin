@@ -9,7 +9,7 @@
 import simd
 
 public final class ShadowMaterial: Material {
-    public override var receiveShadow: Bool {
+    override public var receiveShadow: Bool {
         didSet {
             if receiveShadow != true {
                 print("ShadowMaterial's receiveShadow must be true, reverting to true")
@@ -20,7 +20,7 @@ public final class ShadowMaterial: Material {
 
     public init(_ color: simd_float4 = simd_make_float4(0.0, 0.0, 0.0, 0.25)) {
         super.init()
-        self.blending = .alpha
+        blending = .alpha
         set("Color", color)
         receiveShadow = true
     }

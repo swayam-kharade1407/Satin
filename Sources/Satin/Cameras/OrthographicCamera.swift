@@ -85,7 +85,7 @@ open class OrthographicCamera: Camera {
         }
     }
 
-    public override init(label: String = "Orthographic Camera") {
+    override public init(label: String = "Orthographic Camera") {
         super.init(label: label)
         left = -1
         right = 1
@@ -112,8 +112,7 @@ open class OrthographicCamera: Camera {
         self.top = top
     }
 
-    public func update(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float)
-    {
+    public func update(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {
         self.left = left
         self.right = right
         self.bottom = bottom

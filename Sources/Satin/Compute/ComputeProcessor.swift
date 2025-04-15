@@ -18,7 +18,7 @@ public protocol ComputeProcessorDelegate: AnyObject {
 open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
     public internal(set) lazy var label = prefix
 
-    internal var prefix: String {
+    var prefix: String {
         var prefix = String(describing: type(of: self)).replacingOccurrences(of: "ComputeProcessor", with: "")
         prefix = prefix.replacingOccurrences(of: "Compute", with: "")
         prefix = prefix.replacingOccurrences(of: "Processor", with: "")
@@ -30,7 +30,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
     }
 
     public weak var delegate: ComputeProcessorDelegate?
-    
+
     public var preCompute: ((_ computeEncoder: MTLComputeCommandEncoder, _ iteration: Int) -> Void)?
 
     public private(set) var computeUniformBuffers: [ComputeBufferIndex: UniformBuffer] = [:]
@@ -83,12 +83,12 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         }
     }
 
-    internal var _reset = true
-    internal var _index = 0
-    internal var _count = 0
-    internal var _useDispatchThreads = false
+    var _reset = true
+    var _index = 0
+    var _count = 0
+    var _useDispatchThreads = false
 
-    internal var parametersSubscription: AnyCancellable?
+    var parametersSubscription: AnyCancellable?
 
     public init(device: MTLDevice, pipelineURL: URL, live: Bool = false) {
         self.device = device
@@ -149,27 +149,27 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         return shader
     }
 
-    internal func updated(shader: ComputeShader) {
+    func updated(shader: ComputeShader) {
         print("Updated Shader: \(shader.label)")
         reset()
         delegate?.updated(computeProcessor: self)
     }
 
-    internal func setupShader() {
+    func setupShader() {
         if shader == nil { shader = createShader() }
         shader?.device = device
     }
 
-    internal func setupShaderConfiguration(_ shader: ComputeShader) {
+    func setupShaderConfiguration(_ shader: ComputeShader) {
         shader.configuration.compute = configuration
     }
 
-    internal func updateShader() {
+    func updateShader() {
         if shader == nil { setupShader() }
         shader?.update()
     }
 
-    internal func setupShaderParametersSubscription(_ shader: ComputeShader) {
+    func setupShaderParametersSubscription(_ shader: ComputeShader) {
         parametersSubscription = shader.parametersPublisher.sink { [weak self] parameters in
             self?.updateParameters(parameters)
         }
@@ -198,7 +198,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Dispatch
 
-    internal func dispatch(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
+    func dispatch(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
 #if os(macOS) || os(iOS) || os(visionOS)
         if _useDispatchThreads {
             dispatchThreads(computeEncoder: computeEncoder, pipeline: pipeline, iteration: iteration)
@@ -218,13 +218,13 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Uniforms
 
-    internal func setupUniforms() {
+    func setupUniforms() {
         guard parameters.size > 0 else { return }
         uniforms = UniformBuffer(device: device, parameters: parameters)
         uniformsNeedsUpdate = false
     }
 
-    internal func updateUniforms() {
+    func updateUniforms() {
         if uniformsNeedsUpdate { setupUniforms() }
         uniforms?.update()
     }
@@ -238,7 +238,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         )
     }
 
-    internal func bindBuffers(_ computeEncoder: MTLComputeCommandEncoder) {
+    func bindBuffers(_ computeEncoder: MTLComputeCommandEncoder) {
         guard let shader else { return }
 
         for index in shader.bufferBindingIsUsed {
@@ -248,15 +248,13 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
                     offset: uniformBuffer.offset,
                     index: index.rawValue
                 )
-            }
-            else if let structBuffer = computeStructBuffers[index] {
+            } else if let structBuffer = computeStructBuffers[index] {
                 computeEncoder.setBuffer(
                     structBuffer.buffer,
                     offset: structBuffer.offset,
                     index: index.rawValue
                 )
-            }
-            else if let buffer = computeBuffers[index] {
+            } else if let buffer = computeBuffers[index] {
                 computeEncoder.setBuffer(
                     buffer,
                     offset: 0,
@@ -266,7 +264,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         }
     }
 
-    internal func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
+    func bindTextures(_ computeEncoder: MTLComputeCommandEncoder) {
         guard let shader else { return }
 
         for index in shader.textureBindingIsUsed {
@@ -278,7 +276,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
 
     // MARK: - Count / Size
 
-    internal func updateSize() {}
+    func updateSize() {}
 
     // MARK: - Buffers
 
@@ -290,7 +288,6 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         }
     }
 
-
     public func set(_ uniformBuffer: UniformBuffer?, index: ComputeBufferIndex) {
         if let uniformBuffer {
             computeUniformBuffers[index] = uniformBuffer
@@ -298,7 +295,6 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
             computeUniformBuffers.removeValue(forKey: index)
         }
     }
-
 
     public func set(_ structBuffer: BindableBuffer?, index: ComputeBufferIndex) {
         if let structBuffer {
@@ -466,7 +462,7 @@ open class ComputeProcessor: ComputeShaderDelegate, ObservableObject {
         return parameters.get(name, as: T.self)
     }
 
-    internal func updateParameters(_ newParameters: ParameterGroup) {
+    func updateParameters(_ newParameters: ParameterGroup) {
         parameters.setFrom(newParameters)
         parameters.label = newParameters.label
         uniformsNeedsUpdate = true

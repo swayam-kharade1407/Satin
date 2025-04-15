@@ -503,7 +503,7 @@ open class Shader {
             if let url = configuration.pipelineURL {
                 print("\(label) Shader Path: \(url.path)")
             }
-            self.pipelineError = error
+            pipelineError = error
             pipelineReflection = nil
             pipelines[context] = nil
         }

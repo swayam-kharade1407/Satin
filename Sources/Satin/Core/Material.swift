@@ -454,15 +454,13 @@ open class Material: Codable, ObservableObject {
                     offset: uniformBuffer.offset,
                     index: index
                 )
-            }
-            else if let structBuffer = vertexStructBuffers[index] {
+            } else if let structBuffer = vertexStructBuffers[index] {
                 renderEncoderState.setVertexBuffer(
                     structBuffer.buffer,
                     offset: structBuffer.offset,
                     index: index
                 )
-            }
-            else if let buffer = vertexBuffers[index] {
+            } else if let buffer = vertexBuffers[index] {
                 renderEncoderState.setVertexBuffer(
                     buffer,
                     offset: 0,
@@ -478,15 +476,13 @@ open class Material: Codable, ObservableObject {
                     offset: uniformBuffer.offset,
                     index: index
                 )
-            }
-            else if let structBuffer = fragmentStructBuffers[index] {
+            } else if let structBuffer = fragmentStructBuffers[index] {
                 renderEncoderState.setFragmentBuffer(
                     structBuffer.buffer,
                     offset: structBuffer.offset,
                     index: index
                 )
-            }
-            else if let buffer = fragmentBuffers[index] {
+            } else if let buffer = fragmentBuffers[index] {
                 renderEncoderState.setFragmentBuffer(
                     buffer,
                     offset: 0,

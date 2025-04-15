@@ -16,7 +16,7 @@ public protocol Tessellator: ComputeProcessor {
 }
 
 open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
-    override internal var prefix: String {
+    override var prefix: String {
         var prefix = String(describing: type(of: self)).replacingOccurrences(of: "TessellationProcessor", with: "")
         prefix = prefix.replacingOccurrences(of: "Tessellation", with: "")
         prefix = prefix.replacingOccurrences(of: "Processor", with: "")
@@ -50,7 +50,7 @@ open class TessellationProcessor<T>: ComputeProcessor, Tessellator {
         super.setup()
     }
 
-    open override func update() {
+    override open func update() {
         super.update()
         set(geometry.controlPointBuffer, index: .TessellationPositions)
         set(geometry.indexBuffer, index: .TessellationIndices)

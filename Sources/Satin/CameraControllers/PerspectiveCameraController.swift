@@ -401,8 +401,7 @@ public final class PerspectiveCameraController: CameraController, Codable {
 #endif
     }
 
-    private func getTrackBallAngleAxis(previousPosition: simd_float2, currentPosition: simd_float2, size: simd_float2) -> (angle: Float, axis: simd_float3)?
-    {
+    private func getTrackBallAngleAxis(previousPosition: simd_float2, currentPosition: simd_float2, size: simd_float2) -> (angle: Float, axis: simd_float3)? {
         let previous = simd_normalize(trackBallPoint(previousPosition, size))
         let current = simd_normalize(trackBallPoint(currentPosition, size))
 

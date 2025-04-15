@@ -17,7 +17,7 @@ open class SkyboxShader: SourceShader {
         }
     }
 
-    open override func getDefines() -> [ShaderDefine] {
+    override open func getDefines() -> [ShaderDefine] {
         var results = super.getDefines()
         results.append(ShaderDefine(key: tonemapping.shaderDefine, value: NSString(string: "true")))
         return results

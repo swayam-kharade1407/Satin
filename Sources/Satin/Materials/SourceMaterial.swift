@@ -45,7 +45,7 @@ open class SourceMaterial: Material {
     override open func createShader() -> Shader {
         let shader = SourceShader(label: label, pipelineURL: pipelineURL)
         shader.live = live
-        shader.blending = self.blending
+        shader.blending = blending
         return shader
     }
 

@@ -1,6 +1,6 @@
 //
 //  Tonemapping.swift
-//  
+//
 //
 //  Created by Reza Ali on 4/10/23.
 //

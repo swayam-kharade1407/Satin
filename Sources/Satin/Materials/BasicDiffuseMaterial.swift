@@ -17,6 +17,7 @@ public final class BasicDiffuseMaterial: BasicColorMaterial {
             set("Hardness", newValue)
         }
     }
+
     public init(color: simd_float4 = .one, blending: Blending = .alpha, hardness: Float = 0.75) {
         super.init(color: color, blending: blending)
         self.hardness = hardness

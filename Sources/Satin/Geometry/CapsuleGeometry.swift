@@ -86,7 +86,7 @@ public final class CapsuleGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateCapsuleGeometryData(radius, height, Int32(angularResolution), Int32(radialResolution), Int32(verticalResolution), axis.rawValue)
     }
 }

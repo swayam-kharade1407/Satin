@@ -65,7 +65,7 @@ public final class ARBackgroundMaterial: Material {
         configure()
     }
 
-    internal func configure() {
+    func configure() {
         depthWriteEnabled = false
         depthCompareFunction = .always
         blending = .alpha

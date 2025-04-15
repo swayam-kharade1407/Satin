@@ -26,14 +26,13 @@ public final class OctaSphereGeometry: SatinGeometry {
         }
     }
 
-
     public init(radius: Float, resolution: Int) {
         self.radius = radius
         self.resolution = resolution
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateOctaSphereGeometryData(radius, Int32(resolution))
     }
 }

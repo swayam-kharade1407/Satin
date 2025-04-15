@@ -11,7 +11,7 @@ import simd
 public final class Float4x4Parameter: GenericParameter<simd_float4x4> {
     override public var type: ParameterType { .float4x4 }
 
-    public override init(_ label: String, _ value: simd_float4x4, _ controlType: ControlType = .none) {
+    override public init(_ label: String, _ value: simd_float4x4, _ controlType: ControlType = .none) {
         super.init(label, value, controlType)
     }
 
@@ -29,7 +29,7 @@ public final class Float4x4Parameter: GenericParameter<simd_float4x4> {
         super.init(label, value, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         Float4x4Parameter(label, value, controlType)
     }
 }

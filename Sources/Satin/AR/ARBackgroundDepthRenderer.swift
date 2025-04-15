@@ -105,7 +105,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         backgroundDepthMaterial.set("Near Far Delta", [near, far, far - near])
 
         depthMesh = Mesh(
-            label: "AR Depth Mesh", 
+            label: "AR Depth Mesh",
             geometry: Geometry(),
             material: backgroundDepthMaterial,
             visible: false
@@ -191,7 +191,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         updateDepthTexture(frame)
     }
 
-    internal func updateDepthTexture(_ frame: ARFrame) {
+    func updateDepthTexture(_ frame: ARFrame) {
         if let sceneDepth = frame.smoothedSceneDepth ?? frame.sceneDepth {
             let depthPixelBuffer = sceneDepth.depthMap
             if let depthTexturePixelFormat = getMTLPixelFormat(for: depthPixelBuffer) {
@@ -211,7 +211,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         depthMesh.geometry = mesh.geometry
     }
 
-    internal func getMTLPixelFormat(for pixelBuffer: CVPixelBuffer) -> MTLPixelFormat? {
+    func getMTLPixelFormat(for pixelBuffer: CVPixelBuffer) -> MTLPixelFormat? {
         if CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_DepthFloat32 {
             return .r32Float
         }
@@ -225,7 +225,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
 
     // MARK: - AR Session
 
-    internal func setupSessionSubscriptions() {
+    func setupSessionSubscriptions() {
         sessionPublisher.addedAnchorsPublisher.sink { [weak self] anchors in
             self?.addedAnchors(anchors)
         }.store(in: &sessionSubscriptions)
@@ -239,7 +239,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         }.store(in: &sessionSubscriptions)
     }
 
-    internal func addedAnchors(_ anchors: [ARAnchor]) {
+    func addedAnchors(_ anchors: [ARAnchor]) {
         for anchor in anchors {
             if usePlaneDepth, let planeAnchor = anchor as? ARPlaneAnchor {
                 let planeMesh = ARPlaneMesh(
@@ -258,7 +258,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         }
     }
 
-    internal func updatedAnchors(_ anchors: [ARAnchor]) {
+    func updatedAnchors(_ anchors: [ARAnchor]) {
         for anchor in anchors {
             if usePlaneDepth, let planeAnchor = anchor as? ARPlaneAnchor {
                 if let planeMesh = depthAnchorPlaneMeshMap[anchor.identifier] {
@@ -273,7 +273,7 @@ public class ARBackgroundDepthRenderer: ARBackgroundRenderer {
         }
     }
 
-    internal func removedAnchors(_ anchors: [ARAnchor]) {
+    func removedAnchors(_ anchors: [ARAnchor]) {
         for anchor in anchors {
             if usePlaneDepth, let planeAnchor = anchor as? ARPlaneAnchor {
                 if let mesh = depthAnchorPlaneMeshMap.removeValue(forKey: planeAnchor.identifier) {

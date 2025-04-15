@@ -16,7 +16,7 @@ public class ARBackgroundDepthMaterial: Material {
             set(upscaledSceneDepthTexture, index: FragmentTextureIndex.Custom0)
         }
     }
-    
+
     public var sceneDepthTexture: CVMetalTexture? {
         didSet {
             if let sceneDepthTexture {

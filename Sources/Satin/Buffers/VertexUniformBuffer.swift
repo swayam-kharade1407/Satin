@@ -42,7 +42,7 @@ public final class VertexUniformBuffer {
         uniforms[index].modelViewMatrix = camera.viewMatrix * object.worldMatrix
         uniforms[index].projectionMatrix = camera.projectionMatrix
         uniforms[index].viewProjectionMatrix = camera.viewProjectionMatrix
-        uniforms[index].modelViewProjectionMatrix = camera.viewProjectionMatrix *  object.worldMatrix
+        uniforms[index].modelViewProjectionMatrix = camera.viewProjectionMatrix * object.worldMatrix
         uniforms[index].inverseModelViewProjectionMatrix = uniforms[index].modelViewProjectionMatrix.inverse
         uniforms[index].inverseViewMatrix = camera.worldMatrix
         uniforms[index].normalMatrix = object.normalMatrix

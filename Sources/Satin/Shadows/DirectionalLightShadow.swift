@@ -126,7 +126,7 @@ public final class DirectionalLightShadow: Shadow {
             renderEncoder.pushDebugGroup(renderable.label)
             #endif
             renderable.update(
-                renderContext: context, 
+                renderContext: context,
                 camera: camera,
                 viewport: _viewport,
                 index: 0

@@ -14,6 +14,7 @@ public class ARPostMaterial: Material {
             set(contentTexture, index: FragmentTextureIndex.Custom0)
         }
     }
+
     public unowned var cameraGrainTexture: MTLTexture? {
         didSet {
             set(cameraGrainTexture, index: FragmentTextureIndex.Custom1)
@@ -27,14 +28,14 @@ public class ARPostMaterial: Material {
         self.contentTexture = contentTexture
         self.cameraGrainTexture = cameraGrainTexture
         super.init()
-        configure() 
+        configure()
     }
-    
+
     public required init() {
         super.init()
         configure()
     }
-    
+
     public required init(from decoder: Decoder) throws {
         try super.init(from: decoder)
         configure()

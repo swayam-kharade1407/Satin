@@ -11,7 +11,7 @@ import simd
 public final class Float3x3Parameter: GenericParameter<simd_float3x3> {
     override public var type: ParameterType { .float3x3 }
 
-    public override init(_ label: String, _ value: simd_float3x3, _ controlType: ControlType = .none) {
+    override public init(_ label: String, _ value: simd_float3x3, _ controlType: ControlType = .none) {
         super.init(label, value, controlType)
     }
 
@@ -29,7 +29,7 @@ public final class Float3x3Parameter: GenericParameter<simd_float3x3> {
         super.init(label, value, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         Float3x3Parameter(label, value, controlType)
     }
 }

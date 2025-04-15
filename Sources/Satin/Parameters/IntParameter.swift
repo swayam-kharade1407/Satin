@@ -27,7 +27,7 @@ public final class IntParameter: GenericParameterWithMinMax<Int> {
         return data
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         IntParameter(label, value, min, max, controlType)
     }
 }

@@ -14,7 +14,7 @@ public final class UInt32Parameter: GenericParameterWithMinMax<UInt32> {
         self.init(label, value, 0, 1, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         UInt32Parameter(label, value, min, max, controlType)
     }
 }

@@ -43,7 +43,7 @@ open class IBLScene: Object, IBLEnvironment {
         self.irradianceSize = irradianceSize
 
         let device = texture.device
-        
+
         DispatchQueue.global(qos: qos).async { [unowned self] in
             guard let commandQueue = device.makeCommandQueue(),
                   let commandBuffer = commandQueue.makeCommandBuffer() else { return }
@@ -208,8 +208,7 @@ open class IBLScene: Object, IBLEnvironment {
         }
     }
 
-    private func createCubemapTexture(device: MTLDevice, pixelFormat: MTLPixelFormat, size: Int, mipmapped: Bool) -> MTLTexture?
-    {
+    private func createCubemapTexture(device: MTLDevice, pixelFormat: MTLPixelFormat, size: Int, mipmapped: Bool) -> MTLTexture? {
         let desc = MTLTextureDescriptor.textureCubeDescriptor(
             pixelFormat: pixelFormat,
             size: size,

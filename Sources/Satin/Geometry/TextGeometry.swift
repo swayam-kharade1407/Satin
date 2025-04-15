@@ -127,7 +127,7 @@ public final class TextGeometry: Geometry {
         positionBuffer.data = positions
         indexElementBuffer.updateData(data: &indices, count: indices.count, source: indices)
     }
-    
+
     func updateGeometryData() {
         if _updateData {
             updateData()

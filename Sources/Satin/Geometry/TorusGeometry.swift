@@ -51,7 +51,7 @@ public final class TorusGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateTorusGeometryData(minorRadius, majorRadius, Int32(minorResolution), Int32(majorResolution))
     }
 }

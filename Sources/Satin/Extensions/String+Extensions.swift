@@ -11,7 +11,7 @@ public extension String {
     var camelCase: String {
         var parts = split(separator: " ")
         if let first = parts.first {
-            let upperChars = first.prefix(while: { $0 .isUppercase }).lowercased()
+            let upperChars = first.prefix(while: { $0.isUppercase }).lowercased()
             parts[0] = upperChars + Substring(first.dropFirst(upperChars.count))
         }
         return parts.joined()

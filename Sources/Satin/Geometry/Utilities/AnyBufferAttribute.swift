@@ -1,6 +1,6 @@
 //
 //  AnyBufferAttribute.swift
-//  
+//
 //
 //  Created by Reza Ali on 8/2/23.
 //
@@ -12,7 +12,7 @@ open class AnyBufferAttribute: Codable {
     public let attribute: any BufferAttribute
 
     public init(_ attribute: any BufferAttribute) {
-        self.type = attribute.type
+        type = attribute.type
         self.attribute = attribute
     }
 

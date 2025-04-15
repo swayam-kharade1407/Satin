@@ -27,7 +27,7 @@ public final class TextMaterial: Material {
 
     public init(color: simd_float4 = .one, fontTexture: MTLTexture?) {
         super.init()
-        
+
         self.blending = .alpha
         self.fontTexture = fontTexture
 
@@ -37,7 +37,7 @@ public final class TextMaterial: Material {
 
     public required init() {
         super.init()
-        
+
         blending = .alpha
         set("Color", simd_float4.one)
     }

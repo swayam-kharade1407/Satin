@@ -12,7 +12,7 @@ import Foundation
 public final class BoolParameter: GenericParameter<Bool> {
     override public var type: ParameterType { .bool }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         BoolParameter(label, value, controlType)
     }
 }

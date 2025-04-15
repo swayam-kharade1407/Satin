@@ -20,7 +20,7 @@ public protocol Shadow: AnyObject {
     var strength: Float { get set }
     var bias: Float { get set }
     var radius: Float { get set }
-    
+
     func update(light: Object)
     func draw(context: Context, commandBuffer: MTLCommandBuffer, renderables: [Renderable])
 

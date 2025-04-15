@@ -33,7 +33,7 @@ public final class IcoSphereGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
-        generateIcoSphereGeometryData(radius, Int32(self.resolution))
+    override public func generateGeometryData() -> GeometryData {
+        generateIcoSphereGeometryData(radius, Int32(resolution))
     }
 }

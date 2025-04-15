@@ -1,6 +1,6 @@
 //
 //  MTLVertexFormat+Extensions.swift
-//  
+//
 //
 //  Created by Reza Ali on 7/13/23.
 //

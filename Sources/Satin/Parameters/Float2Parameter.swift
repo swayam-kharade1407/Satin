@@ -16,7 +16,7 @@ public final class Float2Parameter: GenericParameterWithMinMax<simd_float2> {
         self.init(label, value, .zero, .one, controlType)
     }
 
-    public override func clone() -> any Parameter {
+    override public func clone() -> any Parameter {
         Float2Parameter(label, value, min, max, controlType)
     }
 }

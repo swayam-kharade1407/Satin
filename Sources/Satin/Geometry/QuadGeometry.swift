@@ -24,7 +24,7 @@ public final class QuadGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateQuadGeometryData(size)
     }
 }

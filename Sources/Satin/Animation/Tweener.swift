@@ -11,12 +11,12 @@ import UIKit
 public final class Tweener: Sendable {
     static let shared = Tweener()
 
-    nonisolated(unsafe) private static var tweens: [Tween] = []
-    nonisolated(unsafe) private static var paused: Bool = true
+    private nonisolated(unsafe) static var tweens: [Tween] = []
+    private nonisolated(unsafe) static var paused: Bool = true
 
     #if os(macOS)
 
-    nonisolated(unsafe) private static var displayLink: CVDisplayLink?
+    private nonisolated(unsafe) static var displayLink: CVDisplayLink?
 
     private class func setupDisplayLink() {
         if Tweener.displayLink == nil {
@@ -40,7 +40,7 @@ public final class Tweener: Sendable {
     }
 
     private static let displayLoop: CVDisplayLinkOutputCallback = {
-        displayLink, now, outputTime, flagsIn, flagsOut, displayLinkContext in
+        _, _, _, _, _, _ in
         Tweener.update()
         return kCVReturnSuccess
     }

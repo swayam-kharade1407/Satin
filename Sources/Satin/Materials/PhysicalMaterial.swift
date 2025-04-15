@@ -134,7 +134,7 @@ open class PhysicalMaterial: StandardMaterial {
     ) {
         super.init(
             baseColor: baseColor,
-            metallic: metallic, 
+            metallic: metallic,
             roughness: roughness,
             specular: specular,
             occlusion: occlusion,
@@ -148,10 +148,10 @@ open class PhysicalMaterial: StandardMaterial {
         self.anisotropicAngle = anisotropicAngle
 
         self.specularTint = specularTint
-        
+
         self.clearcoat = clearcoat
         self.clearcoatRoughness = clearcoatRoughness
-        
+
         self.sheen = sheen
         self.sheenTint = sheenTint
 
@@ -172,7 +172,7 @@ open class PhysicalMaterial: StandardMaterial {
         PhysicalShader(label: label, pipelineURL: getPipelinesMaterialsURL(label)!.appendingPathComponent("Shaders.metal"))
     }
 
-    override internal func setTextureMultiplierUniformToOne(type: PBRTextureType) {
+    override func setTextureMultiplierUniformToOne(type: PBRTextureType) {
         switch type {
             case .baseColor:
                 baseColor = .one

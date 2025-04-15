@@ -254,7 +254,6 @@
 		E194F6992D288A22009A5C25 /* Raycast.swift in Sources */ = {isa = PBXBuildFile; fileRef = E194F6952D288A22009A5C25 /* Raycast.swift */; };
 		E194F69A2D288A22009A5C25 /* RaycastOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E194F6962D288A22009A5C25 /* RaycastOptions.swift */; };
 		E194F69B2D288A22009A5C25 /* RaycastResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E194F6972D288A22009A5C25 /* RaycastResult.swift */; };
-		E1C6ED1E2C8FE6FA00231467 /* CoreTextGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6ED1D2C8FE6FA00231467 /* CoreTextGeometry.swift */; };
 		E1CB8C082CEFB45800781C79 /* Satin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CB8C072CEFB45800781C79 /* Satin.swift */; };
 		E1DD96BC2C06B00E002524F6 /* Pipelines in Resources */ = {isa = PBXBuildFile; fileRef = E1DD96BB2C06B00E002524F6 /* Pipelines */; };
 		E1DDD3592C2FA77400012A44 /* OrbitPerspectiveCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */; };
@@ -522,7 +521,6 @@
 		E194F6952D288A22009A5C25 /* Raycast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Raycast.swift; sourceTree = "<group>"; };
 		E194F6962D288A22009A5C25 /* RaycastOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaycastOptions.swift; sourceTree = "<group>"; };
 		E194F6972D288A22009A5C25 /* RaycastResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaycastResult.swift; sourceTree = "<group>"; };
-		E1C6ED1D2C8FE6FA00231467 /* CoreTextGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTextGeometry.swift; sourceTree = "<group>"; };
 		E1CB8C072CEFB45800781C79 /* Satin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Satin.swift; sourceTree = "<group>"; };
 		E1DD96BB2C06B00E002524F6 /* Pipelines */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Pipelines; path = Sources/Satin/Pipelines; sourceTree = "<group>"; };
 		E1DDD3582C2FA77400012A44 /* OrbitPerspectiveCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitPerspectiveCameraController.swift; sourceTree = "<group>"; };
@@ -801,7 +799,6 @@
 				66D7DDB92C06A24B00B5A6C8 /* TorusGeometry.swift */,
 				66D7DDBA2C06A24B00B5A6C8 /* TriangleGeometry.swift */,
 				66D7DDBB2C06A24B00B5A6C8 /* TubeGeometry.swift */,
-				E1C6ED1D2C8FE6FA00231467 /* CoreTextGeometry.swift */,
 			);
 			path = Geometry;
 			sourceTree = "<group>";
@@ -1367,7 +1364,6 @@
 				E101A8CB2C070E8E0055FABA /* CGPoint+Extensions.swift in Sources */,
 				E101A8CC2C070E8E0055FABA /* CGSize+Extensions.swift in Sources */,
 				E10D918F2CBF60C900107EE9 /* TessellationGeometry.swift in Sources */,
-				E1C6ED1E2C8FE6FA00231467 /* CoreTextGeometry.swift in Sources */,
 				E101A8CD2C070E8E0055FABA /* Metal+Extensions.swift in Sources */,
 				E101A8CE2C070E8E0055FABA /* MTLClearColor+Extensions.swift in Sources */,
 				E101A8CF2C070E8E0055FABA /* MTLSamplerDescriptor+Extensions.swift in Sources */,

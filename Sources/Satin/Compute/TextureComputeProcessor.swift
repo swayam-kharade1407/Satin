@@ -171,16 +171,16 @@ open class TextureComputeProcessor: ComputeProcessor {
         }
     }
 
-#if os(macOS) || os(iOS) || os(visionOS)
-    override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
-        guard let texture = computeTextures[.Custom0] else { return }
+    #if os(macOS) || os(iOS) || os(visionOS)
+        override open func dispatchThreads(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
+            guard let texture = computeTextures[.Custom0] else { return }
 
-        let threadPerGrid = threadsPerGrid ?? getThreadsPerGrid(texture: texture, iteration: iteration)
-        let threadsPerThreadgroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture: texture, pipeline: pipeline, iteration: iteration)
+            let threadPerGrid = threadsPerGrid ?? getThreadsPerGrid(texture: texture, iteration: iteration)
+            let threadsPerThreadgroup = threadsPerThreadgroup ?? getThreadsPerThreadgroup(texture: texture, pipeline: pipeline, iteration: iteration)
 
-        computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-    }
-#endif
+            computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        }
+    #endif
 
     override open func dispatchThreadgroups(computeEncoder: MTLComputeCommandEncoder, pipeline: MTLComputePipelineState, iteration: Int) {
         guard let texture = computeTextures[.Custom0] else { return }
@@ -199,7 +199,5 @@ open class TextureComputeProcessor: ComputeProcessor {
 
     // MARK: - Deinit
 
-    deinit {
-
-    }
+    deinit {}
 }

@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import Metal
 
-internal protocol ComputeShaderDelegate: AnyObject {
+protocol ComputeShaderDelegate: AnyObject {
     func updated(shader: ComputeShader)
 }
 
@@ -197,7 +197,7 @@ open class ComputeShader {
         }
     }
 
-    internal weak var delegate: ComputeShaderDelegate?
+    weak var delegate: ComputeShaderDelegate?
 
     public required init(configuration: ComputeShaderConfiguration) {
         self.configuration = configuration

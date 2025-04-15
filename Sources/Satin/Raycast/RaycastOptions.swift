@@ -12,26 +12,26 @@ public struct RaycastOptions {
     public let recursive: Bool
     public let invisible: Bool
     public let first: Bool
-   
-    static public let recursiveAndVisible = RaycastOptions(
+
+    public static let recursiveAndVisible = RaycastOptions(
         recursive: true,
         invisible: false,
         first: false
     )
-    
-    static public let recursiveAndInvisible = RaycastOptions(
+
+    public static let recursiveAndInvisible = RaycastOptions(
         recursive: true,
         invisible: true,
         first: false
     )
-    
-    static public let recursiveVisibleAndFirst = RaycastOptions(
+
+    public static let recursiveVisibleAndFirst = RaycastOptions(
         recursive: true,
         invisible: false,
         first: true
     )
-    
-    static public let recursiveInvisibleAndFirst = RaycastOptions(
+
+    public static let recursiveInvisibleAndFirst = RaycastOptions(
         recursive: true,
         invisible: true,
         first: true

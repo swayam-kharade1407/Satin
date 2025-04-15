@@ -155,36 +155,36 @@ public final class MetalViewController: NSViewController {
         )
 
         NotificationCenter.default.addObserver(
-            self, 
+            self,
             selector: #selector(self.updateAppearance),
             name: Notification.Name("AppleInterfaceStyle"),
             object: nil
         )
 
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(self.willTerminate),
             name: NSApplication.willTerminateNotification,
-            object: nil)
+            object: nil
+        )
     }
 
     @objc func willTerminate() {
 #if DEBUG_VIEWS
         print("willTerminate - MetalViewController: \(self.renderer.id)")
 #endif
-        cleanup()
+        self.cleanup()
     }
 
     func cleanup() {
 #if DEBUG_VIEWS
         print("cleanup - MetalViewController: \(self.renderer.id)")
 #endif
-        cleanupRenderer()
-        removeEvents()
-        removeTracking()
-        removeEvents()
-        metalView.delegate = nil
+        self.cleanupRenderer()
+        self.removeEvents()
+        self.removeTracking()
+        self.removeEvents()
+        self.metalView.delegate = nil
     }
 
     @objc func updateAppearance() {
@@ -433,7 +433,7 @@ public final class MetalViewController: UIViewController {
             self.renderer.appearance = self.getAppearance()
         })
     }
-    
+
     // MARK: - Events
 
     private func setupEvents() {

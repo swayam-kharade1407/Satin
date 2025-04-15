@@ -1,6 +1,6 @@
 //
 //  ShaderLibraryConfiguration.swift
-//  
+//
 //
 //  Created by Reza Ali on 6/14/23.
 //
@@ -35,16 +35,16 @@ public struct ShaderLibraryConfiguration {
 extension ShaderLibraryConfiguration: Equatable {
     public static func == (lhs: ShaderLibraryConfiguration, rhs: ShaderLibraryConfiguration) -> Bool {
         lhs.label == rhs.label &&
-        lhs.libraryURL == rhs.libraryURL &&
-        lhs.pipelineURL == rhs.pipelineURL &&
-        lhs.vertexDescriptor == rhs.vertexDescriptor &&
-        lhs.instancing == rhs.instancing &&
-        lhs.lighting == rhs.lighting &&
-        lhs.castShadow == rhs.castShadow &&
-        lhs.receiveShadow == rhs.receiveShadow &&
-        lhs.shadowCount == rhs.shadowCount &&
-        lhs.defines == rhs.defines &&
-        lhs.constants == rhs.constants
+            lhs.libraryURL == rhs.libraryURL &&
+            lhs.pipelineURL == rhs.pipelineURL &&
+            lhs.vertexDescriptor == rhs.vertexDescriptor &&
+            lhs.instancing == rhs.instancing &&
+            lhs.lighting == rhs.lighting &&
+            lhs.castShadow == rhs.castShadow &&
+            lhs.receiveShadow == rhs.receiveShadow &&
+            lhs.shadowCount == rhs.shadowCount &&
+            lhs.defines == rhs.defines &&
+            lhs.constants == rhs.constants
     }
 }
 
@@ -67,4 +67,3 @@ extension ShaderLibraryConfiguration: Hashable {
         if !constants.isEmpty { hasher.combine(constants) }
     }
 }
-

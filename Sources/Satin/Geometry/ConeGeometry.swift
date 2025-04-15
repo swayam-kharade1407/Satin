@@ -60,7 +60,7 @@ public final class ConeGeometry: SatinGeometry {
         super.init()
     }
 
-    public override func generateGeometryData() -> GeometryData {
+    override public func generateGeometryData() -> GeometryData {
         generateConeGeometryData(radius, height, Int32(angularResolution), Int32(radialResolution), Int32(verticalResolution))
     }
 }
