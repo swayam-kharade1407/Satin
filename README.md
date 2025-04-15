@@ -6,7 +6,7 @@
 
 # About :wave:
 
-Satin is a 3D graphics framework (inspired by threejs) that helps designers and developers work with Apple's Metal API. Satin provides helpful classes for creating meshes, materials, buffers, uniforms, geometries, pipelines (shaders), compute kernels, and more. Satin's API is rapidly evolving so its best to stick to a tagged version or git commit when using it in production.
+Satin is a 3D graphics framework (inspired by threejs) that helps designers and developers work with Apple's Metal API. Satin provides helpful classes for creating meshes, materials, buffers, uniforms, geometries, pipelines (shaders), compute kernels, and more.
 
 Satin makes simple graphics tasks fun and easy to accomplish quickly and complex graphics tasks easier to accomplish without having to write tons of boilerplate code. It does this by providing structure, opinions, and tons of helpful abstractions on Metal to help you get up and rendering / coding in a few minutes. Satin is mostly Swift based, however when performing expensive CPU operations, Satin uses SatinCore, which is written in C (for tasks like geometry generation, triangulation, bounds & computational geometry calculations, and more) to make sure things are as fast as possible.
 
@@ -24,7 +24,7 @@ Satin makes simple graphics tasks fun and easy to accomplish quickly and complex
 
 ```swift
   dependencies: [
-      .package(url: "https://github.com/Hi-Rez/SatinPro.git", .branch("main"))
+      .package(url: "https://github.com/Hi-Rez/Satin.git", .branch("main"))
   ]
 ```
 
@@ -60,8 +60,6 @@ Satin helps to draw things with Metal. To get up and running quickly without ton
 
 ```swift
 import SwiftUI
-import MetalKit
-
 import Satin
 
 // Subclass Satin's Renderer to get triple buffered rendering and
@@ -155,7 +153,7 @@ struct ContentView: View {
 
 # Credits :sweat_smile:
 
-Satin is owned and maintained by [Reza Ali](https://www.syedrezaali.com). You can follow me on Bluesky at [@rezaali.bsky.social](https://bsky.app/profile/rezaali.bsky.social) or contact me via [email](mailto:reza@hi-rez.io) for project updates, releases and questions.
+Satin was created by [Reza Ali](https://www.syedrezaali.com) with significant contributions and feedback from [Haris Ali](https://syedharisali.com/) and [Taylor Holiday](https://taylorholliday.com/). 
 
 # License :mortar_board:
 
