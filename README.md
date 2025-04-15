@@ -155,7 +155,7 @@ struct ContentView: View {
 
 # Credits :sweat_smile:
 
-Satin was created by [Reza Ali](https://www.syedrezaali.com) with contributions & feedback from [Haris Ali](https://syedharisali.com/) and [Taylor Holiday](https://taylorholliday.com/). 
+Satin was created by [Reza Ali](https://www.syedrezaali.com) with contributions & feedback from [Haris Ali](https://syedharisali.com/) and [Taylor Holliday](https://taylorholliday.com/). 
 
 # License :mortar_board:
 
