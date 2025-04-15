@@ -8,13 +8,15 @@
 
 Satin is a 3D graphics framework (inspired by threejs) that helps designers and developers work with Apple's Metal API. Satin provides helpful classes for creating meshes, materials, buffers, uniforms, geometries, pipelines (shaders), compute kernels, and more.
 
-Satin makes simple graphics tasks fun and easy to accomplish quickly and complex graphics tasks easier to accomplish without having to write tons of boilerplate code. It does this by providing structure, opinions, and tons of helpful abstractions on Metal to help you get up and rendering / coding in a few minutes. Satin is mostly Swift based, however when performing expensive CPU operations, Satin uses SatinCore, which is written in C (for tasks like geometry generation, triangulation, bounds & computational geometry calculations, and more) to make sure things are as fast as possible.
+Satin makes simple graphics tasks fun and easy to accomplish quickly and complex graphics tasks easier to accomplish without having to write tons of boilerplate code. It does this by providing structure, opinions, and tons of helpful abstractions on Metal to help you get up and rendering / coding in a few minutes. 
+
+Satin is mostly Swift based, however when performing expensive CPU operations, Satin uses SatinCore, which is written in C (for tasks like geometry generation, triangulation, bounds & computational geometry calculations, and more) to make sure things are as fast as possible.
 
 # Supported Platforms
 
-- macOS 14.0
-- iOS 17.0
-- visionOS 2.0
+- macOS 14.0+
+- iOS 17.0+
+- visionOS 2.0+
 
 # Installation
 
@@ -153,7 +155,7 @@ struct ContentView: View {
 
 # Credits :sweat_smile:
 
-Satin was created by [Reza Ali](https://www.syedrezaali.com) with significant contributions and feedback from [Haris Ali](https://syedharisali.com/) and [Taylor Holiday](https://taylorholliday.com/). 
+Satin was created by [Reza Ali](https://www.syedrezaali.com) with contributions & feedback from [Haris Ali](https://syedharisali.com/) and [Taylor Holiday](https://taylorholliday.com/). 
 
 # License :mortar_board:
 
