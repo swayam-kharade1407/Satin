@@ -437,10 +437,10 @@ final class XYPad: UIControl {
 
         // Layout Axis
         let axisColor = UIColor.tertiaryLabel.withAlphaComponent(0.5).cgColor
-        
+
         xAxis.backgroundColor = axisColor
         xAxis.frame = CGRect(x: bounds.midX, y: 0, width: 1, height: bounds.height)
-        
+
         yAxis.backgroundColor = axisColor
         yAxis.frame = CGRect(x: 0, y: bounds.midY, width: bounds.width, height: 1)
 
@@ -603,7 +603,6 @@ final class XYPadViewController: WidgetViewController {
 
         self.pad = pad
     }
-
 
     func setupValueLabel() {
         guard let hStack = hStack else { return }

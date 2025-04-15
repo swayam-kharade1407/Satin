@@ -24,7 +24,7 @@ final class UISpacer: NSView {
         wantsLayer = true
     }
 
-    public override func updateLayer() {
+    override public func updateLayer() {
         super.updateLayer()
         layer?.backgroundColor = NSColor(named: "Spacer", bundle: Bundle(for: UISpacer.self))?.cgColor
     }

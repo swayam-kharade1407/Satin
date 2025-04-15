@@ -20,20 +20,19 @@ final class OctasphereRenderer: BaseRenderer {
     deinit {
         cameraController.disable()
     }
-    
+
     override func setup() {
-#if os(visionOS)
+        #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-#endif
+        #endif
     }
-    
+
     override func update() {
         cameraController.update()
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -42,7 +41,7 @@ final class OctasphereRenderer: BaseRenderer {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

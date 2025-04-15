@@ -17,14 +17,14 @@
 extern "C" {
 #endif
 
-Polyline2D createEmptyPolyline2D();
-Polylines2D createEmptyPolylines2D();
+Polyline2D createEmptyPolyline2D(void);
+Polylines2D createEmptyPolylines2D(void);
 
 void freePolyline2D(Polyline2D *line);
 void freePolylines2D(Polylines2D *lines);
 
-Polyline3D createEmptyPolyline3D();
-Polylines3D createEmptyPolylines3D();
+Polyline3D createEmptyPolyline3D(void);
+Polylines3D createEmptyPolylines3D(void);
 
 void freePolyline3D(Polyline3D *line);
 void freePolylines3D(Polylines3D *lines);

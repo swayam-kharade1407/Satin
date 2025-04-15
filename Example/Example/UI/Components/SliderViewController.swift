@@ -282,8 +282,7 @@ final class SliderViewController: WidgetViewController, UITextFieldDelegate {
         textField.resignFirstResponder()
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
-    {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard !string.isEmpty else {
             return true
         }

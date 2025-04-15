@@ -76,7 +76,7 @@ final class OcclusionRenderer: BaseRenderer {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

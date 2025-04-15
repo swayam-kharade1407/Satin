@@ -24,7 +24,7 @@ final class ToggleViewController: NSViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
 
         if let parameter = parameter {
-            subscription = parameter.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] value in
+            subscription = parameter.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
                 guard let self, let paramater = self.parameter else { return }
                 let newState: NSControl.StateValue = (paramater.value ? .on : .off)
                 if self.button.state != newState {

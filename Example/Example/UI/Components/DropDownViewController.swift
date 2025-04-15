@@ -134,12 +134,12 @@ class DropDownViewController: WidgetViewController {
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8.0)
         configuration.titleTextAttributesTransformer =
-        UIConfigurationTextAttributesTransformer { [weak self] incoming in
-            guard let self else { return incoming }
-            var outgoing = incoming
-            outgoing.font = font
-            return outgoing
-        }
+            UIConfigurationTextAttributesTransformer { [weak self] incoming in
+                guard let self else { return incoming }
+                var outgoing = incoming
+                outgoing.font = font
+                return outgoing
+            }
 
         button.configuration = configuration
 

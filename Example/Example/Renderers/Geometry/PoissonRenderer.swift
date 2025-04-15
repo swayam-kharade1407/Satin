@@ -229,7 +229,7 @@ final class PoissonRenderer: BaseRenderer {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         cameraController.resize(size)
         renderer.resize(size)
     }

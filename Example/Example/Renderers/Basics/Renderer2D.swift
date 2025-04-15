@@ -31,10 +31,10 @@ final class Renderer2D: BaseRenderer {
         camera.far = 40.96
         camera.position = [0, 0, 10.0]
 //        camera.lookAt(target: .zero)
-#if os(visionOS)
+        #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-#endif
+        #endif
     }
 
     override func update() {
@@ -50,7 +50,7 @@ final class Renderer2D: BaseRenderer {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         cameraController.resize(size)
         renderer.resize(size)
     }

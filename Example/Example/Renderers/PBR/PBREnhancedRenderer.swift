@@ -116,7 +116,6 @@ final class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -125,7 +124,7 @@ final class PBREnhancedRenderer: BaseRenderer, MaterialDelegate {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         camera.aspect = size.width / size.height
         renderer.resize(size)
     }

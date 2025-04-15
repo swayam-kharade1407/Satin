@@ -156,7 +156,7 @@ private final class CustomMaterial: SourceMaterial {
         fatalError("init() has not been implemented")
     }
 
-    required init(from decoder: Decoder) throws {
+    required init(from _: Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
 
@@ -214,7 +214,7 @@ private final class CustomMesh: Object, Renderable {
         guard #available(macOS 13.0, iOS 16.0, *),
               let material,
               material.getPipeline(renderContext: renderContext, shadow: shadow) != nil
-              else { return false }
+        else { return false }
         return true
     }
 

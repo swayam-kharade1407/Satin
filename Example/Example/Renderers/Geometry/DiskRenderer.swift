@@ -26,7 +26,7 @@ final class DiskRenderer: BaseRenderer {
         let count = 1000
         let mesh = InstancedMesh(geometry: geometry, material: material, count: count)
         let object = Object()
-        for i in 0..<count {
+        for i in 0 ..< count {
             let scale = Float.random(in: 0.1 ... 0.5)
             let magnitude: Float = 10.0
 
@@ -40,7 +40,11 @@ final class DiskRenderer: BaseRenderer {
     }()
 
     override var sampleCount: Int {
+#if targetEnvironment(simulator)
+        1
+#else
         4
+#endif
     }
 
     override func setup() {

@@ -6,8 +6,8 @@
 //  Copyright © 2024 Hi-Rez. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 import Metal
 import MetalKit
 import Satin
@@ -16,15 +16,13 @@ final class WaveSimulationRenderer: BaseRenderer {
     final class WaveComputeSystem: TextureComputeSystem {}
     final class DisplacementMaterial: SourceMaterial {}
 
-    lazy var computer: WaveComputeSystem = {
-        WaveComputeSystem(
-            device: device,
-            pipelinesURL: pipelinesURL,
-            textureDescriptors: getTextureDescriptors(),
-            feedback: true,
-            live: true
-        )
-    }()
+    lazy var computer: WaveComputeSystem = .init(
+        device: device,
+        pipelinesURL: pipelinesURL,
+        textureDescriptors: getTextureDescriptors(),
+        feedback: true,
+        live: true
+    )
 
     lazy var material = DisplacementMaterial(pipelinesURL: pipelinesURL, live: true)
     lazy var mesh = Mesh(geometry: PlaneGeometry(size: 2.0, resolution: 512, orientation: .xy), material: material)
@@ -50,7 +48,7 @@ final class WaveSimulationRenderer: BaseRenderer {
 
     override var params: [String: ParameterGroup?] {
         return [
-            "App" : appParams,
+            "App": appParams,
             "Wave Compute": computer.parameters,
             "Displacement Material": material.parameters
         ]

@@ -73,10 +73,10 @@ final class FlockingRenderer: BaseRenderer {
     override func setup() {
         setupObservers()
 
-#if os(visionOS)
+        #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-#endif
+        #endif
     }
 
     func setupObservers() {
@@ -104,7 +104,6 @@ final class FlockingRenderer: BaseRenderer {
             particleSystem.update(commandBuffer)
         }
 
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

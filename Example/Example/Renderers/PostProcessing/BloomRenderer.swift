@@ -7,11 +7,10 @@
 //
 
 import Metal
-import simd
 import Satin
+import simd
 
 final class BloomRenderer: BaseRenderer {
-
     override var paramKeys: [String] {
         return [
             "Post Material",
@@ -20,7 +19,7 @@ final class BloomRenderer: BaseRenderer {
 
     override var params: [String: ParameterGroup?] {
         return [
-            "Post Material": postMaterial.parameters
+            "Post Material": postMaterial.parameters,
         ]
     }
 
@@ -57,12 +56,10 @@ final class BloomRenderer: BaseRenderer {
         directionlLight2.lookAt(target: .zero)
         scene.add(directionlLight2)
 
-
         let directionlLight3 = DirectionalLight(color: [1, 1, 1], intensity: 2.0)
         directionlLight3.position = [10, -10, -10]
         directionlLight3.lookAt(target: .zero)
         scene.add(directionlLight3)
-
 
         let boxMesh = InstancedMesh(geometry: RoundedBoxGeometry(size: 1.0, radius: 0.25, resolution: 3), material: StandardMaterial(baseColor: [0.5, 0.5, 0.5, 1], metallic: 1.0, roughness: 0.1), count: 20)
         for index in 0 ..< 20 {

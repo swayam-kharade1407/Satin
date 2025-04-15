@@ -31,4 +31,4 @@ final class TranslucentView: NSVisualEffectView {
     }
 }
 
-#endif 
+#endif

@@ -19,7 +19,7 @@ struct VisionsView: View {
         case supershapes = "ImmersiveSuperShapes"
         case post = "ImmersivePost"
     }
-    
+
     @State private var immersiveSpaceIsShown = false
     @State var example: ExampleType? = nil
 

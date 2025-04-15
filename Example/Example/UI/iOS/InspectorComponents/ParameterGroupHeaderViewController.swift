@@ -40,7 +40,7 @@ final class ParameterGroupHeaderViewController: UIViewController {
     
     override public var title: String? {
         didSet {
-            if let title = self.title {
+            if let title = title {
                 label?.text = title
             }
         }
@@ -86,7 +86,7 @@ final class ParameterGroupHeaderViewController: UIViewController {
     }
     
     func setupHorizontalStackView() {
-        guard let vStack = self.vStack else { return }
+        guard let vStack = vStack else { return }
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
@@ -101,7 +101,7 @@ final class ParameterGroupHeaderViewController: UIViewController {
     }
     
     func setupButton() {
-        guard let hStack = self.hStack else { return }
+        guard let hStack = hStack else { return }
         let button = DisclosureButton()
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -122,7 +122,7 @@ final class ParameterGroupHeaderViewController: UIViewController {
     }
     
     func setupLabel() {
-        guard let hStack = self.hStack else { return }
+        guard let hStack = hStack else { return }
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 16)
@@ -131,9 +131,8 @@ final class ParameterGroupHeaderViewController: UIViewController {
         self.label = label
     }
     
-    func setupSpacer()
-    {
-        guard let vStack = self.vStack else { return }
+    func setupSpacer() {
+        guard let vStack = vStack else { return }
         let spacer = UISpacer()
         vStack.addArrangedSubview(spacer)
         spacer.heightAnchor.constraint(equalToConstant: 1).isActive = true
@@ -141,15 +140,14 @@ final class ParameterGroupHeaderViewController: UIViewController {
         self.spacer = spacer
     }
     
-    func setupGestures()
-    {
+    func setupGestures() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapGesture))
         view.addGestureRecognizer(tapGestureRecognizer)
         self.tapGestureRecognizer = tapGestureRecognizer
     }
     
     @objc func tapGesture(_ recognizer: UITapGestureRecognizer) {
-        self.state.toggle()
+        state.toggle()
     }
     
     deinit {

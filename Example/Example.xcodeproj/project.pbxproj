@@ -104,7 +104,6 @@
 		E152371F29CBA22B00D96D46 /* BaseRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371E29CBA22B00D96D46 /* BaseRenderer.swift */; };
 		E152372829CBDF4E00D96D46 /* ObjectShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152372729CBDF4E00D96D46 /* ObjectShadowRenderer.swift */; };
 		E173180E2C8F8B2800334DE8 /* FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = E173180D2C8F8B2800334DE8 /* FFT.swift */; };
-		E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */; };
 		E1772A982981D320005FE7B2 /* MeshShadowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1772A972981D320005FE7B2 /* MeshShadowRenderer.swift */; };
 		E17A55BD28A6C9C6008F1DDB /* IcosahedronGenerator.c in Sources */ = {isa = PBXBuildFile; fileRef = E1CC099F2489797300B92285 /* IcosahedronGenerator.c */; };
 		E1903C0F2B6046B4004AB175 /* ARPlaneRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E152371C29CBA11B00D96D46 /* ARPlaneRendererView.swift */; };
@@ -252,7 +251,6 @@
 		E173180D2C8F8B2800334DE8 /* FFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFT.swift; sourceTree = "<group>"; };
 		E175243529F86F8D00AD1A8F /* ARPBRRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPBRRenderer.swift; sourceTree = "<group>"; };
 		E175243729F8734D00AD1A8F /* ARPBRRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPBRRendererView.swift; sourceTree = "<group>"; };
-		E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Metal+Extensions.swift"; sourceTree = "<group>"; };
 		E1772A952981D2A9005FE7B2 /* ProjectedShadowRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectedShadowRenderer.swift; sourceTree = "<group>"; };
 		E1772A972981D320005FE7B2 /* MeshShadowRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshShadowRenderer.swift; sourceTree = "<group>"; };
 		E1772A992981D35F005FE7B2 /* ProjectedShadowRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectedShadowRendererView.swift; sourceTree = "<group>"; };
@@ -520,7 +518,6 @@
 			children = (
 				E102D07F2C8A12AC00DD255C /* Renderers */,
 				E19B2D602C8783E900A31650 /* Generators */,
-				E175243E29F8B9EC00AD1A8F /* Metal+Extensions.swift */,
 				E17D2C1126BBB7DF005A136A /* AudioInput.swift */,
 				E1F22D1C29BD71FA0011CEAB /* Timing.swift */,
 				E14198C529D10A8500E486EE /* Geometry */,
@@ -1062,7 +1059,6 @@
 				E103E1442B603FF70017588F /* ContactShadowRendererView.swift in Sources */,
 				E103E1432B603FF70017588F /* DirectionalShadowRendererView.swift in Sources */,
 				E103E12E2B603ED30017588F /* OctasphereRenderer.swift in Sources */,
-				E175243F29F8B9EC00AD1A8F /* Metal+Extensions.swift in Sources */,
 				E1903C142B6046B4004AB175 /* ARDrawingRendererView.swift in Sources */,
 				E103E1212B603E760017588F /* DepthMaterialRenderer.swift in Sources */,
 				E1D43BCA2C65855A0063E2C9 /* ButtonViewController.swift in Sources */,

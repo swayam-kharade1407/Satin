@@ -8,10 +8,10 @@
 
 #if os(macOS)
 
-import Metal
-import MetalKit
 import Combine
 import CoreVideo
+import Metal
+import MetalKit
 import Satin
 import ScreenCaptureKit
 
@@ -120,11 +120,9 @@ final class ScreenCaptureManager: NSObject, SCStreamDelegate, SCStreamOutput {
         // Get the pixel buffer that contains the image data.
         guard let pixelBuffer = sampleBuffer.imageBuffer else { return }
 
-
         // Get the backing IOSurface.
         guard let surfaceRef = CVPixelBufferGetIOSurface(pixelBuffer)?.takeUnretainedValue() else { return }
         let surface = unsafeBitCast(surfaceRef, to: IOSurface.self)
-
 
         // Retrieve the content rectangle, scale, and scale factor.
         guard let contentRectDict = attachments[.contentRect],
@@ -147,8 +145,6 @@ final class ScreenCaptureManager: NSObject, SCStreamDelegate, SCStreamOutput {
 final class ScreenCaptureRenderer: BaseRenderer {
     let material = BasicTextureMaterial()
     lazy var mesh = Mesh(label: "Quad", geometry: QuadGeometry(), material: material)
-
-    
 
     var camera = OrthographicCamera(left: -2, right: 2, bottom: -2, top: 2, near: 0.0, far: 1)
     lazy var cameraController = OrthographicCameraController(camera: camera, view: metalView, defaultZoom: 1.0)
@@ -201,13 +197,12 @@ final class ScreenCaptureRenderer: BaseRenderer {
 
     override func update() {
         cameraController.update()
-        
+
         if let texture {
             material.flipped = false
             material.texture = texture
             mesh.scale = simd_make_float3(Float(texture.width), Float(texture.height), 1.0)
-        }
-        else {
+        } else {
             material.texture = nil
         }
     }

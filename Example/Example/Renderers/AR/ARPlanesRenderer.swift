@@ -107,7 +107,7 @@ final class ARPlanesRenderer: BaseRenderer {
     // MARK: - 3D
 
     lazy var scene = Object(label: "Scene")
-    
+
     lazy var camera = ARPerspectiveCamera(session: session, metalView: metalView, near: 0.01, far: 100.0)
     lazy var renderer = {
         let renderer = Renderer(label: "Content Renderer", context: defaultContext)

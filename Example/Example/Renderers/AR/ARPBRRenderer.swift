@@ -334,7 +334,7 @@ final class ARPBRRenderer: BaseRenderer, MaterialDelegate {
     }()
 
     lazy var postProcessor = PostProcessor(
-        label: "Post Processor", 
+        label: "Post Processor",
         context: Context(device: device, sampleCount: 1, colorPixelFormat: colorPixelFormat),
         material: postMaterial
     )
@@ -345,7 +345,7 @@ final class ARPBRRenderer: BaseRenderer, MaterialDelegate {
 
     override init() {
         super.init()
-        
+
         let config = ARWorldTrackingConfiguration()
         config.environmentTexturing = .manual
         config.wantsHDREnvironmentTextures = true
@@ -475,7 +475,7 @@ final class ARPBRRenderer: BaseRenderer, MaterialDelegate {
         print("Material Updated: \(material.label)")
     }
 
-    internal func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
+    func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
         if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat

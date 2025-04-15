@@ -79,7 +79,7 @@ final class LabelViewController: NSViewController, NSTextFieldDelegate {
 
             viewWidthConstraint = view.widthAnchor.constraint(equalToConstant: 240)
             viewWidthConstraint.isActive = false
-            
+
             subscription = parameter.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] newValue in
                 guard let self, self.labelValue.stringValue != newValue else { return }
                 self.labelValue.stringValue = newValue
@@ -150,7 +150,7 @@ final class LabelViewController: WidgetViewController {
 
     override func setupBinding() {
         guard let parameter = parameter as? StringParameter else { return }
-        
+
         subscription = parameter.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] newValue in
             guard let self, let valueLabel, valueLabel.text != newValue else { return }
             valueLabel.text = newValue

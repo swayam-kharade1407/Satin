@@ -35,10 +35,10 @@ final class VertexAttributesRenderer: BaseRenderer {
         mesh.material = CustomMaterial(pipelinesURL: pipelinesURL)
         scene.add(mesh)
 
-#if os(visionOS)
+        #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear
-#endif
+        #endif
     }
 
     deinit {
@@ -50,7 +50,6 @@ final class VertexAttributesRenderer: BaseRenderer {
     }
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
-        
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -59,7 +58,7 @@ final class VertexAttributesRenderer: BaseRenderer {
         )
     }
 
-    override func resize(size: (width: Float, height: Float), scaleFactor: Float) {
+    override func resize(size: (width: Float, height: Float), scaleFactor _: Float) {
         let aspect = size.width / size.height
         camera.aspect = aspect
         renderer.resize(size)

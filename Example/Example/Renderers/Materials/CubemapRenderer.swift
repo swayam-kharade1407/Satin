@@ -51,7 +51,7 @@ final class CubemapRenderer: BaseRenderer {
     }()
 
     var cubeTexture: MTLTexture!
-    
+
     override func setup() {
         let url = texturesURL.appendingPathComponent("Cubemap")
         cubeTexture = loadCubemap(

@@ -18,21 +18,6 @@ struct ExampleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView().preferredColorScheme(.dark)
-//            #if DEBUG && os(visionOS)
-//                .onAppear {
-//                    Task {
-//                        switch await openImmersiveSpace(id: "ImmersivePost") {
-//                            case .opened:
-//                                print("opened")
-//                            case .error, .userCancelled:
-//                                print("error")
-//                                fallthrough
-//                            @unknown default:
-//                                print("default")
-//                        }
-//                    }
-//                }
-//            #endif
         }
 
         #if os(visionOS)

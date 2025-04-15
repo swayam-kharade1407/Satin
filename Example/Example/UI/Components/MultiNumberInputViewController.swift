@@ -67,7 +67,9 @@ final class MultiNumberInputViewController: InputViewController, NSTextFieldDele
                         input.stringValue = String(format: "%d", value[i])
                     }
                 }
-                for i in 0 ..< 2 { hStack.addView(createInput("\(param.value[i])", i), in: .trailing) }
+                for i in 0 ..< 2 {
+                    hStack.addView(createInput("\(param.value[i])", i), in: .trailing)
+                }
             }
             else if let param = parameter as? Int3Parameter {
                 subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] value in
@@ -76,27 +78,33 @@ final class MultiNumberInputViewController: InputViewController, NSTextFieldDele
                         input.stringValue = String(format: "%d", value[i])
                     }
                 }
-                for i in 0 ..< 3 { hStack.addView(createInput("\(param.value[i])", i), in: .trailing) }
+                for i in 0 ..< 3 {
+                    hStack.addView(createInput("\(param.value[i])", i), in: .trailing)
+                }
             }
             else if let param = parameter as? Int4Parameter {
-                subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] value in
+                subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
                     guard let self = self else { return }
                     for (i, input) in self.inputs.enumerated() {
                         input.stringValue = String(format: "%d", param.value[i])
                     }
                 }
-                for i in 0 ..< 4 { hStack.addView(createInput("\(param.value[i])", i), in: .trailing) }
+                for i in 0 ..< 4 {
+                    hStack.addView(createInput("\(param.value[i])", i), in: .trailing)
+                }
             }
         }
         else if parameter is Float2Parameter || parameter is Float3Parameter || parameter is Float4Parameter || parameter is PackedFloat3Parameter {
             if let param = parameter as? Float2Parameter {
-                subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] value in
+                subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
                     guard let self = self else { return }
                     for (i, input) in self.inputs.enumerated() {
                         input.stringValue = String(format: "%d", param.value[i])
                     }
                 }
-                for i in 0 ..< 2 { hStack.addView(createInput("\(param.value[i])", i), in: .trailing) }
+                for i in 0 ..< 2 {
+                    hStack.addView(createInput("\(param.value[i])", i), in: .trailing)
+                }
             }
             else if let param = parameter as? Float3Parameter {
                 subscription = param.valuePublisher.receive(on: DispatchQueue.main).sink { [weak self] value in
@@ -284,25 +292,39 @@ final class MultiNumberInputViewController: WidgetViewController, UITextFieldDel
     func setupInputs() {
         guard let hStack = hStack else { return }
         if let param = parameter as? Int2Parameter {
-            for i in 0 ..< 2 { hStack.addArrangedSubview(createInput("\(param.value[i])", i)) }
+            for i in 0 ..< 2 {
+                hStack.addArrangedSubview(createInput("\(param.value[i])", i))
+            }
         }
         else if let param = parameter as? Int3Parameter {
-            for i in 0 ..< 3 { hStack.addArrangedSubview(createInput("\(param.value[i])", i)) }
+            for i in 0 ..< 3 {
+                hStack.addArrangedSubview(createInput("\(param.value[i])", i))
+            }
         }
         else if let param = parameter as? Int4Parameter {
-            for i in 0 ..< 4 { hStack.addArrangedSubview(createInput("\(param.value[i])", i)) }
+            for i in 0 ..< 4 {
+                hStack.addArrangedSubview(createInput("\(param.value[i])", i))
+            }
         }
         else if let param = parameter as? Float2Parameter {
-            for i in 0 ..< 2 { hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i)) }
+            for i in 0 ..< 2 {
+                hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i))
+            }
         }
         else if let param = parameter as? Float3Parameter {
-            for i in 0 ..< 3 { hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i)) }
+            for i in 0 ..< 3 {
+                hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i))
+            }
         }
         else if let param = parameter as? PackedFloat3Parameter {
-            for i in 0 ..< 3 { hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i)) }
+            for i in 0 ..< 3 {
+                hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i))
+            }
         }
         else if let param = parameter as? Float4Parameter {
-            for i in 0 ..< 4 { hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i)) }
+            for i in 0 ..< 4 {
+                hStack.addArrangedSubview(createInput(String(format: "%.3f", param.value[i]), i))
+            }
         }
     }
 
@@ -363,8 +385,7 @@ final class MultiNumberInputViewController: WidgetViewController, UITextFieldDel
         }
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
-    {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard !string.isEmpty else {
             return true
         }

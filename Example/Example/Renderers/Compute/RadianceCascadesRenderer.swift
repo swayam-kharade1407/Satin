@@ -12,7 +12,7 @@ import Satin
 
 final class RadianceCascadesRenderer: BaseRenderer {
     final class PostMaterial: SourceMaterial {}
-    
+
     final class RadianceCascadesProcessor: TextureComputeProcessor {}
     // create radiance cascade textures (array)
     // create a merged radiance texture (1/2 size of the main scene texture)
@@ -27,7 +27,7 @@ final class RadianceCascadesRenderer: BaseRenderer {
         pipelinesURL: pipelinesURL,
         live: true
     )
-    
+
     lazy var mesh = Mesh(
         label: "Quad",
         geometry: QuadGeometry(),
@@ -59,7 +59,7 @@ final class RadianceCascadesRenderer: BaseRenderer {
 
     override func draw(renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) {
         radianceCascadesProcessor.update(commandBuffer)
-        
+
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,
@@ -79,11 +79,11 @@ final class RadianceCascadesRenderer: BaseRenderer {
         let width = Float(size.width)
         let height = Float(size.height)
         guard width > 0, height > 0 else { return nil }
-        
+
         let resolution = simd_make_float2(width, height)
         let diagonal = simd_length(resolution)
         let cascades = Int(ceil(log(diagonal)/log(4.0)))
-      
+
         let descriptor = MTLTextureDescriptor()
         descriptor.pixelFormat = .rgba32Float
         descriptor.width = Int(width)/2

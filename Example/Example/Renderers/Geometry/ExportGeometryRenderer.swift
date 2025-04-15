@@ -37,7 +37,6 @@ final class ExportGeometryRenderer: BaseRenderer {
         return scene
     }()
 
-    
     var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.001, far: 100.0)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)

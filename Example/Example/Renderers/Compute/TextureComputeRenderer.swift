@@ -26,7 +26,7 @@ class TextureComputeRenderer: BaseRenderer {
         textureDescriptor.textureType = .type2D
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         textureDescriptor.allowGPUOptimizedContents = true
-        
+
         return ReactionDiffusionComputeSystem(
             device: device,
             pipelinesURL: pipelinesURL,

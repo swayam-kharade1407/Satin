@@ -39,7 +39,7 @@ public final class InspectorWindow: NSWindow {
     func setupInspector() {
         let vc = InspectorViewController()
         contentView = vc.view
-        self.inspectorViewController = vc
+        inspectorViewController = vc
     }
 
     deinit {

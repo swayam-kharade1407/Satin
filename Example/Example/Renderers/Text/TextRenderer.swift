@@ -22,7 +22,7 @@ final class TextRenderer: BaseRenderer {
 
     override func setup() {
         setupText()
-        
+
 #if os(visionOS)
         renderer.setClearColor(.zero)
         metalView.backgroundColor = .clear

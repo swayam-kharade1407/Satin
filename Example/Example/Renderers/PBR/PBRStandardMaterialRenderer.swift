@@ -21,7 +21,7 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
     override var texturesURL: URL { sharedAssetsURL.appendingPathComponent("Textures") }
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
 
-    override var colorPixelFormat: MTLPixelFormat{
+    override var colorPixelFormat: MTLPixelFormat {
         .rgba16Float
     }
 
@@ -162,7 +162,7 @@ final class PBRStandardMaterialRenderer: BaseRenderer {
             for (type, url) in maps {
                 let texture = try loader.newTexture(URL: url, options: [
                     MTKTextureLoader.Option.SRGB: false,
-                    MTKTextureLoader.Option.origin: MTKTextureLoader.Origin.flippedVertically
+                    MTKTextureLoader.Option.origin: MTKTextureLoader.Origin.flippedVertically,
                 ])
                 material.setTexture(texture, type: type)
             }

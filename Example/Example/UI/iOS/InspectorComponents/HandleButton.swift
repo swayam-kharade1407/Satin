@@ -22,21 +22,21 @@ final class HandleButton: UIButton {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        self.setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
+        self.setup()
     }
-    
+
     func setup() {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = 3.0
         self.backgroundColor = UIColor(named: "Button", in: Bundle(for: HandleButton.self), compatibleWith: nil)
         self.widthAnchor.constraint(equalToConstant: 6).isActive = true
-        self.heightAnchor.constraint(equalToConstant: 128).isActive = true   
+        self.heightAnchor.constraint(equalToConstant: 128).isActive = true
     }
 }
 

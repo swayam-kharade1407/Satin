@@ -17,7 +17,7 @@ final class InspectorHeaderViewController: UIViewController {
     
     override public var title: String? {
         didSet {
-            if let title = self.title {
+            if let title = title {
                 label?.text = title
             }
         }
@@ -59,7 +59,7 @@ final class InspectorHeaderViewController: UIViewController {
     }
     
     func setupHorizontalStackView() {
-        guard let vStack = self.vStack else { return }
+        guard let vStack = vStack else { return }
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
@@ -74,7 +74,7 @@ final class InspectorHeaderViewController: UIViewController {
     }
     
     func setupLabel() {
-        guard let hStack = self.hStack else { return }
+        guard let hStack = hStack else { return }
         let label = UILabel()
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -84,9 +84,8 @@ final class InspectorHeaderViewController: UIViewController {
         self.label = label
     }
     
-    func setupSpacer()
-    {
-        guard let vStack = self.vStack else { return }
+    func setupSpacer() {
+        guard let vStack = vStack else { return }
         let spacer = UISpacer()
         vStack.addArrangedSubview(spacer)
         spacer.heightAnchor.constraint(equalToConstant: 1).isActive = true

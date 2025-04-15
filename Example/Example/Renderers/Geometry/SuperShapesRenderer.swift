@@ -149,25 +149,23 @@ final class SuperShapesRenderer: BaseRenderer {
     var n32Param = FloatParameter("N32", 0.651718, 0.0, 100.0, .slider)
     var resParam = IntParameter("Resolution", 300, 3, 300, .slider)
 
-    lazy var parameters: ParameterGroup = {
-        ParameterGroup("Shape Controls", [
-            resParam,
-            r1Param,
-            a1Param,
-            b1Param,
-            m1Param,
-            n11Param,
-            n21Param,
-            n31Param,
-            r2Param,
-            a2Param,
-            b2Param,
-            m2Param,
-            n12Param,
-            n22Param,
-            n32Param,
-        ])
-    }()
+    lazy var parameters: ParameterGroup = .init("Shape Controls", [
+        resParam,
+        r1Param,
+        a1Param,
+        b1Param,
+        m1Param,
+        n11Param,
+        n21Param,
+        n31Param,
+        r2Param,
+        a2Param,
+        b2Param,
+        m2Param,
+        n12Param,
+        n22Param,
+        n32Param,
+    ])
 
     lazy var geometry = SuperShapeGeometry(
         r1: r1Param.value,
@@ -203,7 +201,7 @@ final class SuperShapesRenderer: BaseRenderer {
         }
 
         mesh.cullMode = .none
-        
+
         camera.lookAt(target: .zero)
 
 #if os(visionOS)

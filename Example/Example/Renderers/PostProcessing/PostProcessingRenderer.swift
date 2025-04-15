@@ -7,8 +7,8 @@
 //
 
 import Metal
-import simd
 import Satin
+import simd
 
 final class PostProcessingRenderer: BaseRenderer {
     var size = simd_int2(repeating: 0)
@@ -33,7 +33,6 @@ final class PostProcessingRenderer: BaseRenderer {
         }
         return scene
     }()
-
 
     lazy var postMaterial = PostMaterial(pipelinesURL: pipelinesURL)
     lazy var postProcessor: PostProcessor = {

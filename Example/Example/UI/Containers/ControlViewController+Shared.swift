@@ -15,24 +15,24 @@ extension ControlViewController {
         setupParameters()
     }
 
-    internal func setupParameterGroupSubscriptions() {
+    func setupParameterGroupSubscriptions() {
         parameterGroupSubscriptions.removeAll()
 
         guard let parameters else { return }
 
-        parameters.parameterAddedPublisher.receive(on: DispatchQueue.main).sink { [weak self] parameter in
+        parameters.parameterAddedPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.setupParameters()
         }.store(in: &parameterGroupSubscriptions)
 
-        parameters.parameterRemovedPublisher.receive(on: DispatchQueue.main).sink { [weak self] parameter in
+        parameters.parameterRemovedPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.setupParameters()
         }.store(in: &parameterGroupSubscriptions)
 
-        parameters.clearedPublisher.receive(on: DispatchQueue.main).sink { [weak self] parameters in
+        parameters.clearedPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.setupParameters()
         }.store(in: &parameterGroupSubscriptions)
 
-        parameters.loadedPublisher.receive(on: DispatchQueue.main).sink { [weak self] parameters in
+        parameters.loadedPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.setupParameters()
         }.store(in: &parameterGroupSubscriptions)
     }

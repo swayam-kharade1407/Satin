@@ -55,7 +55,7 @@ final class BufferComputeRenderer: BaseRenderer {
     override var depthPixelFormat: MTLPixelFormat {
         .invalid
     }
-    
+
     override func setup() {
         startTime = CFAbsoluteTimeGetCurrent()
     }
@@ -94,7 +94,6 @@ final class BufferComputeRenderer: BaseRenderer {
         )
 
         particleSystem.update(commandBuffer)
-
 
         renderer.draw(
             renderPassDescriptor: renderPassDescriptor,

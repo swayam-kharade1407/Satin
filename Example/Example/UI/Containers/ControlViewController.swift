@@ -23,7 +23,7 @@ public class ControlViewController: InputViewController {
     public var controls: [NSViewController] = []
     public var stack: NSStackView?
 
-    internal var parameterGroupSubscriptions = Set<AnyCancellable>()
+    var parameterGroupSubscriptions = Set<AnyCancellable>()
 
     public convenience init(_ parameters: ParameterGroup) {
         self.init()
@@ -87,7 +87,7 @@ open class ControlViewController: UIViewController {
     public var controls: [UIViewController] = []
     public var stack: UIStackView?
 
-    internal var parameterGroupSubscriptions = Set<AnyCancellable>()
+    var parameterGroupSubscriptions = Set<AnyCancellable>()
 
     public convenience init(_ parameters: ParameterGroup) {
         self.init()

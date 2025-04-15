@@ -8,10 +8,10 @@
 
 #if os(visionOS)
 
+import ARKit
 import CompositorServices
 import Metal
 import Satin
-import ARKit
 
 final class Immersive3DRenderer: ImmersiveBaseRenderer {
     final class GridMaterial: SourceMaterial {}

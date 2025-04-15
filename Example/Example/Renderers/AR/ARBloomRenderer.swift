@@ -9,9 +9,9 @@
 #if os(iOS)
 
 import ARKit
+import Combine
 import Metal
 import MetalKit
-import Combine
 import Satin
 
 final class ARBloomRenderer: BaseRenderer {
@@ -166,7 +166,7 @@ final class ARBloomRenderer: BaseRenderer {
         postMaterial.time = Float(getTime() - startTime)
 
         postProcessor.renderer.colorLoadAction = .load
-        
+
         postProcessor.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer
@@ -219,7 +219,7 @@ final class ARBloomRenderer: BaseRenderer {
 
     // MARK: - Internal Methods
 
-    internal func setupSessionObservers() {
+    func setupSessionObservers() {
         sessionPublisher.updatedAnchorsPublisher.sink { [weak self] anchors in
             guard let self = self else { return }
             for anchor in anchors {
@@ -238,7 +238,7 @@ final class ARBloomRenderer: BaseRenderer {
 #endif
     }
 
-    internal func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
+    func createTexture(_ label: String, _ pixelFormat: MTLPixelFormat, _ textureScale: Int) -> MTLTexture? {
         if metalView.drawableSize.width > 0, metalView.drawableSize.height > 0 {
             let descriptor = MTLTextureDescriptor()
             descriptor.pixelFormat = pixelFormat

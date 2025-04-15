@@ -73,9 +73,6 @@ final class MultipleContextRenderer: BaseRenderer {
             camera: camera
         )
 
-//        renderPassDescriptor.depthAttachment = nil
-//        rendererNoDepth.colorLoadAction = .load
-//        
         rendererNoDepth.draw(
             renderPassDescriptor: renderPassDescriptor,
             commandBuffer: commandBuffer,

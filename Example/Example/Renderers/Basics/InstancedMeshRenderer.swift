@@ -14,15 +14,16 @@ import Satin
 
 final class InstancedMeshRenderer: BaseRenderer {
     override var modelsURL: URL { sharedAssetsURL.appendingPathComponent("Models") }
+
     // MARK: - Satin
 
     private let camera = PerspectiveCamera(position: [10.0, 10.0, 10.0], near: 0.001, far: 100.0)
     private let scene = Object(label: "Scene")
     private let container = Object(label: "Container")
 
-    lazy private var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
+    private lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     private var instancedMesh: InstancedMesh?
-    lazy private var renderer = Renderer(context: defaultContext)
+    private lazy var renderer = Renderer(context: defaultContext)
 
     // MARK: - Properties
 

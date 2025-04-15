@@ -8,10 +8,10 @@
 
 #if os(visionOS)
 
-import Satin
-import Metal
-import CompositorServices
 import Combine
+import CompositorServices
+import Metal
+import Satin
 
 final class ImmersiveSuperShapesRenderer: ImmersiveBaseRenderer {
     final class GridMaterial: SourceMaterial {}
@@ -44,25 +44,23 @@ final class ImmersiveSuperShapesRenderer: ImmersiveBaseRenderer {
     var n32Param = FloatParameter("N32", 0.651718, 0.0, 100.0, .slider)
     var resParam = IntParameter("Resolution", 300, 3, 300, .slider)
 
-    lazy var parameters: ParameterGroup = {
-        ParameterGroup("Shape Controls", [
-            resParam,
-            r1Param,
-            a1Param,
-            b1Param,
-            m1Param,
-            n11Param,
-            n21Param,
-            n31Param,
-            r2Param,
-            a2Param,
-            b2Param,
-            m2Param,
-            n12Param,
-            n22Param,
-            n32Param,
-        ])
-    }()
+    lazy var parameters: ParameterGroup = .init("Shape Controls", [
+        resParam,
+        r1Param,
+        a1Param,
+        b1Param,
+        m1Param,
+        n11Param,
+        n21Param,
+        n31Param,
+        r2Param,
+        a2Param,
+        b2Param,
+        m2Param,
+        n12Param,
+        n22Param,
+        n32Param,
+    ])
 
     var parametersSubscription: AnyCancellable?
 
@@ -87,7 +85,7 @@ final class ImmersiveSuperShapesRenderer: ImmersiveBaseRenderer {
     lazy var startTime = getTime()
     lazy var mesh = Mesh(geometry: geometry, material: NormalColorMaterial(true))
     lazy var scene = Object(label: "Scene", [background, mesh])
-    
+
     lazy var renderer = Renderer(context: defaultContext)
 
 #if targetEnvironment(simulator)
@@ -138,6 +136,7 @@ final class ImmersiveSuperShapesRenderer: ImmersiveBaseRenderer {
             viewport: viewport
         )
     }
+
     private func updateGeometry() {
         geometry.r1 = r1Param.value
         geometry.a1 = a1Param.value

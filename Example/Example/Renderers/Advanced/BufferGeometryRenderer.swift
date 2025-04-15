@@ -183,12 +183,11 @@ final class BufferGeometryMesh: Object, Renderable {
                 object: self,
                 submesh: nil
             )
-            
+
             if options.first {
                 intersections.append(raycastResult)
                 return true
-            }
-            else {
+            } else {
                 results.append(raycastResult)
             }
         }
@@ -206,7 +205,7 @@ final class BufferGeometryMesh: Object, Renderable {
                 }
             }
         }
-        
+
         return results.count > 0
     }
 }

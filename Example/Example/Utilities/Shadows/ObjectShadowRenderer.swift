@@ -149,7 +149,7 @@ final class ObjectShadowRenderer {
         let renderables = getRenderables(object, true, false)
         materialCache.removeAll(keepingCapacity: true)
 
-        for var renderable in renderables {
+        for renderable in renderables {
             if let object = renderable as? Object {
                 materialCache[object] = renderable.material
                 renderable.material = material
@@ -191,7 +191,7 @@ final class ObjectShadowRenderer {
             }
         }
 
-        for var renderable in renderables {
+        for renderable in renderables {
             if let object = renderable as? Object {
                 renderable.material = materialCache[object]
             }

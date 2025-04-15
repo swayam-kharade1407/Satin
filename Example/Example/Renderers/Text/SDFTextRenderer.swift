@@ -26,7 +26,7 @@ final class SDFTextRenderer: BaseRenderer {
     }()
 
     var scene = Object(label: "Scene")
-    
+
     lazy var camera = PerspectiveCamera(position: [0, 0, 5], near: 0.1, far: 100.0, fov: 60)
     lazy var cameraController = PerspectiveCameraController(camera: camera, view: metalView)
     lazy var renderer = Renderer(context: defaultContext)
@@ -38,8 +38,8 @@ final class SDFTextRenderer: BaseRenderer {
 
     override func setup() {
         textMesh.material?.depthWriteEnabled = false
-        textMesh.scale = .init(repeating: 1.0/128.0)
-        textMesh.position.y = 4.75/128.0
+        textMesh.scale = .init(repeating: 1.0 / 128.0)
+        textMesh.position.y = 4.75 / 128.0
         scene.add(textMesh)
 
 #if os(visionOS)
